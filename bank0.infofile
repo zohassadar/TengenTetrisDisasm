@@ -267,8 +267,8 @@ LABEL { ADDR $b36b; NAME "cathedralCheckComplete"; };
 LABEL { ADDR $b371; NAME "drawCathedralSpriteTile"; };
 LABEL { ADDR $b3a0; NAME "cathedralSpriteTabel"; SIZE $48; };
 
-LABEL { ADDR $ca00; NAME "possibleTitleScreenNametable"; SIZE $3c0; };
-LABEL { ADDR $cdc0; NAME "dataPastPossibleTitle"; };
+LABEL { ADDR $ca00; NAME "possibleTitleScreenNametable"; SIZE $400; };
+LABEL { ADDR $ce00; NAME "dataPastPossibleTitle"; };
 
 LABEL { ADDR $cfb1; NAME "possibleSetSoundOrMusic"; };
 
