@@ -23,6 +23,7 @@ c028 - game nametable??
 
 gameStatePossible:
 
+F8 - Score screen
 F9 - ??
 FA - title screen
 FB is not line clearing (why did I think that?)
@@ -71,6 +72,19 @@ LA0AB - table with PPU addresses
 L855C/L855F - tables with low/high bytes of top left corner of player1, player2 & coop
 
 
+*****
 
+0 - no tetrimino
+1 - I
+2 - T
+3 - O
+4 - J
+5 - L
+6 - S
+7 - Z
 
+Stats for pieces appear to be offset using $52 (starting at $53 with I)
 
+****
+L9997 - line clear stat columns
+999B - maximum height of column
