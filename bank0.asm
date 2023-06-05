@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-05 08:45:30
+; Created:    2023-06-05 09:10:15
 ; Input file: clean.nes
 ; Page:       1
 
@@ -649,7 +649,7 @@ L83E7:
         sta     gameStatePossible               ; 83EF 85 29                    .)
         sta     player1FallTimer                ; 83F1 85 6A                    .j
         lda     #$08                            ; 83F3 A9 08                    ..
-        jsr     LCFB1                           ; 83F5 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; 83F5 20 B1 CF                  ..
 L83F8:
         txa                                     ; 83F8 8A                       .
         lda     #$02                            ; 83F9 A9 02                    ..
@@ -661,7 +661,7 @@ L83F8:
 L8403:
         jsr     LB603                           ; 8403 20 03 B6                  ..
         lda     #$0A                            ; 8406 A9 0A                    ..
-        jmp     LCFB1                           ; 8408 4C B1 CF                 L..
+        jmp     possibleSetSoundOrMusic         ; 8408 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 L840B:
@@ -678,7 +678,7 @@ L8417:
         lda     #$00                            ; 8417 A9 00                    ..
         sta     player1TetriminoCurrent,x       ; 8419 95 64                    .d
         lda     #$0E                            ; 841B A9 0E                    ..
-        jsr     LCFB1                           ; 841D 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; 841D 20 B1 CF                  ..
         jsr     L8565                           ; 8420 20 65 85                  e.
         jsr     L8773                           ; 8423 20 73 87                  s.
 L8426:
@@ -1939,7 +1939,7 @@ L8CD7:
         dex                                     ; 8CDD CA                       .
         bpl     L8CD7                           ; 8CDE 10 F7                    ..
         lda     #$08                            ; 8CE0 A9 08                    ..
-        jmp     LCFB1                           ; 8CE2 4C B1 CF                 L..
+        jmp     possibleSetSoundOrMusic         ; 8CE2 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 L8CE5:
@@ -2024,7 +2024,7 @@ L8D6B:
         lda     #$7C                            ; 8D6B A9 7C                    .|
         sta     player1FallTimer                ; 8D6D 85 6A                    .j
         lda     #$0D                            ; 8D6F A9 0D                    ..
-        jsr     LCFB1                           ; 8D71 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; 8D71 20 B1 CF                  ..
         lda     $00                             ; 8D74 A5 00                    ..
         ora     #$08                            ; 8D76 09 08                    ..
         sta     $00                             ; 8D78 85 00                    ..
@@ -2377,7 +2377,7 @@ L9035:
         ora     player2ControllerNew            ; 903F 05 47                    .G
         beq     L9091                           ; 9041 F0 4E                    .N
         lda     #$08                            ; 9043 A9 08                    ..
-        jsr     LCFB1                           ; 9045 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; 9045 20 B1 CF                  ..
         lda     #$7C                            ; 9048 A9 7C                    .|
         sec                                     ; 904A 38                       8
         sbc     player1FallTimer                ; 904B E5 6A                    .j
@@ -3160,12 +3160,12 @@ L95B3:
         jsr     LA756                           ; 95B7 20 56 A7                  V.
         ldx     $37                             ; 95BA A6 37                    .7
         lda     #$0B                            ; 95BC A9 0B                    ..
-        jmp     LCFB1                           ; 95BE 4C B1 CF                 L..
+        jmp     possibleSetSoundOrMusic         ; 95BE 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 L95C1:
         lda     #$13                            ; 95C1 A9 13                    ..
-        jmp     LCFB1                           ; 95C3 4C B1 CF                 L..
+        jmp     possibleSetSoundOrMusic         ; 95C3 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 L95C6:
@@ -3174,7 +3174,7 @@ L95C6:
         lda     #$00                            ; 95CA A9 00                    ..
         sta     playMode                        ; 95CC 85 2F                    ./
         lda     #$01                            ; 95CE A9 01                    ..
-        jsr     LCFB1                           ; 95D0 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; 95D0 20 B1 CF                  ..
         ldx     #$05                            ; 95D3 A2 05                    ..
         lda     #$30                            ; 95D5 A9 30                    .0
 L95D7:
@@ -4366,7 +4366,7 @@ L9E61:
         sta     $03                             ; 9E92 85 03                    ..
         jsr     LCF79                           ; 9E94 20 79 CF                  y.
         lda     #$09                            ; 9E97 A9 09                    ..
-        jsr     LCFB1                           ; 9E99 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; 9E99 20 B1 CF                  ..
         lda     #$00                            ; 9E9C A9 00                    ..
         jsr     LA6BE                           ; 9E9E 20 BE A6                  ..
         lda     #$04                            ; 9EA1 A9 04                    ..
@@ -4421,7 +4421,7 @@ L9EDE:
         sta     $51                             ; 9EFD 85 51                    .Q
         jsr     LCF79                           ; 9EFF 20 79 CF                  y.
         lda     #$15                            ; 9F02 A9 15                    ..
-        jsr     LCFB1                           ; 9F04 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; 9F04 20 B1 CF                  ..
         lda     #$01                            ; 9F07 A9 01                    ..
         jsr     LA6BE                           ; 9F09 20 BE A6                  ..
         lda     #$03                            ; 9F0C A9 03                    ..
@@ -4532,7 +4532,7 @@ L9FB8:
         lda     #$FF                            ; 9FC0 A9 FF                    ..
         sta     player1FallTimer                ; 9FC2 85 6A                    .j
         lda     #$14                            ; 9FC4 A9 14                    ..
-        jsr     LCFB1                           ; 9FC6 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; 9FC6 20 B1 CF                  ..
         lda     gameStatePossible               ; 9FC9 A5 29                    .)
         cmp     #$FF                            ; 9FCB C9 FF                    ..
         beq     L9FDB                           ; 9FCD F0 0C                    ..
@@ -4580,35 +4580,35 @@ LA00D:
 ; ----------------------------------------------------------------------------
 LA016:
         lda     #$15                            ; A016 A9 15                    ..
-        jsr     LCFB1                           ; A018 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; A018 20 B1 CF                  ..
         lda     gameStatePossible               ; A01B A5 29                    .)
         cmp     #$FC                            ; A01D C9 FC                    ..
-        beq     LA02C                           ; A01F F0 0B                    ..
+        beq     @branchOnModeGameTypeMenu       ; A01F F0 0B                    ..
         cmp     #$FD                            ; A021 C9 FD                    ..
-        beq     LA02F                           ; A023 F0 0A                    ..
+        beq     @branchOnModeLevelMenu          ; A023 F0 0A                    ..
         cmp     #$FE                            ; A025 C9 FE                    ..
-        beq     LA032                           ; A027 F0 09                    ..
+        beq     @branchOnModeHandicapMenu       ; A027 F0 09                    ..
         jmp     L95E3                           ; A029 4C E3 95                 L..
 
 ; ----------------------------------------------------------------------------
-LA02C:
+@branchOnModeGameTypeMenu:
         jmp     L9F1B                           ; A02C 4C 1B 9F                 L..
 
 ; ----------------------------------------------------------------------------
-LA02F:
+@branchOnModeLevelMenu:
         jmp     L9F56                           ; A02F 4C 56 9F                 LV.
 
 ; ----------------------------------------------------------------------------
-LA032:
+@branchOnModeHandicapMenu:
         jmp     L9F74                           ; A032 4C 74 9F                 Lt.
 
 ; ----------------------------------------------------------------------------
 LA035:
         lda     #$08                            ; A035 A9 08                    ..
-        jsr     LCFB1                           ; A037 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; A037 20 B1 CF                  ..
         ldy     menuMusic                       ; A03A AC F5 04                 ...
         lda     musicSelectTable,y              ; A03D B9 43 A0                 .C.
-        jmp     LCFB1                           ; A040 4C B1 CF                 L..
+        jmp     possibleSetSoundOrMusic         ; A040 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 musicSelectTable:
@@ -5643,7 +5643,7 @@ LAA70:
         and     #$03                            ; AA7B 29 03                    ).
         tay                                     ; AA7D A8                       .
         lda     differentMusicSelectTable,y     ; AA7E B9 6C AA                 .l.
-        jsr     LCFB1                           ; AA81 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; AA81 20 B1 CF                  ..
         jsr     L9A0D                           ; AA84 20 0D 9A                  ..
         and     #$06                            ; AA87 29 06                    ).
 LAA89:
@@ -5797,7 +5797,7 @@ LACA0:
         and     #$03                            ; ACAD 29 03                    ).
         tax                                     ; ACAF AA                       .
         lda     differentMusicSelectTable,x     ; ACB0 BD 6C AA                 .l.
-        jsr     LCFB1                           ; ACB3 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; ACB3 20 B1 CF                  ..
         jsr     L9A0D                           ; ACB6 20 0D 9A                  ..
         and     #$8F                            ; ACB9 29 8F                    ).
         bpl     LACBF                           ; ACBB 10 02                    ..
@@ -6358,7 +6358,7 @@ LB514:
         lda     #$3C                            ; B51B A9 3C                    .<
         sta     player1FallTimer,x              ; B51D 95 6A                    .j
         lda     #$15                            ; B51F A9 15                    ..
-        jmp     LCFB1                           ; B521 4C B1 CF                 L..
+        jmp     possibleSetSoundOrMusic         ; B521 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 LB524:
@@ -6392,7 +6392,7 @@ LB545:
         ldy     player1TetriminoCurrent,x       ; B54F B4 64                    .d
         jsr     LA763                           ; B551 20 63 A7                  c.
         lda     #$15                            ; B554 A9 15                    ..
-        jmp     LCFB1                           ; B556 4C B1 CF                 L..
+        jmp     possibleSetSoundOrMusic         ; B556 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 LB559:
@@ -6467,13 +6467,13 @@ LB5DD:
         bcs     LB5DC                           ; B5E3 B0 F7                    ..
         inc     gameStatePossible               ; B5E5 E6 29                    .)
         lda     #$01                            ; B5E7 A9 01                    ..
-        jsr     LCFB1                           ; B5E9 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; B5E9 20 B1 CF                  ..
         lda     #$00                            ; B5EC A9 00                    ..
         beq     LB5FC                           ; B5EE F0 0C                    ..
 LB5F0:
         dec     gameStatePossible               ; B5F0 C6 29                    .)
         lda     #$02                            ; B5F2 A9 02                    ..
-        jsr     LCFB1                           ; B5F4 20 B1 CF                  ..
+        jsr     possibleSetSoundOrMusic         ; B5F4 20 B1 CF                  ..
         jsr     L8967                           ; B5F7 20 67 89                  g.
         lda     #$01                            ; B5FA A9 01                    ..
 LB5FC:
@@ -7382,7 +7382,7 @@ LCF95:
         rts                                     ; CFB0 60                       `
 
 ; ----------------------------------------------------------------------------
-LCFB1:
+possibleSetSoundOrMusic:
         ldy     $0209                           ; CFB1 AC 09 02                 ...
         iny                                     ; CFB4 C8                       .
         cpy     #$08                            ; CFB5 C0 08                    ..

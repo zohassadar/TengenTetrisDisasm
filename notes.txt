@@ -23,12 +23,15 @@ c028 - game nametable??
 
 gameStatePossible:
 
-00 playing
-01 paused
-FB Line clearing??
-
-FC - ??
 F9 - ??
+FA - title screen
+FB is not line clearing (why did I think that?)
+FC - gameTypeMenu
+FD - levelSelectMenu
+FE - handicapSelect
+FF - musicSelect
+00 - playing
+01 - paused
 
 
 

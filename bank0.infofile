@@ -172,6 +172,10 @@ LABEL { ADDR $9b36; NAME "possibleFallTimerTable"; };
 
 LABEL { ADDR $9f51; NAME "playModeTable"; COMMENT "1p, 2p, coop, vs comp, with comp"; };
 
+LABEL { ADDR $A02C; NAME "@branchOnModeGameTypeMenu"; };
+LABEL { ADDR $A02F; NAME "@branchOnModeLevelMenu"; };
+LABEL { ADDR $A032; NAME "@branchOnModeHandicapMenu"; };
+
 LABEL { ADDR $a043; NAME "musicSelectTable"; };
 
 LABEL { ADDR $a19b; NAME "ppuPatchGameSelect"; };
@@ -266,6 +270,7 @@ LABEL { ADDR $b3a0; NAME "cathedralSpriteTabel"; SIZE $48; };
 LABEL { ADDR $ca00; NAME "possibleTitleScreenNametable"; SIZE $3c0; };
 LABEL { ADDR $cdc0; NAME "dataPastPossibleTitle"; };
 
+LABEL { ADDR $cfb1; NAME "possibleSetSoundOrMusic"; };
 
 LABEL { ADDR $d010; NAME "possibleJumpTable"; SIZE $1a; };
 
