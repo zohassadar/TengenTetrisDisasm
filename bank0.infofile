@@ -187,6 +187,7 @@ LABEL { ADDR $99f7; NAME "genNextPseudoRandom2x"; };
 LABEL { ADDR $99fa; NAME "genNextPseudoRandom"; };
 
 LABEL { ADDR $9b36; NAME "possibleFallTimerTable"; };
+LABEL { ADDR $97C1; NAME "initializePlayfields"; };
 
 LABEL { ADDR $9f51; NAME "playModeTable"; COMMENT "1p, 2p, coop, vs comp, with comp"; };
 
@@ -306,6 +307,10 @@ LABEL { ADDR $d846; NAME "setupMusicTrack"; };
 
 LABEL { ADDR $dd1e; NAME "apuRegistersLow"; };
 LABEL { ADDR $dd22; NAME "apuRegistersHigh"; };
+
+LABEL { ADDR $FFF6; NAME "cnromBank2or3"; SIZE $2; };
+
+LABEL { ADDR $FFF8; NAME "unknownData02"; SIZE $2; };
 
 SEGMENT { NAME "VECTORS"; START $FFFA; END $FFFF; };
 

@@ -93,3 +93,11 @@ L9997 - line clear stat columns
 ****
 
 L95C6 - probably start of demo
+L95E3 - start of game?
+L8565 - plant pieces in playfield
+
+
+
+playfield is stored with 1 tile per nibble.  nibble aligns with tile index.  0 is clear.  
+walls are built with F0 on left, 0F on right
+Floor is built with FF

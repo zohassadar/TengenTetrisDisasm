@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-05 15:03:07
+; Created:    2023-06-05 15:54:34
 ; Input file: clean.nes
 ; Page:       1
 
@@ -3321,7 +3321,7 @@ L9697:
         sta     $5D                             ; 96A1 85 5D                    .]
         sta     $5F                             ; 96A3 85 5F                    ._
         sta     $5B                             ; 96A5 85 5B                    .[
-        jsr     L97C1                           ; 96A7 20 C1 97                  ..
+        jsr     initializePlayfields            ; 96A7 20 C1 97                  ..
         lda     gameStatePossible               ; 96AA A5 29                    .)
         bne     L96B7                           ; 96AC D0 09                    ..
         lda     playMode                        ; 96AE A5 2F                    ./
@@ -3413,7 +3413,7 @@ L9744:
         .byte   $A7,$A5,$37,$48,$18,$69,$05,$20 ; 97B4 A7 A5 37 48 18 69 05 20  ..7H.i. 
         .byte   $03,$B6,$68,$D0,$43             ; 97BC 03 B6 68 D0 43           ..h.C
 ; ----------------------------------------------------------------------------
-L97C1:
+initializePlayfields:
         ldx     #$00                            ; 97C1 A2 00                    ..
 L97C3:
         lda     #$FF                            ; 97C3 A9 FF                    ..
@@ -5275,7 +5275,7 @@ LA7D0:
         lsr     a                               ; A7E7 4A                       J
         tax                                     ; A7E8 AA                       .
         ora     #$02                            ; A7E9 09 02                    ..
-        sta     LFFF6,x                         ; A7EB 9D F6 FF                 ...
+        sta     cnromBank2or3,x                 ; A7EB 9D F6 FF                 ...
         ldx     PPUSTATUS                       ; A7EE AE 02 20                 .. 
         lda     ppuScrollX                      ; A7F1 A5 02                    ..
         sta     PPUSCROLL                       ; A7F3 8D 05 20                 .. 
@@ -10136,8 +10136,10 @@ LE032:
         .byte   $00,$00,$00,$00,$00,$00,$00,$00 ; FFE2 00 00 00 00 00 00 00 00  ........
         .byte   $00,$00,$00,$00,$00,$00,$00,$00 ; FFEA 00 00 00 00 00 00 00 00  ........
         .byte   $00,$00,$00,$00                 ; FFF2 00 00 00 00              ....
-LFFF6:
-        .byte   $02,$03,$11,$A9                 ; FFF6 02 03 11 A9              ....
+cnromBank2or3:
+        .byte   $02,$03                         ; FFF6 02 03                    ..
+unknownData02:
+        .byte   $11,$A9                         ; FFF8 11 A9                    ..
 ; ----------------------------------------------------------------------------
 
 .segment        "VECTORS": absolute
