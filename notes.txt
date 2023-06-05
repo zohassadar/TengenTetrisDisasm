@@ -56,5 +56,21 @@ FF - musicSelect
 0e 0f - bytes with address related to data related to nametable or attr
 
 
+*****
+
+mesen tracelog exclude loop:
+
+(pc < $800a || pc > $8015) && (pc < $99ee || pc > $9a15 )
+
+
+****
+
+LA0AB - table with PPU addresses
+
+
+L855C/L855F - tables with low/high bytes of top left corner of player1, player2 & coop
+
+
+
 
 
