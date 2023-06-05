@@ -35,7 +35,6 @@ LABEL { ADDR $0061; NAME "player2TetriminoY"; };
 LABEL { ADDR $0062; NAME "player1TetriminoX"; };
 LABEL { ADDR $0063; NAME "player2TetriminoX"; };
 
-
 LABEL { ADDR $0064; NAME "player1TetriminoCurrent"; };     
 LABEL { ADDR $0065; NAME "player2TetriminoCurrent"; };     
 LABEL { ADDR $0066; NAME "player1TetriminoNext"; };        
@@ -51,7 +50,6 @@ LABEL { ADDR $0500; NAME "oamStaging"; SIZE $100; };
 LABEL { ADDR $0600; NAME "player1Playfield"; SIZE $DF; }; 
 LABEL { ADDR $0700; NAME "player2Playfield"; SIZE $DF; }; 
 
-
 LABEL { ADDR $0424; NAME "player1LinesThousands"; };
 LABEL { ADDR $0425; NAME "player1LinesHundreds"; };
 LABEL { ADDR $0426; NAME "player1LinesTens"; };
@@ -65,7 +63,6 @@ LABEL { ADDR $042c; NAME "player1LevelTens"; };
 LABEL { ADDR $042d; NAME "player1LevelOnes"; };
 LABEL { ADDR $042e; NAME "player2LevelTens"; };
 LABEL { ADDR $042f; NAME "player2LevelOnes"; };
-
 
 LABEL { ADDR $0418; NAME "player1ScoreHundredThousands"; };
 LABEL { ADDR $0419; NAME "player1ScoreTenThousands"; };
@@ -81,7 +78,6 @@ LABEL { ADDR $0421; NAME "player2ScoreHundreds"; };
 LABEL { ADDR $0422; NAME "player2ScoreTens"; };
 LABEL { ADDR $0423; NAME "player2ScoreOnes"; };
 
-
 LABEL { ADDR $043c; NAME "highScoreHundredThousands"; }; 
 LABEL { ADDR $043d; NAME "highScoreTenThousands"; }; 
 LABEL { ADDR $043e; NAME "highScoreThousands"; }; 
@@ -89,16 +85,12 @@ LABEL { ADDR $043f; NAME "highScoreHundreds"; };
 LABEL { ADDR $0440; NAME "highScoreTens"; }; 
 LABEL { ADDR $0441; NAME "highScoreOnes"; }; 
 
-
-
-
 LABEL { ADDR $04f0; NAME "menuGameMode"; };
 LABEL { ADDR $04f1; NAME "menuPlayer1StartLevel"; };
 LABEL { ADDR $04f2; NAME "menuPlayer2StartLevel"; };
 LABEL { ADDR $04f3; NAME "menuPlayer1Handicap"; };
 LABEL { ADDR $04f4; NAME "menuPlayer2Handicap"; };
 LABEL { ADDR $04f5; NAME "menuMusic"; };
-
 
 LABEL { ADDR $2000; NAME "PPUCTRL"; };
 LABEL { ADDR $2001; NAME "PPUMASK"; };
@@ -109,30 +101,31 @@ LABEL { ADDR $2005; NAME "PPUSCROLL"; };
 LABEL { ADDR $2006; NAME "PPUADDR"; };
 LABEL { ADDR $2007; NAME "PPUDATA"; };
 
-#LABEL { ADDR $4000; NAME "SQ1_VOL"; };
-#LABEL { ADDR $4001; NAME "SQ1_SWEEP"; };
-#LABEL { ADDR $4002; NAME "SQ1_LO"; };
-#LABEL { ADDR $4003; NAME "SQ1_HI"; };
-#LABEL { ADDR $4004; NAME "SQ2_VOL"; };
-#LABEL { ADDR $4005; NAME "SQ2_SWEEP"; };
-#LABEL { ADDR $4006; NAME "SQ2_LO"; };
-#LABEL { ADDR $4007; NAME "SQ2_HI"; };
-#LABEL { ADDR $4008; NAME "TRI_LINEAR"; };
-#
-## $4009 is unused
-#
-#LABEL { ADDR $400A; NAME "TRI_LO"; };
-#LABEL { ADDR $400B; NAME "TRI_HI"; };
-#LABEL { ADDR $400C; NAME "NOISE_VOL"; };
-#
-## $400D is unused
-#
-#LABEL { ADDR $400E; NAME "NOISE_LO"; };
-#LABEL { ADDR $400F; NAME "NOISE_HI"; };
-#LABEL { ADDR $4010; NAME "DMC_FREQ"; };
-#LABEL { ADDR $4011; NAME "DMC_RAW"; };
-#LABEL { ADDR $4012; NAME "DMC_START"; COMMENT "start << 6 + $C000"; };
-#LABEL { ADDR $4013; NAME "DMC_LEN"; COMMENT "len << 4 + 1 "; };
+LABEL { ADDR $4000; NAME "SQ1_VOL"; };
+LABEL { ADDR $4001; NAME "SQ1_SWEEP"; };
+LABEL { ADDR $4002; NAME "SQ1_LO"; };
+LABEL { ADDR $4003; NAME "SQ1_HI"; };
+LABEL { ADDR $4004; NAME "SQ2_VOL"; };
+LABEL { ADDR $4005; NAME "SQ2_SWEEP"; };
+LABEL { ADDR $4006; NAME "SQ2_LO"; };
+LABEL { ADDR $4007; NAME "SQ2_HI"; };
+LABEL { ADDR $4008; NAME "TRI_LINEAR"; };
+
+# $4009 is unused
+
+LABEL { ADDR $400A; NAME "TRI_LO"; };
+LABEL { ADDR $400B; NAME "TRI_HI"; };
+LABEL { ADDR $400C; NAME "NOISE_VOL"; };
+
+# $400D is unused
+
+LABEL { ADDR $400E; NAME "NOISE_LO"; };
+LABEL { ADDR $400F; NAME "NOISE_HI"; };
+LABEL { ADDR $4010; NAME "DMC_FREQ"; };
+LABEL { ADDR $4011; NAME "DMC_RAW"; };
+LABEL { ADDR $4012; NAME "DMC_START"; COMMENT "start << 6 + $C000"; };
+LABEL { ADDR $4013; NAME "DMC_LEN"; COMMENT "len << 4 + 1 "; };
+
 LABEL { ADDR $4014; NAME "OAMDMA"; };
 LABEL { ADDR $4015; NAME "SND_CHN"; };
 
@@ -284,8 +277,6 @@ LABEL { ADDR $d846; NAME "setupMusicTrack"; };
 
 LABEL { ADDR $dd1e; NAME "apuRegistersLow"; };
 LABEL { ADDR $dd22; NAME "apuRegistersHigh"; };
-
-
 
 SEGMENT { NAME "VECTORS"; START $FFFA; END $FFFF; };
 
