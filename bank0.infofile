@@ -159,6 +159,19 @@ LABEL { ADDR $80F3; NAME "@DownLeftRight"; };
 
 LABEL { ADDR $8562; NAME "playfieldIdPossible"; };
 
+LABEL { ADDR $8a2b; NAME "lineClearSingle"; SIZE $A; };
+LABEL { ADDR $8a35; NAME "twoSpacesAfterSingle"; SIZE $2; };
+
+LABEL { ADDR $8a37; NAME "lineClearDouble"; SIZE $A; };
+LABEL { ADDR $8a41; NAME "twoSpacesAfterDouble"; SIZE $2; };
+
+LABEL { ADDR $8a43; NAME "lineClearTriple"; SIZE $A; };
+LABEL { ADDR $8a4d; NAME "twoSpacesAfterTriple"; SIZE $2; };
+
+LABEL { ADDR $8a4f; NAME "lineClearTetris"; SIZE $A; };
+LABEL { ADDR $8a59; NAME "twoSpacesAfterTetris"; SIZE $2; };
+
+
 LABEL { ADDR $984c; NAME "initHandicapGarbage";  };
 
 LABEL { ADDR $9929; NAME "getNextTetrimino"; };
