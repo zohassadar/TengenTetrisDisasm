@@ -8,6 +8,13 @@ GLOBAL {
   LABELBREAK $1; 
 };
 
+LABEL { ADDR $0008; NAME "ppuDataAddress1"; SIZE $2; };
+LABEL { ADDR $000A; NAME "ppuDataAddress2"; SIZE $2; };
+LABEL { ADDR $000C; NAME "ppuDataAddress3"; SIZE $2; };
+LABEL { ADDR $000E; NAME "ppuDataAddress4"; SIZE $2; };
+LABEL { ADDR $0010; NAME "ppuDataAddress5"; SIZE $2; };
+LABEL { ADDR $0012; NAME "ppuDataAddress6"; SIZE $2; };
+LABEL { ADDR $0014; NAME "ppuDataAddress7"; SIZE $2; };
 
 LABEL { ADDR $0029; NAME "gameStatePossible"; };
 

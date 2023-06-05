@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-05 09:43:47
+; Created:    2023-06-05 10:26:22
 ; Input file: clean.nes
 ; Page:       1
 
@@ -7,6 +7,13 @@
         .setcpu "6502"
 
 ; ----------------------------------------------------------------------------
+ppuDataAddress1 := $0008
+ppuDataAddress2 := $000A
+ppuDataAddress3 := $000C
+ppuDataAddress4 := $000E
+ppuDataAddress5 := $0010
+ppuDataAddress6 := $0012
+ppuDataAddress7 := $0014
 gameStatePossible:= $0029
 frameCounterLowLastFrame:= $002B
 playMode        := $002F                        ; FF: Coop, 00: 1p, 01: 2p
@@ -81,6 +88,24 @@ OAMDATA         := $2004
 PPUSCROLL       := $2005
 PPUADDR         := $2006
 PPUDATA         := $2007
+SQ1_VOL         := $4000
+SQ1_SWEEP       := $4001
+SQ1_LO          := $4002
+SQ1_HI          := $4003
+SQ2_VOL         := $4004
+SQ2_SWEEP       := $4005
+SQ2_LO          := $4006
+SQ2_HI          := $4007
+TRI_LINEAR      := $4008
+TRI_LO          := $400A
+TRI_HI          := $400B
+NOISE_VOL       := $400C
+NOISE_LO        := $400E
+NOISE_HI        := $400F
+DMC_FREQ        := $4010
+DMC_RAW         := $4011
+DMC_START       := $4012                        ; start << 6 + $C000
+DMC_LEN         := $4013                        ; len << 4 + 1 
 OAMDMA          := $4014
 SND_CHN         := $4015
 player1controllerPort:= $4016
@@ -736,9 +761,9 @@ L8467:
         tay                                     ; 8472 A8                       .
         ldx     $3A                             ; 8473 A6 3A                    .:
         lda     $48                             ; 8475 A5 48                    .H
-        sta     $08,x                           ; 8477 95 08                    ..
+        sta     ppuDataAddress1,x               ; 8477 95 08                    ..
         lda     $49                             ; 8479 A5 49                    .I
-        sta     $09,x                           ; 847B 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; 847B 95 09                    ..
         lda     $38                             ; 847D A5 38                    .8
         and     #$07                            ; 847F 29 07                    ).
         clc                                     ; 8481 18                       .
@@ -1523,10 +1548,10 @@ L89E9:
         pla                                     ; 89FB 68                       h
         clc                                     ; 89FC 18                       .
         adc     #$1F                            ; 89FD 69 1F                    i.
-        sta     $08,x                           ; 89FF 95 08                    ..
+        sta     ppuDataAddress1,x               ; 89FF 95 08                    ..
         lda     #$8A                            ; 8A01 A9 8A                    ..
         adc     #$00                            ; 8A03 69 00                    i.
-        sta     $09,x                           ; 8A05 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; 8A05 95 09                    ..
         lda     #$08                            ; 8A07 A9 08                    ..
         sta     $17,x                           ; 8A09 95 17                    ..
         lda     oamStaging,y                    ; 8A0B B9 00 05                 ...
@@ -1666,9 +1691,9 @@ L8B0E:
         sty     $39                             ; 8B15 84 39                    .9
         jsr     L849D                           ; 8B17 20 9D 84                  ..
         lda     $48                             ; 8B1A A5 48                    .H
-        sta     $08,x                           ; 8B1C 95 08                    ..
+        sta     ppuDataAddress1,x               ; 8B1C 95 08                    ..
         lda     $49                             ; 8B1E A5 49                    .I
-        sta     $09,x                           ; 8B20 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; 8B20 95 09                    ..
         lda     $ED                             ; 8B22 A5 ED                    ..
         sta     $16,x                           ; 8B24 95 16                    ..
         lda     $EE                             ; 8B26 A5 EE                    ..
@@ -2320,10 +2345,10 @@ L8FC3:
         lda     $3C                             ; 8FD1 A5 3C                    .<
         clc                                     ; 8FD3 18                       .
         adc     #$90                            ; 8FD4 69 90                    i.
-        sta     $08,x                           ; 8FD6 95 08                    ..
+        sta     ppuDataAddress1,x               ; 8FD6 95 08                    ..
         lda     #$01                            ; 8FD8 A9 01                    ..
         adc     #$00                            ; 8FDA 69 00                    i.
-        sta     $09,x                           ; 8FDC 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; 8FDC 95 09                    ..
         lda     #$04                            ; 8FDE A9 04                    ..
         sta     $24,x                           ; 8FE0 95 24                    .$
         ldx     $3D                             ; 8FE2 A6 3D                    .=
@@ -2347,10 +2372,10 @@ L8FF4:
         asl     a                               ; 9004 0A                       .
         asl     a                               ; 9005 0A                       .
         adc     #$88                            ; 9006 69 88                    i.
-        sta     $08,x                           ; 9008 95 08                    ..
+        sta     ppuDataAddress1,x               ; 9008 95 08                    ..
         lda     #$01                            ; 900A A9 01                    ..
         adc     #$00                            ; 900C 69 00                    i.
-        sta     $09,x                           ; 900E 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; 900E 95 09                    ..
         lda     #$04                            ; 9010 A9 04                    ..
         sta     $24,x                           ; 9012 95 24                    .$
 L9014:
@@ -2561,9 +2586,9 @@ L9188:
         inc     $37                             ; 919C E6 37                    .7
 L919E:
         lda     $49                             ; 919E A5 49                    .I
-        sta     $09,x                           ; 91A0 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; 91A0 95 09                    ..
         lda     $48                             ; 91A2 A5 48                    .H
-        sta     $08,x                           ; 91A4 95 08                    ..
+        sta     ppuDataAddress1,x               ; 91A4 95 08                    ..
         ldy     $38                             ; 91A6 A4 38                    .8
         lda     $6C,y                           ; 91A8 B9 6C 00                 .l.
         ldy     #$00                            ; 91AB A0 00                    ..
@@ -2799,10 +2824,10 @@ L92FD:
         and     #$3F                            ; 930D 29 3F                    )?
         clc                                     ; 930F 18                       .
         adc     #$DC                            ; 9310 69 DC                    i.
-        sta     $08,x                           ; 9312 95 08                    ..
+        sta     ppuDataAddress1,x               ; 9312 95 08                    ..
         lda     #$93                            ; 9314 A9 93                    ..
         adc     #$00                            ; 9316 69 00                    i.
-        sta     $09,x                           ; 9318 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; 9318 95 09                    ..
         lda     #$01                            ; 931A A9 01                    ..
         sta     $24,x                           ; 931C 95 24                    .$
         ldx     $38                             ; 931E A6 38                    .8
@@ -3665,9 +3690,9 @@ L9997:
         sta     $36                             ; 99A6 85 36                    .6
         jsr     LA3DB                           ; 99A8 20 DB A3                  ..
         lda     $48                             ; 99AB A5 48                    .H
-        sta     $08,x                           ; 99AD 95 08                    ..
+        sta     ppuDataAddress1,x               ; 99AD 95 08                    ..
         lda     $49                             ; 99AF A5 49                    .I
-        sta     $09,x                           ; 99B1 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; 99B1 95 09                    ..
         lda     $36                             ; 99B3 A5 36                    .6
         sta     ($48),y                         ; 99B5 91 48                    .H
         inc     $48                             ; 99B7 E6 48                    .H
@@ -3926,10 +3951,10 @@ L9B64:
         tay                                     ; 9B70 A8                       .
         jsr     LA3DB                           ; 9B71 20 DB A3                  ..
         lda     L9BDC,y                         ; 9B74 B9 DC 9B                 ...
-        sta     $08,x                           ; 9B77 95 08                    ..
+        sta     ppuDataAddress1,x               ; 9B77 95 08                    ..
         sta     $36                             ; 9B79 85 36                    .6
         lda     L9BDD,y                         ; 9B7B B9 DD 9B                 ...
-        sta     $09,x                           ; 9B7E 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; 9B7E 95 09                    ..
         sta     $37                             ; 9B80 85 37                    .7
         bit     playMode                        ; 9B82 24 2F                    $/
         bpl     L9B96                           ; 9B84 10 10                    ..
@@ -3955,7 +3980,7 @@ L9BAB:
         lda     ($36),y                         ; 9BAB B1 36                    .6
         cmp     #$30                            ; 9BAD C9 30                    .0
         bne     L9BCB                           ; 9BAF D0 1A                    ..
-        inc     $08,x                           ; 9BB1 F6 08                    ..
+        inc     ppuDataAddress1,x               ; 9BB1 F6 08                    ..
         lda     $3A                             ; 9BB3 A5 3A                    .:
         cmp     #$0E                            ; 9BB5 C9 0E                    ..
         beq     L9BC2                           ; 9BB7 F0 09                    ..
@@ -4658,9 +4683,9 @@ LA090:
         ldy     #$00                            ; A090 A0 00                    ..
         sta     ($48),y                         ; A092 91 48                    .H
         lda     $48                             ; A094 A5 48                    .H
-        sta     $08,x                           ; A096 95 08                    ..
+        sta     ppuDataAddress1,x               ; A096 95 08                    ..
         lda     $49                             ; A098 A5 49                    .I
-        sta     $09,x                           ; A09A 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; A09A 95 09                    ..
         inc     $48                             ; A09C E6 48                    .H
         lda     #$01                            ; A09E A9 01                    ..
         sta     $24,x                           ; A0A0 95 24                    .$
@@ -5130,10 +5155,10 @@ LA6BE:
         asl     a                               ; A6CE 0A                       .
         asl     a                               ; A6CF 0A                       .
         adc     #$E6                            ; A6D0 69 E6                    i.
-        sta     $08,x                           ; A6D2 95 08                    ..
+        sta     ppuDataAddress1,x               ; A6D2 95 08                    ..
         lda     #$00                            ; A6D4 A9 00                    ..
         adc     #$A6                            ; A6D6 69 A6                    i.
-        sta     $09,x                           ; A6D8 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; A6D8 95 09                    ..
         lda     #$10                            ; A6DA A9 10                    ..
         sta     $24,x                           ; A6DC 95 24                    .$
         rts                                     ; A6DE 60                       `
@@ -5183,10 +5208,10 @@ LA768:
         asl     a                               ; A776 0A                       .
         adc     $36                             ; A777 65 36                    e6
         adc     #$88                            ; A779 69 88                    i.
-        sta     $08,x                           ; A77B 95 08                    ..
+        sta     ppuDataAddress1,x               ; A77B 95 08                    ..
         lda     #$A7                            ; A77D A9 A7                    ..
         adc     #$00                            ; A77F 69 00                    i.
-        sta     $09,x                           ; A781 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; A781 95 09                    ..
         lda     #$03                            ; A783 A9 03                    ..
         sta     $24,x                           ; A785 95 24                    .$
         rts                                     ; A787 60                       `
@@ -5275,7 +5300,7 @@ LA820:
         lda     $16                             ; A82A A5 16                    ..
         sta     PPUADDR                         ; A82C 8D 06 20                 .. 
 LA82F:
-        lda     ($08),y                         ; A82F B1 08                    ..
+        lda     (ppuDataAddress1),y             ; A82F B1 08                    ..
         sta     PPUDATA                         ; A831 8D 07 20                 .. 
         iny                                     ; A834 C8                       .
         dex                                     ; A835 CA                       .
@@ -5296,7 +5321,7 @@ LA841:
         lda     $18                             ; A84B A5 18                    ..
         sta     PPUADDR                         ; A84D 8D 06 20                 .. 
 LA850:
-        lda     ($0A),y                         ; A850 B1 0A                    ..
+        lda     (ppuDataAddress2),y             ; A850 B1 0A                    ..
         sta     PPUDATA                         ; A852 8D 07 20                 .. 
         iny                                     ; A855 C8                       .
         dex                                     ; A856 CA                       .
@@ -5317,7 +5342,7 @@ LA862:
         lda     $1A                             ; A86C A5 1A                    ..
         sta     PPUADDR                         ; A86E 8D 06 20                 .. 
 LA871:
-        lda     ($0C),y                         ; A871 B1 0C                    ..
+        lda     (ppuDataAddress3),y             ; A871 B1 0C                    ..
         sta     PPUDATA                         ; A873 8D 07 20                 .. 
         iny                                     ; A876 C8                       .
         dex                                     ; A877 CA                       .
@@ -5338,7 +5363,7 @@ LA883:
         lda     $1C                             ; A88D A5 1C                    ..
         sta     PPUADDR                         ; A88F 8D 06 20                 .. 
 LA892:
-        lda     ($0E),y                         ; A892 B1 0E                    ..
+        lda     (ppuDataAddress4),y             ; A892 B1 0E                    ..
         sta     PPUDATA                         ; A894 8D 07 20                 .. 
         iny                                     ; A897 C8                       .
         dex                                     ; A898 CA                       .
@@ -5359,7 +5384,7 @@ LA8A4:
         lda     $1E                             ; A8AE A5 1E                    ..
         sta     PPUADDR                         ; A8B0 8D 06 20                 .. 
 LA8B3:
-        lda     ($10),y                         ; A8B3 B1 10                    ..
+        lda     (ppuDataAddress5),y             ; A8B3 B1 10                    ..
         sta     PPUDATA                         ; A8B5 8D 07 20                 .. 
         iny                                     ; A8B8 C8                       .
         dex                                     ; A8B9 CA                       .
@@ -5380,7 +5405,7 @@ LA8C5:
         lda     $20                             ; A8CF A5 20                    . 
         sta     PPUADDR                         ; A8D1 8D 06 20                 .. 
 LA8D4:
-        lda     ($12),y                         ; A8D4 B1 12                    ..
+        lda     (ppuDataAddress6),y             ; A8D4 B1 12                    ..
         sta     PPUDATA                         ; A8D6 8D 07 20                 .. 
         iny                                     ; A8D9 C8                       .
         dex                                     ; A8DA CA                       .
@@ -5401,7 +5426,7 @@ LA8E6:
         lda     $22                             ; A8F0 A5 22                    ."
         sta     PPUADDR                         ; A8F2 8D 06 20                 .. 
 LA8F5:
-        lda     ($14),y                         ; A8F5 B1 14                    ..
+        lda     (ppuDataAddress7),y             ; A8F5 B1 14                    ..
         sta     PPUDATA                         ; A8F7 8D 07 20                 .. 
         iny                                     ; A8FA C8                       .
         dex                                     ; A8FB CA                       .
@@ -6511,9 +6536,9 @@ LB622:
         lda     $39                             ; B629 A5 39                    .9
         sta     $17,x                           ; B62B 95 17                    ..
         lda     $3A                             ; B62D A5 3A                    .:
-        sta     $08,x                           ; B62F 95 08                    ..
+        sta     ppuDataAddress1,x               ; B62F 95 08                    ..
         lda     $3B                             ; B631 A5 3B                    .;
-        sta     $09,x                           ; B633 95 09                    ..
+        sta     ppuDataAddress1+1,x             ; B633 95 09                    ..
         lda     $36                             ; B635 A5 36                    .6
         and     #$7F                            ; B637 29 7F                    ).
         sta     $24,x                           ; B639 95 24                    .$

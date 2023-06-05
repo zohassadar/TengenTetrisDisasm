@@ -7,20 +7,15 @@
 .res 1 ; $0005
 .res 1 ; $0006
 .res 1 ; $0007
-.res 1 ; $0008
-.res 1 ; $0009
-.res 1 ; $000a
-.res 1 ; $000b
-.res 1 ; $000c
-.res 1 ; $000d
-.res 1 ; $000e
-.res 1 ; $000f
-.res 1 ; $0010
-.res 1 ; $0011
-.res 1 ; $0012
-.res 1 ; $0013
-.res 1 ; $0014
-.res 1 ; $0015
+
+ppuDataAddress1: .res 2 ; $0008
+ppuDataAddress2: .res 2 ; $000a
+ppuDataAddress3: .res 2 ; $000c
+ppuDataAddress4: .res 2 ; $000e
+ppuDataAddress5: .res 2 ; $0010
+ppuDataAddress6: .res 2 ; $0012
+ppuDataAddress7: .res 2 ; $0014
+
 .res 1 ; $0016
 .res 1 ; $0017
 .res 1 ; $0018

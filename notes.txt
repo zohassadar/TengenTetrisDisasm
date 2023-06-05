@@ -41,14 +41,12 @@ FF - musicSelect
 8A2B - table with single/double/triple/tetris for line clears
 
 0a 0b - bytes with table address related to line clears
-
 18 19 - bytes with ppu address related to line clears
 
 
 *****************
 
 0c 0d - bytes with address related to data related to drawing row
-
 1a 1b - bytes with ppu address related to drawing row
 
 ****************************
