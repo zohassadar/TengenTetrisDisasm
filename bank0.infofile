@@ -139,139 +139,140 @@ LABEL { ADDR $4015; NAME "SND_CHN"; };
 LABEL { ADDR $4016; NAME "player1controllerPort"; };
 LABEL { ADDR $4017; NAME "player2controllerPort"; };
 
-LABEL { NAME "mainLoop"; ADDR $800a; };
+LABEL { ADDR $800a; NAME "mainLoop"; };
 
-LABEL { NAME "@allButtonsExceptDown"; ADDR $8052; };
-LABEL { NAME "@player1Active"; ADDR $805F; };
-LABEL { NAME "@ret"; ADDR $8063; };
-LABEL { NAME "doSomethingWithInputDuringGameplay"; ADDR $8064; };
+LABEL { ADDR $8052; NAME "@allButtonsExceptDown"; };
+LABEL { ADDR $805F; NAME "@player1Active"; };
+LABEL { ADDR $8063; NAME "@ret"; };
+LABEL { ADDR $8064; NAME "doSomethingWithInputDuringGameplay"; };
 
-LABEL { NAME "@LeftAndRight"; ADDR $8065; };
+LABEL { ADDR $8065; NAME "@LeftAndRight"; };
 
-LABEL { NAME "@CheckForDown"; ADDR $806B; };
-LABEL { NAME "@LeftAndDown"; ADDR $8077; };
-LABEL { NAME "@LeftNotPressed"; ADDR $8092; };
-LABEL { NAME "@RightAndDown"; ADDR $8099; };
-LABEL { NAME "@RightNotPressed"; ADDR $80B4; };
-LABEL { NAME "@BNotPressed"; ADDR $80D0; };
-LABEL { NAME "@ANotPressed"; ADDR $80EC; };
-LABEL { NAME "@DownLeftRight"; ADDR $80F3; };
+LABEL { ADDR $806B; NAME "@CheckForDown"; };
+LABEL { ADDR $8077; NAME "@LeftAndDown"; };
+LABEL { ADDR $8092; NAME "@LeftNotPressed"; };
+LABEL { ADDR $8099; NAME "@RightAndDown"; };
+LABEL { ADDR $80B4; NAME "@RightNotPressed"; };
+LABEL { ADDR $80D0; NAME "@BNotPressed"; };
+LABEL { ADDR $80EC; NAME "@ANotPressed"; };
+LABEL { ADDR $80F3; NAME "@DownLeftRight"; };
 
-LABEL { NAME "playfieldIdPossible"; ADDR $8562; };
+LABEL { ADDR $8562; NAME "playfieldIdPossible"; };
 
-LABEL { NAME "initHandicapGarbage"; ADDR $984c;  };
+LABEL { ADDR $984c; NAME "initHandicapGarbage";  };
 
-LABEL { NAME "getNextTetrimino"; ADDR $9929; };
+LABEL { ADDR $9929; NAME "getNextTetrimino"; };
 
-LABEL { NAME "genNextPseudoRandom5x"; ADDR $99ee; };
-LABEL { NAME "genNextPseudoRandom3x"; ADDR $99f4; };
-LABEL { NAME "genNextPseudoRandom2x"; ADDR $99f7; };
-LABEL { NAME "genNextPseudoRandom"; ADDR $99fa; };
+LABEL { ADDR $99ee; NAME "genNextPseudoRandom5x"; };
+LABEL { ADDR $99f4; NAME "genNextPseudoRandom3x"; };
+LABEL { ADDR $99f7; NAME "genNextPseudoRandom2x"; };
+LABEL { ADDR $99fa; NAME "genNextPseudoRandom"; };
 
-LABEL { NAME "possibleFallTimerTable"; ADDR $9b36; };
+LABEL { ADDR $9b36; NAME "possibleFallTimerTable"; };
 
-LABEL { NAME "playModeTable"; ADDR $9f51; COMMENT "1p, 2p, coop, vs comp, with comp"; };
+LABEL { ADDR $9f51; NAME "playModeTable"; COMMENT "1p, 2p, coop, vs comp, with comp"; };
 
-LABEL { NAME "musicSelectTable"; ADDR $a043; };
+LABEL { ADDR $a043; NAME "musicSelectTable"; };
 
-LABEL { NAME "ppuPatchGameSelect"; ADDR $a19b; };
-LABEL { NAME "ppuPatch1Player"; ADDR $a1a9; };
-LABEL { NAME "ppuPatch2Player"; ADDR $a1b4; };
-LABEL { NAME "ppuPatchCooperative"; ADDR $a1bf; };
-LABEL { NAME "ppuPatchVsComputer"; ADDR $a1cd; };
-LABEL { NAME "ppuPatchWithComputer"; ADDR $a1df; };
-LABEL { NAME "ppuPatchLicensedBy"; ADDR $a1ef; };
+LABEL { ADDR $a19b; NAME "ppuPatchGameSelect"; };
+LABEL { ADDR $a1a9; NAME "ppuPatch1Player"; };
+LABEL { ADDR $a1b4; NAME "ppuPatch2Player"; };
+LABEL { ADDR $a1bf; NAME "ppuPatchCooperative"; };
+LABEL { ADDR $a1cd; NAME "ppuPatchVsComputer"; };
+LABEL { ADDR $a1df; NAME "ppuPatchWithComputer"; };
+LABEL { ADDR $a1ef; NAME "ppuPatchLicensedBy"; };
 
-LABEL { NAME "ppuPatchLevelSelectZero"; ADDR $a20d; };
-LABEL { NAME "ppuPatchLevelSelect"; ADDR $a20e; };
-LABEL { NAME "ppuPatchNumber0"; ADDR $a21d; };
-LABEL { NAME "ppuPatchNumber1"; ADDR $a221; };
-LABEL { NAME "ppuPatchNumber2"; ADDR $a225; };
-LABEL { NAME "ppuPatchNumber3"; ADDR $a229; };
-LABEL { NAME "ppuPatchNumber4"; ADDR $a22d; };
-LABEL { NAME "ppuPatchNumber5"; ADDR $a231; };
-LABEL { NAME "ppuPatchNumber6"; ADDR $a235; };
-LABEL { NAME "ppuPatchNumber7"; ADDR $a239; };
-LABEL { NAME "ppuPatchNumber8"; ADDR $a23d; };
-LABEL { NAME "ppuPatchNumber9"; ADDR $a241; };
-LABEL { NAME "ppuPatchConceptBy"; ADDR $a245; };
-LABEL { NAME "ppuPatchDesignBy"; ADDR $a263; };
+LABEL { ADDR $a20d; NAME "ppuPatchLevelSelectZero"; };
+LABEL { ADDR $a20e; NAME "ppuPatchLevelSelect"; };
+LABEL { ADDR $a21d; NAME "ppuPatchNumber0"; };
+LABEL { ADDR $a221; NAME "ppuPatchNumber1"; };
+LABEL { ADDR $a225; NAME "ppuPatchNumber2"; };
+LABEL { ADDR $a229; NAME "ppuPatchNumber3"; };
+LABEL { ADDR $a22d; NAME "ppuPatchNumber4"; };
+LABEL { ADDR $a231; NAME "ppuPatchNumber5"; };
+LABEL { ADDR $a235; NAME "ppuPatchNumber6"; };
+LABEL { ADDR $a239; NAME "ppuPatchNumber7"; };
+LABEL { ADDR $a23d; NAME "ppuPatchNumber8"; };
+LABEL { ADDR $a241; NAME "ppuPatchNumber9"; };
+LABEL { ADDR $a245; NAME "ppuPatchConceptBy"; };
+LABEL { ADDR $a263; NAME "ppuPatchDesignBy"; };
 
-LABEL { NAME "ppuPatchHandicapZero"; ADDR $a27f; };
-LABEL { NAME "ppuPatchHandicap"; ADDR $a280; };
+LABEL { ADDR $a27f; NAME "ppuPatchHandicapZero"; };
+LABEL { ADDR $a280; NAME "ppuPatchHandicap"; };
 
-LABEL { NAME "ppuPatchHandicap0"; ADDR $a292; };
-LABEL { NAME "ppuPatchHandicap3"; ADDR $a296; };
-LABEL { NAME "ppuPatchHandicap6"; ADDR $a29a; };
-LABEL { NAME "ppuPatchHandicap9"; ADDR $a29e; };
-LABEL { NAME "ppuPatchHandicap12"; ADDR $a2a2; };
-LABEL { NAME "ppuPatchProgrammedBy"; ADDR $a2a7; };
-LABEL { NAME "ppuPatchVideoBy"; ADDR $a2bf; };
-LABEL { NAME "ppuPatchMusicSelectZero"; ADDR $a2de; };
-LABEL { NAME "ppuPatchMusicSelect"; ADDR $a2df; };
-LABEL { NAME "ppuPatchSilence"; ADDR $a2ee; };
-LABEL { NAME "ppuPatchLoginska"; ADDR $a2f8; };
+LABEL { ADDR $a292; NAME "ppuPatchHandicap0"; };
+LABEL { ADDR $a296; NAME "ppuPatchHandicap3"; };
+LABEL { ADDR $a29a; NAME "ppuPatchHandicap6"; };
+LABEL { ADDR $a29e; NAME "ppuPatchHandicap9"; };
+LABEL { ADDR $a2a2; NAME "ppuPatchHandicap12"; };
+LABEL { ADDR $a2a7; NAME "ppuPatchProgrammedBy"; };
+LABEL { ADDR $a2bf; NAME "ppuPatchVideoBy"; };
+LABEL { ADDR $a2de; NAME "ppuPatchMusicSelectZero"; };
+LABEL { ADDR $a2df; NAME "ppuPatchMusicSelect"; };
+LABEL { ADDR $a2ee; NAME "ppuPatchSilence"; };
+LABEL { ADDR $a2f8; NAME "ppuPatchLoginska"; };
 
-LABEL { NAME "ppuPatchBradinksy"; ADDR $a302; };
-LABEL { NAME "ppuPatchKarinka"; ADDR $a30f; };
-LABEL { NAME "ppuPatchTroika"; ADDR $a319; };
-LABEL { NAME "ppuPatchAudioBy"; ADDR $a322; };
+LABEL { ADDR $a302; NAME "ppuPatchBradinksy"; };
+LABEL { ADDR $a30f; NAME "ppuPatchKarinka"; };
+LABEL { ADDR $a319; NAME "ppuPatchTroika"; };
+LABEL { ADDR $a322; NAME "ppuPatchAudioBy"; };
 
-LABEL { NAME "ppuPatchHighScoresZero"; ADDR $a339; };
-LABEL { NAME "ppuPatchHighScores"; ADDR $a33a; };
+LABEL { ADDR $a339; NAME "ppuPatchHighScoresZero"; };
+LABEL { ADDR $a33a; NAME "ppuPatchHighScores"; };
 
-LABEL { NAME "ppuPatchOtherNumber1"; ADDR $a34e; };
-LABEL { NAME "ppuPatchOtherNumber2"; ADDR $a353; };
-LABEL { NAME "ppuPatchOtherNumber3"; ADDR $a358; };
-LABEL { NAME "ppuPatchOtherNumber4"; ADDR $a35d; };
-LABEL { NAME "ppuPatchOtherNumber5"; ADDR $a362; };
-LABEL { NAME "ppuPatchOtherNumber6"; ADDR $a367; };
-LABEL { NAME "ppuPatchOtherNumber7"; ADDR $a36c; };
-LABEL { NAME "ppuPatchOtherNumber8"; ADDR $a371; };
-LABEL { NAME "ppuPatchOtherNumber9"; ADDR $a376; };
-LABEL { NAME "ppuPatchOtherNumber10"; ADDR $a37b; };
-LABEL { NAME "ppuPatchOtherNumber11"; ADDR $a381; };
-LABEL { NAME "ppuPatchOtherNumber12"; ADDR $a387; };
-LABEL { NAME "ppuPatchOtherNumber13"; ADDR $a38d; };
-LABEL { NAME "ppuPatchOtherNumber14"; ADDR $a393; };
-LABEL { NAME "ppuPatchOtherNumber15"; ADDR $a399; };
+LABEL { ADDR $a34e; NAME "ppuPatchOtherNumber1"; };
+LABEL { ADDR $a353; NAME "ppuPatchOtherNumber2"; };
+LABEL { ADDR $a358; NAME "ppuPatchOtherNumber3"; };
+LABEL { ADDR $a35d; NAME "ppuPatchOtherNumber4"; };
+LABEL { ADDR $a362; NAME "ppuPatchOtherNumber5"; };
+LABEL { ADDR $a367; NAME "ppuPatchOtherNumber6"; };
+LABEL { ADDR $a36c; NAME "ppuPatchOtherNumber7"; };
+LABEL { ADDR $a371; NAME "ppuPatchOtherNumber8"; };
+LABEL { ADDR $a376; NAME "ppuPatchOtherNumber9"; };
+LABEL { ADDR $a37b; NAME "ppuPatchOtherNumber10"; };
+LABEL { ADDR $a381; NAME "ppuPatchOtherNumber11"; };
+LABEL { ADDR $a387; NAME "ppuPatchOtherNumber12"; };
+LABEL { ADDR $a38d; NAME "ppuPatchOtherNumber13"; };
+LABEL { ADDR $a393; NAME "ppuPatchOtherNumber14"; };
+LABEL { ADDR $a399; NAME "ppuPatchOtherNumber15"; };
 
-LABEL { NAME "unknownData01"; ADDR $a39f; };
+LABEL { ADDR $a39f; NAME "unknownData01"; };
 
-LABEL { NAME "pollController"; ADDR $a400; };
+LABEL { ADDR $a400; NAME "pollController"; };
 
-LABEL { NAME "nmi"; ADDR $a7ac; };
+LABEL { ADDR $a7ac; NAME "nmi"; };
 
-LABEL { NAME "renderJumpRoutine"; ADDR $A80e; }; 
+LABEL { ADDR $A80e; NAME "renderJumpRoutine"; }; 
 
-LABEL { NAME "renderFakeReturnXIs0"; ADDR $A818; }; 
-LABEL { NAME "renderFakeReturnXIs2"; ADDR $A839; }; 
-LABEL { NAME "renderFakeReturnXIs4"; ADDR $A85A; }; 
-LABEL { NAME "renderFakeReturnXIs6"; ADDR $A87B; }; 
-LABEL { NAME "renderFakeReturnXIs8"; ADDR $A89C; }; 
-LABEL { NAME "renderFakeReturnXIsA"; ADDR $A8BD; }; 
-LABEL { NAME "renderFakeReturnXIsC"; ADDR $A8DE; }; 
+LABEL { ADDR $A818; NAME "renderFakeReturnXIs0"; }; 
+LABEL { ADDR $A839; NAME "renderFakeReturnXIs2"; }; 
+LABEL { ADDR $A85A; NAME "renderFakeReturnXIs4"; }; 
+LABEL { ADDR $A87B; NAME "renderFakeReturnXIs6"; }; 
+LABEL { ADDR $A89C; NAME "renderFakeReturnXIs8"; }; 
+LABEL { ADDR $A8BD; NAME "renderFakeReturnXIsA"; }; 
+LABEL { ADDR $A8DE; NAME "renderFakeReturnXIsC"; }; 
 
-LABEL { NAME "renderJumpTable"; ADDR $A903; }; 
+LABEL { ADDR $A903; NAME "renderJumpTable"; }; 
 
-LABEL { NAME "reset"; ADDR $a911; };
+LABEL { ADDR $a911; NAME "reset"; };
 
-LABEL { NAME "differentMusicSelectTable"; ADDR $AA6C; };
+LABEL { ADDR $AA6C; NAME "differentMusicSelectTable"; };
 
-LABEL { NAME "drawCathedralSprites"; ADDR $b369; };
-LABEL { NAME "cathedralCheckComplete"; ADDR $b36b; };
-LABEL { NAME "drawCathedralSpriteTile"; ADDR $b371; };
-LABEL { NAME "cathedralSpriteTabel"; ADDR $b3a0; SIZE $48; };
+LABEL { ADDR $b369; NAME "drawCathedralSprites"; };
+LABEL { ADDR $b36b; NAME "cathedralCheckComplete"; };
+LABEL { ADDR $b371; NAME "drawCathedralSpriteTile"; };
+LABEL { ADDR $b3a0; NAME "cathedralSpriteTabel"; SIZE $48; };
 
-LABEL { NAME "possibleTitleScreenNametable"; ADDR $ca00; SIZE $3c0; };
-LABEL { NAME "dataPastPossibleTitle"; ADDR $cdc0; };
+LABEL { ADDR $ca00; NAME "possibleTitleScreenNametable"; SIZE $3c0; };
+LABEL { ADDR $cdc0; NAME "dataPastPossibleTitle"; };
 
-LABEL { NAME "possibleJumpTable"; ADDR $d010; SIZE $1a; };
 
-LABEL { NAME "setupMusicTrack"; ADDR $d846; };
+LABEL { ADDR $d010; NAME "possibleJumpTable"; SIZE $1a; };
 
-LABEL { NAME "apuRegistersLow"; ADDR $dd1e; };
-LABEL { NAME "apuRegistersHigh"; ADDR $dd22; };
+LABEL { ADDR $d846; NAME "setupMusicTrack"; };
+
+LABEL { ADDR $dd1e; NAME "apuRegistersLow"; };
+LABEL { ADDR $dd22; NAME "apuRegistersHigh"; };
 
 
 
