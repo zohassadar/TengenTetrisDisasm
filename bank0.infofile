@@ -267,6 +267,12 @@ LABEL { ADDR $b36b; NAME "cathedralCheckComplete"; };
 LABEL { ADDR $b371; NAME "drawCathedralSpriteTile"; };
 LABEL { ADDR $b3a0; NAME "cathedralSpriteTabel"; SIZE $48; };
 
+LABEL { ADDR $b8a8; NAME "possibleMenuNametable"; SIZE $400; };
+LABEL { ADDR $bca8; NAME "dataPastPossibleMenuNametable"; };
+
+LABEL { ADDR $c028; NAME "possibleGameNametable"; SIZE $400; };
+LABEL { ADDR $c428; NAME "dataPastPossibleGameNametable"; };
+
 LABEL { ADDR $ca00; NAME "possibleTitleScreenNametable"; SIZE $400; };
 LABEL { ADDR $ce00; NAME "dataPastPossibleTitle"; };
 
