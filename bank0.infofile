@@ -1,0 +1,3577 @@
+GLOBAL { 
+  INPUTNAME "clean.nes"; 
+  OUTPUTNAME "bank0.asm"; 
+  INPUTOFFS $0010; 
+  INPUTSIZE $8000; 
+  COMMENTS $4; 
+  STARTADDR $8000; 
+  LABELBREAK $1; 
+};
+
+
+LABEL { ADDR $0029; NAME "gameStatePossible"; };
+
+LABEL { ADDR $002b; NAME "frameCounterLowLastFrame"; };
+
+LABEL { ADDR $002f; NAME "playMode"; COMMENT "FF: Coop, 00: 1p, 01: 2p"; };
+
+LABEL { ADDR $0032; NAME "frameCounterLow"; };
+LABEL { ADDR $0033; NAME "frameCounterHigh"; };
+
+LABEL { ADDR $003E; NAME "player1ControllerLastFrame"; };
+LABEL { ADDR $003F; NAME "player2ControllerLastFrame"; };
+LABEL { ADDR $0040; NAME "player1ExpansionLastFrame"; };
+LABEL { ADDR $0041; NAME "player2ExpansionLastFrame"; };
+LABEL { ADDR $0042; NAME "player1ControllerHeld"; };
+LABEL { ADDR $0043; NAME "player2ControllerHeld"; };
+LABEL { ADDR $0044; NAME "player1ExpansionHeld"; };
+LABEL { ADDR $0045; NAME "player2ExpansionHeld"; };
+LABEL { ADDR $0046; NAME "player1ControllerNew"; };
+LABEL { ADDR $0047; NAME "player2ControllerNew"; };
+
+LABEL { ADDR $0060; NAME "player1TetriminoY"; };
+LABEL { ADDR $0061; NAME "player2TetriminoY"; };
+
+LABEL { ADDR $0062; NAME "player1TetriminoX"; };
+LABEL { ADDR $0063; NAME "player2TetriminoX"; };
+
+
+LABEL { ADDR $0064; NAME "player1TetriminoCurrent"; };     
+LABEL { ADDR $0065; NAME "player2TetriminoCurrent"; };     
+LABEL { ADDR $0066; NAME "player1TetriminoNext"; };        
+LABEL { ADDR $0067; NAME "player2TetriminoNext"; };        
+LABEL { ADDR $0068; NAME "player1TetriminoOrientation"; }; 
+LABEL { ADDR $0069; NAME "player2TetriminoOrientation"; }; 
+
+LABEL { ADDR $006a; NAME "player1FallTimer"; }; 
+LABEL { ADDR $006b; NAME "player2FallTimer"; }; 
+
+LABEL { ADDR $0500; NAME "oamStaging"; SIZE $100; }; 
+
+LABEL { ADDR $0600; NAME "player1Playfield"; SIZE $DF; }; 
+LABEL { ADDR $0700; NAME "player2Playfield"; SIZE $DF; }; 
+
+
+LABEL { ADDR $0424; NAME "player1LinesThousands"; };
+LABEL { ADDR $0425; NAME "player1LinesHundreds"; };
+LABEL { ADDR $0426; NAME "player1LinesTens"; };
+LABEL { ADDR $0427; NAME "player1LinesOnes"; };
+LABEL { ADDR $0428; NAME "player2LinesThousands"; };
+LABEL { ADDR $0429; NAME "player2LinesHundreds"; };
+
+LABEL { ADDR $042a; NAME "player2LinesTens"; };
+LABEL { ADDR $042b; NAME "player2LinesOnes"; };
+LABEL { ADDR $042c; NAME "player1LevelTens"; };
+LABEL { ADDR $042d; NAME "player1LevelOnes"; };
+LABEL { ADDR $042e; NAME "player2LevelTens"; };
+LABEL { ADDR $042f; NAME "player2LevelOnes"; };
+
+
+LABEL { ADDR $0418; NAME "player1ScoreHundredThousands"; };
+LABEL { ADDR $0419; NAME "player1ScoreTenThousands"; };
+LABEL { ADDR $041a; NAME "player1ScoreThousands"; };
+LABEL { ADDR $041b; NAME "player1ScoreHundreds"; };
+LABEL { ADDR $041c; NAME "player1ScoreTens"; };
+LABEL { ADDR $041d; NAME "player1ScoreOnes"; };
+
+LABEL { ADDR $041e; NAME "player2ScoreHundredThousands"; };
+LABEL { ADDR $041f; NAME "player2ScoreTenThousands"; };
+LABEL { ADDR $0420; NAME "player2ScoreThousands"; };
+LABEL { ADDR $0421; NAME "player2ScoreHundreds"; };
+LABEL { ADDR $0422; NAME "player2ScoreTens"; };
+LABEL { ADDR $0423; NAME "player2ScoreOnes"; };
+
+
+LABEL { ADDR $043c; NAME "highScoreHundredThousands"; }; 
+LABEL { ADDR $043d; NAME "highScoreTenThousands"; }; 
+LABEL { ADDR $043e; NAME "highScoreThousands"; }; 
+LABEL { ADDR $043f; NAME "highScoreHundreds"; }; 
+LABEL { ADDR $0440; NAME "highScoreTens"; }; 
+LABEL { ADDR $0441; NAME "highScoreOnes"; }; 
+
+
+
+
+LABEL { ADDR $04f0; NAME "menuGameMode"; };
+LABEL { ADDR $04f1; NAME "menuPlayer1StartLevel"; };
+LABEL { ADDR $04f2; NAME "menuPlayer2StartLevel"; };
+LABEL { ADDR $04f3; NAME "menuPlayer1Handicap"; };
+LABEL { ADDR $04f4; NAME "menuPlayer2Handicap"; };
+LABEL { ADDR $04f5; NAME "menuMusic"; };
+
+
+LABEL { ADDR $2000; NAME "PPUCTRL"; };
+LABEL { ADDR $2001; NAME "PPUMASK"; };
+LABEL { ADDR $2002; NAME "PPUSTATUS"; };
+LABEL { ADDR $2003; NAME "OAMADDR"; };
+LABEL { ADDR $2004; NAME "OAMDATA"; };
+LABEL { ADDR $2005; NAME "PPUSCROLL"; };
+LABEL { ADDR $2006; NAME "PPUADDR"; };
+LABEL { ADDR $2007; NAME "PPUDATA"; };
+
+#LABEL { ADDR $4000; NAME "SQ1_VOL"; };
+#LABEL { ADDR $4001; NAME "SQ1_SWEEP"; };
+#LABEL { ADDR $4002; NAME "SQ1_LO"; };
+#LABEL { ADDR $4003; NAME "SQ1_HI"; };
+#LABEL { ADDR $4004; NAME "SQ2_VOL"; };
+#LABEL { ADDR $4005; NAME "SQ2_SWEEP"; };
+#LABEL { ADDR $4006; NAME "SQ2_LO"; };
+#LABEL { ADDR $4007; NAME "SQ2_HI"; };
+#LABEL { ADDR $4008; NAME "TRI_LINEAR"; };
+#
+## $4009 is unused
+#
+#LABEL { ADDR $400A; NAME "TRI_LO"; };
+#LABEL { ADDR $400B; NAME "TRI_HI"; };
+#LABEL { ADDR $400C; NAME "NOISE_VOL"; };
+#
+## $400D is unused
+#
+#LABEL { ADDR $400E; NAME "NOISE_LO"; };
+#LABEL { ADDR $400F; NAME "NOISE_HI"; };
+#LABEL { ADDR $4010; NAME "DMC_FREQ"; };
+#LABEL { ADDR $4011; NAME "DMC_RAW"; };
+#LABEL { ADDR $4012; NAME "DMC_START"; COMMENT "start << 6 + $C000"; };
+#LABEL { ADDR $4013; NAME "DMC_LEN"; COMMENT "len << 4 + 1 "; };
+LABEL { ADDR $4014; NAME "OAMDMA"; };
+LABEL { ADDR $4015; NAME "SND_CHN"; };
+
+LABEL { ADDR $4016; NAME "player1controllerPort"; };
+LABEL { ADDR $4017; NAME "player2controllerPort"; };
+
+LABEL { NAME "mainLoop"; ADDR $800a; };
+
+LABEL { NAME "@allButtonsExceptDown"; ADDR $8052; };
+LABEL { NAME "@player1Active"; ADDR $805F; };
+LABEL { NAME "@ret"; ADDR $8063; };
+LABEL { NAME "doSomethingWithInputDuringGameplay"; ADDR $8064; };
+
+LABEL { NAME "@LeftAndRight"; ADDR $8065; };
+
+LABEL { NAME "@CheckForDown"; ADDR $806B; };
+LABEL { NAME "@LeftAndDown"; ADDR $8077; };
+LABEL { NAME "@LeftNotPressed"; ADDR $8092; };
+LABEL { NAME "@RightAndDown"; ADDR $8099; };
+LABEL { NAME "@RightNotPressed"; ADDR $80B4; };
+LABEL { NAME "@BNotPressed"; ADDR $80D0; };
+LABEL { NAME "@ANotPressed"; ADDR $80EC; };
+LABEL { NAME "@DownLeftRight"; ADDR $80F3; };
+
+LABEL { NAME "playfieldIdPossible"; ADDR $8562; };
+
+LABEL { NAME "initHandicapGarbage"; ADDR $984c;  };
+
+LABEL { NAME "getNextTetrimino"; ADDR $9929; };
+
+LABEL { NAME "genNextPseudoRandom5x"; ADDR $99ee; };
+LABEL { NAME "genNextPseudoRandom3x"; ADDR $99f4; };
+LABEL { NAME "genNextPseudoRandom2x"; ADDR $99f7; };
+LABEL { NAME "genNextPseudoRandom"; ADDR $99fa; };
+
+LABEL { NAME "possibleFallTimerTable"; ADDR $9b36; };
+
+LABEL { NAME "playModeTable"; ADDR $9f51; COMMENT "1p, 2p, coop, vs comp, with comp"; };
+
+LABEL { NAME "musicSelectTable"; ADDR $a043; };
+
+LABEL { NAME "ppuPatchGameSelect"; ADDR $a19b; };
+LABEL { NAME "ppuPatch1Player"; ADDR $a1a9; };
+LABEL { NAME "ppuPatch2Player"; ADDR $a1b4; };
+LABEL { NAME "ppuPatchCooperative"; ADDR $a1bf; };
+LABEL { NAME "ppuPatchVsComputer"; ADDR $a1cd; };
+LABEL { NAME "ppuPatchWithComputer"; ADDR $a1df; };
+LABEL { NAME "ppuPatchLicensedBy"; ADDR $a1ef; };
+
+LABEL { NAME "ppuPatchLevelSelectZero"; ADDR $a20d; };
+LABEL { NAME "ppuPatchLevelSelect"; ADDR $a20e; };
+LABEL { NAME "ppuPatchNumber0"; ADDR $a21d; };
+LABEL { NAME "ppuPatchNumber1"; ADDR $a221; };
+LABEL { NAME "ppuPatchNumber2"; ADDR $a225; };
+LABEL { NAME "ppuPatchNumber3"; ADDR $a229; };
+LABEL { NAME "ppuPatchNumber4"; ADDR $a22d; };
+LABEL { NAME "ppuPatchNumber5"; ADDR $a231; };
+LABEL { NAME "ppuPatchNumber6"; ADDR $a235; };
+LABEL { NAME "ppuPatchNumber7"; ADDR $a239; };
+LABEL { NAME "ppuPatchNumber8"; ADDR $a23d; };
+LABEL { NAME "ppuPatchNumber9"; ADDR $a241; };
+LABEL { NAME "ppuPatchConceptBy"; ADDR $a245; };
+LABEL { NAME "ppuPatchDesignBy"; ADDR $a263; };
+
+LABEL { NAME "ppuPatchHandicapZero"; ADDR $a27f; };
+LABEL { NAME "ppuPatchHandicap"; ADDR $a280; };
+
+LABEL { NAME "ppuPatchHandicap0"; ADDR $a292; };
+LABEL { NAME "ppuPatchHandicap3"; ADDR $a296; };
+LABEL { NAME "ppuPatchHandicap6"; ADDR $a29a; };
+LABEL { NAME "ppuPatchHandicap9"; ADDR $a29e; };
+LABEL { NAME "ppuPatchHandicap12"; ADDR $a2a2; };
+LABEL { NAME "ppuPatchProgrammedBy"; ADDR $a2a7; };
+LABEL { NAME "ppuPatchVideoBy"; ADDR $a2bf; };
+LABEL { NAME "ppuPatchMusicSelectZero"; ADDR $a2de; };
+LABEL { NAME "ppuPatchMusicSelect"; ADDR $a2df; };
+LABEL { NAME "ppuPatchSilence"; ADDR $a2ee; };
+LABEL { NAME "ppuPatchLoginska"; ADDR $a2f8; };
+
+LABEL { NAME "ppuPatchBradinksy"; ADDR $a302; };
+LABEL { NAME "ppuPatchKarinka"; ADDR $a30f; };
+LABEL { NAME "ppuPatchTroika"; ADDR $a319; };
+LABEL { NAME "ppuPatchAudioBy"; ADDR $a322; };
+
+LABEL { NAME "ppuPatchHighScoresZero"; ADDR $a339; };
+LABEL { NAME "ppuPatchHighScores"; ADDR $a33a; };
+
+LABEL { NAME "ppuPatchOtherNumber1"; ADDR $a34e; };
+LABEL { NAME "ppuPatchOtherNumber2"; ADDR $a353; };
+LABEL { NAME "ppuPatchOtherNumber3"; ADDR $a358; };
+LABEL { NAME "ppuPatchOtherNumber4"; ADDR $a35d; };
+LABEL { NAME "ppuPatchOtherNumber5"; ADDR $a362; };
+LABEL { NAME "ppuPatchOtherNumber6"; ADDR $a367; };
+LABEL { NAME "ppuPatchOtherNumber7"; ADDR $a36c; };
+LABEL { NAME "ppuPatchOtherNumber8"; ADDR $a371; };
+LABEL { NAME "ppuPatchOtherNumber9"; ADDR $a376; };
+LABEL { NAME "ppuPatchOtherNumber10"; ADDR $a37b; };
+LABEL { NAME "ppuPatchOtherNumber11"; ADDR $a381; };
+LABEL { NAME "ppuPatchOtherNumber12"; ADDR $a387; };
+LABEL { NAME "ppuPatchOtherNumber13"; ADDR $a38d; };
+LABEL { NAME "ppuPatchOtherNumber14"; ADDR $a393; };
+LABEL { NAME "ppuPatchOtherNumber15"; ADDR $a399; };
+
+LABEL { NAME "unknownData01"; ADDR $a39f; };
+
+LABEL { NAME "pollController"; ADDR $a400; };
+
+LABEL { NAME "nmi"; ADDR $a7ac; };
+
+LABEL { NAME "renderJumpRoutine"; ADDR $A80e; }; 
+
+LABEL { NAME "renderFakeReturnXIs0"; ADDR $A818; }; 
+LABEL { NAME "renderFakeReturnXIs2"; ADDR $A839; }; 
+LABEL { NAME "renderFakeReturnXIs4"; ADDR $A85A; }; 
+LABEL { NAME "renderFakeReturnXIs6"; ADDR $A87B; }; 
+LABEL { NAME "renderFakeReturnXIs8"; ADDR $A89C; }; 
+LABEL { NAME "renderFakeReturnXIsA"; ADDR $A8BD; }; 
+LABEL { NAME "renderFakeReturnXIsC"; ADDR $A8DE; }; 
+
+LABEL { NAME "renderJumpTable"; ADDR $A903; }; 
+
+LABEL { NAME "reset"; ADDR $a911; };
+
+LABEL { NAME "differentMusicSelectTable"; ADDR $AA6C; };
+
+LABEL { NAME "drawCathedralSprites"; ADDR $b369; };
+LABEL { NAME "cathedralCheckComplete"; ADDR $b36b; };
+LABEL { NAME "drawCathedralSpriteTile"; ADDR $b371; };
+LABEL { NAME "cathedralSpriteTabel"; ADDR $b3a0; SIZE $48; };
+
+LABEL { NAME "possibleTitleScreenNametable"; ADDR $ca00; SIZE $3c0; };
+LABEL { NAME "dataPastPossibleTitle"; ADDR $cdc0; };
+
+LABEL { NAME "possibleJumpTable"; ADDR $d010; SIZE $1a; };
+
+LABEL { NAME "setupMusicTrack"; ADDR $d846; };
+
+LABEL { NAME "apuRegistersLow"; ADDR $dd1e; };
+LABEL { NAME "apuRegistersHigh"; ADDR $dd22; };
+
+
+
+SEGMENT { NAME "VECTORS"; START $FFFA; END $FFFF; };
+
+RANGE { 
+  START $8000; 
+  END $8003; 
+  TYPE CODE;  
+};
+RANGE { 
+  START $8004; 
+  END $8009; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $800a; 
+  END $800a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $800b; 
+  END $818f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8190; 
+  END $8199; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $819a; 
+  END $826a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $826b; 
+  END $8274; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8275; 
+  END $831f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $843a; 
+  END $843a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $843b; 
+  END $84ea; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $84eb; 
+  END $84ec; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $84ed; 
+  END $8555; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8556; 
+  END $8564; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8565; 
+  END $85d8; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $85d9; 
+  END $85d9; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $85da; 
+  END $8606; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8607; 
+  END $862d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $862e; 
+  END $865e; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $865f; 
+  END $865f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8660; 
+  END $8697; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8698; 
+  END $8698; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8699; 
+  END $86c2; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $86c3; 
+  END $8772; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8773; 
+  END $8839; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $883a; 
+  END $883c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $883d; 
+  END $883e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $883f; 
+  END $8842; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8843; 
+  END $8844; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8845; 
+  END $8847; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8848; 
+  END $88e2; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $88e3; 
+  END $88e3; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $88e4; 
+  END $8966; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8967; 
+  END $8967; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8968; 
+  END $8981; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8982; 
+  END $8985; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8986; 
+  END $8998; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8999; 
+  END $899e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $899f; 
+  END $89c2; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $89c3; 
+  END $8a2a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8a2b; 
+  END $8a4c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8a4d; 
+  END $8a4e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8a4f; 
+  END $8a58; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8a59; 
+  END $8a5a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8a5b; 
+  END $8a61; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8a62; 
+  END $8a62; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8a63; 
+  END $8aba; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8abb; 
+  END $8ada; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8adb; 
+  END $8adb; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8adc; 
+  END $8b7d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8b7e; 
+  END $8b7e; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8b7f; 
+  END $8c09; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8c0a; 
+  END $8c14; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8c15; 
+  END $8ca6; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8ca7; 
+  END $8cb4; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8cb5; 
+  END $8cb5; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8cb6; 
+  END $8d14; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8d15; 
+  END $8d18; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8d19; 
+  END $8d44; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8d45; 
+  END $8d45; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8d46; 
+  END $8da5; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8da6; 
+  END $8da7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8da8; 
+  END $8dba; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8dbb; 
+  END $8dbc; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8dbd; 
+  END $8e53; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8e54; 
+  END $8e5e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8e5f; 
+  END $8e69; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8e6a; 
+  END $8e6c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8e6d; 
+  END $8e77; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8e78; 
+  END $8e7a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8e7b; 
+  END $8e85; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8e86; 
+  END $8e8b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8e8c; 
+  END $8ea1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8ea2; 
+  END $8ebc; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8ebd; 
+  END $8ebd; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8ebe; 
+  END $8ef9; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8efa; 
+  END $8efa; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8efb; 
+  END $8f1d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8f1e; 
+  END $8f22; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8f23; 
+  END $8f57; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8f58; 
+  END $8f64; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8f65; 
+  END $8f93; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8f94; 
+  END $8fa0; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8fa1; 
+  END $8fbc; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8fbd; 
+  END $8fc2; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8fc3; 
+  END $8ff1; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $8ff2; 
+  END $8ff3; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $8ff4; 
+  END $9016; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9017; 
+  END $901e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $901f; 
+  END $9022; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9023; 
+  END $9024; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9025; 
+  END $902e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $902f; 
+  END $9032; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9033; 
+  END $9034; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9035; 
+  END $9064; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9065; 
+  END $9078; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9079; 
+  END $9093; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9094; 
+  END $9099; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $909a; 
+  END $90af; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $90b0; 
+  END $910c; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $910d; 
+  END $910f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9110; 
+  END $914f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9150; 
+  END $9152; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9153; 
+  END $91d9; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $91da; 
+  END $91da; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $91db; 
+  END $91dc; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $91dd; 
+  END $91de; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $91df; 
+  END $91e2; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $91e3; 
+  END $922f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9230; 
+  END $9230; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9231; 
+  END $9294; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9295; 
+  END $9298; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9299; 
+  END $92b8; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $92b9; 
+  END $92b9; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $92ba; 
+  END $92d4; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $92d5; 
+  END $92e2; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $92e3; 
+  END $92fa; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $92fb; 
+  END $92fc; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $92fd; 
+  END $9329; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $932a; 
+  END $932a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $932b; 
+  END $9331; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9332; 
+  END $9332; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9333; 
+  END $93ca; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $93cb; 
+  END $93cb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $93cc; 
+  END $93cf; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $93d0; 
+  END $93d0; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $93d1; 
+  END $93d9; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $93da; 
+  END $93da; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $93db; 
+  END $93db; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $93dc; 
+  END $93dd; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $93de; 
+  END $93f5; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $93f6; 
+  END $93f6; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $93f7; 
+  END $93f7; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $93f8; 
+  END $9517; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9518; 
+  END $951a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $951b; 
+  END $9526; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9527; 
+  END $9529; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $952a; 
+  END $9535; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9536; 
+  END $9537; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9538; 
+  END $953e; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $953f; 
+  END $9542; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9543; 
+  END $956f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9570; 
+  END $9579; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $957a; 
+  END $95a2; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $95a3; 
+  END $95b2; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $95b3; 
+  END $95c5; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $95c6; 
+  END $95c6; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $95c7; 
+  END $95e2; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $95e3; 
+  END $95e3; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $95e4; 
+  END $95f9; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $95fa; 
+  END $95fa; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $95fb; 
+  END $9743; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9744; 
+  END $97c0; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $97c1; 
+  END $98a6; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $98a7; 
+  END $98a7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $98a8; 
+  END $98a8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $98a9; 
+  END $98a9; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $98aa; 
+  END $98ac; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $98ad; 
+  END $9928; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9929; 
+  END $9929; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $992a; 
+  END $9996; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9997; 
+  END $9997; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9998; 
+  END $99c6; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $99c7; 
+  END $99ca; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $99cb; 
+  END $99cd; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $99ce; 
+  END $99cf; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $99d0; 
+  END $99ea; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $99eb; 
+  END $99ed; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $99ee; 
+  END $9a3d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9a3e; 
+  END $9a43; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9a44; 
+  END $9a58; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9a59; 
+  END $9a5e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9a5f; 
+  END $9ab7; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9ab8; 
+  END $9aba; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9abb; 
+  END $9ac6; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9ac7; 
+  END $9ac8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9ac9; 
+  END $9af8; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9af9; 
+  END $9afa; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9afb; 
+  END $9b06; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9b07; 
+  END $9b20; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b21; 
+  END $9b35; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9b36; 
+  END $9b38; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b39; 
+  END $9b3a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b3b; 
+  END $9b3b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b3c; 
+  END $9b3e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b3f; 
+  END $9b3f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b40; 
+  END $9b47; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b48; 
+  END $9b48; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b49; 
+  END $9b4c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b4d; 
+  END $9b4d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b4e; 
+  END $9b50; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b51; 
+  END $9b51; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b52; 
+  END $9b61; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9b62; 
+  END $9bd4; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9bd5; 
+  END $9bfb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9bfc; 
+  END $9c24; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9c25; 
+  END $9c29; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9c2a; 
+  END $9c2f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9c30; 
+  END $9c34; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9c35; 
+  END $9c8c; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9c8d; 
+  END $9c8d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9c8e; 
+  END $9e5a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9e5b; 
+  END $9e5b; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9e5c; 
+  END $9e60; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9e61; 
+  END $9e61; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9e62; 
+  END $9ebb; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9ebc; 
+  END $9ebc; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9ebd; 
+  END $9f1a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9f1b; 
+  END $9f1b; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9f1c; 
+  END $9f50; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9f51; 
+  END $9f55; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9f56; 
+  END $9f56; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9f57; 
+  END $9f73; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9f74; 
+  END $9f74; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9f75; 
+  END $9ff9; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $9ffa; 
+  END $a000; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a001; 
+  END $a042; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a043; 
+  END $a047; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a048; 
+  END $a0a4; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a0a5; 
+  END $a0ca; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a0cb; 
+  END $a0d8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a0d9; 
+  END $a0ee; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a0ef; 
+  END $a0f0; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a0f1; 
+  END $a0f6; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a0f7; 
+  END $a0f8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a0f9; 
+  END $a0ff; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a100; 
+  END $a100; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a101; 
+  END $a107; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a108; 
+  END $a108; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a109; 
+  END $a10b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a10c; 
+  END $a10c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a10d; 
+  END $a10f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a110; 
+  END $a110; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a111; 
+  END $a113; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a114; 
+  END $a114; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a115; 
+  END $a117; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a118; 
+  END $a118; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a119; 
+  END $a11f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a120; 
+  END $a120; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a121; 
+  END $a127; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a128; 
+  END $a128; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a129; 
+  END $a12f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a130; 
+  END $a130; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a131; 
+  END $a137; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a138; 
+  END $a138; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a139; 
+  END $a13f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a140; 
+  END $a140; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a141; 
+  END $a147; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a148; 
+  END $a148; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a149; 
+  END $a14f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a150; 
+  END $a150; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a151; 
+  END $a157; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a158; 
+  END $a158; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a159; 
+  END $a188; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a189; 
+  END $a19a; 
+  TYPE AddrTable; 
+};
+
+RANGE { 
+  START $a19b; 
+  END $a39f; 
+  TYPE BYTETABLE; 
+};
+
+RANGE { 
+  START $a3a0; 
+  END $a3c1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a3c2; 
+  END $a464; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a465; 
+  END $a465; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a466; 
+  END $a47a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a47b; 
+  END $a47b; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a47c; 
+  END $a4a7; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a4a8; 
+  END $a6bd; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a6be; 
+  END $a6de; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a6df; 
+  END $a755; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a756; 
+  END $a787; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a788; 
+  END $a79f; 
+  TYPE BYTETABLE; 
+};
+
+RANGE { 
+  START $a7a0; 
+  END $a7a2; 
+  TYPE BYTETABLE; 
+};
+
+RANGE { 
+  START $a7a3; 
+  END $a7ab; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a7ac; 
+  END $a818; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a819; 
+  END $a819; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a81a; 
+  END $a902; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a903; 
+  END $a910; 
+  TYPE ADDRTABLE; 
+};
+RANGE { 
+  START $a911; 
+  END $a9ee; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a9ef; 
+  END $a9ef; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $a9f0; 
+  END $aa6b; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $aa6c; 
+  END $aa6f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $aa70; 
+  END $ab1d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $ab1e; 
+  END $ac9f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $aca0; 
+  END $ad24; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $ad25; 
+  END $b014; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b015; 
+  END $b015; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b016; 
+  END $b01d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b01e; 
+  END $b01e; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b01f; 
+  END $b059; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b05a; 
+  END $b063; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b064; 
+  END $b0d7; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b0d8; 
+  END $b10c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b10d; 
+  END $b12c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b12d; 
+  END $b14c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b14d; 
+  END $b166; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b167; 
+  END $b182; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b183; 
+  END $b196; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b197; 
+  END $b1ac; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b1ad; 
+  END $b2de; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b2df; 
+  END $b368; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b369; 
+  END $b39f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b3a0; 
+  END $b3e8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b3e9; 
+  END $b403; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b404; 
+  END $b40f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b410; 
+  END $b445; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b446; 
+  END $b447; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b448; 
+  END $b475; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b476; 
+  END $b477; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b478; 
+  END $b47d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b47e; 
+  END $b4a8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b4a9; 
+  END $b4ad; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b4ae; 
+  END $b4ba; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b4bb; 
+  END $b4be; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b4bf; 
+  END $b4c3; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b4c4; 
+  END $b4c7; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b4c8; 
+  END $b4cc; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b4cd; 
+  END $b523; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b524; 
+  END $b52a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b52b; 
+  END $b5a7; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b5a8; 
+  END $b5a8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b5a9; 
+  END $b5b1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b5b2; 
+  END $b5b2; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b5b3; 
+  END $b5ba; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b5bb; 
+  END $b5bb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b5bc; 
+  END $b5c4; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b5c5; 
+  END $b5ff; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b600; 
+  END $b602; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b603; 
+  END $b658; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b659; 
+  END $b65c; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $b65d; 
+  END $b666; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b667; 
+  END $b66e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b66f; 
+  END $b672; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b673; 
+  END $b674; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b675; 
+  END $b6bf; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b6c0; 
+  END $b723; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b724; 
+  END $b7b5; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b7b6; 
+  END $b7fe; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b7ff; 
+  END $b887; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b888; 
+  END $b888; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b889; 
+  END $b89f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b8a0; 
+  END $b8a7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $b8a8; 
+  END $c8bb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $c8bc; 
+  END $c8f3; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $c8f4; 
+  END $c92b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $c92c; 
+  END $c937; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $c938; 
+  END $c983; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $c984; 
+  END $c99f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $c9a0; 
+  END $c9ab; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $c9ac; 
+  END $c9c7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $c9c8; 
+  END $c9ff; 
+  TYPE BYTETABLE; 
+};
+
+RANGE { 
+  START $ca00; 
+  END $cdbf; 
+  TYPE BYTETABLE; 
+};
+
+RANGE { 
+  START $cdc0; 
+  END $ce01; 
+  TYPE BYTETABLE; 
+};
+
+
+RANGE { 
+  START $ce02; 
+  END $ce1b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce1c; 
+  END $ce20; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce21; 
+  END $ce22; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce23; 
+  END $ce27; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce28; 
+  END $ce28; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce29; 
+  END $ce4b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce4c; 
+  END $ce4c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce4d; 
+  END $ce51; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce52; 
+  END $ce53; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce54; 
+  END $ce58; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce59; 
+  END $ce59; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce5a; 
+  END $ce7c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce7d; 
+  END $ce7d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce7e; 
+  END $ce82; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce83; 
+  END $ce84; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce85; 
+  END $ce89; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce8a; 
+  END $ce8a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ce8b; 
+  END $cead; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ceae; 
+  END $ceae; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ceaf; 
+  END $ceb3; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ceb4; 
+  END $ceb6; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ceb7; 
+  END $ceba; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cebb; 
+  END $cebb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cebc; 
+  END $cebc; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cebd; 
+  END $cebd; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cebe; 
+  END $cebf; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cec0; 
+  END $cec0; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cec1; 
+  END $cede; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cedf; 
+  END $cedf; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cee0; 
+  END $cee4; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cee5; 
+  END $cee7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cee8; 
+  END $ceeb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ceec; 
+  END $ceec; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ceed; 
+  END $ceed; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ceee; 
+  END $ceee; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ceef; 
+  END $cef0; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cef1; 
+  END $cef1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cef2; 
+  END $cf0f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf10; 
+  END $cf10; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf11; 
+  END $cf15; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf16; 
+  END $cf18; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf19; 
+  END $cf1c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf1d; 
+  END $cf1d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf1e; 
+  END $cf1e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf1f; 
+  END $cf1f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf20; 
+  END $cf21; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf22; 
+  END $cf22; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf23; 
+  END $cf40; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf41; 
+  END $cf41; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf42; 
+  END $cf46; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf47; 
+  END $cf49; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf4a; 
+  END $cf4d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf4e; 
+  END $cf4e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf4f; 
+  END $cf4f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf50; 
+  END $cf50; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf51; 
+  END $cf52; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf53; 
+  END $cf53; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf54; 
+  END $cf71; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf72; 
+  END $cf72; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf73; 
+  END $cf77; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf78; 
+  END $cf78; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $cf79; 
+  END $cfb0; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $cfb1; 
+  END $cfb1; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $cfb2; 
+  END $cfc2; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $cfc3; 
+  END $cfc5; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $cfc6; 
+  END $d00f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d010; 
+  END $d02d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d02e; 
+  END $d032; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d033; 
+  END $d03f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d040; 
+  END $d057; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d058; 
+  END $d0e3; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d0e4; 
+  END $d0f0; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d0f1; 
+  END $d0f3; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d0f4; 
+  END $d0fc; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d0fd; 
+  END $d0ff; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d100; 
+  END $d115; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d116; 
+  END $d116; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d117; 
+  END $d11c; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d11d; 
+  END $d11d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d11e; 
+  END $d129; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d12a; 
+  END $d1a5; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d1a6; 
+  END $d301; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d302; 
+  END $d305; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d306; 
+  END $d329; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d32a; 
+  END $d32a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d32b; 
+  END $d346; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d347; 
+  END $d359; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d35a; 
+  END $d35c; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d35d; 
+  END $d35d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d35e; 
+  END $d3d2; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d3d3; 
+  END $d3d3; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d3d4; 
+  END $d3f7; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d3f8; 
+  END $d3ff; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d400; 
+  END $d478; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d479; 
+  END $d479; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d47a; 
+  END $d48a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d48b; 
+  END $d4ad; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d4ae; 
+  END $d4ae; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d4af; 
+  END $d4e0; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d4e1; 
+  END $d4e1; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d4e2; 
+  END $d586; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d587; 
+  END $d587; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d588; 
+  END $d5b2; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d5b3; 
+  END $d5b3; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d5b4; 
+  END $d60e; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d60f; 
+  END $d60f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d610; 
+  END $d652; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d653; 
+  END $d678; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d679; 
+  END $d681; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d682; 
+  END $d688; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d689; 
+  END $d68b; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d68c; 
+  END $d69a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d69b; 
+  END $d6c9; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d6ca; 
+  END $d6cb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d6cc; 
+  END $d6e8; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d6e9; 
+  END $d6e9; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d6ea; 
+  END $d73a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d73b; 
+  END $d742; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d743; 
+  END $d76b; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d76c; 
+  END $d791; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d792; 
+  END $d7a0; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d7a1; 
+  END $d7af; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d7b0; 
+  END $d7bf; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d7c0; 
+  END $d7c5; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d7c6; 
+  END $d7db; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d7dc; 
+  END $d7dc; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d7dd; 
+  END $d7e4; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d7e5; 
+  END $d7ee; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d7ef; 
+  END $d7f5; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d7f6; 
+  END $d7fb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d7fc; 
+  END $d828; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d829; 
+  END $d829; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d82a; 
+  END $d834; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d835; 
+  END $d835; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d836; 
+  END $d868; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d869; 
+  END $d869; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d86a; 
+  END $d86a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d86b; 
+  END $d8f1; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d8f2; 
+  END $d8f8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d8f9; 
+  END $d916; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d917; 
+  END $d919; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d91a; 
+  END $d91d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $d91e; 
+  END $d93c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d93d; 
+  END $d946; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d947; 
+  END $d948; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d949; 
+  END $d94c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d94d; 
+  END $d958; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d959; 
+  END $d962; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d963; 
+  END $d964; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d965; 
+  END $d966; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d967; 
+  END $d96e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d96f; 
+  END $d970; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d971; 
+  END $d9f1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $d9f2; 
+  END $da2a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $da2b; 
+  END $da2b; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $da2c; 
+  END $da2f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $da30; 
+  END $da35; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $da36; 
+  END $da3a; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $da3b; 
+  END $da6c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $da6d; 
+  END $da94; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $da95; 
+  END $da97; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $da98; 
+  END $daf7; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $daf8; 
+  END $db08; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $db09; 
+  END $db12; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $db13; 
+  END $db31; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $db32; 
+  END $db3f; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $db40; 
+  END $dd0e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dd0f; 
+  END $dd1d; 
+  TYPE CODE; 
+};
+RANGE { 
+  START $dd1e; 
+  END $dd34; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dd35; 
+  END $dd35; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dd36; 
+  END $dd37; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dd38; 
+  END $dd7f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dd80; 
+  END $dd81; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dd82; 
+  END $dd87; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dd88; 
+  END $dd99; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dd9a; 
+  END $dd9b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dd9c; 
+  END $ddc3; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddc4; 
+  END $ddc5; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddc6; 
+  END $ddc9; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddca; 
+  END $ddcb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddcc; 
+  END $ddd7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddd8; 
+  END $ddd9; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddda; 
+  END $dddb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dddc; 
+  END $dddd; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddde; 
+  END $dde1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dde2; 
+  END $dde3; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dde4; 
+  END $dde5; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dde6; 
+  END $dde7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dde8; 
+  END $ddeb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddec; 
+  END $dded; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddee; 
+  END $ddef; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddf0; 
+  END $ddf1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddf2; 
+  END $ddf3; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddf4; 
+  END $ddf5; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddf6; 
+  END $ddf9; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddfa; 
+  END $ddfd; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ddfe; 
+  END $de05; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de06; 
+  END $de07; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de08; 
+  END $de0b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de0c; 
+  END $de0d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de0e; 
+  END $de0f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de10; 
+  END $de1b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de1c; 
+  END $de31; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de32; 
+  END $de3b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de3c; 
+  END $de50; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de51; 
+  END $de9c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de9d; 
+  END $de9e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $de9f; 
+  END $de9f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dea0; 
+  END $dea7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dea8; 
+  END $dea8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dea9; 
+  END $deaa; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $deab; 
+  END $deae; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $deaf; 
+  END $deb5; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $deb6; 
+  END $deb6; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $deb7; 
+  END $deb8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $deb9; 
+  END $deb9; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $deba; 
+  END $dec1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dec2; 
+  END $dec2; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dec3; 
+  END $dec4; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dec5; 
+  END $dec8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dec9; 
+  END $decf; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ded0; 
+  END $ded3; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ded4; 
+  END $dee1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dee2; 
+  END $dee3; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dee4; 
+  END $dee7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dee8; 
+  END $deef; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $def0; 
+  END $df04; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df05; 
+  END $df05; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df06; 
+  END $df07; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df08; 
+  END $df0b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df0c; 
+  END $df2d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df2e; 
+  END $df31; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df32; 
+  END $df36; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df37; 
+  END $df3a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df3b; 
+  END $df5c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df5d; 
+  END $df60; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df61; 
+  END $df65; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df66; 
+  END $df69; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df6a; 
+  END $dfa6; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dfa7; 
+  END $dfae; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dfaf; 
+  END $dfb8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dfb9; 
+  END $dfc0; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $dfc1; 
+  END $e004; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e005; 
+  END $e00c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e00d; 
+  END $e016; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e017; 
+  END $e01e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e01f; 
+  END $e02c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e02d; 
+  END $e03a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e03b; 
+  END $e361; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e362; 
+  END $e363; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e364; 
+  END $e5cc; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e5cd; 
+  END $e5ce; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e5cf; 
+  END $e831; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e832; 
+  END $e833; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $e834; 
+  END $ebfe; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ebff; 
+  END $ec00; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ec01; 
+  END $ee23; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ee24; 
+  END $ee25; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $ee26; 
+  END $f042; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f043; 
+  END $f044; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f045; 
+  END $f188; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f189; 
+  END $f18a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f18b; 
+  END $f272; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f273; 
+  END $f2e0; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f2e1; 
+  END $f5ca; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f5cb; 
+  END $f5cc; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f5cd; 
+  END $f607; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f608; 
+  END $f609; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f60a; 
+  END $f6d0; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f6d1; 
+  END $f6d2; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f6d3; 
+  END $f71a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f71b; 
+  END $f78d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f78e; 
+  END $f7a1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f7a2; 
+  END $f7e8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f7e9; 
+  END $f890; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f891; 
+  END $f8d5; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f8d6; 
+  END $f8e8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f8e9; 
+  END $f901; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $f902; 
+  END $fbd8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fbd9; 
+  END $fbdb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fbdc; 
+  END $fbe3; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fbe4; 
+  END $fcf7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fcf8; 
+  END $fd27; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd28; 
+  END $fd2a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd2b; 
+  END $fd2e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd2f; 
+  END $fd30; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd31; 
+  END $fd4e; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd4f; 
+  END $fd51; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd52; 
+  END $fd5f; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd60; 
+  END $fd61; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd62; 
+  END $fd85; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd86; 
+  END $fd88; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd89; 
+  END $fd92; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd93; 
+  END $fd94; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fd95; 
+  END $fdae; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fdaf; 
+  END $fdb1; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fdb2; 
+  END $fddb; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fddc; 
+  END $fddd; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fdde; 
+  END $fdf7; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fdf8; 
+  END $fdfa; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fdfb; 
+  END $fe2a; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fe2b; 
+  END $fe2c; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fe2d; 
+  END $fe46; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fe47; 
+  END $fe49; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fe4a; 
+  END $fe6b; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fe6c; 
+  END $fe6d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fe6e; 
+  END $fe8d; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fe8e; 
+  END $fe90; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fe91; 
+  END $fec8; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fec9; 
+  END $fff9; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $fffa; 
+  END $ffff; 
+  TYPE AddrTable; 
+};

@@ -1,0 +1,59 @@
+0 0000
+1 0001
+2 0010
+3 0011
+4 0100
+5 0101
+6 0110
+7 0111
+8 1000
+9 1001
+A 1010
+B 1011
+C 1100
+D 1101
+E 1110
+F 1111
+
+
+B8A8 - menu nametable??
+c028 - game nametable??
+
+
+
+gameStatePossible:
+
+00 playing
+01 paused
+FB Line clearing??
+
+FC - ??
+F9 - ??
+
+
+
+*****************
+
+
+8A2B - table with single/double/triple/tetris for line clears
+
+0a 0b - bytes with table address related to line clears
+
+18 19 - bytes with ppu address related to line clears
+
+
+*****************
+
+0c 0d - bytes with address related to data related to drawing row
+
+1a 1b - bytes with ppu address related to drawing row
+
+****************************
+
+
+1c 1d - bytes with ppu address related to drawing nametable or attr
+0e 0f - bytes with address related to data related to nametable or attr
+
+
+
+

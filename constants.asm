@@ -1,0 +1,12 @@
+; unused while doing the labeling, but here for reference
+
+BUTTON_A := $01
+BUTTON_B := $02
+BUTTON_UP := $10
+BUTTON_SELECT := $04
+BUTTON_START := $08
+BUTTON_DOWN := $20
+BUTTON_LEFT := $40
+BUTTON_RIGHT := $80
+
+BUTTON_DPAD := BUTTON_UP | BUTTON_DOWN | BUTTON_LEFT | BUTTON_RIGHT
