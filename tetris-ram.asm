@@ -1,8 +1,8 @@
 .zeropage
 .res 1 ; $0000
 .res 1 ; $0001
-.res 1 ; $0002
-.res 1 ; $0003
+ppuScrollX: .res 1 ; $0002
+ppuScrollY: .res 1 ; $0003
 .res 1 ; $0004
 .res 1 ; $0005
 .res 1 ; $0006
@@ -313,8 +313,9 @@ menuPlayer2StartLevel: .res 1 ; $04f2
 menuPlayer1Handicap: .res 1 ; $04f3
 menuPlayer2Handicap: .res 1 ; $04f4
 menuMusic: .res 1 ; $04f5
+ppuScrollYOffset: .res 1 ; $04f6
 
-.res $0a
+.res $09
 
 oamStaging:  ; $0500-05ff
 .res $100

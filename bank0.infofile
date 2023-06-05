@@ -8,6 +8,9 @@ GLOBAL {
   LABELBREAK $1; 
 };
 
+LABEL { ADDR $0002; NAME "ppuScrollX"; }; 
+LABEL { ADDR $0003; NAME "ppuScrollY"; }; 
+
 LABEL { ADDR $0008; NAME "ppuDataAddress1"; SIZE $2; };
 LABEL { ADDR $000A; NAME "ppuDataAddress2"; SIZE $2; };
 LABEL { ADDR $000C; NAME "ppuDataAddress3"; SIZE $2; };
@@ -98,6 +101,8 @@ LABEL { ADDR $04f2; NAME "menuPlayer2StartLevel"; };
 LABEL { ADDR $04f3; NAME "menuPlayer1Handicap"; };
 LABEL { ADDR $04f4; NAME "menuPlayer2Handicap"; };
 LABEL { ADDR $04f5; NAME "menuMusic"; };
+LABEL { ADDR $04f6; NAME "ppuScrollYOffset"; };
+
 
 LABEL { ADDR $2000; NAME "PPUCTRL"; };
 LABEL { ADDR $2001; NAME "PPUMASK"; };
@@ -184,6 +189,10 @@ LABEL { ADDR $99fa; NAME "genNextPseudoRandom"; };
 LABEL { ADDR $9b36; NAME "possibleFallTimerTable"; };
 
 LABEL { ADDR $9f51; NAME "playModeTable"; COMMENT "1p, 2p, coop, vs comp, with comp"; };
+
+LABEL { ADDR $9c0b; NAME "moveScreenUpOrDown"; };
+LABEL { ADDR $9c2a; NAME "@bothUpsNotPressed"; };
+LABEL { ADDR $9c35; NAME "@bothDownsNotPressed"; };
 
 LABEL { ADDR $A02C; NAME "@branchOnModeGameTypeMenu"; };
 LABEL { ADDR $A02F; NAME "@branchOnModeLevelMenu"; };
@@ -1272,26 +1281,6 @@ RANGE {
 };
 RANGE { 
   START $9bfc; 
-  END $9c24; 
-  TYPE CODE; 
-};
-RANGE { 
-  START $9c25; 
-  END $9c29; 
-  TYPE BYTETABLE; 
-};
-RANGE { 
-  START $9c2a; 
-  END $9c2f; 
-  TYPE CODE; 
-};
-RANGE { 
-  START $9c30; 
-  END $9c34; 
-  TYPE BYTETABLE; 
-};
-RANGE { 
-  START $9c35; 
   END $9c8c; 
   TYPE CODE; 
 };

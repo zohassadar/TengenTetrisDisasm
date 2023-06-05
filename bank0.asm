@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-05 10:54:31
+; Created:    2023-06-05 15:03:07
 ; Input file: clean.nes
 ; Page:       1
 
@@ -7,6 +7,8 @@
         .setcpu "6502"
 
 ; ----------------------------------------------------------------------------
+ppuScrollX      := $0002
+ppuScrollY      := $0003
 ppuDataAddress1 := $0008
 ppuDataAddress2 := $000A
 ppuDataAddress3 := $000C
@@ -77,6 +79,7 @@ menuPlayer2StartLevel:= $04F2
 menuPlayer1Handicap:= $04F3
 menuPlayer2Handicap:= $04F4
 menuMusic       := $04F5
+ppuScrollYOffset:= $04F6
 oamStaging      := $0500
 player1Playfield:= $0600
 player2Playfield:= $0700
@@ -302,7 +305,7 @@ L8129:
         lda     #$4F                            ; 813C A9 4F                    .O
 L813E:
         sec                                     ; 813E 38                       8
-        sbc     $04F6                           ; 813F ED F6 04                 ...
+        sbc     ppuScrollYOffset                ; 813F ED F6 04                 ...
         sta     oamStaging,y                    ; 8142 99 00 05                 ...
         sta     oamStaging+4,y                  ; 8145 99 04 05                 ...
         sta     oamStaging+8,y                  ; 8148 99 08 05                 ...
@@ -1285,7 +1288,7 @@ L880C:
         clc                                     ; 8827 18                       .
         adc     #$10                            ; 8828 69 10                    i.
         clc                                     ; 882A 18                       .
-        sbc     $04F6                           ; 882B ED F6 04                 ...
+        sbc     ppuScrollYOffset                ; 882B ED F6 04                 ...
         sta     oamStaging+16,y                 ; 882E 99 10 05                 ...
         lda     #$5F                            ; 8831 A9 5F                    ._
         sta     oamStaging+17,y                 ; 8833 99 11 05                 ...
@@ -1556,7 +1559,7 @@ L89E9:
         sta     $17,x                           ; 8A09 95 17                    ..
         lda     oamStaging,y                    ; 8A0B B9 00 05                 ...
         sec                                     ; 8A0E 38                       8
-        adc     $04F6                           ; 8A0F 6D F6 04                 m..
+        adc     ppuScrollYOffset                ; 8A0F 6D F6 04                 m..
         asl     a                               ; 8A12 0A                       .
         rol     $17,x                           ; 8A13 36 17                    6.
         asl     a                               ; 8A15 0A                       .
@@ -1791,7 +1794,7 @@ L8BA1:
         asl     a                               ; 8BA3 0A                       .
         adc     #$0F                            ; 8BA4 69 0F                    i.
         sec                                     ; 8BA6 38                       8
-        sbc     $04F6                           ; 8BA7 ED F6 04                 ...
+        sbc     ppuScrollYOffset                ; 8BA7 ED F6 04                 ...
         sta     $39                             ; 8BAA 85 39                    .9
         tya                                     ; 8BAC 98                       .
         asl     a                               ; 8BAD 0A                       .
@@ -2134,7 +2137,7 @@ L8DD1:
 L8DE4:
         lda     L8E6A,y                         ; 8DE4 B9 6A 8E                 .j.
         sec                                     ; 8DE7 38                       8
-        sbc     $04F6                           ; 8DE8 ED F6 04                 ...
+        sbc     ppuScrollYOffset                ; 8DE8 ED F6 04                 ...
         sta     oamStaging,x                    ; 8DEB 9D 00 05                 ...
         sta     oamStaging+4,x                  ; 8DEE 9D 04 05                 ...
         clc                                     ; 8DF1 18                       .
@@ -2918,7 +2921,7 @@ L939B:
         ldy     $3A                             ; 939E A4 3A                    .:
         lda     L93CB,y                         ; 93A0 B9 CB 93                 ...
         sec                                     ; 93A3 38                       8
-        sbc     $04F6                           ; 93A4 ED F6 04                 ...
+        sbc     ppuScrollYOffset                ; 93A4 ED F6 04                 ...
         sta     oamStaging,x                    ; 93A7 9D 00 05                 ...
         inx                                     ; 93AA E8                       .
         inx                                     ; 93AB E8                       .
@@ -3335,7 +3338,7 @@ L96B7:
         jsr     L970F                           ; 96C4 20 0F 97                  ..
         lda     #$CF                            ; 96C7 A9 CF                    ..
         sec                                     ; 96C9 38                       8
-        sbc     $04F6                           ; 96CA ED F6 04                 ...
+        sbc     ppuScrollYOffset                ; 96CA ED F6 04                 ...
         sta     oamStaging+204                  ; 96CD 8D CC 05                 ...
         sta     oamStaging+208                  ; 96D0 8D D0 05                 ...
         sta     oamStaging+212                  ; 96D3 8D D4 05                 ...
@@ -4041,12 +4044,12 @@ L9BFC:
         cmp     #$FB                            ; 9C02 C9 FB                    ..
         beq     L9C58                           ; 9C04 F0 52                    .R
         cmp     #$FA                            ; 9C06 C9 FA                    ..
-        beq     L9C0B                           ; 9C08 F0 01                    ..
+        beq     moveScreenUpOrDown              ; 9C08 F0 01                    ..
 L9C0A:
         rts                                     ; 9C0A 60                       `
 
 ; ----------------------------------------------------------------------------
-L9C0B:
+moveScreenUpOrDown:
         jsr     LA9CE                           ; 9C0B 20 CE A9                  ..
         lda     frameCounterLow                 ; 9C0E A5 32                    .2
         and     #$0F                            ; 9C10 29 0F                    ).
@@ -4056,20 +4059,22 @@ L9C0B:
         lda     player2ControllerHeld           ; 9C18 A5 43                    .C
         and     $36                             ; 9C1A 25 36                    %6
         sta     $36                             ; 9C1C 85 36                    .6
-        ldy     $04F6                           ; 9C1E AC F6 04                 ...
+        ldy     ppuScrollYOffset                ; 9C1E AC F6 04                 ...
         and     #$10                            ; 9C21 29 10                    ).
-        beq     L9C2A                           ; 9C23 F0 05                    ..
-        .byte   $C8,$C0,$09,$F0,$13             ; 9C25 C8 C0 09 F0 13           .....
-; ----------------------------------------------------------------------------
-L9C2A:
+        beq     @bothUpsNotPressed              ; 9C23 F0 05                    ..
+        iny                                     ; 9C25 C8                       .
+        cpy     #$09                            ; 9C26 C0 09                    ..
+        beq     L9C3D                           ; 9C28 F0 13                    ..
+@bothUpsNotPressed:
         lda     $36                             ; 9C2A A5 36                    .6
         and     #$20                            ; 9C2C 29 20                    ) 
-        beq     L9C35                           ; 9C2E F0 05                    ..
-        .byte   $88,$C0,$F7,$F0,$08             ; 9C30 88 C0 F7 F0 08           .....
-; ----------------------------------------------------------------------------
-L9C35:
-        sty     $04F6                           ; 9C35 8C F6 04                 ...
-        sty     $03                             ; 9C38 84 03                    ..
+        beq     @bothDownsNotPressed            ; 9C2E F0 05                    ..
+        dey                                     ; 9C30 88                       .
+        cpy     #$F7                            ; 9C31 C0 F7                    ..
+        beq     L9C3D                           ; 9C33 F0 08                    ..
+@bothDownsNotPressed:
+        sty     ppuScrollYOffset                ; 9C35 8C F6 04                 ...
+        sty     ppuScrollY                      ; 9C38 84 03                    ..
         jsr     drawCathedralSprites            ; 9C3A 20 69 B3                  i.
 L9C3D:
         lda     frameCounterHigh                ; 9C3D A5 33                    .3
@@ -4400,9 +4405,9 @@ L9E61:
         sta     frameCounterLow                 ; 9E87 85 32                    .2
         sta     frameCounterHigh                ; 9E89 85 33                    .3
         sta     frameCounterLowLastFrame        ; 9E8B 85 2B                    .+
-        sta     $02                             ; 9E8D 85 02                    ..
-        lda     $04F6                           ; 9E8F AD F6 04                 ...
-        sta     $03                             ; 9E92 85 03                    ..
+        sta     ppuScrollX                      ; 9E8D 85 02                    ..
+        lda     ppuScrollYOffset                ; 9E8F AD F6 04                 ...
+        sta     ppuScrollY                      ; 9E92 85 03                    ..
         jsr     LCF79                           ; 9E94 20 79 CF                  y.
         lda     #$09                            ; 9E97 A9 09                    ..
         jsr     possibleSetSoundOrMusic         ; 9E99 20 B1 CF                  ..
@@ -5272,9 +5277,9 @@ LA7D0:
         ora     #$02                            ; A7E9 09 02                    ..
         sta     LFFF6,x                         ; A7EB 9D F6 FF                 ...
         ldx     PPUSTATUS                       ; A7EE AE 02 20                 .. 
-        lda     $02                             ; A7F1 A5 02                    ..
+        lda     ppuScrollX                      ; A7F1 A5 02                    ..
         sta     PPUSCROLL                       ; A7F3 8D 05 20                 .. 
-        lda     $03                             ; A7F6 A5 03                    ..
+        lda     ppuScrollY                      ; A7F6 A5 03                    ..
         sta     PPUSCROLL                       ; A7F8 8D 05 20                 .. 
         lda     $00                             ; A7FB A5 00                    ..
         sta     PPUCTRL                         ; A7FD 8D 00 20                 .. 
@@ -6219,7 +6224,7 @@ drawCathedralSpriteTile:
         ror     a                               ; B390 6A                       j
         and     #$F8                            ; B391 29 F8                    ).
         clc                                     ; B393 18                       .
-        sbc     $04F6                           ; B394 ED F6 04                 ...
+        sbc     ppuScrollYOffset                ; B394 ED F6 04                 ...
         sta     oamStaging,x                    ; B397 9D 00 05                 ...
         inx                                     ; B39A E8                       .
         inx                                     ; B39B E8                       .

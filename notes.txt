@@ -26,7 +26,7 @@ gameStatePossible:
 F8 - Score screen
 F9 - ??
 FA - title screen
-FB is not line clearing (why did I think that?)
+FB - Demo mode???
 FC - gameTypeMenu
 FD - levelSelectMenu
 FE - handicapSelect
@@ -88,3 +88,8 @@ Stats for pieces appear to be offset using $52 (starting at $53 with I)
 ****
 L9997 - line clear stat columns
 999B - maximum height of column
+
+
+****
+
+L95C6 - probably start of demo
