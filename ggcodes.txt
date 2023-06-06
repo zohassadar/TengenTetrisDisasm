@@ -1,0 +1,75 @@
+From:  https://gamehacking.org/game/31147
+
+OOA-AKZ 6 Lines Taken Away Instead of 1
+OZKP-EPEN Always Get Straight Pieces (1 of 2)
+PAKP-OOOY Always Get Straight Pieces (2 of 2)
+PAT-ATA Block / Piece Modifier (Player 1)
+PAT-AYA Block / Piece Modifier (Player 2)
+PLSP-ZTAL Choose Levels 0 thru 7 for Levels 10 thru 17 on the Level Select Menu
+TLVZ-TKZO Dawn Mode
+AEXE-LNZZ Drop Pieces To Clear Line (1 of 2)
+AEXE-YYTZ Drop Pieces To Clear Line (2 of 2)
+ZIVZ-TKZO Dusk Mode
+IAUL-PIPA Enter Konami Code To Spawn 'J' Tetrimino
+GAUL-PIPA Enter Konami Code To Spawn 'L' Tetrimino
+LAUL-PIPA Enter Konami Code To Spawn 'O' Tetrimino
+TAUL-PIPA Enter Konami Code To Spawn 'S' Tetrimino
+ZAUL-PIPA Enter Konami Code To Spawn 'T' Tetrimino
+YAUL-PIPA Enter Konami Code To Spawn 'Z' Tetrimino
+OPXU-LSSU Enter Konami Code To Spawn Infinite 'J' Tetrimino (1 of 2)
+IAUL-PIPA Enter Konami Code To Spawn Infinite 'J' Tetrimino (2 of 2)
+OPXU-LSSU Enter Konami Code To Spawn Infinite 'L' Tetrimino (1 of 2)
+GAUL-PIPA Enter Konami Code To Spawn Infinite 'L' Tetrimino (2 of 2)
+OPXU-LSSU Enter Konami Code To Spawn Infinite 'O' Tetrimino (1 of 2)
+LAUL-PIPA Enter Konami Code To Spawn Infinite 'O' Tetrimino (2 of 2)
+OPXU-LSSU Enter Konami Code To Spawn Infinite 'S' Tetrimino (1 of 2)
+TAUL-PIPA Enter Konami Code To Spawn Infinite 'S' Tetrimino (2 of 2)
+OPXU-LSSU Enter Konami Code To Spawn Infinite 'T' Tetrimino (1 of 2)
+ZAUL-PIPA Enter Konami Code To Spawn Infinite 'T' Tetrimino (2 of 2)
+OPXU-LSSU Enter Konami Code To Spawn Infinite 'Z' Tetrimino (1 of 2)
+YAUL-PIPA Enter Konami Code To Spawn Infinite 'Z' Tetrimino (2 of 2)
+UIVZ-TKZO Game Boy Mode
+POT-OEA Get 999 Points When Block Hits The Ground (Messed Up)
+LLVZ-TKZO Gold Mode
+UYVZ-TKZO Greyscale 2 Mode
+LIVZ-TKZO Greyscale Mode
+AEG-OOX Higher Score When Blocks Hit The Ground
+OPXU-LSSU Infinite Konami Code (Enter in-game to spawn a red long Tetrimino)
+ALZ-EGG Level Modifier (1 of 2)
+ALZ-EIG Level Modifier (2 of 2)
+PLZ-EGG Level Modifier For Playing Level 10 And Higher (Up To Level 17) (1 of 2)
+ALZ-EIG Level Modifier For Playing Level 10 And Higher (Up To Level 17) (2 of 2)
+PLP-EAK Max Score at 999,999 For Player 1 (1 of 6)
+PLP-EPK Max Score at 999,999 For Player 1 (2 of 6)
+PLP-EZK Max Score at 999,999 For Player 1 (3 of 6)
+PLP-ELK Max Score at 999,999 For Player 1 (4 of 6)
+PLP-EGK Max Score at 999,999 For Player 1 (5 of 6)
+PLP-EIK Max Score at 999,999 For Player 1 (6 of 6)
+PLP-ETK Max Score at 999,999 For Player 2 (1 of 6)
+PLP-EYK Max Score at 999,999 For Player 2 (2 of 6)
+PLZ-AAK Max Score at 999,999 For Player 2 (3 of 6)
+PLZ-APK Max Score at 999,999 For Player 2 (4 of 6)
+PLZ-AZK Max Score at 999,999 For Player 2 (5 of 6)
+PLZ-ALK Max Score at 999,999 For Player 2 (6 of 6)
+XYVZ-TKZO Night Mode
+POL-ATP Pause the game and Press A to get a Line Piece (1 of 2)
+AEL-EAP Pause the game and Press A to get a Line Piece (2 of 2)
+AEL-ATO Pause the game and Press A to Increase your Level
+LOL-ATO Pause the game and Press A to remove a Block and get a Line Piece (1 of 2)
+AEL-EZP Pause the game and Press A to remove a Block and get a Line Piece (2 of 2)
+ISSL-ZGLS Pause the game and Press Up for ?? Piece (1 of 2)
+ZAUL-PIPA Pause the game and Press Up for ?? Piece (2 of 2)
+ISSL-ZGLS Pause the game and Press Up for Line Piece
+IESL-ZGLS Pause the game and Press Up to Increase your Level
+ENSL-PGEI Pause the game and Press Up to remove a Block and get a Line Piece (1 of 3)
+ESSU-PGEY Pause the game and Press Up to remove a Block and get a Line Piece (2 of 3)
+SLVL-LSVN Pause the game and Press Up to remove a Block and get a Line Piece (3 of 3)
+VIVZ-TKZO Pickle Mode
+SXUA-YLVY Pieces Don't Fall
+GAA-EPP Press Down To Stop Blocks From Falling
+LYVZ-TKZO Sepia Mode
+YAVZ-TKZO Silver Mode
+OZXP-KLGX Speed Stays The Same (1 of 2)
+PZXP-SUYZ Speed Stays The Same (2 of 2)
+ALVZ-TKZP Sprites Only
+ZTVZ-TKZO Sunset Mode
