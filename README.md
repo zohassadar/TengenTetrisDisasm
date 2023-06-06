@@ -40,6 +40,8 @@ md5sum: 1bcb1795a0feed766d6d0681196662fb
 
 ## Validate
 
+This requires the same backup of the original game with the filename `clean.nes` in the project root directory. 
+
 `make compare`
 
 ## Thanks
