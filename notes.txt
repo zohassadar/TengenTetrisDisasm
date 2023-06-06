@@ -74,7 +74,7 @@ L855C/L855F - tables with low/high bytes of top left corner of player1, player2 
 
 *****
 
-0 - no tetrimino
+0 - no tetromino
 1 - I
 2 - T
 3 - O
@@ -137,3 +137,22 @@ DB13 same
 DB40 same
 
 AD25 big table of unreferenced data?
+
+01c8 - countdown for points sprites?
+
+****
+
+L836B - @rightNotPressed
+doSomethingWithInputDuringGameplay - is maybe get filtered input?  it leaves buttons in A
+
+8327 - if fall timer is 0, down is pressed for you
+
+L8650 - checkPosition after shifting/rotating and then do something else
+
+L8C15 - probably the checkPosition
+
+L8CA7 - negative3 thru 3
+
+
+a189 - address table?
+

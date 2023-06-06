@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-05 21:02:00
+; Created:    2023-06-06 06:05:41
 ; Input file: clean.nes
 ; Page:       1
 
@@ -22,6 +22,14 @@ playMode        := $002F                        ; FF: Coop, 00: 1p, 01: 2p
 frameCounterLow := $0032
 frameCounterHigh:= $0033
 rngSeed         := $0034
+generalCounter36:= $0036
+generalCounter37:= $0037
+generalCounter38:= $0038
+generalCounter39:= $0039
+generalCounter3a:= $003A
+generalCounter3b:= $003B
+generalCounter3c:= $003C
+generalCounter3d:= $003D
 player1ControllerLastFrame:= $003E
 player2ControllerLastFrame:= $003F
 player1ExpansionLastFrame:= $0040
@@ -35,16 +43,16 @@ player2ControllerNew:= $0047
 savedRNGSeedForSomething:= $005A
 player1RNGSeed  := $005C
 player2RNGSeed  := $005E
-player1TetriminoY:= $0060
-player2TetriminoY:= $0061
-player1TetriminoX:= $0062
-player2TetriminoX:= $0063
-player1TetriminoCurrent:= $0064
-player2TetriminoCurrent:= $0065
-player1TetriminoNext:= $0066
-player2TetriminoNext:= $0067
-player1TetriminoOrientation:= $0068
-player2TetriminoOrientation:= $0069
+player1TetrominoY:= $0060
+player2TetrominoY:= $0061
+player1TetrominoX:= $0062
+player2TetrominoX:= $0063
+player1TetrominoCurrent:= $0064
+player2TetrominoCurrent:= $0065
+player1TetrominoNext:= $0066
+player2TetrominoNext:= $0067
+player1TetrominoOrientation:= $0068
+player2TetrominoOrientation:= $0069
 player1FallTimer:= $006A
 player2FallTimer:= $006B
 codeInputPlayer1:= $01B6
@@ -57,10 +65,10 @@ lastCurrentBlockP1:= $01BC
 lastCurrentBlockP2:= $01BD
 lastOrientationP1:= $01BE
 lastOrientationP2:= $01BF
-lastTetriminoYP1:= $01C0
-lastTetriminoYP2:= $01C1
-lastTetriminoXP1:= $01C2
-lastTetriminoXP2:= $01C3
+lastTetrominoYP1:= $01C0
+lastTetrominoYP2:= $01C1
+lastTetrominoXP1:= $01C2
+lastTetrominoXP2:= $01C3
 lastRNGSeedP1   := $01C4
 lastRNGSeedP2   := $01C6
 stack           := $01D3
@@ -89,7 +97,7 @@ player1LevelOnes:= $042D
 player2LevelTens:= $042E
 player2LevelOnes:= $042F
 player1ScoreMirrorPossible:= $0430
-unknownScoreSlot:= $0436
+player1LinesMirrorPossible:= $0436
 highScoreHundredThousands:= $043C
 highScoreTenThousands:= $043D
 highScoreThousands:= $043E
@@ -209,7 +217,7 @@ doSomethingWithInputDuringGameplay:
         tay                                     ; 8072 A8                       .
 L8073:
         lda     player1ControllerHeld,x         ; 8073 B5 42                    .B
-        sta     $36                             ; 8075 85 36                    .6
+        sta     generalCounter36                ; 8075 85 36                    .6
 @LeftAndDown:
         and     #$60                            ; 8077 29 60                    )`
         cmp     #$40                            ; 8079 C9 40                    .@
@@ -230,7 +238,7 @@ L8073:
 L8094:
         sta     $01AA,x                         ; 8094 9D AA 01                 ...
 L8097:
-        lda     $36                             ; 8097 A5 36                    .6
+        lda     generalCounter36                ; 8097 A5 36                    .6
 @RightAndDown:
         and     #$A0                            ; 8099 29 A0                    ).
         cmp     #$80                            ; 809B C9 80                    ..
@@ -251,7 +259,7 @@ L8097:
 L80B6:
         sta     $01AC,x                         ; 80B6 9D AC 01                 ...
 L80B9:
-        lda     $36                             ; 80B9 A5 36                    .6
+        lda     generalCounter36                ; 80B9 A5 36                    .6
         and     #$02                            ; 80BB 29 02                    ).
         beq     @BNotPressed                    ; 80BD F0 11                    ..
         lda     $01AE,x                         ; 80BF BD AE 01                 ...
@@ -267,7 +275,7 @@ L80B9:
         lda     #$00                            ; 80D0 A9 00                    ..
         sta     $01AE,x                         ; 80D2 9D AE 01                 ...
 L80D5:
-        lda     $36                             ; 80D5 A5 36                    .6
+        lda     generalCounter36                ; 80D5 A5 36                    .6
         and     #$01                            ; 80D7 29 01                    ).
         beq     @ANotPressed                    ; 80D9 F0 11                    ..
         lda     $01B0,x                         ; 80DB BD B0 01                 ...
@@ -283,7 +291,7 @@ L80D5:
         lda     #$00                            ; 80EC A9 00                    ..
         sta     $01B0,x                         ; 80EE 9D B0 01                 ...
 L80F1:
-        lda     $36                             ; 80F1 A5 36                    .6
+        lda     generalCounter36                ; 80F1 A5 36                    .6
 @DownLeftRight:
         and     #$E0                            ; 80F3 29 E0                    ).
         cmp     #$20                            ; 80F5 C9 20                    . 
@@ -296,14 +304,14 @@ L80F1:
         bcc     L8120                           ; 8105 90 19                    ..
         tya                                     ; 8107 98                       .
         ora     #$20                            ; 8108 09 20                    . 
-        sta     $36                             ; 810A 85 36                    .6
+        sta     generalCounter36                ; 810A 85 36                    .6
         lda     $01B4,x                         ; 810C BD B4 01                 ...
         cmp     #$02                            ; 810F C9 02                    ..
         bcc     L8116                           ; 8111 90 03                    ..
         dec     $01B4,x                         ; 8113 DE B4 01                 ...
 L8116:
         jsr     L9AEE                           ; 8116 20 EE 9A                  ..
-        ldy     $36                             ; 8119 A4 36                    .6
+        ldy     generalCounter36                ; 8119 A4 36                    .6
 L811B:
         lda     #$00                            ; 811B A9 00                    ..
         sta     $01B2,x                         ; 811D 9D B2 01                 ...
@@ -318,7 +326,7 @@ L8122:
         bne     L811B                           ; 8127 D0 F2                    ..
 L8129:
         ldy     L8198,x                         ; 8129 BC 98 81                 ...
-        stx     $39                             ; 812C 86 39                    .9
+        stx     generalCounter39                ; 812C 86 39                    .9
         lda     $2D                             ; 812E A5 2D                    .-
         asl     a                               ; 8130 0A                       .
         asl     a                               ; 8131 0A                       .
@@ -344,7 +352,7 @@ L813E:
         inx                                     ; 815A E8                       .
         inx                                     ; 815B E8                       .
 L815C:
-        lda     $36                             ; 815C A5 36                    .6
+        lda     generalCounter36                ; 815C A5 36                    .6
         bne     L8165                           ; 815E D0 05                    ..
         lda     L8194,x                         ; 8160 BD 94 81                 ...
         bne     L8168                           ; 8163 D0 03                    ..
@@ -353,23 +361,23 @@ L8165:
 L8168:
         sta     oamStaging+2,y                  ; 8168 99 02 05                 ...
         clc                                     ; 816B 18                       .
-        lda     $36                             ; 816C A5 36                    .6
+        lda     generalCounter36                ; 816C A5 36                    .6
         beq     L8173                           ; 816E F0 03                    ..
         ora     #$30                            ; 8170 09 30                    .0
         sec                                     ; 8172 38                       8
 L8173:
         sta     oamStaging+1,y                  ; 8173 99 01 05                 ...
-        lda     $37                             ; 8176 A5 37                    .7
+        lda     generalCounter37                ; 8176 A5 37                    .7
         bcs     L817C                           ; 8178 B0 02                    ..
         beq     L817E                           ; 817A F0 02                    ..
 L817C:
         ora     #$30                            ; 817C 09 30                    .0
 L817E:
         sta     oamStaging+5,y                  ; 817E 99 05 05                 ...
-        lda     $38                             ; 8181 A5 38                    .8
+        lda     generalCounter38                ; 8181 A5 38                    .8
         ora     #$30                            ; 8183 09 30                    .0
         sta     oamStaging+9,y                  ; 8185 99 09 05                 ...
-        ldx     $39                             ; 8188 A6 39                    .9
+        ldx     generalCounter39                ; 8188 A6 39                    .9
         lda     #$3C                            ; 818A A9 3C                    .<
         sta     $01C8,x                         ; 818C 9D C8 01                 ...
         rts                                     ; 818F 60                       `
@@ -428,9 +436,9 @@ L81DD:
         tax                                     ; 81EB AA                       .
 L81EC:
         txa                                     ; 81EC 8A                       .
-        stx     $36                             ; 81ED 86 36                    .6
+        stx     generalCounter36                ; 81ED 86 36                    .6
         asl     a                               ; 81EF 0A                       .
-        adc     $36                             ; 81F0 65 36                    e6
+        adc     generalCounter36                ; 81F0 65 36                    e6
         asl     a                               ; 81F2 0A                       .
         tay                                     ; 81F3 A8                       .
         lda     menuGameMode                    ; 81F4 AD F0 04                 ...
@@ -480,7 +488,7 @@ L822D:
         sta     highScoreTenThousands,x         ; 8253 9D 3D 04                 .=.
         lda     player1ScoreHundredThousands,y  ; 8256 B9 18 04                 ...
         sta     highScoreHundredThousands,x     ; 8259 9D 3C 04                 .<.
-        lda     $36                             ; 825C A5 36                    .6
+        lda     generalCounter36                ; 825C A5 36                    .6
         asl     a                               ; 825E 0A                       .
         asl     a                               ; 825F 0A                       .
         tay                                     ; 8260 A8                       .
@@ -503,28 +511,28 @@ L8275:
 L8284:
         sta     leaderboardLines+2,x            ; 8284 9D 98 04                 ...
         lda     #$01                            ; 8287 A9 01                    ..
-        ldy     $36                             ; 8289 A4 36                    .6
+        ldy     generalCounter36                ; 8289 A4 36                    .6
         ora     L93DA,y                         ; 828B 19 DA 93                 ...
         sta     leaderboardInitials,x           ; 828E 9D C3 04                 ...
         sta     leaderboardInitials+1,x         ; 8291 9D C4 04                 ...
         sta     leaderboardInitials+2,x         ; 8294 9D C5 04                 ...
 L8297:
-        ldx     $36                             ; 8297 A6 36                    .6
+        ldx     generalCounter36                ; 8297 A6 36                    .6
         rts                                     ; 8299 60                       `
 
 ; ----------------------------------------------------------------------------
 L829A:
-        sta     $37                             ; 829A 85 37                    .7
+        sta     generalCounter37                ; 829A 85 37                    .7
         ldx     #$54                            ; 829C A2 54                    .T
-        cpx     $37                             ; 829E E4 37                    .7
+        cpx     generalCounter37                ; 829E E4 37                    .7
         beq     L82C6                           ; 82A0 F0 24                    .$
 L82A2:
         dex                                     ; 82A2 CA                       .
         lda     highScoreHundredThousands,x     ; 82A3 BD 3C 04                 .<.
         sta     leaderboardScores,x             ; 82A6 9D 42 04                 .B.
-        cpx     $37                             ; 82A9 E4 37                    .7
+        cpx     generalCounter37                ; 82A9 E4 37                    .7
         bne     L82A2                           ; 82AB D0 F5                    ..
-        lsr     $37                             ; 82AD 46 37                    F7
+        lsr     generalCounter37                ; 82AD 46 37                    F7
         ldx     #$2A                            ; 82AF A2 2A                    .*
 L82B1:
         dex                                     ; 82B1 CA                       .
@@ -532,9 +540,9 @@ L82B1:
         sta     leaderboardLines+3,x            ; 82B5 9D 99 04                 ...
         lda     leaderboardInitials,x           ; 82B8 BD C3 04                 ...
         sta     leaderboardInitials+3,x         ; 82BB 9D C6 04                 ...
-        cpx     $37                             ; 82BE E4 37                    .7
+        cpx     generalCounter37                ; 82BE E4 37                    .7
         bne     L82B1                           ; 82C0 D0 EF                    ..
-        lda     $37                             ; 82C2 A5 37                    .7
+        lda     generalCounter37                ; 82C2 A5 37                    .7
         asl     a                               ; 82C4 0A                       .
         tax                                     ; 82C5 AA                       .
 L82C6:
@@ -564,9 +572,9 @@ L82D7:
 L82E8:
         lda     $4A,x                           ; 82E8 B5 4A                    .J
         beq     L82F3                           ; 82EA F0 07                    ..
-        lda     player1TetriminoCurrent,x       ; 82EC B5 64                    .d
+        lda     player1TetrominoCurrent,x       ; 82EC B5 64                    .d
         bne     L8320                           ; 82EE D0 30                    .0
-        jmp     getNextTetrimino                ; 82F0 4C 29 99                 L).
+        jmp     getNextTetromino                ; 82F0 4C 29 99                 L).
 
 ; ----------------------------------------------------------------------------
 L82F3:
@@ -601,90 +609,90 @@ L8315:
 ; ----------------------------------------------------------------------------
 L8320:
         jsr     L8050                           ; 8320 20 50 80                  P.
-        sta     $3B                             ; 8323 85 3B                    .;
+        sta     generalCounter3b                ; 8323 85 3B                    .;
         dec     player1FallTimer,x              ; 8325 D6 6A                    .j
         bne     L8330                           ; 8327 D0 07                    ..
         ora     #$20                            ; 8329 09 20                    . 
-        sta     $3B                             ; 832B 85 3B                    .;
+        sta     generalCounter3b                ; 832B 85 3B                    .;
         jsr     L9AEE                           ; 832D 20 EE 9A                  ..
 L8330:
-        lda     $3B                             ; 8330 A5 3B                    .;
+        lda     generalCounter3b                ; 8330 A5 3B                    .;
         and     #$E3                            ; 8332 29 E3                    ).
         beq     L82D6                           ; 8334 F0 A0                    ..
         jsr     L84D8                           ; 8336 20 D8 84                  ..
-        lda     $3B                             ; 8339 A5 3B                    .;
+        lda     generalCounter3b                ; 8339 A5 3B                    .;
         and     #$40                            ; 833B 29 40                    )@
         beq     L8352                           ; 833D F0 13                    ..
-        dec     player1TetriminoX,x             ; 833F D6 62                    .b
+        dec     player1TetrominoX,x             ; 833F D6 62                    .b
         jsr     L8650                           ; 8341 20 50 86                  P.
         bcs     L8352                           ; 8344 B0 0C                    ..
         lda     #$09                            ; 8346 A9 09                    ..
         sta     $01AA,x                         ; 8348 9D AA 01                 ...
-        inc     player1TetriminoX,x             ; 834B F6 62                    .b
+        inc     player1TetrominoX,x             ; 834B F6 62                    .b
         bvs     L8352                           ; 834D 70 03                    p.
         jsr     L862E                           ; 834F 20 2E 86                  ..
 L8352:
-        lda     $3B                             ; 8352 A5 3B                    .;
+        lda     generalCounter3b                ; 8352 A5 3B                    .;
         and     #$80                            ; 8354 29 80                    ).
         beq     L836B                           ; 8356 F0 13                    ..
-        inc     player1TetriminoX,x             ; 8358 F6 62                    .b
+        inc     player1TetrominoX,x             ; 8358 F6 62                    .b
         jsr     L8650                           ; 835A 20 50 86                  P.
         bcs     L836B                           ; 835D B0 0C                    ..
         lda     #$09                            ; 835F A9 09                    ..
         sta     $01AC,x                         ; 8361 9D AC 01                 ...
-        dec     player1TetriminoX,x             ; 8364 D6 62                    .b
+        dec     player1TetrominoX,x             ; 8364 D6 62                    .b
         bvs     L836B                           ; 8366 70 03                    p.
         jsr     L862E                           ; 8368 20 2E 86                  ..
 L836B:
-        lda     $3B                             ; 836B A5 3B                    .;
+        lda     generalCounter3b                ; 836B A5 3B                    .;
         and     #$02                            ; 836D 29 02                    ).
         beq     L838E                           ; 836F F0 1D                    ..
-        lda     player1TetriminoOrientation,x   ; 8371 B5 68                    .h
-        sta     $3A                             ; 8373 85 3A                    .:
+        lda     player1TetrominoOrientation,x   ; 8371 B5 68                    .h
+        sta     generalCounter3a                ; 8373 85 3A                    .:
         clc                                     ; 8375 18                       .
         adc     #$01                            ; 8376 69 01                    i.
         and     #$03                            ; 8378 29 03                    ).
-        sta     player1TetriminoOrientation,x   ; 837A 95 68                    .h
+        sta     player1TetrominoOrientation,x   ; 837A 95 68                    .h
         jsr     L8650                           ; 837C 20 50 86                  P.
         bcs     L838E                           ; 837F B0 0D                    ..
-        dec     player1TetriminoX,x             ; 8381 D6 62                    .b
+        dec     player1TetrominoX,x             ; 8381 D6 62                    .b
         jsr     L8650                           ; 8383 20 50 86                  P.
         bcs     L838E                           ; 8386 B0 06                    ..
-        inc     player1TetriminoX,x             ; 8388 F6 62                    .b
-        lda     $3A                             ; 838A A5 3A                    .:
-        sta     player1TetriminoOrientation,x   ; 838C 95 68                    .h
+        inc     player1TetrominoX,x             ; 8388 F6 62                    .b
+        lda     generalCounter3a                ; 838A A5 3A                    .:
+        sta     player1TetrominoOrientation,x   ; 838C 95 68                    .h
 L838E:
-        lda     $3B                             ; 838E A5 3B                    .;
+        lda     generalCounter3b                ; 838E A5 3B                    .;
         and     #$01                            ; 8390 29 01                    ).
         beq     L83B1                           ; 8392 F0 1D                    ..
-        lda     player1TetriminoOrientation,x   ; 8394 B5 68                    .h
-        sta     $3A                             ; 8396 85 3A                    .:
+        lda     player1TetrominoOrientation,x   ; 8394 B5 68                    .h
+        sta     generalCounter3a                ; 8396 85 3A                    .:
         sec                                     ; 8398 38                       8
         sbc     #$01                            ; 8399 E9 01                    ..
         and     #$03                            ; 839B 29 03                    ).
-        sta     player1TetriminoOrientation,x   ; 839D 95 68                    .h
+        sta     player1TetrominoOrientation,x   ; 839D 95 68                    .h
         jsr     L8650                           ; 839F 20 50 86                  P.
         bcs     L83B1                           ; 83A2 B0 0D                    ..
-        dec     player1TetriminoX,x             ; 83A4 D6 62                    .b
+        dec     player1TetrominoX,x             ; 83A4 D6 62                    .b
         jsr     L8650                           ; 83A6 20 50 86                  P.
         bcs     L83B1                           ; 83A9 B0 06                    ..
-        inc     player1TetriminoX,x             ; 83AB F6 62                    .b
-        lda     $3A                             ; 83AD A5 3A                    .:
-        sta     player1TetriminoOrientation,x   ; 83AF 95 68                    .h
+        inc     player1TetrominoX,x             ; 83AB F6 62                    .b
+        lda     generalCounter3a                ; 83AD A5 3A                    .:
+        sta     player1TetrominoOrientation,x   ; 83AF 95 68                    .h
 L83B1:
-        lda     $3B                             ; 83B1 A5 3B                    .;
+        lda     generalCounter3b                ; 83B1 A5 3B                    .;
         and     #$20                            ; 83B3 29 20                    ) 
         beq     L8416                           ; 83B5 F0 5F                    ._
-        inc     player1TetriminoY,x             ; 83B7 F6 60                    .`
+        inc     player1TetrominoY,x             ; 83B7 F6 60                    .`
         jsr     L8C15                           ; 83B9 20 15 8C                  ..
         bcs     L840B                           ; 83BC B0 4D                    .M
         jsr     L8658                           ; 83BE 20 58 86                  X.
         bcs     L8416                           ; 83C1 B0 53                    .S
-        dec     player1TetriminoY,x             ; 83C3 D6 60                    .`
+        dec     player1TetrominoY,x             ; 83C3 D6 60                    .`
         jsr     L85B3                           ; 83C5 20 B3 85                  ..
         jsr     L9A47                           ; 83C8 20 47 9A                  G.
         jsr     L8129                           ; 83CB 20 29 81                  ).
-        lda     player1TetriminoY,x             ; 83CE B5 60                    .`
+        lda     player1TetrominoY,x             ; 83CE B5 60                    .`
         cmp     #$06                            ; 83D0 C9 06                    ..
         bcs     L8417                           ; 83D2 B0 43                    .C
         lda     #$00                            ; 83D4 A9 00                    ..
@@ -721,7 +729,7 @@ L8403:
 
 ; ----------------------------------------------------------------------------
 L840B:
-        dec     player1TetriminoY,x             ; 840B D6 60                    .`
+        dec     player1TetrominoY,x             ; 840B D6 60                    .`
         lda     #$01                            ; 840D A9 01                    ..
         sta     player1FallTimer,x              ; 840F 95 6A                    .j
         lda     #$05                            ; 8411 A9 05                    ..
@@ -732,7 +740,7 @@ L8416:
 ; ----------------------------------------------------------------------------
 L8417:
         lda     #$00                            ; 8417 A9 00                    ..
-        sta     player1TetriminoCurrent,x       ; 8419 95 64                    .d
+        sta     player1TetrominoCurrent,x       ; 8419 95 64                    .d
         lda     #$0E                            ; 841B A9 0E                    ..
         jsr     possibleSetSoundOrMusic         ; 841D 20 B1 CF                  ..
         jsr     L8565                           ; 8420 20 65 85                  e.
@@ -740,7 +748,7 @@ L8417:
 L8426:
         ldy     #$00                            ; 8426 A0 00                    ..
         lda     #$07                            ; 8428 A9 07                    ..
-        sta     $36                             ; 842A 85 36                    .6
+        sta     generalCounter36                ; 842A 85 36                    .6
 L842C:
         ldx     #$08                            ; 842C A2 08                    ..
 L842E:
@@ -758,16 +766,16 @@ L843A:
         bcc     L8445                           ; 8441 90 02                    ..
         inc     $EE                             ; 8443 E6 EE                    ..
 L8445:
-        dec     $36                             ; 8445 C6 36                    .6
+        dec     generalCounter36                ; 8445 C6 36                    .6
         bne     L842C                           ; 8447 D0 E3                    ..
         rts                                     ; 8449 60                       `
 
 ; ----------------------------------------------------------------------------
 L844A:
-        sty     $38                             ; 844A 84 38                    .8
-        stx     $37                             ; 844C 86 37                    .7
+        sty     generalCounter38                ; 844A 84 38                    .8
+        stx     generalCounter37                ; 844C 86 37                    .7
 L844E:
-        sty     $39                             ; 844E 84 39                    .9
+        sty     generalCounter39                ; 844E 84 39                    .9
 L8450:
         iny                                     ; 8450 C8                       .
         dex                                     ; 8451 CA                       .
@@ -778,24 +786,24 @@ L8450:
         bne     L844E                           ; 845C D0 F0                    ..
 L845E:
         jsr     LA3DB                           ; 845E 20 DB A3                  ..
-        stx     $3A                             ; 8461 86 3A                    .:
-        ldx     $38                             ; 8463 A6 38                    .8
+        stx     generalCounter3a                ; 8461 86 3A                    .:
+        ldx     generalCounter38                ; 8463 A6 38                    .8
         ldy     #$00                            ; 8465 A0 00                    ..
 L8467:
         lda     $B2,x                           ; 8467 B5 B2                    ..
         sta     ($48),y                         ; 8469 91 48                    .H
         iny                                     ; 846B C8                       .
         inx                                     ; 846C E8                       .
-        dec     $37                             ; 846D C6 37                    .7
+        dec     generalCounter37                ; 846D C6 37                    .7
         bne     L8467                           ; 846F D0 F6                    ..
         txa                                     ; 8471 8A                       .
         tay                                     ; 8472 A8                       .
-        ldx     $3A                             ; 8473 A6 3A                    .:
+        ldx     generalCounter3a                ; 8473 A6 3A                    .:
         lda     $48                             ; 8475 A5 48                    .H
         sta     ppuDataAddress1,x               ; 8477 95 08                    ..
         lda     $49                             ; 8479 A5 49                    .I
         sta     ppuDataAddress1+1,x             ; 847B 95 09                    ..
-        lda     $38                             ; 847D A5 38                    .8
+        lda     generalCounter38                ; 847D A5 38                    .8
         and     #$07                            ; 847F 29 07                    ).
         clc                                     ; 8481 18                       .
         adc     $ED                             ; 8482 65 ED                    e.
@@ -803,9 +811,9 @@ L8467:
         lda     $EE                             ; 8486 A5 EE                    ..
         adc     #$00                            ; 8488 69 00                    i.
         sta     $17,x                           ; 848A 95 17                    ..
-        lda     $39                             ; 848C A5 39                    .9
+        lda     generalCounter39                ; 848C A5 39                    .9
         sec                                     ; 848E 38                       8
-        sbc     $38                             ; 848F E5 38                    .8
+        sbc     generalCounter38                ; 848F E5 38                    .8
         adc     #$00                            ; 8491 69 00                    i.
         sta     $24,x                           ; 8493 95 24                    .$
         clc                                     ; 8495 18                       .
@@ -816,54 +824,54 @@ L8467:
 ; ----------------------------------------------------------------------------
 L849D:
         lda     #$00                            ; 849D A9 00                    ..
-        sta     $36                             ; 849F 85 36                    .6
+        sta     generalCounter36                ; 849F 85 36                    .6
         iny                                     ; 84A1 C8                       .
-        sty     $37                             ; 84A2 84 37                    .7
+        sty     generalCounter37                ; 84A2 84 37                    .7
         bit     playMode                        ; 84A4 24 2F                    $/
         bmi     L84AE                           ; 84A6 30 06                    0.
         lda     #$0A                            ; 84A8 A9 0A                    ..
-        sta     $38                             ; 84AA 85 38                    .8
+        sta     generalCounter38                ; 84AA 85 38                    .8
         bne     L84C4                           ; 84AC D0 16                    ..
 L84AE:
         lda     #$0C                            ; 84AE A9 0C                    ..
-        sta     $38                             ; 84B0 85 38                    .8
+        sta     generalCounter38                ; 84B0 85 38                    .8
 L84B2:
-        lda     ($3A),y                         ; 84B2 B1 3A                    .:
+        lda     (generalCounter3a),y            ; 84B2 B1 3A                    .:
         lsr     a                               ; 84B4 4A                       J
         lsr     a                               ; 84B5 4A                       J
         lsr     a                               ; 84B6 4A                       J
         lsr     a                               ; 84B7 4A                       J
-        ldy     $36                             ; 84B8 A4 36                    .6
+        ldy     generalCounter36                ; 84B8 A4 36                    .6
         sta     ($48),y                         ; 84BA 91 48                    .H
-        inc     $36                             ; 84BC E6 36                    .6
-        ldy     $37                             ; 84BE A4 37                    .7
-        dec     $38                             ; 84C0 C6 38                    .8
+        inc     generalCounter36                ; 84BC E6 36                    .6
+        ldy     generalCounter37                ; 84BE A4 37                    .7
+        dec     generalCounter38                ; 84C0 C6 38                    .8
         beq     L84D7                           ; 84C2 F0 13                    ..
 L84C4:
-        lda     ($3A),y                         ; 84C4 B1 3A                    .:
+        lda     (generalCounter3a),y            ; 84C4 B1 3A                    .:
         iny                                     ; 84C6 C8                       .
-        sty     $37                             ; 84C7 84 37                    .7
+        sty     generalCounter37                ; 84C7 84 37                    .7
         and     #$0F                            ; 84C9 29 0F                    ).
-        ldy     $36                             ; 84CB A4 36                    .6
+        ldy     generalCounter36                ; 84CB A4 36                    .6
         sta     ($48),y                         ; 84CD 91 48                    .H
-        inc     $36                             ; 84CF E6 36                    .6
-        ldy     $37                             ; 84D1 A4 37                    .7
-        dec     $38                             ; 84D3 C6 38                    .8
+        inc     generalCounter36                ; 84CF E6 36                    .6
+        ldy     generalCounter37                ; 84D1 A4 37                    .7
+        dec     generalCounter38                ; 84D3 C6 38                    .8
         bne     L84B2                           ; 84D5 D0 DB                    ..
 L84D7:
         rts                                     ; 84D7 60                       `
 
 ; ----------------------------------------------------------------------------
 L84D8:
-        lda     player1TetriminoY,x             ; 84D8 B5 60                    .`
+        lda     player1TetrominoY,x             ; 84D8 B5 60                    .`
         sec                                     ; 84DA 38                       8
         sbc     #$01                            ; 84DB E9 01                    ..
         sta     $EA                             ; 84DD 85 EA                    ..
         asl     a                               ; 84DF 0A                       .
         asl     a                               ; 84E0 0A                       .
         asl     a                               ; 84E1 0A                       .
-        sta     $36                             ; 84E2 85 36                    .6
-        lda     player1TetriminoX,x             ; 84E4 B5 62                    .b
+        sta     generalCounter36                ; 84E2 85 36                    .6
+        lda     player1TetrominoX,x             ; 84E4 B5 62                    .b
         sec                                     ; 84E6 38                       8
         sbc     #$02                            ; 84E7 E9 02                    ..
         bpl     L84ED                           ; 84E9 10 02                    ..
@@ -872,16 +880,16 @@ L84D8:
 L84ED:
         sta     $EB                             ; 84ED 85 EB                    ..
         lsr     a                               ; 84EF 4A                       J
-        ora     $36                             ; 84F0 05 36                    .6
+        ora     generalCounter36                ; 84F0 05 36                    .6
         sta     $EC                             ; 84F2 85 EC                    ..
-        sta     $36                             ; 84F4 85 36                    .6
-        stx     $39                             ; 84F6 86 39                    .9
+        sta     generalCounter36                ; 84F4 85 36                    .6
+        stx     generalCounter39                ; 84F6 86 39                    .9
         bit     playMode                        ; 84F8 24 2F                    $/
         bpl     L84FE                           ; 84FA 10 02                    ..
         ldx     #$02                            ; 84FC A2 02                    ..
 L84FE:
         lda     playfieldIdPossible,x           ; 84FE BD 62 85                 .b.
-        sta     $37                             ; 8501 85 37                    .7
+        sta     generalCounter37                ; 8501 85 37                    .7
         lda     L8559,x                         ; 8503 BD 59 85                 .Y.
         sta     $EE                             ; 8506 85 EE                    ..
         lda     $EA                             ; 8508 A5 EA                    ..
@@ -908,7 +916,7 @@ L8521:
         lsr     a                               ; 8529 4A                       J
         bcs     L8537                           ; 852A B0 0B                    ..
 L852C:
-        lda     ($36),y                         ; 852C B1 36                    .6
+        lda     (generalCounter36),y            ; 852C B1 36                    .6
         lsr     a                               ; 852E 4A                       J
         lsr     a                               ; 852F 4A                       J
         lsr     a                               ; 8530 4A                       J
@@ -916,13 +924,13 @@ L852C:
         jsr     L8544                           ; 8532 20 44 85                  D.
         bcs     L8541                           ; 8535 B0 0A                    ..
 L8537:
-        lda     ($36),y                         ; 8537 B1 36                    .6
+        lda     (generalCounter36),y            ; 8537 B1 36                    .6
         iny                                     ; 8539 C8                       .
         and     #$0F                            ; 853A 29 0F                    ).
         jsr     L8544                           ; 853C 20 44 85                  D.
         bcc     L852C                           ; 853F 90 EB                    ..
 L8541:
-        ldx     $39                             ; 8541 A6 39                    .9
+        ldx     generalCounter39                ; 8541 A6 39                    .9
         rts                                     ; 8543 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -955,23 +963,23 @@ playfieldIdPossible:
 ; ----------------------------------------------------------------------------
 L8565:
         lda     $EC                             ; 8565 A5 EC                    ..
-        sta     $36                             ; 8567 85 36                    .6
-        stx     $39                             ; 8569 86 39                    .9
+        sta     generalCounter36                ; 8567 85 36                    .6
+        stx     generalCounter39                ; 8569 86 39                    .9
         bit     playMode                        ; 856B 24 2F                    $/
         bpl     L8571                           ; 856D 10 02                    ..
         ldx     #$00                            ; 856F A2 00                    ..
 L8571:
         lda     playfieldIdPossible,x           ; 8571 BD 62 85                 .b.
-        sta     $37                             ; 8574 85 37                    .7
+        sta     generalCounter37                ; 8574 85 37                    .7
         ldx     #$00                            ; 8576 A2 00                    ..
         ldy     #$00                            ; 8578 A0 00                    ..
         lda     $EB                             ; 857A A5 EB                    ..
         lsr     a                               ; 857C 4A                       J
         bcs     L8590                           ; 857D B0 11                    ..
 L857F:
-        lda     ($36),y                         ; 857F B1 36                    .6
+        lda     (generalCounter36),y            ; 857F B1 36                    .6
         and     #$0F                            ; 8581 29 0F                    ).
-        sta     $38                             ; 8583 85 38                    .8
+        sta     generalCounter38                ; 8583 85 38                    .8
         lda     $B2,x                           ; 8585 B5 B2                    ..
         asl     a                               ; 8587 0A                       .
         asl     a                               ; 8588 0A                       .
@@ -980,21 +988,21 @@ L857F:
         jsr     L85A1                           ; 858B 20 A1 85                  ..
         bcs     L859E                           ; 858E B0 0E                    ..
 L8590:
-        lda     ($36),y                         ; 8590 B1 36                    .6
+        lda     (generalCounter36),y            ; 8590 B1 36                    .6
         and     #$F0                            ; 8592 29 F0                    ).
-        sta     $38                             ; 8594 85 38                    .8
+        sta     generalCounter38                ; 8594 85 38                    .8
         lda     $B2,x                           ; 8596 B5 B2                    ..
         jsr     L85A1                           ; 8598 20 A1 85                  ..
         iny                                     ; 859B C8                       .
         bcc     L857F                           ; 859C 90 E1                    ..
 L859E:
-        ldx     $39                             ; 859E A6 39                    .9
+        ldx     generalCounter39                ; 859E A6 39                    .9
         rts                                     ; 85A0 60                       `
 
 ; ----------------------------------------------------------------------------
 L85A1:
-        ora     $38                             ; 85A1 05 38                    .8
-        sta     ($36),y                         ; 85A3 91 36                    .6
+        ora     generalCounter38                ; 85A1 05 38                    .8
+        sta     (generalCounter36),y            ; 85A3 91 36                    .6
         inx                                     ; 85A5 E8                       .
         txa                                     ; 85A6 8A                       .
         and     #$07                            ; 85A7 29 07                    ).
@@ -1009,13 +1017,13 @@ L85B0:
 
 ; ----------------------------------------------------------------------------
 L85B3:
-        lda     player1TetriminoCurrent,x       ; 85B3 B5 64                    .d
+        lda     player1TetrominoCurrent,x       ; 85B3 B5 64                    .d
         sta     lastCurrentBlockP1,x            ; 85B5 9D BC 01                 ...
-        lda     player1TetriminoY,x             ; 85B8 B5 60                    .`
-        sta     lastTetriminoYP1,x              ; 85BA 9D C0 01                 ...
-        lda     player1TetriminoX,x             ; 85BD B5 62                    .b
-        sta     lastTetriminoXP1,x              ; 85BF 9D C2 01                 ...
-        lda     player1TetriminoOrientation,x   ; 85C2 B5 68                    .h
+        lda     player1TetrominoY,x             ; 85B8 B5 60                    .`
+        sta     lastTetrominoYP1,x              ; 85BA 9D C0 01                 ...
+        lda     player1TetrominoX,x             ; 85BD B5 62                    .b
+        sta     lastTetrominoXP1,x              ; 85BF 9D C2 01                 ...
+        lda     player1TetrominoOrientation,x   ; 85C2 B5 68                    .h
         sta     lastOrientationP1,x             ; 85C4 9D BE 01                 ...
         txa                                     ; 85C7 8A                       .
         asl     a                               ; 85C8 0A                       .
@@ -1026,15 +1034,15 @@ L85B3:
         sta     lastRNGSeedP1+1,y               ; 85D3 99 C5 01                 ...
         jsr     L869B                           ; 85D6 20 9B 86                  ..
 L85D9:
-        asl     $36                             ; 85D9 06 36                    .6
+        asl     generalCounter36                ; 85D9 06 36                    .6
         bcc     L85EB                           ; 85DB 90 0E                    ..
         tya                                     ; 85DD 98                       .
         pha                                     ; 85DE 48                       H
-        ldy     $39                             ; 85DF A4 39                    .9
+        ldy     generalCounter39                ; 85DF A4 39                    .9
         lda     L86F3,y                         ; 85E1 B9 F3 86                 ...
         sta     $B2,x                           ; 85E4 95 B2                    ..
         iny                                     ; 85E6 C8                       .
-        sty     $39                             ; 85E7 84 39                    .9
+        sty     generalCounter39                ; 85E7 84 39                    .9
         pla                                     ; 85E9 68                       h
         tay                                     ; 85EA A8                       .
 L85EB:
@@ -1050,20 +1058,20 @@ L85EB:
         tax                                     ; 85F8 AA                       .
         cpy     #$08                            ; 85F9 C0 08                    ..
         bne     L85D9                           ; 85FB D0 DC                    ..
-        lda     $37                             ; 85FD A5 37                    .7
-        sta     $36                             ; 85FF 85 36                    .6
+        lda     generalCounter37                ; 85FD A5 37                    .7
+        sta     generalCounter36                ; 85FF 85 36                    .6
         jmp     L85D9                           ; 8601 4C D9 85                 L..
 
 ; ----------------------------------------------------------------------------
 L8604:
-        ldx     $38                             ; 8604 A6 38                    .8
+        ldx     generalCounter38                ; 8604 A6 38                    .8
         rts                                     ; 8606 60                       `
 
 ; ----------------------------------------------------------------------------
 L8607:
         jsr     L869B                           ; 8607 20 9B 86                  ..
 L860A:
-        asl     $36                             ; 860A 06 36                    .6
+        asl     generalCounter36                ; 860A 06 36                    .6
         bcc     L8612                           ; 860C 90 04                    ..
         lda     #$00                            ; 860E A9 00                    ..
         sta     $B2,x                           ; 8610 95 B2                    ..
@@ -1080,20 +1088,20 @@ L8612:
         tax                                     ; 861F AA                       .
         cpy     #$08                            ; 8620 C0 08                    ..
         bne     L860A                           ; 8622 D0 E6                    ..
-        lda     $37                             ; 8624 A5 37                    .7
-        sta     $36                             ; 8626 85 36                    .6
+        lda     generalCounter37                ; 8624 A5 37                    .7
+        sta     generalCounter36                ; 8626 85 36                    .6
         jmp     L860A                           ; 8628 4C 0A 86                 L..
 
 ; ----------------------------------------------------------------------------
 L862B:
-        ldx     $38                             ; 862B A6 38                    .8
+        ldx     generalCounter38                ; 862B A6 38                    .8
         rts                                     ; 862D 60                       `
 
 ; ----------------------------------------------------------------------------
 L862E:
-        inc     player1TetriminoY,x             ; 862E F6 60                    .`
+        inc     player1TetrominoY,x             ; 862E F6 60                    .`
         jsr     L8C15                           ; 8630 20 15 8C                  ..
-        dec     player1TetriminoY,x             ; 8633 D6 60                    .`
+        dec     player1TetrominoY,x             ; 8633 D6 60                    .`
         bcc     L863C                           ; 8635 90 05                    ..
 L8637:
         inc     player1FallTimer,x              ; 8637 F6 6A                    .j
@@ -1105,8 +1113,8 @@ L863C:
         txa                                     ; 863C 8A                       .
         eor     #$01                            ; 863D 49 01                    I.
         tay                                     ; 863F A8                       .
-        lda     player1TetriminoY,x             ; 8640 B5 60                    .`
-        cmp     player1TetriminoY,y             ; 8642 D9 60 00                 .`.
+        lda     player1TetrominoY,x             ; 8640 B5 60                    .`
+        cmp     player1TetrominoY,y             ; 8642 D9 60 00                 .`.
         bcc     L8637                           ; 8645 90 F0                    ..
         lda     player1FallTimer,y              ; 8647 B9 6A 00                 .j.
         adc     #$01                            ; 864A 69 01                    i.
@@ -1127,7 +1135,7 @@ L8658:
         lda     #$FF                            ; 865B A9 FF                    ..
         sta     $2D                             ; 865D 85 2D                    .-
 L865F:
-        asl     $36                             ; 865F 06 36                    .6
+        asl     generalCounter36                ; 865F 06 36                    .6
         bcc     L8669                           ; 8661 90 06                    ..
         lda     $B2,x                           ; 8663 B5 B2                    ..
         beq     L8669                           ; 8665 F0 02                    ..
@@ -1145,13 +1153,13 @@ L8669:
         tax                                     ; 8676 AA                       .
         cpy     #$08                            ; 8677 C0 08                    ..
         bne     L865F                           ; 8679 D0 E4                    ..
-        lda     $37                             ; 867B A5 37                    .7
-        sta     $36                             ; 867D 85 36                    .6
+        lda     generalCounter37                ; 867B A5 37                    .7
+        sta     generalCounter36                ; 867D 85 36                    .6
         jmp     L865F                           ; 867F 4C 5F 86                 L_.
 
 ; ----------------------------------------------------------------------------
 L8682:
-        ldx     $38                             ; 8682 A6 38                    .8
+        ldx     generalCounter38                ; 8682 A6 38                    .8
         lda     $2D                             ; 8684 A5 2D                    .-
         bmi     L8699                           ; 8686 30 11                    0.
         lsr     a                               ; 8688 4A                       J
@@ -1174,28 +1182,28 @@ L8699:
 
 ; ----------------------------------------------------------------------------
 L869B:
-        lda     player1TetriminoCurrent,x       ; 869B B5 64                    .d
+        lda     player1TetrominoCurrent,x       ; 869B B5 64                    .d
         asl     a                               ; 869D 0A                       .
         asl     a                               ; 869E 0A                       .
-        ora     player1TetriminoOrientation,x   ; 869F 15 68                    .h
+        ora     player1TetrominoOrientation,x   ; 869F 15 68                    .h
         asl     a                               ; 86A1 0A                       .
         tay                                     ; 86A2 A8                       .
         asl     a                               ; 86A3 0A                       .
-        sta     $39                             ; 86A4 85 39                    .9
+        sta     generalCounter39                ; 86A4 85 39                    .9
         lda     L86C3,y                         ; 86A6 B9 C3 86                 ...
-        sta     $36                             ; 86A9 85 36                    .6
+        sta     generalCounter36                ; 86A9 85 36                    .6
         lda     L86C4,y                         ; 86AB B9 C4 86                 ...
-        sta     $37                             ; 86AE 85 37                    .7
-        lda     player1TetriminoY,x             ; 86B0 B5 60                    .`
+        sta     generalCounter37                ; 86AE 85 37                    .7
+        lda     player1TetrominoY,x             ; 86B0 B5 60                    .`
         sec                                     ; 86B2 38                       8
         sbc     $EA                             ; 86B3 E5 EA                    ..
         asl     a                               ; 86B5 0A                       .
         asl     a                               ; 86B6 0A                       .
         asl     a                               ; 86B7 0A                       .
-        adc     player1TetriminoX,x             ; 86B8 75 62                    ub
+        adc     player1TetrominoX,x             ; 86B8 75 62                    ub
         sec                                     ; 86BA 38                       8
         sbc     $EB                             ; 86BB E5 EB                    ..
-        stx     $38                             ; 86BD 86 38                    .8
+        stx     generalCounter38                ; 86BD 86 38                    .8
         tax                                     ; 86BF AA                       .
         ldy     #$10                            ; 86C0 A0 10                    ..
         rts                                     ; 86C2 60                       `
@@ -1229,7 +1237,7 @@ L86F3:
         .byte   $01,$0E,$0D,$03,$04,$0B,$0C,$06 ; 876B 01 0E 0D 03 04 0B 0C 06  ........
 ; ----------------------------------------------------------------------------
 L8773:
-        stx     $36                             ; 8773 86 36                    .6
+        stx     generalCounter36                ; 8773 86 36                    .6
         lda     #$00                            ; 8775 A9 00                    ..
         sta     $01CC,x                         ; 8777 9D CC 01                 ...
         lda     $EA                             ; 877A A5 EA                    ..
@@ -1244,10 +1252,10 @@ L8773:
         ldx     #$00                            ; 8787 A2 00                    ..
 L8789:
         lda     playfieldIdPossible,x           ; 8789 BD 62 85                 .b.
-        ldx     $36                             ; 878C A6 36                    .6
-        sta     $37                             ; 878E 85 37                    .7
+        ldx     generalCounter36                ; 878C A6 36                    .6
+        sta     generalCounter37                ; 878E 85 37                    .7
         lda     #$00                            ; 8790 A9 00                    ..
-        sta     $36                             ; 8792 85 36                    .6
+        sta     generalCounter36                ; 8792 85 36                    .6
         lda     #$1A                            ; 8794 A9 1A                    ..
         clc                                     ; 8796 18                       .
         sbc     $EA                             ; 8797 E5 EA                    ..
@@ -1255,24 +1263,24 @@ L8789:
         bcc     L879F                           ; 879B 90 02                    ..
         lda     #$04                            ; 879D A9 04                    ..
 L879F:
-        sta     $39                             ; 879F 85 39                    .9
+        sta     generalCounter39                ; 879F 85 39                    .9
 L87A1:
         lda     #$06                            ; 87A1 A9 06                    ..
-        sta     $38                             ; 87A3 85 38                    .8
+        sta     generalCounter38                ; 87A3 85 38                    .8
 L87A5:
         iny                                     ; 87A5 C8                       .
-        lda     ($36),y                         ; 87A6 B1 36                    .6
+        lda     (generalCounter36),y            ; 87A6 B1 36                    .6
         cmp     #$10                            ; 87A8 C9 10                    ..
         bcc     L87D6                           ; 87AA 90 2A                    .*
         and     #$0F                            ; 87AC 29 0F                    ).
         beq     L87D6                           ; 87AE F0 26                    .&
-        dec     $38                             ; 87B0 C6 38                    .8
+        dec     generalCounter38                ; 87B0 C6 38                    .8
         bne     L87A5                           ; 87B2 D0 F1                    ..
         tya                                     ; 87B4 98                       .
         and     #$F8                            ; 87B5 29 F8                    ).
         tay                                     ; 87B7 A8                       .
         lda     #$FE                            ; 87B8 A9 FE                    ..
-        sta     ($36),y                         ; 87BA 91 36                    .6
+        sta     (generalCounter36),y            ; 87BA 91 36                    .6
         lda     #$1D                            ; 87BC A9 1D                    ..
         bit     playMode                        ; 87BE 24 2F                    $/
         bpl     L87C4                           ; 87C0 10 02                    ..
@@ -1290,11 +1298,11 @@ L87D6:
         ora     #$07                            ; 87D7 09 07                    ..
         tay                                     ; 87D9 A8                       .
         iny                                     ; 87DA C8                       .
-        dec     $39                             ; 87DB C6 39                    .9
+        dec     generalCounter39                ; 87DB C6 39                    .9
         bne     L87A1                           ; 87DD D0 C2                    ..
         asl     $01CC,x                         ; 87DF 1E CC 01                 ...
         beq     L87FA                           ; 87E2 F0 16                    ..
-        stx     $36                             ; 87E4 86 36                    .6
+        stx     generalCounter36                ; 87E4 86 36                    .6
         txa                                     ; 87E6 8A                       .
         bit     playMode                        ; 87E7 24 2F                    $/
         bpl     L87ED                           ; 87E9 10 02                    ..
@@ -1303,7 +1311,7 @@ L87ED:
         ora     $01CC,x                         ; 87ED 1D CC 01                 ...
         tax                                     ; 87F0 AA                       .
         inc     player1FallTimer,x              ; 87F1 F6 6A                    .j
-        ldx     $36                             ; 87F3 A6 36                    .6
+        ldx     generalCounter36                ; 87F3 A6 36                    .6
         ldy     #$0A                            ; 87F5 A0 0A                    ..
         jsr     LA763                           ; 87F7 20 63 A7                  c.
 L87FA:
@@ -1324,7 +1332,7 @@ L87FE:
 L880C:
         txa                                     ; 880C 8A                       .
         sta     oamStaging+18,y                 ; 880D 99 12 05                 ...
-        sty     $38                             ; 8810 84 38                    .8
+        sty     generalCounter38                ; 8810 84 38                    .8
         ldy     playMode                        ; 8812 A4 2F                    ./
         iny                                     ; 8814 C8                       .
         tya                                     ; 8815 98                       .
@@ -1333,7 +1341,7 @@ L880C:
         adc     #$00                            ; 8819 69 00                    i.
         tay                                     ; 881B A8                       .
         lda     L883A,y                         ; 881C B9 3A 88                 .:.
-        ldy     $38                             ; 881F A4 38                    .8
+        ldy     generalCounter38                ; 881F A4 38                    .8
         sta     oamStaging+19,y                 ; 8821 99 13 05                 ...
         lda     $01D0,x                         ; 8824 BD D0 01                 ...
         clc                                     ; 8827 18                       .
@@ -1357,7 +1365,7 @@ L8846:
 L8848:
         lda     $01CE,x                         ; 8848 BD CE 01                 ...
         beq     L88C7                           ; 884B F0 7A                    .z
-        stx     $3A                             ; 884D 86 3A                    .:
+        stx     generalCounter3a                ; 884D 86 3A                    .:
         ldy     L8846,x                         ; 884F BC 46 88                 .F.
         dec     $01CE,x                         ; 8852 DE CE 01                 ...
         lda     $01CE,x                         ; 8855 BD CE 01                 ...
@@ -1365,17 +1373,17 @@ L8848:
         lsr     a                               ; 885A 4A                       J
         bcc     L88C7                           ; 885B 90 6A                    .j
         lda     #$14                            ; 885D A9 14                    ..
-        sta     $3B                             ; 885F 85 3B                    .;
+        sta     generalCounter3b                ; 885F 85 3B                    .;
         lda     $01CC,x                         ; 8861 BD CC 01                 ...
         asl     a                               ; 8864 0A                       .
         adc     $01CC,x                         ; 8865 7D CC 01                 }..
         asl     a                               ; 8868 0A                       .
-        sta     $37                             ; 8869 85 37                    .7
+        sta     generalCounter37                ; 8869 85 37                    .7
         lda     playMode                        ; 886B A5 2F                    ./
         clc                                     ; 886D 18                       .
         adc     #$01                            ; 886E 69 01                    i.
         asl     a                               ; 8870 0A                       .
-        adc     $3A                             ; 8871 65 3A                    e:
+        adc     generalCounter3a                ; 8871 65 3A                    e:
         tax                                     ; 8873 AA                       .
 L8874:
         lda     oamStaging,y                    ; 8874 B9 00 05                 ...
@@ -1415,7 +1423,7 @@ L88BF:
         iny                                     ; 88C0 C8                       .
         iny                                     ; 88C1 C8                       .
         iny                                     ; 88C2 C8                       .
-        dec     $3B                             ; 88C3 C6 3B                    .;
+        dec     generalCounter3b                ; 88C3 C6 3B                    .;
         bne     L8874                           ; 88C5 D0 AD                    ..
 L88C7:
         rts                                     ; 88C7 60                       `
@@ -1427,16 +1435,16 @@ L88C8:
         ldx     #$00                            ; 88CC A2 00                    ..
 L88CE:
         lda     playfieldIdPossible,x           ; 88CE BD 62 85                 .b.
-        ldx     $3A                             ; 88D1 A6 3A                    .:
-        sta     $3B                             ; 88D3 85 3B                    .;
-        sta     $3D                             ; 88D5 85 3D                    .=
+        ldx     generalCounter3a                ; 88D1 A6 3A                    .:
+        sta     generalCounter3b                ; 88D3 85 3B                    .;
+        sta     generalCounter3d                ; 88D5 85 3D                    .=
         jsr     L8A5B                           ; 88D7 20 5B 8A                  [.
         lda     $01D0,x                         ; 88DA BD D0 01                 ...
-        sta     $3A                             ; 88DD 85 3A                    .:
-        sta     $3C                             ; 88DF 85 3C                    .<
+        sta     generalCounter3a                ; 88DD 85 3A                    .:
+        sta     generalCounter3c                ; 88DF 85 3C                    .<
         bne     L88FC                           ; 88E1 D0 19                    ..
 L88E3:
-        lda     $3A                             ; 88E3 A5 3A                    .:
+        lda     generalCounter3a                ; 88E3 A5 3A                    .:
         sec                                     ; 88E5 38                       8
         sbc     #$08                            ; 88E6 E9 08                    ..
         cmp     #$30                            ; 88E8 C9 30                    .0
@@ -1446,9 +1454,9 @@ L88E3:
 
 ; ----------------------------------------------------------------------------
 L88F2:
-        sta     $3A                             ; 88F2 85 3A                    .:
+        sta     generalCounter3a                ; 88F2 85 3A                    .:
         ldy     #$00                            ; 88F4 A0 00                    ..
-        lda     ($3A),y                         ; 88F6 B1 3A                    .:
+        lda     (generalCounter3a),y            ; 88F6 B1 3A                    .:
         cmp     #$FE                            ; 88F8 C9 FE                    ..
         bne     L8905                           ; 88FA D0 09                    ..
 L88FC:
@@ -1459,62 +1467,62 @@ L88FC:
 ; ----------------------------------------------------------------------------
 L8905:
         iny                                     ; 8905 C8                       .
-        lda     ($3A),y                         ; 8906 B1 3A                    .:
+        lda     (generalCounter3a),y            ; 8906 B1 3A                    .:
         iny                                     ; 8908 C8                       .
         bit     playMode                        ; 8909 24 2F                    $/
         bpl     L891F                           ; 890B 10 12                    ..
-        ora     ($3A),y                         ; 890D 11 3A                    .:
+        ora     (generalCounter3a),y            ; 890D 11 3A                    .:
         iny                                     ; 890F C8                       .
-        ora     ($3A),y                         ; 8910 11 3A                    .:
+        ora     (generalCounter3a),y            ; 8910 11 3A                    .:
         iny                                     ; 8912 C8                       .
-        ora     ($3A),y                         ; 8913 11 3A                    .:
+        ora     (generalCounter3a),y            ; 8913 11 3A                    .:
         iny                                     ; 8915 C8                       .
-        ora     ($3A),y                         ; 8916 11 3A                    .:
+        ora     (generalCounter3a),y            ; 8916 11 3A                    .:
         iny                                     ; 8918 C8                       .
-        ora     ($3A),y                         ; 8919 11 3A                    .:
+        ora     (generalCounter3a),y            ; 8919 11 3A                    .:
         beq     L88E3                           ; 891B F0 C6                    ..
         bne     L8935                           ; 891D D0 16                    ..
 L891F:
         and     #$0F                            ; 891F 29 0F                    ).
-        ora     ($3A),y                         ; 8921 11 3A                    .:
+        ora     (generalCounter3a),y            ; 8921 11 3A                    .:
         iny                                     ; 8923 C8                       .
-        ora     ($3A),y                         ; 8924 11 3A                    .:
+        ora     (generalCounter3a),y            ; 8924 11 3A                    .:
         iny                                     ; 8926 C8                       .
-        ora     ($3A),y                         ; 8927 11 3A                    .:
+        ora     (generalCounter3a),y            ; 8927 11 3A                    .:
         iny                                     ; 8929 C8                       .
-        ora     ($3A),y                         ; 892A 11 3A                    .:
+        ora     (generalCounter3a),y            ; 892A 11 3A                    .:
         bne     L8935                           ; 892C D0 07                    ..
         iny                                     ; 892E C8                       .
-        lda     ($3A),y                         ; 892F B1 3A                    .:
+        lda     (generalCounter3a),y            ; 892F B1 3A                    .:
         and     #$F0                            ; 8931 29 F0                    ).
         beq     L88E3                           ; 8933 F0 AE                    ..
 L8935:
         ldy     #$00                            ; 8935 A0 00                    ..
         lda     #$FE                            ; 8937 A9 FE                    ..
-        sta     ($3A),y                         ; 8939 91 3A                    .:
+        sta     (generalCounter3a),y            ; 8939 91 3A                    .:
         ldy     #$01                            ; 893B A0 01                    ..
-        lda     ($3A),y                         ; 893D B1 3A                    .:
-        sta     ($3C),y                         ; 893F 91 3C                    .<
+        lda     (generalCounter3a),y            ; 893D B1 3A                    .:
+        sta     (generalCounter3c),y            ; 893F 91 3C                    .<
         iny                                     ; 8941 C8                       .
-        lda     ($3A),y                         ; 8942 B1 3A                    .:
-        sta     ($3C),y                         ; 8944 91 3C                    .<
+        lda     (generalCounter3a),y            ; 8942 B1 3A                    .:
+        sta     (generalCounter3c),y            ; 8944 91 3C                    .<
         iny                                     ; 8946 C8                       .
-        lda     ($3A),y                         ; 8947 B1 3A                    .:
-        sta     ($3C),y                         ; 8949 91 3C                    .<
+        lda     (generalCounter3a),y            ; 8947 B1 3A                    .:
+        sta     (generalCounter3c),y            ; 8949 91 3C                    .<
         iny                                     ; 894B C8                       .
-        lda     ($3A),y                         ; 894C B1 3A                    .:
-        sta     ($3C),y                         ; 894E 91 3C                    .<
+        lda     (generalCounter3a),y            ; 894C B1 3A                    .:
+        sta     (generalCounter3c),y            ; 894E 91 3C                    .<
         iny                                     ; 8950 C8                       .
-        lda     ($3A),y                         ; 8951 B1 3A                    .:
-        sta     ($3C),y                         ; 8953 91 3C                    .<
+        lda     (generalCounter3a),y            ; 8951 B1 3A                    .:
+        sta     (generalCounter3c),y            ; 8953 91 3C                    .<
         iny                                     ; 8955 C8                       .
-        lda     ($3A),y                         ; 8956 B1 3A                    .:
-        sta     ($3C),y                         ; 8958 91 3C                    .<
+        lda     (generalCounter3a),y            ; 8956 B1 3A                    .:
+        sta     (generalCounter3c),y            ; 8958 91 3C                    .<
         jsr     L89C3                           ; 895A 20 C3 89                  ..
-        lda     $3C                             ; 895D A5 3C                    .<
+        lda     generalCounter3c                ; 895D A5 3C                    .<
         sec                                     ; 895F 38                       8
         sbc     #$08                            ; 8960 E9 08                    ..
-        sta     $3C                             ; 8962 85 3C                    .<
+        sta     generalCounter3c                ; 8962 85 3C                    .<
         jmp     L88E3                           ; 8964 4C E3 88                 L..
 
 ; ----------------------------------------------------------------------------
@@ -1568,23 +1576,23 @@ L89C3:
         bpl     L89CD                           ; 89C9 10 02                    ..
         lda     #$00                            ; 89CB A9 00                    ..
 L89CD:
-        sta     ($3A),y                         ; 89CD 91 3A                    .:
+        sta     (generalCounter3a),y            ; 89CD 91 3A                    .:
         iny                                     ; 89CF C8                       .
         lda     #$00                            ; 89D0 A9 00                    ..
-        sta     ($3A),y                         ; 89D2 91 3A                    .:
+        sta     (generalCounter3a),y            ; 89D2 91 3A                    .:
         iny                                     ; 89D4 C8                       .
-        sta     ($3A),y                         ; 89D5 91 3A                    .:
+        sta     (generalCounter3a),y            ; 89D5 91 3A                    .:
         iny                                     ; 89D7 C8                       .
-        sta     ($3A),y                         ; 89D8 91 3A                    .:
+        sta     (generalCounter3a),y            ; 89D8 91 3A                    .:
         iny                                     ; 89DA C8                       .
-        sta     ($3A),y                         ; 89DB 91 3A                    .:
+        sta     (generalCounter3a),y            ; 89DB 91 3A                    .:
         lda     #$0F                            ; 89DD A9 0F                    ..
         bit     playMode                        ; 89DF 24 2F                    $/
         bpl     L89E5                           ; 89E1 10 02                    ..
         lda     #$00                            ; 89E3 A9 00                    ..
 L89E5:
         iny                                     ; 89E5 C8                       .
-        sta     ($3A),y                         ; 89E6 91 3A                    .:
+        sta     (generalCounter3a),y            ; 89E6 91 3A                    .:
         rts                                     ; 89E8 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -1592,11 +1600,11 @@ L89E9:
         lda     oamStaging+3,y                  ; 89E9 B9 03 05                 ...
         sec                                     ; 89EC 38                       8
         sbc     L883A,x                         ; 89ED FD 3A 88                 .:.
-        stx     $36                             ; 89F0 86 36                    .6
+        stx     generalCounter36                ; 89F0 86 36                    .6
         lsr     a                               ; 89F2 4A                       J
         lsr     a                               ; 89F3 4A                       J
         lsr     a                               ; 89F4 4A                       J
-        adc     $37                             ; 89F5 65 37                    e7
+        adc     generalCounter37                ; 89F5 65 37                    e7
         pha                                     ; 89F7 48                       H
         jsr     LA3DB                           ; 89F8 20 DB A3                  ..
         pla                                     ; 89FB 68                       h
@@ -1624,7 +1632,7 @@ L89E9:
         sta     $16,x                           ; 8A22 95 16                    ..
         lda     #$01                            ; 8A24 A9 01                    ..
         sta     $24,x                           ; 8A26 95 24                    .$
-        ldx     $36                             ; 8A28 A6 36                    .6
+        ldx     generalCounter36                ; 8A28 A6 36                    .6
         rts                                     ; 8A2A 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -1651,22 +1659,22 @@ twoSpacesAfterTetris:
 ; ----------------------------------------------------------------------------
 L8A5B:
         lda     $01D0,x                         ; 8A5B BD D0 01                 ...
-        sta     $3A                             ; 8A5E 85 3A                    .:
-        stx     $36                             ; 8A60 86 36                    .6
+        sta     generalCounter3a                ; 8A5E 85 3A                    .:
+        stx     generalCounter36                ; 8A60 86 36                    .6
 L8A62:
-        lda     $3A                             ; 8A62 A5 3A                    .:
+        lda     generalCounter3a                ; 8A62 A5 3A                    .:
         sec                                     ; 8A64 38                       8
         sbc     #$08                            ; 8A65 E9 08                    ..
-        sta     $3A                             ; 8A67 85 3A                    .:
+        sta     generalCounter3a                ; 8A67 85 3A                    .:
         cmp     #$28                            ; 8A69 C9 28                    .(
         bcs     L8A70                           ; 8A6B B0 03                    ..
-        ldx     $36                             ; 8A6D A6 36                    .6
+        ldx     generalCounter36                ; 8A6D A6 36                    .6
         rts                                     ; 8A6F 60                       `
 
 ; ----------------------------------------------------------------------------
 L8A70:
         ldy     #$08                            ; 8A70 A0 08                    ..
-        lda     ($3A),y                         ; 8A72 B1 3A                    .:
+        lda     (generalCounter3a),y            ; 8A72 B1 3A                    .:
         cmp     #$FE                            ; 8A74 C9 FE                    ..
         bne     L8A62                           ; 8A76 D0 EA                    ..
         ldy     #$10                            ; 8A78 A0 10                    ..
@@ -1677,37 +1685,37 @@ L8A70:
 
 ; ----------------------------------------------------------------------------
 L8A85:
-        sty     $38                             ; 8A85 84 38                    .8
+        sty     generalCounter38                ; 8A85 84 38                    .8
         lda     #$06                            ; 8A87 A9 06                    ..
-        sta     $39                             ; 8A89 85 39                    .9
-        lda     ($3A),y                         ; 8A8B B1 3A                    .:
+        sta     generalCounter39                ; 8A89 85 39                    .9
+        lda     (generalCounter3a),y            ; 8A8B B1 3A                    .:
         cmp     #$FE                            ; 8A8D C9 FE                    ..
         beq     L8ABA                           ; 8A8F F0 29                    .)
         lda     #$FD                            ; 8A91 A9 FD                    ..
-        sta     ($3A),y                         ; 8A93 91 3A                    .:
+        sta     (generalCounter3a),y            ; 8A93 91 3A                    .:
 L8A95:
         iny                                     ; 8A95 C8                       .
-        lda     ($3A),y                         ; 8A96 B1 3A                    .:
+        lda     (generalCounter3a),y            ; 8A96 B1 3A                    .:
         lsr     a                               ; 8A98 4A                       J
         lsr     a                               ; 8A99 4A                       J
         lsr     a                               ; 8A9A 4A                       J
         lsr     a                               ; 8A9B 4A                       J
-        ora     $38                             ; 8A9C 05 38                    .8
+        ora     generalCounter38                ; 8A9C 05 38                    .8
         tax                                     ; 8A9E AA                       .
         lda     L8ABB,x                         ; 8A9F BD BB 8A                 ...
         asl     a                               ; 8AA2 0A                       .
         asl     a                               ; 8AA3 0A                       .
         asl     a                               ; 8AA4 0A                       .
         asl     a                               ; 8AA5 0A                       .
-        sta     $37                             ; 8AA6 85 37                    .7
-        lda     ($3A),y                         ; 8AA8 B1 3A                    .:
+        sta     generalCounter37                ; 8AA6 85 37                    .7
+        lda     (generalCounter3a),y            ; 8AA8 B1 3A                    .:
         and     #$0F                            ; 8AAA 29 0F                    ).
-        ora     $38                             ; 8AAC 05 38                    .8
+        ora     generalCounter38                ; 8AAC 05 38                    .8
         tax                                     ; 8AAE AA                       .
         lda     L8ABB,x                         ; 8AAF BD BB 8A                 ...
-        ora     $37                             ; 8AB2 05 37                    .7
-        sta     ($3A),y                         ; 8AB4 91 3A                    .:
-        dec     $39                             ; 8AB6 C6 39                    .9
+        ora     generalCounter37                ; 8AB2 05 37                    .7
+        sta     (generalCounter3a),y            ; 8AB4 91 3A                    .:
+        dec     generalCounter39                ; 8AB6 C6 39                    .9
         bne     L8A95                           ; 8AB8 D0 DB                    ..
 L8ABA:
         rts                                     ; 8ABA 60                       `
@@ -1721,7 +1729,7 @@ L8ABB:
 ; ----------------------------------------------------------------------------
 L8ADB:
         lda     #$00                            ; 8ADB A9 00                    ..
-        sta     $3A                             ; 8ADD 85 3A                    .:
+        sta     generalCounter3a                ; 8ADD 85 3A                    .:
         bit     playMode                        ; 8ADF 24 2F                    $/
         bpl     L8AE5                           ; 8AE1 10 02                    ..
         ldx     #$02                            ; 8AE3 A2 02                    ..
@@ -1732,7 +1740,7 @@ L8AE5:
         sta     $EE                             ; 8AED 85 EE                    ..
         ldy     #$30                            ; 8AEF A0 30                    .0
 L8AF1:
-        lda     ($3A),y                         ; 8AF1 B1 3A                    .:
+        lda     (generalCounter3a),y            ; 8AF1 B1 3A                    .:
         cmp     #$FF                            ; 8AF3 C9 FF                    ..
         bne     L8B0E                           ; 8AF5 D0 17                    ..
 L8AF7:
@@ -1754,9 +1762,9 @@ L8AF7:
 ; ----------------------------------------------------------------------------
 L8B0E:
         lda     #$FF                            ; 8B0E A9 FF                    ..
-        sta     ($3A),y                         ; 8B10 91 3A                    .:
+        sta     (generalCounter3a),y            ; 8B10 91 3A                    .:
         jsr     LA3DB                           ; 8B12 20 DB A3                  ..
-        sty     $39                             ; 8B15 84 39                    .9
+        sty     generalCounter39                ; 8B15 84 39                    .9
         jsr     L849D                           ; 8B17 20 9D 84                  ..
         lda     $48                             ; 8B1A A5 48                    .H
         sta     ppuDataAddress1,x               ; 8B1C 95 08                    ..
@@ -1766,12 +1774,12 @@ L8B0E:
         sta     $16,x                           ; 8B24 95 16                    ..
         lda     $EE                             ; 8B26 A5 EE                    ..
         sta     $17,x                           ; 8B28 95 17                    ..
-        lda     $36                             ; 8B2A A5 36                    .6
+        lda     generalCounter36                ; 8B2A A5 36                    .6
         sta     $24,x                           ; 8B2C 95 24                    .$
         clc                                     ; 8B2E 18                       .
         adc     $48                             ; 8B2F 65 48                    eH
         sta     $48                             ; 8B31 85 48                    .H
-        ldy     $39                             ; 8B33 A4 39                    .9
+        ldy     generalCounter39                ; 8B33 A4 39                    .9
         bne     L8AF7                           ; 8B35 D0 C0                    ..
 L8B37:
         lda     gameStatePossible               ; 8B37 A5 29                    .)
@@ -1784,27 +1792,27 @@ L8B37:
 L8B45:
         ldx     #$00                            ; 8B45 A2 00                    ..
         lda     #$00                            ; 8B47 A9 00                    ..
-        sta     $3D                             ; 8B49 85 3D                    .=
+        sta     generalCounter3d                ; 8B49 85 3D                    .=
 L8B4B:
-        lda     player1TetriminoCurrent,x       ; 8B4B B5 64                    .d
+        lda     player1TetrominoCurrent,x       ; 8B4B B5 64                    .d
         asl     a                               ; 8B4D 0A                       .
         asl     a                               ; 8B4E 0A                       .
         cpx     #$02                            ; 8B4F E0 02                    ..
         bcs     L8B55                           ; 8B51 B0 02                    ..
-        ora     player1TetriminoOrientation,x   ; 8B53 15 68                    .h
+        ora     player1TetrominoOrientation,x   ; 8B53 15 68                    .h
 L8B55:
         asl     a                               ; 8B55 0A                       .
         tay                                     ; 8B56 A8                       .
         asl     a                               ; 8B57 0A                       .
-        sta     $3B                             ; 8B58 85 3B                    .;
+        sta     generalCounter3b                ; 8B58 85 3B                    .;
         lda     L86C3,y                         ; 8B5A B9 C3 86                 ...
-        sta     $36                             ; 8B5D 85 36                    .6
+        sta     generalCounter36                ; 8B5D 85 36                    .6
         lda     L86C4,y                         ; 8B5F B9 C4 86                 ...
-        sta     $37                             ; 8B62 85 37                    .7
-        ora     $36                             ; 8B64 05 36                    .6
+        sta     generalCounter37                ; 8B62 85 37                    .7
+        ora     generalCounter36                ; 8B64 05 36                    .6
         bne     L8B84                           ; 8B66 D0 1C                    ..
         lda     #$F7                            ; 8B68 A9 F7                    ..
-        ldy     $3D                             ; 8B6A A4 3D                    .=
+        ldy     generalCounter3d                ; 8B6A A4 3D                    .=
         sta     oamStaging,y                    ; 8B6C 99 00 05                 ...
         sta     oamStaging+4,y                  ; 8B6F 99 04 05                 ...
         sta     oamStaging+8,y                  ; 8B72 99 08 05                 ...
@@ -1812,7 +1820,7 @@ L8B55:
         tya                                     ; 8B78 98                       .
         clc                                     ; 8B79 18                       .
         adc     #$10                            ; 8B7A 69 10                    i.
-        sta     $3D                             ; 8B7C 85 3D                    .=
+        sta     generalCounter3d                ; 8B7C 85 3D                    .=
 L8B7E:
         inx                                     ; 8B7E E8                       .
         cpx     #$04                            ; 8B7F E0 04                    ..
@@ -1822,9 +1830,9 @@ L8B83:
 
 ; ----------------------------------------------------------------------------
 L8B84:
-        stx     $3C                             ; 8B84 86 3C                    .<
-        lda     player1TetriminoY,x             ; 8B86 B5 60                    .`
-        ldy     player1TetriminoX,x             ; 8B88 B4 62                    .b
+        stx     generalCounter3c                ; 8B84 86 3C                    .<
+        lda     player1TetrominoY,x             ; 8B86 B5 60                    .`
+        ldy     player1TetrominoX,x             ; 8B88 B4 62                    .b
         cpx     #$02                            ; 8B8A E0 02                    ..
         bcc     L8B93                           ; 8B8C 90 05                    ..
         ldy     L8C11,x                         ; 8B8E BC 11 8C                 ...
@@ -1846,60 +1854,60 @@ L8BA1:
         adc     #$0F                            ; 8BA4 69 0F                    i.
         sec                                     ; 8BA6 38                       8
         sbc     ppuScrollYOffset                ; 8BA7 ED F6 04                 ...
-        sta     $39                             ; 8BAA 85 39                    .9
+        sta     generalCounter39                ; 8BAA 85 39                    .9
         tya                                     ; 8BAC 98                       .
         asl     a                               ; 8BAD 0A                       .
         asl     a                               ; 8BAE 0A                       .
         asl     a                               ; 8BAF 0A                       .
         adc     L8C0A,x                         ; 8BB0 7D 0A 8C                 }..
-        sta     $38                             ; 8BB3 85 38                    .8
+        sta     generalCounter38                ; 8BB3 85 38                    .8
 L8BB5:
         ldx     #$08                            ; 8BB5 A2 08                    ..
 L8BB7:
-        asl     $36                             ; 8BB7 06 36                    .6
+        asl     generalCounter36                ; 8BB7 06 36                    .6
         bcc     L8BDF                           ; 8BB9 90 24                    .$
-        ldy     $3B                             ; 8BBB A4 3B                    .;
+        ldy     generalCounter3b                ; 8BBB A4 3B                    .;
         lda     L86F3,y                         ; 8BBD B9 F3 86                 ...
         iny                                     ; 8BC0 C8                       .
-        sty     $3B                             ; 8BC1 84 3B                    .;
-        ldy     $3D                             ; 8BC3 A4 3D                    .=
+        sty     generalCounter3b                ; 8BC1 84 3B                    .;
+        ldy     generalCounter3d                ; 8BC3 A4 3D                    .=
         sta     oamStaging+1,y                  ; 8BC5 99 01 05                 ...
-        lda     $3C                             ; 8BC8 A5 3C                    .<
+        lda     generalCounter3c                ; 8BC8 A5 3C                    .<
         ora     #$20                            ; 8BCA 09 20                    . 
         sta     oamStaging+2,y                  ; 8BCC 99 02 05                 ...
-        lda     $38                             ; 8BCF A5 38                    .8
+        lda     generalCounter38                ; 8BCF A5 38                    .8
         sta     oamStaging+3,y                  ; 8BD1 99 03 05                 ...
-        lda     $39                             ; 8BD4 A5 39                    .9
+        lda     generalCounter39                ; 8BD4 A5 39                    .9
         sta     oamStaging,y                    ; 8BD6 99 00 05                 ...
         iny                                     ; 8BD9 C8                       .
         iny                                     ; 8BDA C8                       .
         iny                                     ; 8BDB C8                       .
         iny                                     ; 8BDC C8                       .
-        sty     $3D                             ; 8BDD 84 3D                    .=
+        sty     generalCounter3d                ; 8BDD 84 3D                    .=
 L8BDF:
-        lda     $38                             ; 8BDF A5 38                    .8
+        lda     generalCounter38                ; 8BDF A5 38                    .8
         clc                                     ; 8BE1 18                       .
         adc     #$08                            ; 8BE2 69 08                    i.
-        sta     $38                             ; 8BE4 85 38                    .8
+        sta     generalCounter38                ; 8BE4 85 38                    .8
         dex                                     ; 8BE6 CA                       .
         txa                                     ; 8BE7 8A                       .
         and     #$03                            ; 8BE8 29 03                    ).
         bne     L8BB7                           ; 8BEA D0 CB                    ..
-        lda     $38                             ; 8BEC A5 38                    .8
+        lda     generalCounter38                ; 8BEC A5 38                    .8
         clc                                     ; 8BEE 18                       .
         adc     #$E0                            ; 8BEF 69 E0                    i.
-        sta     $38                             ; 8BF1 85 38                    .8
-        lda     $39                             ; 8BF3 A5 39                    .9
+        sta     generalCounter38                ; 8BF1 85 38                    .8
+        lda     generalCounter39                ; 8BF3 A5 39                    .9
         clc                                     ; 8BF5 18                       .
         adc     #$08                            ; 8BF6 69 08                    i.
-        sta     $39                             ; 8BF8 85 39                    .9
+        sta     generalCounter39                ; 8BF8 85 39                    .9
         txa                                     ; 8BFA 8A                       .
         bne     L8BB7                           ; 8BFB D0 BA                    ..
-        lda     $37                             ; 8BFD A5 37                    .7
-        stx     $37                             ; 8BFF 86 37                    .7
-        sta     $36                             ; 8C01 85 36                    .6
+        lda     generalCounter37                ; 8BFD A5 37                    .7
+        stx     generalCounter37                ; 8BFF 86 37                    .7
+        sta     generalCounter36                ; 8C01 85 36                    .6
         bne     L8BB5                           ; 8C03 D0 B0                    ..
-        ldx     $3C                             ; 8C05 A6 3C                    .<
+        ldx     generalCounter3c                ; 8C05 A6 3C                    .<
         jmp     L8B7E                           ; 8C07 4C 7E 8B                 L~.
 
 ; ----------------------------------------------------------------------------
@@ -1911,90 +1919,90 @@ L8C11:
         .byte   $F7,$09,$03,$09                 ; 8C11 F7 09 03 09              ....
 ; ----------------------------------------------------------------------------
 L8C15:
-        stx     $3C                             ; 8C15 86 3C                    .<
+        stx     generalCounter3c                ; 8C15 86 3C                    .<
         txa                                     ; 8C17 8A                       .
         eor     #$01                            ; 8C18 49 01                    I.
         tay                                     ; 8C1A A8                       .
-        lda     player1TetriminoY,x             ; 8C1B B5 60                    .`
+        lda     player1TetrominoY,x             ; 8C1B B5 60                    .`
         sec                                     ; 8C1D 38                       8
-        sbc     player1TetriminoY,y             ; 8C1E F9 60 00                 .`.
+        sbc     player1TetrominoY,y             ; 8C1E F9 60 00                 .`.
         clc                                     ; 8C21 18                       .
         adc     #$03                            ; 8C22 69 03                    i.
         bmi     L8C9F                           ; 8C24 30 79                    0y
         cmp     #$07                            ; 8C26 C9 07                    ..
         bcs     L8C9F                           ; 8C28 B0 75                    .u
-        sta     $36                             ; 8C2A 85 36                    .6
+        sta     generalCounter36                ; 8C2A 85 36                    .6
         bit     playMode                        ; 8C2C 24 2F                    $/
         bpl     L8C9F                           ; 8C2E 10 6F                    .o
-        lda     player1TetriminoX,x             ; 8C30 B5 62                    .b
+        lda     player1TetrominoX,x             ; 8C30 B5 62                    .b
         sec                                     ; 8C32 38                       8
-        sbc     player1TetriminoX,y             ; 8C33 F9 62 00                 .b.
+        sbc     player1TetrominoX,y             ; 8C33 F9 62 00                 .b.
         clc                                     ; 8C36 18                       .
         adc     #$03                            ; 8C37 69 03                    i.
         bmi     L8C9F                           ; 8C39 30 64                    0d
         cmp     #$07                            ; 8C3B C9 07                    ..
         bcs     L8C9F                           ; 8C3D B0 60                    .`
-        sta     $37                             ; 8C3F 85 37                    .7
-        lda     player1TetriminoCurrent,x       ; 8C41 B5 64                    .d
+        sta     generalCounter37                ; 8C3F 85 37                    .7
+        lda     player1TetrominoCurrent,x       ; 8C41 B5 64                    .d
         asl     a                               ; 8C43 0A                       .
         asl     a                               ; 8C44 0A                       .
-        ora     player1TetriminoOrientation,x   ; 8C45 15 68                    .h
+        ora     player1TetrominoOrientation,x   ; 8C45 15 68                    .h
         asl     a                               ; 8C47 0A                       .
         tax                                     ; 8C48 AA                       .
-        lda     player1TetriminoCurrent,y       ; 8C49 B9 64 00                 .d.
+        lda     player1TetrominoCurrent,y       ; 8C49 B9 64 00                 .d.
         beq     L8C9F                           ; 8C4C F0 51                    .Q
         asl     a                               ; 8C4E 0A                       .
         asl     a                               ; 8C4F 0A                       .
-        ora     player1TetriminoOrientation,y   ; 8C50 19 68 00                 .h.
+        ora     player1TetrominoOrientation,y   ; 8C50 19 68 00                 .h.
         asl     a                               ; 8C53 0A                       .
         tay                                     ; 8C54 A8                       .
         lda     L86C3,x                         ; 8C55 BD C3 86                 ...
-        sta     $38                             ; 8C58 85 38                    .8
+        sta     generalCounter38                ; 8C58 85 38                    .8
         lda     L86C4,x                         ; 8C5A BD C4 86                 ...
-        sta     $39                             ; 8C5D 85 39                    .9
-        ldx     $36                             ; 8C5F A6 36                    .6
+        sta     generalCounter39                ; 8C5D 85 39                    .9
+        ldx     generalCounter36                ; 8C5F A6 36                    .6
         lda     L8CA7,x                         ; 8C61 BD A7 8C                 ...
         asl     a                               ; 8C64 0A                       .
         asl     a                               ; 8C65 0A                       .
-        ldx     $37                             ; 8C66 A6 37                    .7
+        ldx     generalCounter37                ; 8C66 A6 37                    .7
         clc                                     ; 8C68 18                       .
         adc     L8CA7,x                         ; 8C69 7D A7 8C                 }..
         tax                                     ; 8C6C AA                       .
         beq     L8C81                           ; 8C6D F0 12                    ..
         bmi     L8C7A                           ; 8C6F 30 09                    0.
 L8C71:
-        lsr     $38                             ; 8C71 46 38                    F8
-        ror     $39                             ; 8C73 66 39                    f9
+        lsr     generalCounter38                ; 8C71 46 38                    F8
+        ror     generalCounter39                ; 8C73 66 39                    f9
         dex                                     ; 8C75 CA                       .
         bne     L8C71                           ; 8C76 D0 F9                    ..
         beq     L8C81                           ; 8C78 F0 07                    ..
 L8C7A:
-        asl     $39                             ; 8C7A 06 39                    .9
-        rol     $38                             ; 8C7C 26 38                    &8
+        asl     generalCounter39                ; 8C7A 06 39                    .9
+        rol     generalCounter38                ; 8C7C 26 38                    &8
         inx                                     ; 8C7E E8                       .
         bne     L8C7A                           ; 8C7F D0 F9                    ..
 L8C81:
-        ldx     $37                             ; 8C81 A6 37                    .7
-        lda     $38                             ; 8C83 A5 38                    .8
+        ldx     generalCounter37                ; 8C81 A6 37                    .7
+        lda     generalCounter38                ; 8C83 A5 38                    .8
         and     L8CAE,x                         ; 8C85 3D AE 8C                 =..
-        sta     $38                             ; 8C88 85 38                    .8
-        lda     $39                             ; 8C8A A5 39                    .9
+        sta     generalCounter38                ; 8C88 85 38                    .8
+        lda     generalCounter39                ; 8C8A A5 39                    .9
         and     L8CAE,x                         ; 8C8C 3D AE 8C                 =..
-        sta     $39                             ; 8C8F 85 39                    .9
+        sta     generalCounter39                ; 8C8F 85 39                    .9
         lda     L86C3,y                         ; 8C91 B9 C3 86                 ...
-        and     $38                             ; 8C94 25 38                    %8
+        and     generalCounter38                ; 8C94 25 38                    %8
         bne     L8CA3                           ; 8C96 D0 0B                    ..
         lda     L86C4,y                         ; 8C98 B9 C4 86                 ...
-        and     $39                             ; 8C9B 25 39                    %9
+        and     generalCounter39                ; 8C9B 25 39                    %9
         bne     L8CA3                           ; 8C9D D0 04                    ..
 L8C9F:
-        ldx     $3C                             ; 8C9F A6 3C                    .<
+        ldx     generalCounter3c                ; 8C9F A6 3C                    .<
         clc                                     ; 8CA1 18                       .
         rts                                     ; 8CA2 60                       `
 
 ; ----------------------------------------------------------------------------
 L8CA3:
-        ldx     $3C                             ; 8CA3 A6 3C                    .<
+        ldx     generalCounter3c                ; 8CA3 A6 3C                    .<
         sec                                     ; 8CA5 38                       8
         rts                                     ; 8CA6 60                       `
 
@@ -2014,12 +2022,12 @@ L8CB5:
         ldx     #$01                            ; 8CC1 A2 01                    ..
         lda     $4A,x                           ; 8CC3 B5 4A                    .J
         beq     L8CCB                           ; 8CC5 F0 04                    ..
-        lda     player1TetriminoCurrent,x       ; 8CC7 B5 64                    .d
+        lda     player1TetrominoCurrent,x       ; 8CC7 B5 64                    .d
         beq     L8CCC                           ; 8CC9 F0 01                    ..
 L8CCB:
         dex                                     ; 8CCB CA                       .
 L8CCC:
-        jsr     getNextTetrimino                ; 8CCC 20 29 99                  ).
+        jsr     getNextTetromino                ; 8CCC 20 29 99                  ).
         lda     #$00                            ; 8CCF A9 00                    ..
         sta     player1FallTimer                ; 8CD1 85 6A                    .j
         lda     #$F7                            ; 8CD3 A9 F7                    ..
@@ -2135,7 +2143,7 @@ L8D8B:
         asl     a                               ; 8D91 0A                       .
         adc     $70                             ; 8D92 65 70                    ep
 L8D94:
-        sta     $36                             ; 8D94 85 36                    .6
+        sta     generalCounter36                ; 8D94 85 36                    .6
         lda     $4B                             ; 8D96 A5 4B                    .K
         beq     L8D9F                           ; 8D98 F0 05                    ..
         lda     $73                             ; 8D9A A5 73                    .s
@@ -2143,45 +2151,45 @@ L8D94:
         adc     $71                             ; 8D9D 65 71                    eq
 L8D9F:
         sec                                     ; 8D9F 38                       8
-        adc     $36                             ; 8DA0 65 36                    e6
+        adc     generalCounter36                ; 8DA0 65 36                    e6
         cmp     #$08                            ; 8DA2 C9 08                    ..
         bcc     L8DA8                           ; 8DA4 90 02                    ..
         lda     #$08                            ; 8DA6 A9 08                    ..
 L8DA8:
-        sta     $36                             ; 8DA8 85 36                    .6
+        sta     generalCounter36                ; 8DA8 85 36                    .6
         clc                                     ; 8DAA 18                       .
         adc     #$06                            ; 8DAB 69 06                    i.
         ldy     #$06                            ; 8DAD A0 06                    ..
         bit     playMode                        ; 8DAF 24 2F                    $/
         bmi     L8DBD                           ; 8DB1 30 0A                    0.
         ldy     #$00                            ; 8DB3 A0 00                    ..
-        lda     $36                             ; 8DB5 A5 36                    .6
+        lda     generalCounter36                ; 8DB5 A5 36                    .6
         cmp     #$06                            ; 8DB7 C9 06                    ..
         bcc     L8DBD                           ; 8DB9 90 02                    ..
         lda     #$06                            ; 8DBB A9 06                    ..
 L8DBD:
-        sta     $36                             ; 8DBD 85 36                    .6
-        sty     $37                             ; 8DBF 84 37                    .7
+        sta     generalCounter36                ; 8DBD 85 36                    .6
+        sty     generalCounter37                ; 8DBF 84 37                    .7
         ldx     #$07                            ; 8DC1 A2 07                    ..
 L8DC3:
         lda     L8E54,x                         ; 8DC3 BD 54 8E                 .T.
-        sta     $38                             ; 8DC6 85 38                    .8
+        sta     generalCounter38                ; 8DC6 85 38                    .8
         lda     #$00                            ; 8DC8 A9 00                    ..
 L8DCA:
-        lsr     $38                             ; 8DCA 46 38                    F8
+        lsr     generalCounter38                ; 8DCA 46 38                    F8
         bcc     L8DD1                           ; 8DCC 90 03                    ..
         clc                                     ; 8DCE 18                       .
         adc     $6C,x                           ; 8DCF 75 6C                    ul
 L8DD1:
         asl     $6C,x                           ; 8DD1 16 6C                    .l
-        ldy     $38                             ; 8DD3 A4 38                    .8
+        ldy     generalCounter38                ; 8DD3 A4 38                    .8
         bne     L8DCA                           ; 8DD5 D0 F3                    ..
         sta     $6C,x                           ; 8DD7 95 6C                    .l
         dex                                     ; 8DD9 CA                       .
         bpl     L8DC3                           ; 8DDA 10 E7                    ..
-        ldy     $37                             ; 8DDC A4 37                    .7
+        ldy     generalCounter37                ; 8DDC A4 37                    .7
         lda     #$00                            ; 8DDE A9 00                    ..
-        sta     $37                             ; 8DE0 85 37                    .7
+        sta     generalCounter37                ; 8DE0 85 37                    .7
         ldx     #$40                            ; 8DE2 A2 40                    .@
 L8DE4:
         lda     L8E6A,y                         ; 8DE4 B9 6A 8E                 .j.
@@ -2206,28 +2214,28 @@ L8DE4:
         sta     oamStaging+6,x                  ; 8E14 9D 06 05                 ...
         sta     oamStaging+10,x                 ; 8E17 9D 0A 05                 ...
         sta     oamStaging+14,x                 ; 8E1A 9D 0E 05                 ...
-        stx     $38                             ; 8E1D 86 38                    .8
-        sty     $39                             ; 8E1F 84 39                    .9
+        stx     generalCounter38                ; 8E1D 86 38                    .8
+        sty     generalCounter39                ; 8E1F 84 39                    .9
         tya                                     ; 8E21 98                       .
         asl     a                               ; 8E22 0A                       .
         tax                                     ; 8E23 AA                       .
-        ldy     $37                             ; 8E24 A4 37                    .7
+        ldy     generalCounter37                ; 8E24 A4 37                    .7
         lda     L8E86,x                         ; 8E26 BD 86 8E                 ...
         sta     $019A,y                         ; 8E29 99 9A 01                 ...
         lda     L8E87,x                         ; 8E2C BD 87 8E                 ...
         sta     $01A2,y                         ; 8E2F 99 A2 01                 ...
         iny                                     ; 8E32 C8                       .
-        sty     $37                             ; 8E33 84 37                    .7
-        lda     $38                             ; 8E35 A5 38                    .8
+        sty     generalCounter37                ; 8E33 84 37                    .7
+        lda     generalCounter38                ; 8E35 A5 38                    .8
         clc                                     ; 8E37 18                       .
         adc     #$10                            ; 8E38 69 10                    i.
         tax                                     ; 8E3A AA                       .
-        ldy     $39                             ; 8E3B A4 39                    .9
+        ldy     generalCounter39                ; 8E3B A4 39                    .9
         iny                                     ; 8E3D C8                       .
-        cpy     $36                             ; 8E3E C4 36                    .6
+        cpy     generalCounter36                ; 8E3E C4 36                    .6
         bcc     L8DE4                           ; 8E40 90 A2                    ..
         lda     #$00                            ; 8E42 A9 00                    ..
-        ldy     $37                             ; 8E44 A4 37                    .7
+        ldy     generalCounter37                ; 8E44 A4 37                    .7
 L8E46:
         cpy     #$08                            ; 8E46 C0 08                    ..
         beq     L8E53                           ; 8E48 F0 09                    ..
@@ -2260,11 +2268,11 @@ L8E87:
 ; ----------------------------------------------------------------------------
 L8EA2:
         ldx     #$00                            ; 8EA2 A2 00                    ..
-        stx     $3A                             ; 8EA4 86 3A                    .:
+        stx     generalCounter3a                ; 8EA4 86 3A                    .:
         ldy     #$00                            ; 8EA6 A0 00                    ..
 L8EA8:
-        stx     $3B                             ; 8EA8 86 3B                    .;
-        sty     $3C                             ; 8EAA 84 3C                    .<
+        stx     generalCounter3b                ; 8EA8 86 3B                    .;
+        sty     generalCounter3c                ; 8EAA 84 3C                    .<
         lda     $4A,x                           ; 8EAC B5 4A                    .J
         beq     L8EBD                           ; 8EAE F0 0D                    ..
 L8EB0:
@@ -2276,7 +2284,7 @@ L8EB0:
         cpx     #$08                            ; 8EB9 E0 08                    ..
         bcc     L8EB0                           ; 8EBB 90 F3                    ..
 L8EBD:
-        ldx     $3B                             ; 8EBD A6 3B                    .;
+        ldx     generalCounter3b                ; 8EBD A6 3B                    .;
         bne     L8EC6                           ; 8EBF D0 05                    ..
         ldy     #$04                            ; 8EC1 A0 04                    ..
         inx                                     ; 8EC3 E8                       .
@@ -2285,7 +2293,7 @@ L8EC6:
         lda     player1ControllerNew            ; 8EC6 A5 46                    .F
         ora     player2ControllerNew            ; 8EC8 05 47                    .G
         beq     L8ED8                           ; 8ECA F0 0C                    ..
-        lda     $3A                             ; 8ECC A5 3A                    .:
+        lda     generalCounter3a                ; 8ECC A5 3A                    .:
         beq     L8ED8                           ; 8ECE F0 08                    ..
 L8ED0:
         lda     $25                             ; 8ED0 A5 25                    .%
@@ -2297,14 +2305,14 @@ L8ED8:
 
 ; ----------------------------------------------------------------------------
 L8ED9:
-        stx     $3D                             ; 8ED9 86 3D                    .=
-        ldx     $3B                             ; 8EDB A6 3B                    .;
+        stx     generalCounter3d                ; 8ED9 86 3D                    .=
+        ldx     generalCounter3b                ; 8EDB A6 3B                    .;
         cmp     #$00                            ; 8EDD C9 00                    ..
         bne     L8EFA                           ; 8EDF D0 19                    ..
         lda     $0198,x                         ; 8EE1 BD 98 01                 ...
         cmp     #$05                            ; 8EE4 C9 05                    ..
         bne     L8EFA                           ; 8EE6 D0 12                    ..
-        ldy     $3C                             ; 8EE8 A4 3C                    .<
+        ldy     generalCounter3c                ; 8EE8 A4 3C                    .<
         lda     #$00                            ; 8EEA A9 00                    ..
         sta     $0190,y                         ; 8EEC 99 90 01                 ...
         sta     $0191,y                         ; 8EEF 99 91 01                 ...
@@ -2314,18 +2322,18 @@ L8ED9:
 L8EFA:
         dec     $0198,x                         ; 8EFA DE 98 01                 ...
         bne     L8F0B                           ; 8EFD D0 0C                    ..
-        ldx     $3D                             ; 8EFF A6 3D                    .=
+        ldx     generalCounter3d                ; 8EFF A6 3D                    .=
         inc     $0180,x                         ; 8F01 FE 80 01                 ...
-        ldx     $3B                             ; 8F04 A6 3B                    .;
+        ldx     generalCounter3b                ; 8F04 A6 3B                    .;
         lda     #$05                            ; 8F06 A9 05                    ..
         sta     $0198,x                         ; 8F08 9D 98 01                 ...
 L8F0B:
         lda     #$00                            ; 8F0B A9 00                    ..
-        sta     $36                             ; 8F0D 85 36                    .6
-        sta     $38                             ; 8F0F 85 38                    .8
-        sta     $39                             ; 8F11 85 39                    .9
+        sta     generalCounter36                ; 8F0D 85 36                    .6
+        sta     generalCounter38                ; 8F0F 85 38                    .8
+        sta     generalCounter39                ; 8F11 85 39                    .9
         lda     #$02                            ; 8F13 A9 02                    ..
-        sta     $37                             ; 8F15 85 37                    .7
+        sta     generalCounter37                ; 8F15 85 37                    .7
         jsr     L9A6A                           ; 8F17 20 6A 9A                  j.
         bit     playMode                        ; 8F1A 24 2F                    $/
         bpl     L8F23                           ; 8F1C 10 05                    ..
@@ -2333,8 +2341,8 @@ L8F0B:
         jsr     L9A6A                           ; 8F20 20 6A 9A                  j.
 L8F23:
         lda     #$01                            ; 8F23 A9 01                    ..
-        sta     $3A                             ; 8F25 85 3A                    .:
-        ldx     $3C                             ; 8F27 A6 3C                    .<
+        sta     generalCounter3a                ; 8F25 85 3A                    .:
+        ldx     generalCounter3c                ; 8F27 A6 3C                    .<
         lda     $0193,x                         ; 8F29 BD 93 01                 ...
         clc                                     ; 8F2C 18                       .
         adc     #$02                            ; 8F2D 69 02                    i.
@@ -2387,11 +2395,11 @@ L8F65:
         adc     #$00                            ; 8F9C 69 00                    i.
         sta     $0188,x                         ; 8F9E 9D 88 01                 ...
 L8FA1:
-        ldx     $3B                             ; 8FA1 A6 3B                    .;
+        ldx     generalCounter3b                ; 8FA1 A6 3B                    .;
         lda     player1ControllerNew            ; 8FA3 A5 46                    .F
         ora     player2ControllerNew            ; 8FA5 05 47                    .G
         beq     L8FB6                           ; 8FA7 F0 0D                    ..
-        ldy     $3D                             ; 8FA9 A4 3D                    .=
+        ldy     generalCounter3d                ; 8FA9 A4 3D                    .=
         lda     $0180,y                         ; 8FAB B9 80 01                 ...
         cmp     $6C,y                           ; 8FAE D9 6C 00                 .l.
         beq     L8FB6                           ; 8FB1 F0 03                    ..
@@ -2399,7 +2407,7 @@ L8FA1:
 
 ; ----------------------------------------------------------------------------
 L8FB6:
-        lda     $3D                             ; 8FB6 A5 3D                    .=
+        lda     generalCounter3d                ; 8FB6 A5 3D                    .=
         asl     a                               ; 8FB8 0A                       .
         bit     playMode                        ; 8FB9 24 2F                    $/
         bpl     L8FC3                           ; 8FBB 10 06                    ..
@@ -2414,7 +2422,7 @@ L8FC3:
         sta     $17,x                           ; 8FCA 95 17                    ..
         lda     L9017,y                         ; 8FCC B9 17 90                 ...
         sta     $16,x                           ; 8FCF 95 16                    ..
-        lda     $3C                             ; 8FD1 A5 3C                    .<
+        lda     generalCounter3c                ; 8FD1 A5 3C                    .<
         clc                                     ; 8FD3 18                       .
         adc     #$90                            ; 8FD4 69 90                    i.
         sta     ppuDataAddress1,x               ; 8FD6 95 08                    ..
@@ -2423,11 +2431,11 @@ L8FC3:
         sta     ppuDataAddress1+1,x             ; 8FDC 95 09                    ..
         lda     #$04                            ; 8FDE A9 04                    ..
         sta     $24,x                           ; 8FE0 95 24                    .$
-        ldx     $3D                             ; 8FE2 A6 3D                    .=
+        ldx     generalCounter3d                ; 8FE2 A6 3D                    .=
         lda     $0180,x                         ; 8FE4 BD 80 01                 ...
         cmp     $6C,x                           ; 8FE7 D5 6C                    .l
         bne     L9014                           ; 8FE9 D0 29                    .)
-        lda     $3B                             ; 8FEB A5 3B                    .;
+        lda     generalCounter3b                ; 8FEB A5 3B                    .;
         asl     a                               ; 8FED 0A                       .
         bit     playMode                        ; 8FEE 24 2F                    $/
         bpl     L8FF4                           ; 8FF0 10 02                    ..
@@ -2439,7 +2447,7 @@ L8FF4:
         sta     $17,x                           ; 8FFB 95 17                    ..
         lda     L902F,y                         ; 8FFD B9 2F 90                 ./.
         sta     $16,x                           ; 9000 95 16                    ..
-        lda     $3B                             ; 9002 A5 3B                    .;
+        lda     generalCounter3b                ; 9002 A5 3B                    .;
         asl     a                               ; 9004 0A                       .
         asl     a                               ; 9005 0A                       .
         adc     #$88                            ; 9006 69 88                    i.
@@ -2563,9 +2571,9 @@ L90DC:
         lda     playMode                        ; 90E7 A5 2F                    ./
         beq     L90F4                           ; 90E9 F0 09                    ..
         ldx     #$01                            ; 90EB A2 01                    ..
-        ldy     player2TetriminoCurrent         ; 90ED A4 65                    .e
+        ldy     player2TetrominoCurrent         ; 90ED A4 65                    .e
         jsr     LA763                           ; 90EF 20 63 A7                  c.
-        ldy     player2TetriminoNext            ; 90F2 A4 67                    .g
+        ldy     player2TetrominoNext            ; 90F2 A4 67                    .g
 L90F4:
         ldx     #$03                            ; 90F4 A2 03                    ..
         jsr     LA763                           ; 90F6 20 63 A7                  c.
@@ -2575,21 +2583,21 @@ L90F4:
         dex                                     ; 90FF CA                       .
         bne     L9133                           ; 9100 D0 31                    .1
         lda     #$04                            ; 9102 A9 04                    ..
-        sta     player2TetriminoY               ; 9104 85 61                    .a
+        sta     player2TetrominoY               ; 9104 85 61                    .a
         lda     seven                           ; 9106 AD ED 99                 ...
         bit     playMode                        ; 9109 24 2F                    $/
         bpl     L9110                           ; 910B 10 03                    ..
-        lda     coopTetriminoX+1                ; 910D AD EC 99                 ...
+        lda     coopTetrominoX+1                ; 910D AD EC 99                 ...
 L9110:
-        sta     player2TetriminoX               ; 9110 85 63                    .c
+        sta     player2TetrominoX               ; 9110 85 63                    .c
         lda     #$07                            ; 9112 A9 07                    ..
-        sta     $3B                             ; 9114 85 3B                    .;
+        sta     generalCounter3b                ; 9114 85 3B                    .;
         lda     #$00                            ; 9116 A9 00                    ..
-        sta     $3A                             ; 9118 85 3A                    .:
+        sta     generalCounter3a                ; 9118 85 3A                    .:
         ldy     #$30                            ; 911A A0 30                    .0
 L911C:
         lda     #$FE                            ; 911C A9 FE                    ..
-        sta     ($3A),y                         ; 911E 91 3A                    .:
+        sta     (generalCounter3a),y            ; 911E 91 3A                    .:
         tya                                     ; 9120 98                       .
         clc                                     ; 9121 18                       .
         adc     #$08                            ; 9122 69 08                    i.
@@ -2602,29 +2610,29 @@ L911C:
         jsr     L8ADB                           ; 9130 20 DB 8A                  ..
 L9133:
         ldx     #$00                            ; 9133 A2 00                    ..
-        ldy     player1TetriminoCurrent         ; 9135 A4 64                    .d
+        ldy     player1TetrominoCurrent         ; 9135 A4 64                    .d
         jsr     LA763                           ; 9137 20 63 A7                  c.
         ldx     #$02                            ; 913A A2 02                    ..
-        ldy     player1TetriminoNext            ; 913C A4 66                    .f
+        ldy     player1TetrominoNext            ; 913C A4 66                    .f
         jsr     LA763                           ; 913E 20 63 A7                  c.
         lda     $4A                             ; 9141 A5 4A                    .J
         beq     L9176                           ; 9143 F0 31                    .1
         lda     #$04                            ; 9145 A9 04                    ..
-        sta     player1TetriminoY               ; 9147 85 60                    .`
+        sta     player1TetrominoY               ; 9147 85 60                    .`
         lda     seven                           ; 9149 AD ED 99                 ...
         bit     playMode                        ; 914C 24 2F                    $/
         bpl     L9153                           ; 914E 10 03                    ..
-        lda     coopTetriminoX                  ; 9150 AD EB 99                 ...
+        lda     coopTetrominoX                  ; 9150 AD EB 99                 ...
 L9153:
-        sta     player1TetriminoX               ; 9153 85 62                    .b
+        sta     player1TetrominoX               ; 9153 85 62                    .b
         lda     #$06                            ; 9155 A9 06                    ..
-        sta     $3B                             ; 9157 85 3B                    .;
+        sta     generalCounter3b                ; 9157 85 3B                    .;
         lda     #$00                            ; 9159 A9 00                    ..
-        sta     $3A                             ; 915B 85 3A                    .:
+        sta     generalCounter3a                ; 915B 85 3A                    .:
         ldy     #$30                            ; 915D A0 30                    .0
 L915F:
         lda     #$FE                            ; 915F A9 FE                    ..
-        sta     ($3A),y                         ; 9161 91 3A                    .:
+        sta     (generalCounter3a),y            ; 9161 91 3A                    .:
         tya                                     ; 9163 98                       .
         clc                                     ; 9164 18                       .
         adc     #$08                            ; 9165 69 08                    i.
@@ -2646,39 +2654,39 @@ L9177:
         asl     a                               ; 917C 0A                       .
         tay                                     ; 917D A8                       .
         lda     L91DD,y                         ; 917E B9 DD 91                 ...
-        sta     $36                             ; 9181 85 36                    .6
+        sta     generalCounter36                ; 9181 85 36                    .6
         lda     L91DE,y                         ; 9183 B9 DE 91                 ...
-        sta     $37                             ; 9186 85 37                    .7
+        sta     generalCounter37                ; 9186 85 37                    .7
 L9188:
-        stx     $38                             ; 9188 86 38                    .8
+        stx     generalCounter38                ; 9188 86 38                    .8
         jsr     LA3DB                           ; 918A 20 DB A3                  ..
-        lda     $37                             ; 918D A5 37                    .7
+        lda     generalCounter37                ; 918D A5 37                    .7
         sta     $17,x                           ; 918F 95 17                    ..
-        lda     $36                             ; 9191 A5 36                    .6
+        lda     generalCounter36                ; 9191 A5 36                    .6
         sta     $16,x                           ; 9193 95 16                    ..
         clc                                     ; 9195 18                       .
         adc     #$80                            ; 9196 69 80                    i.
-        sta     $36                             ; 9198 85 36                    .6
+        sta     generalCounter36                ; 9198 85 36                    .6
         bcc     L919E                           ; 919A 90 02                    ..
-        inc     $37                             ; 919C E6 37                    .7
+        inc     generalCounter37                ; 919C E6 37                    .7
 L919E:
         lda     $49                             ; 919E A5 49                    .I
         sta     ppuDataAddress1+1,x             ; 91A0 95 09                    ..
         lda     $48                             ; 91A2 A5 48                    .H
         sta     ppuDataAddress1,x               ; 91A4 95 08                    ..
-        ldy     $38                             ; 91A6 A4 38                    .8
+        ldy     generalCounter38                ; 91A6 A4 38                    .8
         lda     $6C,y                           ; 91A8 B9 6C 00                 .l.
         ldy     #$00                            ; 91AB A0 00                    ..
-        sty     $39                             ; 91AD 84 39                    .9
+        sty     generalCounter39                ; 91AD 84 39                    .9
 L91AF:
         cmp     #$0A                            ; 91AF C9 0A                    ..
         bcc     L91B9                           ; 91B1 90 06                    ..
         sbc     #$0A                            ; 91B3 E9 0A                    ..
-        inc     $39                             ; 91B5 E6 39                    .9
+        inc     generalCounter39                ; 91B5 E6 39                    .9
         bne     L91AF                           ; 91B7 D0 F6                    ..
 L91B9:
         pha                                     ; 91B9 48                       H
-        lda     $39                             ; 91BA A5 39                    .9
+        lda     generalCounter39                ; 91BA A5 39                    .9
         beq     L91C0                           ; 91BC F0 02                    ..
         ora     #$30                            ; 91BE 09 30                    .0
 L91C0:
@@ -2692,7 +2700,7 @@ L91C0:
         clc                                     ; 91CC 18                       .
         adc     $48                             ; 91CD 65 48                    eH
         sta     $48                             ; 91CF 85 48                    .H
-        ldx     $38                             ; 91D1 A6 38                    .8
+        ldx     generalCounter38                ; 91D1 A6 38                    .8
         inx                                     ; 91D3 E8                       .
         inx                                     ; 91D4 E8                       .
         cpx     #$08                            ; 91D5 E0 08                    ..
@@ -2773,14 +2781,14 @@ L9230:
 ; ----------------------------------------------------------------------------
 L9234:
         lda     player1ControllerHeld,x         ; 9234 B5 42                    .B
-        sta     $3A                             ; 9236 85 3A                    .:
+        sta     generalCounter3a                ; 9236 85 3A                    .:
         lda     player1ControllerNew,x          ; 9238 B5 46                    .F
         and     #$40                            ; 923A 29 40                    )@
         bne     L9257                           ; 923C D0 19                    ..
         lda     player1ControllerNew,x          ; 923E B5 46                    .F
         and     #$80                            ; 9240 29 80                    ).
         bne     L9274                           ; 9242 D0 30                    .0
-        lda     $3A                             ; 9244 A5 3A                    .:
+        lda     generalCounter3a                ; 9244 A5 3A                    .:
         and     #$40                            ; 9246 29 40                    )@
         beq     L925C                           ; 9248 F0 12                    ..
         lda     $01AA,x                         ; 924A BD AA 01                 ...
@@ -2796,7 +2804,7 @@ L925C:
         lda     #$00                            ; 925C A9 00                    ..
         sta     $01AA,x                         ; 925E 9D AA 01                 ...
 L9261:
-        lda     $3A                             ; 9261 A5 3A                    .:
+        lda     generalCounter3a                ; 9261 A5 3A                    .:
         and     #$80                            ; 9263 29 80                    ).
         beq     L9279                           ; 9265 F0 12                    ..
         lda     $01AC,x                         ; 9267 BD AC 01                 ...
@@ -2833,20 +2841,20 @@ L9299:
 ; ----------------------------------------------------------------------------
 L929C:
         ldy     #$2C                            ; 929C A0 2C                    .,
-        sta     $39                             ; 929E 85 39                    .9
+        sta     generalCounter39                ; 929E 85 39                    .9
         lda     #$0E                            ; 92A0 A9 0E                    ..
-        sta     $36                             ; 92A2 85 36                    .6
+        sta     generalCounter36                ; 92A2 85 36                    .6
 L92A4:
         lda     #$02                            ; 92A4 A9 02                    ..
-        sta     $37                             ; 92A6 85 37                    .7
+        sta     generalCounter37                ; 92A6 85 37                    .7
 L92A8:
         lda     leaderboardInitials,y           ; 92A8 B9 C3 04                 ...
         and     L93DA,x                         ; 92AB 3D DA 93                 =..
         bne     L92BA                           ; 92AE D0 0A                    ..
         dey                                     ; 92B0 88                       .
-        dec     $37                             ; 92B1 C6 37                    .7
+        dec     generalCounter37                ; 92B1 C6 37                    .7
         bpl     L92A8                           ; 92B3 10 F3                    ..
-        dec     $36                             ; 92B5 C6 36                    .6
+        dec     generalCounter36                ; 92B5 C6 36                    .6
         bpl     L92A4                           ; 92B7 10 EB                    ..
         rts                                     ; 92B9 60                       `
 
@@ -2855,7 +2863,7 @@ L92BA:
         lda     leaderboardInitials,y           ; 92BA B9 C3 04                 ...
         and     #$3F                            ; 92BD 29 3F                    )?
         clc                                     ; 92BF 18                       .
-        adc     $39                             ; 92C0 65 39                    e9
+        adc     generalCounter39                ; 92C0 65 39                    e9
         cmp     #$FF                            ; 92C2 C9 FF                    ..
         bne     L92C8                           ; 92C4 D0 02                    ..
         lda     #$1A                            ; 92C6 A9 1A                    ..
@@ -2865,21 +2873,21 @@ L92C8:
         lda     #$00                            ; 92CC A9 00                    ..
 L92CE:
         ora     L93DA,x                         ; 92CE 1D DA 93                 ...
-        sta     $39                             ; 92D1 85 39                    .9
+        sta     generalCounter39                ; 92D1 85 39                    .9
         bne     L92E3                           ; 92D3 D0 0E                    ..
 L92D5:
         lda     #$02                            ; 92D5 A9 02                    ..
-        sta     $37                             ; 92D7 85 37                    .7
+        sta     generalCounter37                ; 92D7 85 37                    .7
 L92D9:
         lda     leaderboardInitials,y           ; 92D9 B9 C3 04                 ...
         and     L93DA,x                         ; 92DC 3D DA 93                 =..
         beq     L9320                           ; 92DF F0 3F                    .?
-        lda     $39                             ; 92E1 A5 39                    .9
+        lda     generalCounter39                ; 92E1 A5 39                    .9
 L92E3:
         sta     leaderboardInitials,y           ; 92E3 99 C3 04                 ...
-        stx     $38                             ; 92E6 86 38                    .8
+        stx     generalCounter38                ; 92E6 86 38                    .8
         jsr     LA3DB                           ; 92E8 20 DB A3                  ..
-        lda     $36                             ; 92EB A5 36                    .6
+        lda     generalCounter36                ; 92EB A5 36                    .6
         asl     a                               ; 92ED 0A                       .
         asl     a                               ; 92EE 0A                       .
         asl     a                               ; 92EF 0A                       .
@@ -2893,7 +2901,7 @@ L92E3:
         inc     $17,x                           ; 92FB F6 17                    ..
 L92FD:
         clc                                     ; 92FD 18                       .
-        adc     $37                             ; 92FE 65 37                    e7
+        adc     generalCounter37                ; 92FE 65 37                    e7
         sta     $16,x                           ; 9300 95 16                    ..
         lda     $17,x                           ; 9302 B5 17                    ..
         and     #$03                            ; 9304 29 03                    ).
@@ -2909,12 +2917,12 @@ L92FD:
         sta     ppuDataAddress1+1,x             ; 9318 95 09                    ..
         lda     #$01                            ; 931A A9 01                    ..
         sta     $24,x                           ; 931C 95 24                    .$
-        ldx     $38                             ; 931E A6 38                    .8
+        ldx     generalCounter38                ; 931E A6 38                    .8
 L9320:
         dey                                     ; 9320 88                       .
-        dec     $37                             ; 9321 C6 37                    .7
+        dec     generalCounter37                ; 9321 C6 37                    .7
         bpl     L92D9                           ; 9323 10 B4                    ..
-        dec     $36                             ; 9325 C6 36                    .6
+        dec     generalCounter36                ; 9325 C6 36                    .6
         bpl     L92D5                           ; 9327 10 AC                    ..
         rts                                     ; 9329 60                       `
 
@@ -2923,7 +2931,7 @@ L932A:
         ldy     #$2A                            ; 932A A0 2A                    .*
         ldx     #$00                            ; 932C A2 00                    ..
         lda     #$0E                            ; 932E A9 0E                    ..
-        sta     $3A                             ; 9330 85 3A                    .:
+        sta     generalCounter3a                ; 9330 85 3A                    .:
 L9332:
         lda     leaderboardInitials,y           ; 9332 B9 C3 04                 ...
         ora     leaderboardInitials+1,y         ; 9335 19 C4 04                 ...
@@ -2932,7 +2940,7 @@ L9332:
         beq     L93B0                           ; 933D F0 71                    .q
         asl     a                               ; 933F 0A                       .
         rol     a                               ; 9340 2A                       *
-        sta     $38                             ; 9341 85 38                    .8
+        sta     generalCounter38                ; 9341 85 38                    .8
         lda     leaderboardInitials,y           ; 9343 B9 C3 04                 ...
         and     #$3F                            ; 9346 29 3F                    )?
         sta     leaderboardInitials,y           ; 9348 99 C3 04                 ...
@@ -2942,13 +2950,13 @@ L9332:
         lda     leaderboardInitials+2,y         ; 9353 B9 C5 04                 ...
         and     #$3F                            ; 9356 29 3F                    )?
         sta     leaderboardInitials+2,y         ; 9358 99 C5 04                 ...
-        sty     $37                             ; 935B 84 37                    .7
-        ldy     $38                             ; 935D A4 38                    .8
+        sty     generalCounter37                ; 935B 84 37                    .7
+        ldy     generalCounter38                ; 935D A4 38                    .8
         lda     $74,y                           ; 935F B9 74 00                 .t.
         beq     L93AE                           ; 9362 F0 4A                    .J
         clc                                     ; 9364 18                       .
-        adc     $37                             ; 9365 65 37                    e7
-        stx     $36                             ; 9367 86 36                    .6
+        adc     generalCounter37                ; 9365 65 37                    e7
+        stx     generalCounter36                ; 9367 86 36                    .6
         tax                                     ; 9369 AA                       .
         lda     leaderboardLines+44,x           ; 936A BD C2 04                 ...
         ora     L93DA,y                         ; 936D 19 DA 93                 ...
@@ -2961,7 +2969,7 @@ L937B:
         lda     #$01                            ; 937B A9 01                    ..
 L937D:
         pha                                     ; 937D 48                       H
-        ldx     $36                             ; 937E A6 36                    .6
+        ldx     generalCounter36                ; 937E A6 36                    .6
         lda     $74,y                           ; 9380 B9 74 00                 .t.
         asl     a                               ; 9383 0A                       .
         asl     a                               ; 9384 0A                       .
@@ -2981,7 +2989,7 @@ L937D:
         lda     #$00                            ; 9399 A9 00                    ..
 L939B:
         sta     oamStaging+1,x                  ; 939B 9D 01 05                 ...
-        ldy     $3A                             ; 939E A4 3A                    .:
+        ldy     generalCounter3a                ; 939E A4 3A                    .:
         lda     L93CB,y                         ; 93A0 B9 CB 93                 ...
         sec                                     ; 93A3 38                       8
         sbc     ppuScrollYOffset                ; 93A4 ED F6 04                 ...
@@ -2991,12 +2999,12 @@ L939B:
         inx                                     ; 93AC E8                       .
         inx                                     ; 93AD E8                       .
 L93AE:
-        ldy     $37                             ; 93AE A4 37                    .7
+        ldy     generalCounter37                ; 93AE A4 37                    .7
 L93B0:
         dey                                     ; 93B0 88                       .
         dey                                     ; 93B1 88                       .
         dey                                     ; 93B2 88                       .
-        dec     $3A                             ; 93B3 C6 3A                    .:
+        dec     generalCounter3a                ; 93B3 C6 3A                    .:
         bmi     L93BA                           ; 93B5 30 03                    0.
         jmp     L9332                           ; 93B7 4C 32 93                 L2.
 
@@ -3036,7 +3044,7 @@ L93F7:
 L9404:
         lda     player1ScoreMirrorPossible,x    ; 9404 BD 30 04                 .0.
         sta     player1ScoreHundredThousands,x  ; 9407 9D 18 04                 ...
-        lda     unknownScoreSlot,x              ; 940A BD 36 04                 .6.
+        lda     player1LinesMirrorPossible,x    ; 940A BD 36 04                 .6.
         sta     player1LinesThousands,x         ; 940D 9D 24 04                 .$.
         dex                                     ; 9410 CA                       .
         bpl     L9404                           ; 9411 10 F1                    ..
@@ -3052,24 +3060,24 @@ L9404:
         lda     #$0A                            ; 9426 A9 0A                    ..
         sta     player2FallTimer                ; 9428 85 6B                    .k
         lda     #$8B                            ; 942A A9 8B                    ..
-        sta     $36                             ; 942C 85 36                    .6
+        sta     generalCounter36                ; 942C 85 36                    .6
         lda     #$21                            ; 942E A9 21                    .!
-        sta     $37                             ; 9430 85 37                    .7
+        sta     generalCounter37                ; 9430 85 37                    .7
         ldy     #$00                            ; 9432 A0 00                    ..
-        sty     player1TetriminoCurrent         ; 9434 84 64                    .d
-        sty     player2TetriminoCurrent         ; 9436 84 65                    .e
-        sty     player1TetriminoNext            ; 9438 84 66                    .f
-        sty     player2TetriminoNext            ; 943A 84 67                    .g
+        sty     player1TetrominoCurrent         ; 9434 84 64                    .d
+        sty     player2TetrominoCurrent         ; 9436 84 65                    .e
+        sty     player1TetrominoNext            ; 9438 84 66                    .f
+        sty     player2TetrominoNext            ; 943A 84 67                    .g
 L943C:
         bit     PPUSTATUS                       ; 943C 2C 02 20                 ,. 
-        lda     $37                             ; 943F A5 37                    .7
+        lda     generalCounter37                ; 943F A5 37                    .7
         sta     PPUADDR                         ; 9441 8D 06 20                 .. 
-        lda     $36                             ; 9444 A5 36                    .6
+        lda     generalCounter36                ; 9444 A5 36                    .6
         sta     PPUADDR                         ; 9446 8D 06 20                 .. 
         jsr     L94BF                           ; 9449 20 BF 94                  ..
         lda     #$00                            ; 944C A9 00                    ..
         sta     PPUDATA                         ; 944E 8D 07 20                 .. 
-        sta     $38                             ; 9451 85 38                    .8
+        sta     generalCounter38                ; 9451 85 38                    .8
         ldx     #$06                            ; 9453 A2 06                    ..
         tya                                     ; 9455 98                       .
         asl     a                               ; 9456 0A                       .
@@ -3078,12 +3086,12 @@ L9458:
         lda     highScoreHundredThousands,y     ; 9458 B9 3C 04                 .<.
         cmp     #$30                            ; 945B C9 30                    .0
         bne     L9467                           ; 945D D0 08                    ..
-        bit     $38                             ; 945F 24 38                    $8
+        bit     generalCounter38                ; 945F 24 38                    $8
         bmi     L9469                           ; 9461 30 06                    0.
         lda     #$00                            ; 9463 A9 00                    ..
         beq     L9469                           ; 9465 F0 02                    ..
 L9467:
-        dec     $38                             ; 9467 C6 38                    .8
+        dec     generalCounter38                ; 9467 C6 38                    .8
 L9469:
         sta     PPUDATA                         ; 9469 8D 07 20                 .. 
         iny                                     ; 946C C8                       .
@@ -3091,7 +3099,7 @@ L9469:
         bne     L9458                           ; 946E D0 E8                    ..
         lda     #$00                            ; 9470 A9 00                    ..
         sta     PPUDATA                         ; 9472 8D 07 20                 .. 
-        sta     $38                             ; 9475 85 38                    .8
+        sta     generalCounter38                ; 9475 85 38                    .8
         tya                                     ; 9477 98                       .
         lsr     a                               ; 9478 4A                       J
         sbc     #$02                            ; 9479 E9 02                    ..
@@ -3103,24 +3111,24 @@ L947E:
         bne     L9491                           ; 9483 D0 0C                    ..
         cpx     #$01                            ; 9485 E0 01                    ..
         beq     L9493                           ; 9487 F0 0A                    ..
-        bit     $38                             ; 9489 24 38                    $8
+        bit     generalCounter38                ; 9489 24 38                    $8
         bmi     L9493                           ; 948B 30 06                    0.
         lda     #$00                            ; 948D A9 00                    ..
         beq     L9493                           ; 948F F0 02                    ..
 L9491:
-        dec     $38                             ; 9491 C6 38                    .8
+        dec     generalCounter38                ; 9491 C6 38                    .8
 L9493:
         sta     PPUDATA                         ; 9493 8D 07 20                 .. 
         iny                                     ; 9496 C8                       .
         dex                                     ; 9497 CA                       .
         bne     L947E                           ; 9498 D0 E4                    ..
-        lda     $36                             ; 949A A5 36                    .6
+        lda     generalCounter36                ; 949A A5 36                    .6
         clc                                     ; 949C 18                       .
         adc     #$20                            ; 949D 69 20                    i 
-        sta     $36                             ; 949F 85 36                    .6
-        lda     $37                             ; 94A1 A5 37                    .7
+        sta     generalCounter36                ; 949F 85 36                    .6
+        lda     generalCounter37                ; 94A1 A5 37                    .7
         adc     #$00                            ; 94A3 69 00                    i.
-        sta     $37                             ; 94A5 85 37                    .7
+        sta     generalCounter37                ; 94A5 85 37                    .7
         cpy     #$2D                            ; 94A7 C0 2D                    .-
         bcc     L943C                           ; 94A9 90 91                    ..
         lda     #$01                            ; 94AB A9 01                    ..
@@ -3161,7 +3169,7 @@ L94E4:
         sta     lastCurrentBlockP2              ; 94F0 8D BD 01                 ...
 L94F3:
         lda     #$30                            ; 94F3 A9 30                    .0
-        sta     $36                             ; 94F5 85 36                    .6
+        sta     generalCounter36                ; 94F5 85 36                    .6
         lda     #$01                            ; 94F7 A9 01                    ..
         sta     $4E,x                           ; 94F9 95 4E                    .N
         txa                                     ; 94FB 8A                       .
@@ -3206,7 +3214,7 @@ L9538:
         lda     #$37                            ; 953F A9 37                    .7
         bne     L9578                           ; 9541 D0 35                    .5
 L9543:
-        stx     $37                             ; 9543 86 37                    .7
+        stx     generalCounter37                ; 9543 86 37                    .7
         ldx     #$00                            ; 9545 A2 00                    ..
 L9547:
         lda     player1LinesTens,y              ; 9547 B9 26 04                 .&.
@@ -3221,7 +3229,7 @@ L9547:
 L955B:
         txa                                     ; 955B 8A                       .
         lsr     a                               ; 955C 4A                       J
-        ldx     $37                             ; 955D A6 37                    .7
+        ldx     generalCounter37                ; 955D A6 37                    .7
         bit     gameStatePossible               ; 955F 24 29                    $)
         bpl     L9567                           ; 9561 10 04                    ..
         adc     #$09                            ; 9563 69 09                    i.
@@ -3237,20 +3245,20 @@ L956A:
         bcc     L9578                           ; 9574 90 02                    ..
         lda     #$37                            ; 9576 A9 37                    .7
 L9578:
-        inc     $36                             ; 9578 E6 36                    .6
+        inc     generalCounter36                ; 9578 E6 36                    .6
 L957A:
-        sta     $37                             ; 957A 85 37                    .7
+        sta     generalCounter37                ; 957A 85 37                    .7
         txa                                     ; 957C 8A                       .
         asl     a                               ; 957D 0A                       .
         tay                                     ; 957E A8                       .
         lda     player1LevelOnes,y              ; 957F B9 2D 04                 .-.
-        cmp     $37                             ; 9582 C5 37                    .7
+        cmp     generalCounter37                ; 9582 C5 37                    .7
         lda     player1LevelTens,y              ; 9584 B9 2C 04                 .,.
-        sbc     $36                             ; 9587 E5 36                    .6
+        sbc     generalCounter36                ; 9587 E5 36                    .6
         bcs     L95C1                           ; 9589 B0 36                    .6
-        lda     $36                             ; 958B A5 36                    .6
+        lda     generalCounter36                ; 958B A5 36                    .6
         sta     player1LevelTens,y              ; 958D 99 2C 04                 .,.
-        lda     $37                             ; 9590 A5 37                    .7
+        lda     generalCounter37                ; 9590 A5 37                    .7
         sta     player1LevelOnes,y              ; 9592 99 2D 04                 .-.
         inc     $50,x                           ; 9595 F6 50                    .P
         inc     $01D2                           ; 9597 EE D2 01                 ...
@@ -3261,17 +3269,17 @@ L957A:
         tya                                     ; 95A3 98                       .
         eor     #$02                            ; 95A4 49 02                    I.
         tay                                     ; 95A6 A8                       .
-        lda     $36                             ; 95A7 A5 36                    .6
+        lda     generalCounter36                ; 95A7 A5 36                    .6
         sta     player1LevelTens,y              ; 95A9 99 2C 04                 .,.
-        lda     $37                             ; 95AC A5 37                    .7
+        lda     generalCounter37                ; 95AC A5 37                    .7
         sta     player1LevelOnes,y              ; 95AE 99 2D 04                 .-.
         ldy     #$00                            ; 95B1 A0 00                    ..
 L95B3:
-        stx     $37                             ; 95B3 86 37                    .7
+        stx     generalCounter37                ; 95B3 86 37                    .7
         tya                                     ; 95B5 98                       .
         tax                                     ; 95B6 AA                       .
         jsr     LA756                           ; 95B7 20 56 A7                  V.
-        ldx     $37                             ; 95BA A6 37                    .7
+        ldx     generalCounter37                ; 95BA A6 37                    .7
         lda     #$0B                            ; 95BC A9 0B                    ..
         jmp     possibleSetSoundOrMusic         ; 95BE 4C B1 CF                 L..
 
@@ -3562,53 +3570,53 @@ L9849:
 ; ----------------------------------------------------------------------------
 initHandicapGarbage:
         tay                                     ; 984C A8                       .
-        stx     $38                             ; 984D 86 38                    .8
+        stx     generalCounter38                ; 984D 86 38                    .8
         lda     L98A6,y                         ; 984F B9 A6 98                 ...
         tay                                     ; 9852 A8                       .
         lda     playfieldIdPossible,x           ; 9853 BD 62 85                 .b.
-        sta     $3B                             ; 9856 85 3B                    .;
+        sta     generalCounter3b                ; 9856 85 3B                    .;
         lda     #$00                            ; 9858 A9 00                    ..
-        sta     $3A                             ; 985A 85 3A                    .:
+        sta     generalCounter3a                ; 985A 85 3A                    .:
         lda     savedRNGSeedForSomething        ; 985C A5 5A                    .Z
         sta     rngSeed                         ; 985E 85 34                    .4
         lda     savedRNGSeedForSomething+1      ; 9860 A5 5B                    .[
         sta     rngSeed+1                       ; 9862 85 35                    .5
 L9864:
         lda     #$00                            ; 9864 A9 00                    ..
-        sta     $37                             ; 9866 85 37                    .7
+        sta     generalCounter37                ; 9866 85 37                    .7
         lda     #$FE                            ; 9868 A9 FE                    ..
-        sta     ($3A),y                         ; 986A 91 3A                    .:
+        sta     (generalCounter3a),y            ; 986A 91 3A                    .:
         iny                                     ; 986C C8                       .
         ldx     #$34                            ; 986D A2 34                    .4
 L986F:
-        lda     ($3A),y                         ; 986F B1 3A                    .:
+        lda     (generalCounter3a),y            ; 986F B1 3A                    .:
         jsr     L98AD                           ; 9871 20 AD 98                  ..
-        sta     ($3A),y                         ; 9874 91 3A                    .:
+        sta     (generalCounter3a),y            ; 9874 91 3A                    .:
         iny                                     ; 9876 C8                       .
         tya                                     ; 9877 98                       .
         and     #$07                            ; 9878 29 07                    ).
         bne     L986F                           ; 987A D0 F3                    ..
-        lda     $37                             ; 987C A5 37                    .7
+        lda     generalCounter37                ; 987C A5 37                    .7
         cmp     #$07                            ; 987E C9 07                    ..
         bcc     L989E                           ; 9880 90 1C                    ..
-        sty     $37                             ; 9882 84 37                    .7
+        sty     generalCounter37                ; 9882 84 37                    .7
         jsr     genNextPseudoRandom2x           ; 9884 20 F7 99                  ..
         and     #$03                            ; 9887 29 03                    ).
         sec                                     ; 9889 38                       8
         sbc     #$06                            ; 988A E9 06                    ..
-        adc     $37                             ; 988C 65 37                    e7
+        adc     generalCounter37                ; 988C 65 37                    e7
         tay                                     ; 988E A8                       .
         jsr     genNextPseudoRandom             ; 988F 20 FA 99                  ..
         and     #$01                            ; 9892 29 01                    ).
         tax                                     ; 9894 AA                       .
-        lda     ($3A),y                         ; 9895 B1 3A                    .:
+        lda     (generalCounter3a),y            ; 9895 B1 3A                    .:
         and     L98AB,x                         ; 9897 3D AB 98                 =..
-        sta     ($3A),y                         ; 989A 91 3A                    .:
-        ldy     $37                             ; 989C A4 37                    .7
+        sta     (generalCounter3a),y            ; 989A 91 3A                    .:
+        ldy     generalCounter37                ; 989C A4 37                    .7
 L989E:
         cpy     #$D0                            ; 989E C0 D0                    ..
         bne     L9864                           ; 98A0 D0 C2                    ..
-        ldx     $38                             ; 98A2 A6 38                    .8
+        ldx     generalCounter38                ; 98A2 A6 38                    .8
 L98A6           := * + 2
         jmp     L8ADB                           ; 98A4 4C DB 8A                 L..
 
@@ -3620,68 +3628,68 @@ L98AB:
 L98AD:
         cmp     #$10                            ; 98AD C9 10                    ..
         bcs     L98C0                           ; 98AF B0 0F                    ..
-        sta     $36                             ; 98B1 85 36                    .6
+        sta     generalCounter36                ; 98B1 85 36                    .6
         jsr     genNextPseudoRandom3x           ; 98B3 20 F4 99                  ..
         and     #$07                            ; 98B6 29 07                    ).
         beq     L98BE                           ; 98B8 F0 04                    ..
-        inc     $37                             ; 98BA E6 37                    .7
+        inc     generalCounter37                ; 98BA E6 37                    .7
         lda     #$F0                            ; 98BC A9 F0                    ..
 L98BE:
-        ora     $36                             ; 98BE 05 36                    .6
+        ora     generalCounter36                ; 98BE 05 36                    .6
 L98C0:
-        sta     $36                             ; 98C0 85 36                    .6
+        sta     generalCounter36                ; 98C0 85 36                    .6
         and     #$0F                            ; 98C2 29 0F                    ).
         bne     L98D4                           ; 98C4 D0 0E                    ..
         jsr     genNextPseudoRandom3x           ; 98C6 20 F4 99                  ..
         and     #$07                            ; 98C9 29 07                    ).
         beq     L98D4                           ; 98CB F0 07                    ..
-        inc     $37                             ; 98CD E6 37                    .7
+        inc     generalCounter37                ; 98CD E6 37                    .7
         lda     #$0F                            ; 98CF A9 0F                    ..
-        ora     $36                             ; 98D1 05 36                    .6
+        ora     generalCounter36                ; 98D1 05 36                    .6
         rts                                     ; 98D3 60                       `
 
 ; ----------------------------------------------------------------------------
 L98D4:
-        lda     $36                             ; 98D4 A5 36                    .6
+        lda     generalCounter36                ; 98D4 A5 36                    .6
         rts                                     ; 98D6 60                       `
 
 ; ----------------------------------------------------------------------------
 L98D7:
-        sta     $38                             ; 98D7 85 38                    .8
+        sta     generalCounter38                ; 98D7 85 38                    .8
         ldy     #$00                            ; 98D9 A0 00                    ..
-        sty     $39                             ; 98DB 84 39                    .9
-        sty     $37                             ; 98DD 84 37                    .7
+        sty     generalCounter39                ; 98DB 84 39                    .9
+        sty     generalCounter37                ; 98DD 84 37                    .7
 L98DF:
-        lsr     $38                             ; 98DF 46 38                    F8
+        lsr     generalCounter38                ; 98DF 46 38                    F8
         bcc     L98EE                           ; 98E1 90 0B                    ..
         tya                                     ; 98E3 98                       .
         clc                                     ; 98E4 18                       .
-        adc     $36                             ; 98E5 65 36                    e6
+        adc     generalCounter36                ; 98E5 65 36                    e6
         tay                                     ; 98E7 A8                       .
-        lda     $39                             ; 98E8 A5 39                    .9
-        adc     $37                             ; 98EA 65 37                    e7
-        sta     $39                             ; 98EC 85 39                    .9
+        lda     generalCounter39                ; 98E8 A5 39                    .9
+        adc     generalCounter37                ; 98EA 65 37                    e7
+        sta     generalCounter39                ; 98EC 85 39                    .9
 L98EE:
-        lda     $38                             ; 98EE A5 38                    .8
+        lda     generalCounter38                ; 98EE A5 38                    .8
         beq     L98F8                           ; 98F0 F0 06                    ..
-        asl     $36                             ; 98F2 06 36                    .6
-        rol     $37                             ; 98F4 26 37                    &7
+        asl     generalCounter36                ; 98F2 06 36                    .6
+        rol     generalCounter37                ; 98F4 26 37                    &7
         bcc     L98DF                           ; 98F6 90 E7                    ..
 L98F8:
         lda     #$00                            ; 98F8 A9 00                    ..
-        sta     $36                             ; 98FA 85 36                    .6
-        sta     $37                             ; 98FC 85 37                    .7
+        sta     generalCounter36                ; 98FA 85 36                    .6
+        sta     generalCounter37                ; 98FC 85 37                    .7
 L98FE:
-        lda     $39                             ; 98FE A5 39                    .9
+        lda     generalCounter39                ; 98FE A5 39                    .9
         beq     L9911                           ; 9900 F0 0F                    ..
         tya                                     ; 9902 98                       .
         sec                                     ; 9903 38                       8
         sbc     #$64                            ; 9904 E9 64                    .d
         tay                                     ; 9906 A8                       .
-        lda     $39                             ; 9907 A5 39                    .9
+        lda     generalCounter39                ; 9907 A5 39                    .9
         sbc     #$00                            ; 9909 E9 00                    ..
-        sta     $39                             ; 990B 85 39                    .9
-        inc     $36                             ; 990D E6 36                    .6
+        sta     generalCounter39                ; 990B 85 39                    .9
+        inc     generalCounter36                ; 990D E6 36                    .6
         bne     L98FE                           ; 990F D0 ED                    ..
 L9911:
         tya                                     ; 9911 98                       .
@@ -3689,27 +3697,27 @@ L9912:
         cmp     #$64                            ; 9912 C9 64                    .d
         bcc     L991C                           ; 9914 90 06                    ..
         sbc     #$64                            ; 9916 E9 64                    .d
-        inc     $36                             ; 9918 E6 36                    .6
+        inc     generalCounter36                ; 9918 E6 36                    .6
         bne     L9912                           ; 991A D0 F6                    ..
 L991C:
         cmp     #$0A                            ; 991C C9 0A                    ..
         bcc     L9926                           ; 991E 90 06                    ..
         sbc     #$0A                            ; 9920 E9 0A                    ..
-        inc     $37                             ; 9922 E6 37                    .7
+        inc     generalCounter37                ; 9922 E6 37                    .7
         bne     L991C                           ; 9924 D0 F6                    ..
 L9926:
-        sta     $38                             ; 9926 85 38                    .8
+        sta     generalCounter38                ; 9926 85 38                    .8
         rts                                     ; 9928 60                       `
 
 ; ----------------------------------------------------------------------------
-getNextTetrimino:
+getNextTetromino:
         lda     #$14                            ; 9929 A9 14                    ..
         sta     player1FallTimer,x              ; 992B 95 6A                    .j
         sta     $01B4,x                         ; 992D 9D B4 01                 ...
 L9930:
-        lda     player1TetriminoNext,x          ; 9930 B5 66                    .f
-        sta     player1TetriminoCurrent,x       ; 9932 95 64                    .d
-        stx     $3B                             ; 9934 86 3B                    .;
+        lda     player1TetrominoNext,x          ; 9930 B5 66                    .f
+        sta     player1TetrominoCurrent,x       ; 9932 95 64                    .d
+        stx     generalCounter3b                ; 9934 86 3B                    .;
         txa                                     ; 9936 8A                       .
         asl     a                               ; 9937 0A                       .
         adc     #$5C                            ; 9938 69 5C                    i\
@@ -3718,33 +3726,33 @@ L993B:
         jsr     genNextPseudoRandom5x           ; 993B 20 EE 99                  ..
         and     #$07                            ; 993E 29 07                    ).
         beq     L993B                           ; 9940 F0 F9                    ..
-        ldx     $3B                             ; 9942 A6 3B                    .;
-        sta     player1TetriminoNext,x          ; 9944 95 66                    .f
-        lda     player1TetriminoCurrent,x       ; 9946 B5 64                    .d
+        ldx     generalCounter3b                ; 9942 A6 3B                    .;
+        sta     player1TetrominoNext,x          ; 9944 95 66                    .f
+        lda     player1TetrominoCurrent,x       ; 9946 B5 64                    .d
         bne     L9950                           ; 9948 D0 06                    ..
         lda     #$30                            ; 994A A9 30                    .0
         sta     player1FallTimer,x              ; 994C 95 6A                    .j
         bne     L9930                           ; 994E D0 E0                    ..
 L9950:
         lda     #$00                            ; 9950 A9 00                    ..
-        sta     player1TetriminoOrientation,x   ; 9952 95 68                    .h
+        sta     player1TetrominoOrientation,x   ; 9952 95 68                    .h
         lda     #$04                            ; 9954 A9 04                    ..
-        sta     player1TetriminoY,x             ; 9956 95 60                    .`
+        sta     player1TetrominoY,x             ; 9956 95 60                    .`
         lda     seven                           ; 9958 AD ED 99                 ...
         ldy     playMode                        ; 995B A4 2F                    ./
         bpl     L9962                           ; 995D 10 03                    ..
-        lda     coopTetriminoX,x                ; 995F BD EB 99                 ...
+        lda     coopTetrominoX,x                ; 995F BD EB 99                 ...
 L9962:
-        sta     player1TetriminoX,x             ; 9962 95 62                    .b
-        ldy     player1TetriminoCurrent,x       ; 9964 B4 64                    .d
+        sta     player1TetrominoX,x             ; 9962 95 62                    .b
+        ldy     player1TetrominoCurrent,x       ; 9964 B4 64                    .d
         jsr     LA763                           ; 9966 20 63 A7                  c.
-        ldx     $3B                             ; 9969 A6 3B                    .;
+        ldx     generalCounter3b                ; 9969 A6 3B                    .;
         inx                                     ; 996B E8                       .
         inx                                     ; 996C E8                       .
-        ldy     player1TetriminoCurrent,x       ; 996D B4 64                    .d
+        ldy     player1TetrominoCurrent,x       ; 996D B4 64                    .d
         jsr     LA763                           ; 996F 20 63 A7                  c.
-        ldx     $3B                             ; 9972 A6 3B                    .;
-        lda     player1TetriminoCurrent,x       ; 9974 B5 64                    .d
+        ldx     generalCounter3b                ; 9972 A6 3B                    .;
+        lda     player1TetrominoCurrent,x       ; 9974 B5 64                    .d
         beq     L99EA                           ; 9976 F0 72                    .r
         lda     gameStatePossible               ; 9978 A5 29                    .)
         cmp     #$FB                            ; 997A C9 FB                    ..
@@ -3767,7 +3775,7 @@ L9992:
 
 ; ----------------------------------------------------------------------------
 L9997:
-        ldx     player1TetriminoCurrent         ; 9997 A6 64                    .d
+        ldx     player1TetrominoCurrent         ; 9997 A6 64                    .d
         lda     $52,x                           ; 9999 B5 52                    .R
         cmp     #$90                            ; 999B C9 90                    ..
         bcs     L99EA                           ; 999D B0 4B                    .K
@@ -3775,18 +3783,18 @@ L9997:
         ldy     #$00                            ; 99A1 A0 00                    ..
         clc                                     ; 99A3 18                       .
         adc     #$21                            ; 99A4 69 21                    i!
-        sta     $36                             ; 99A6 85 36                    .6
+        sta     generalCounter36                ; 99A6 85 36                    .6
         jsr     LA3DB                           ; 99A8 20 DB A3                  ..
         lda     $48                             ; 99AB A5 48                    .H
         sta     ppuDataAddress1,x               ; 99AD 95 08                    ..
         lda     $49                             ; 99AF A5 49                    .I
         sta     ppuDataAddress1+1,x             ; 99B1 95 09                    ..
-        lda     $36                             ; 99B3 A5 36                    .6
+        lda     generalCounter36                ; 99B3 A5 36                    .6
         sta     ($48),y                         ; 99B5 91 48                    .H
         inc     $48                             ; 99B7 E6 48                    .H
         lda     #$23                            ; 99B9 A9 23                    .#
         sta     $17,x                           ; 99BB 95 17                    ..
-        ldy     player1TetriminoCurrent         ; 99BD A4 64                    .d
+        ldy     player1TetrominoCurrent         ; 99BD A4 64                    .d
         lda     $52,y                           ; 99BF B9 52 00                 .R.
         and     #$F8                            ; 99C2 29 F8                    ).
         asl     a                               ; 99C4 0A                       .
@@ -3798,25 +3806,25 @@ L99CB:
         bcc     L99D0                           ; 99CC 90 02                    ..
         dec     $17,x                           ; 99CE D6 17                    ..
 L99D0:
-        sta     $36                             ; 99D0 85 36                    .6
-        lda     player1TetriminoCurrent         ; 99D2 A5 64                    .d
+        sta     generalCounter36                ; 99D0 85 36                    .6
+        lda     player1TetrominoCurrent         ; 99D2 A5 64                    .d
         clc                                     ; 99D4 18                       .
         adc     #$34                            ; 99D5 69 34                    i4
         sec                                     ; 99D7 38                       8
-        sbc     $36                             ; 99D8 E5 36                    .6
+        sbc     generalCounter36                ; 99D8 E5 36                    .6
         sta     $16,x                           ; 99DA 95 16                    ..
         lda     $17,x                           ; 99DC B5 17                    ..
         sbc     #$00                            ; 99DE E9 00                    ..
         sta     $17,x                           ; 99E0 95 17                    ..
         lda     #$01                            ; 99E2 A9 01                    ..
         sta     $24,x                           ; 99E4 95 24                    .$
-        ldx     player1TetriminoCurrent         ; 99E6 A6 64                    .d
+        ldx     player1TetrominoCurrent         ; 99E6 A6 64                    .d
         inc     $52,x                           ; 99E8 F6 52                    .R
 L99EA:
         rts                                     ; 99EA 60                       `
 
 ; ----------------------------------------------------------------------------
-coopTetriminoX:
+coopTetrominoX:
         .byte   $03,$09                         ; 99EB 03 09                    ..
 seven:
         .byte   $07                             ; 99ED 07                       .
@@ -3845,10 +3853,10 @@ L9A06:
 
 ; ----------------------------------------------------------------------------
 L9A0D:
-        stx     $3B                             ; 9A0D 86 3B                    .;
+        stx     generalCounter3b                ; 9A0D 86 3B                    .;
         ldx     #$34                            ; 9A0F A2 34                    .4
         jsr     genNextPseudoRandom5x           ; 9A11 20 EE 99                  ..
-        ldx     $3B                             ; 9A14 A6 3B                    .;
+        ldx     generalCounter3b                ; 9A14 A6 3B                    .;
         rts                                     ; 9A16 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -3856,29 +3864,29 @@ L9A17:
         lda     $01B4,x                         ; 9A17 BD B4 01                 ...
         cmp     #$02                            ; 9A1A C9 02                    ..
         bcs     L9A46                           ; 9A1C B0 28                    .(
-        lda     $38                             ; 9A1E A5 38                    .8
-        adc     $38                             ; 9A20 65 38                    e8
+        lda     generalCounter38                ; 9A1E A5 38                    .8
+        adc     generalCounter38                ; 9A20 65 38                    e8
         cmp     #$0A                            ; 9A22 C9 0A                    ..
         bcc     L9A28                           ; 9A24 90 02                    ..
         sbc     #$0A                            ; 9A26 E9 0A                    ..
 L9A28:
-        sta     $38                             ; 9A28 85 38                    .8
-        lda     $37                             ; 9A2A A5 37                    .7
-        adc     $37                             ; 9A2C 65 37                    e7
+        sta     generalCounter38                ; 9A28 85 38                    .8
+        lda     generalCounter37                ; 9A2A A5 37                    .7
+        adc     generalCounter37                ; 9A2C 65 37                    e7
         cmp     #$0A                            ; 9A2E C9 0A                    ..
         bcc     L9A34                           ; 9A30 90 02                    ..
         sbc     #$0A                            ; 9A32 E9 0A                    ..
 L9A34:
-        sta     $37                             ; 9A34 85 37                    .7
-        lda     $36                             ; 9A36 A5 36                    .6
-        adc     $36                             ; 9A38 65 36                    e6
+        sta     generalCounter37                ; 9A34 85 37                    .7
+        lda     generalCounter36                ; 9A36 A5 36                    .6
+        adc     generalCounter36                ; 9A38 65 36                    e6
         cmp     #$0A                            ; 9A3A C9 0A                    ..
         bcc     L9A44                           ; 9A3C 90 06                    ..
         lda     #$09                            ; 9A3E A9 09                    ..
-        sta     $38                             ; 9A40 85 38                    .8
-        sta     $37                             ; 9A42 85 37                    .7
+        sta     generalCounter38                ; 9A40 85 38                    .8
+        sta     generalCounter37                ; 9A42 85 37                    .7
 L9A44:
-        sta     $36                             ; 9A44 85 36                    .6
+        sta     generalCounter36                ; 9A44 85 36                    .6
 L9A46:
         rts                                     ; 9A46 60                       `
 
@@ -3890,27 +3898,27 @@ L9A47:
         lda     player1LevelOnes,y              ; 9A4A B9 2D 04                 .-.
         sec                                     ; 9A4D 38                       8
         sbc     #$2F                            ; 9A4E E9 2F                    ./
-        sta     $36                             ; 9A50 85 36                    .6
+        sta     generalCounter36                ; 9A50 85 36                    .6
         lda     player1LevelTens,y              ; 9A52 B9 2C 04                 .,.
         cmp     #$31                            ; 9A55 C9 31                    .1
         bcc     L9A5F                           ; 9A57 90 06                    ..
-        lda     $36                             ; 9A59 A5 36                    .6
+        lda     generalCounter36                ; 9A59 A5 36                    .6
         adc     #$09                            ; 9A5B 69 09                    i.
-        sta     $36                             ; 9A5D 85 36                    .6
+        sta     generalCounter36                ; 9A5D 85 36                    .6
 L9A5F:
-        lda     $36                             ; 9A5F A5 36                    .6
+        lda     generalCounter36                ; 9A5F A5 36                    .6
         clc                                     ; 9A61 18                       .
         adc     $2D                             ; 9A62 65 2D                    e-
         jsr     L98D7                           ; 9A64 20 D7 98                  ..
         jsr     L9A17                           ; 9A67 20 17 9A                  ..
 L9A6A:
         txa                                     ; 9A6A 8A                       .
-        sta     $39                             ; 9A6B 85 39                    .9
+        sta     generalCounter39                ; 9A6B 85 39                    .9
         asl     a                               ; 9A6D 0A                       .
-        adc     $39                             ; 9A6E 65 39                    e9
+        adc     generalCounter39                ; 9A6E 65 39                    e9
         asl     a                               ; 9A70 0A                       .
         tay                                     ; 9A71 A8                       .
-        lda     $38                             ; 9A72 A5 38                    .8
+        lda     generalCounter38                ; 9A72 A5 38                    .8
         clc                                     ; 9A74 18                       .
         adc     player1ScoreOnes,y              ; 9A75 79 1D 04                 y..
         cmp     #$3A                            ; 9A78 C9 3A                    .:
@@ -3920,7 +3928,7 @@ L9A6A:
 L9A7F:
         sta     player1ScoreOnes,y              ; 9A7F 99 1D 04                 ...
         lda     player1ScoreTens,y              ; 9A82 B9 1C 04                 ...
-        adc     $37                             ; 9A85 65 37                    e7
+        adc     generalCounter37                ; 9A85 65 37                    e7
         cmp     #$3A                            ; 9A87 C9 3A                    .:
         bcc     L9A8E                           ; 9A89 90 03                    ..
         sbc     #$0A                            ; 9A8B E9 0A                    ..
@@ -3928,7 +3936,7 @@ L9A7F:
 L9A8E:
         sta     player1ScoreTens,y              ; 9A8E 99 1C 04                 ...
         lda     player1ScoreHundreds,y          ; 9A91 B9 1B 04                 ...
-        adc     $36                             ; 9A94 65 36                    e6
+        adc     generalCounter36                ; 9A94 65 36                    e6
         cmp     #$3A                            ; 9A96 C9 3A                    .:
         bcc     L9A9D                           ; 9A98 90 03                    ..
         sbc     #$0A                            ; 9A9A E9 0A                    ..
@@ -3972,7 +3980,7 @@ L9ADE:
         lda     player1ScoreHundredThousands,y  ; 9ADE B9 18 04                 ...
         sta     player1ScoreMirrorPossible,y    ; 9AE1 99 30 04                 .0.
         lda     player1LinesThousands,y         ; 9AE4 B9 24 04                 .$.
-        sta     unknownScoreSlot,y              ; 9AE7 99 36 04                 .6.
+        sta     player1LinesMirrorPossible,y    ; 9AE7 99 36 04                 .6.
         dey                                     ; 9AEA 88                       .
         bpl     L9ADE                           ; 9AEB 10 F1                    ..
 L9AED:
@@ -4000,13 +4008,13 @@ L9AFB:
         bmi     L9B28                           ; 9B09 30 1D                    0.
         cpy     #$10                            ; 9B0B C0 10                    ..
         bcc     L9B19                           ; 9B0D 90 0A                    ..
-        lda     player1TetriminoY,x             ; 9B0F B5 60                    .`
+        lda     player1TetrominoY,x             ; 9B0F B5 60                    .`
         and     L9B50,y                         ; 9B11 39 50 9B                 9P.
         bne     L9B21                           ; 9B14 D0 0B                    ..
         dey                                     ; 9B16 88                       .
         bne     L9B21                           ; 9B17 D0 08                    ..
 L9B19:
-        lda     player1TetriminoY,x             ; 9B19 B5 60                    .`
+        lda     player1TetrominoY,x             ; 9B19 B5 60                    .`
         and     L9B50,y                         ; 9B1B 39 50 9B                 9P.
         beq     L9B21                           ; 9B1E F0 01                    ..
         dey                                     ; 9B20 88                       .
@@ -4043,17 +4051,17 @@ L9B64:
         beq     L9BD1                           ; 9B66 F0 69                    .i
         lda     #$00                            ; 9B68 A9 00                    ..
         sta     $4C,x                           ; 9B6A 95 4C                    .L
-        stx     $38                             ; 9B6C 86 38                    .8
+        stx     generalCounter38                ; 9B6C 86 38                    .8
         txa                                     ; 9B6E 8A                       .
         asl     a                               ; 9B6F 0A                       .
         tay                                     ; 9B70 A8                       .
         jsr     LA3DB                           ; 9B71 20 DB A3                  ..
         lda     L9BDC,y                         ; 9B74 B9 DC 9B                 ...
         sta     ppuDataAddress1,x               ; 9B77 95 08                    ..
-        sta     $36                             ; 9B79 85 36                    .6
+        sta     generalCounter36                ; 9B79 85 36                    .6
         lda     L9BDD,y                         ; 9B7B B9 DD 9B                 ...
         sta     ppuDataAddress1+1,x             ; 9B7E 95 09                    ..
-        sta     $37                             ; 9B80 85 37                    .7
+        sta     generalCounter37                ; 9B80 85 37                    .7
         bit     playMode                        ; 9B82 24 2F                    $/
         bpl     L9B96                           ; 9B84 10 10                    ..
         lda     gameStatePossible               ; 9B86 A5 29                    .)
@@ -4069,35 +4077,35 @@ L9B96:
         sta     $16,x                           ; 9B99 95 16                    ..
         lda     L9BEB,y                         ; 9B9B B9 EB 9B                 ...
         sta     $17,x                           ; 9B9E 95 17                    ..
-        sty     $3A                             ; 9BA0 84 3A                    .:
-        ldy     $38                             ; 9BA2 A4 38                    .8
+        sty     generalCounter3a                ; 9BA0 84 3A                    .:
+        ldy     generalCounter38                ; 9BA2 A4 38                    .8
         lda     L9BD5,y                         ; 9BA4 B9 D5 9B                 ...
-        sta     $39                             ; 9BA7 85 39                    .9
+        sta     generalCounter39                ; 9BA7 85 39                    .9
         ldy     #$00                            ; 9BA9 A0 00                    ..
 L9BAB:
-        lda     ($36),y                         ; 9BAB B1 36                    .6
+        lda     (generalCounter36),y            ; 9BAB B1 36                    .6
         cmp     #$30                            ; 9BAD C9 30                    .0
         bne     L9BCB                           ; 9BAF D0 1A                    ..
         inc     ppuDataAddress1,x               ; 9BB1 F6 08                    ..
-        lda     $3A                             ; 9BB3 A5 3A                    .:
+        lda     generalCounter3a                ; 9BB3 A5 3A                    .:
         cmp     #$0E                            ; 9BB5 C9 0E                    ..
         beq     L9BC2                           ; 9BB7 F0 09                    ..
         bcs     L9BC0                           ; 9BB9 B0 05                    ..
-        lda     $38                             ; 9BBB A5 38                    .8
+        lda     generalCounter38                ; 9BBB A5 38                    .8
         lsr     a                               ; 9BBD 4A                       J
         bcs     L9BC2                           ; 9BBE B0 02                    ..
 L9BC0:
         inc     $16,x                           ; 9BC0 F6 16                    ..
 L9BC2:
-        dec     $39                             ; 9BC2 C6 39                    .9
+        dec     generalCounter39                ; 9BC2 C6 39                    .9
         iny                                     ; 9BC4 C8                       .
-        lda     $39                             ; 9BC5 A5 39                    .9
+        lda     generalCounter39                ; 9BC5 A5 39                    .9
         cmp     #$02                            ; 9BC7 C9 02                    ..
         bcs     L9BAB                           ; 9BC9 B0 E0                    ..
 L9BCB:
-        lda     $39                             ; 9BCB A5 39                    .9
+        lda     generalCounter39                ; 9BCB A5 39                    .9
         sta     $24,x                           ; 9BCD 95 24                    .$
-        ldx     $38                             ; 9BCF A6 38                    .8
+        ldx     generalCounter38                ; 9BCF A6 38                    .8
 L9BD1:
         dex                                     ; 9BD1 CA                       .
         bpl     L9B64                           ; 9BD2 10 90                    ..
@@ -4136,10 +4144,10 @@ moveScreenUpOrDown:
         and     #$0F                            ; 9C10 29 0F                    ).
         bne     L9C3D                           ; 9C12 D0 29                    .)
         lda     player1ControllerHeld           ; 9C14 A5 42                    .B
-        sta     $36                             ; 9C16 85 36                    .6
+        sta     generalCounter36                ; 9C16 85 36                    .6
         lda     player2ControllerHeld           ; 9C18 A5 43                    .C
-        and     $36                             ; 9C1A 25 36                    %6
-        sta     $36                             ; 9C1C 85 36                    .6
+        and     generalCounter36                ; 9C1A 25 36                    %6
+        sta     generalCounter36                ; 9C1C 85 36                    .6
         ldy     ppuScrollYOffset                ; 9C1E AC F6 04                 ...
         and     #$10                            ; 9C21 29 10                    ).
         beq     @bothUpsNotPressed              ; 9C23 F0 05                    ..
@@ -4147,7 +4155,7 @@ moveScreenUpOrDown:
         cpy     #$09                            ; 9C26 C0 09                    ..
         beq     L9C3D                           ; 9C28 F0 13                    ..
 @bothUpsNotPressed:
-        lda     $36                             ; 9C2A A5 36                    .6
+        lda     generalCounter36                ; 9C2A A5 36                    .6
         and     #$20                            ; 9C2C 29 20                    ) 
         beq     @bothDownsNotPressed            ; 9C2E F0 05                    ..
         dey                                     ; 9C30 88                       .
@@ -4181,7 +4189,7 @@ L9C58:
         bne     L9C6E                           ; 9C5E D0 0E                    ..
         lda     $01CA                           ; 9C60 AD CA 01                 ...
         sec                                     ; 9C63 38                       8
-        sbc     player1TetriminoX,x             ; 9C64 F5 62                    .b
+        sbc     player1TetrominoX,x             ; 9C64 F5 62                    .b
         beq     L9C6E                           ; 9C66 F0 06                    ..
         ldy     #$80                            ; 9C68 A0 80                    ..
         bcs     L9C6E                           ; 9C6A B0 02                    ..
@@ -4192,7 +4200,7 @@ L9C6E:
         bne     L9C8A                           ; 9C72 D0 16                    ..
         lda     $01CB                           ; 9C74 AD CB 01                 ...
         sec                                     ; 9C77 38                       8
-        sbc     player1TetriminoOrientation,x   ; 9C78 F5 68                    .h
+        sbc     player1TetrominoOrientation,x   ; 9C78 F5 68                    .h
         beq     L9C8A                           ; 9C7A F0 0E                    ..
         and     #$03                            ; 9C7C 29 03                    ).
         cmp     #$03                            ; 9C7E C9 03                    ..
@@ -4210,20 +4218,20 @@ L9C8A:
 
 ; ----------------------------------------------------------------------------
 L9C8D:
-        lda     player1TetriminoCurrent,x       ; 9C8D B5 64                    .d
+        lda     player1TetrominoCurrent,x       ; 9C8D B5 64                    .d
         asl     a                               ; 9C8F 0A                       .
         asl     a                               ; 9C90 0A                       .
         asl     a                               ; 9C91 0A                       .
         asl     a                               ; 9C92 0A                       .
-        sta     $36                             ; 9C93 85 36                    .6
+        sta     generalCounter36                ; 9C93 85 36                    .6
         lda     #$00                            ; 9C95 A9 00                    ..
-        sta     $38                             ; 9C97 85 38                    .8
+        sta     generalCounter38                ; 9C97 85 38                    .8
         ldx     playMode                        ; 9C99 A6 2F                    ./
         bpl     L9C9F                           ; 9C9B 10 02                    ..
         ldx     #$02                            ; 9C9D A2 02                    ..
 L9C9F:
         lda     playfieldIdPossible,x           ; 9C9F BD 62 85                 .b.
-        sta     $39                             ; 9CA2 85 39                    .9
+        sta     generalCounter39                ; 9CA2 85 39                    .9
         ldx     #$00                            ; 9CA4 A2 00                    ..
         ldy     #$28                            ; 9CA6 A0 28                    .(
 L9CA8:
@@ -4231,7 +4239,7 @@ L9CA8:
         clc                                     ; 9CA9 18                       .
         adc     #$08                            ; 9CAA 69 08                    i.
         tay                                     ; 9CAC A8                       .
-        lda     ($38),y                         ; 9CAD B1 38                    .8
+        lda     (generalCounter38),y            ; 9CAD B1 38                    .8
         and     #$F0                            ; 9CAF 29 F0                    ).
         beq     L9CA8                           ; 9CB1 F0 F5                    ..
         tya                                     ; 9CB3 98                       .
@@ -4248,7 +4256,7 @@ L9CC1:
         clc                                     ; 9CC2 18                       .
         adc     #$08                            ; 9CC3 69 08                    i.
         tay                                     ; 9CC5 A8                       .
-        lda     ($38),y                         ; 9CC6 B1 38                    .8
+        lda     (generalCounter38),y            ; 9CC6 B1 38                    .8
         and     #$0F                            ; 9CC8 29 0F                    ).
         beq     L9CC1                           ; 9CCA F0 F5                    ..
         tya                                     ; 9CCC 98                       .
@@ -4267,19 +4275,19 @@ L9CC1:
         sta     $07FD                           ; 9CE3 8D FD 07                 ...
         ldx     #$02                            ; 9CE6 A2 02                    ..
 L9CE8:
-        ldy     $36                             ; 9CE8 A4 36                    .6
+        ldy     generalCounter36                ; 9CE8 A4 36                    .6
         jsr     L9D3A                           ; 9CEA 20 3A 9D                  :.
-        lda     $36                             ; 9CED A5 36                    .6
+        lda     generalCounter36                ; 9CED A5 36                    .6
         clc                                     ; 9CEF 18                       .
         adc     #$04                            ; 9CF0 69 04                    i.
         tay                                     ; 9CF2 A8                       .
         jsr     L9D3A                           ; 9CF3 20 3A 9D                  :.
-        lda     $36                             ; 9CF6 A5 36                    .6
+        lda     generalCounter36                ; 9CF6 A5 36                    .6
         clc                                     ; 9CF8 18                       .
         adc     #$08                            ; 9CF9 69 08                    i.
         tay                                     ; 9CFB A8                       .
         jsr     L9D3A                           ; 9CFC 20 3A 9D                  :.
-        lda     $36                             ; 9CFF A5 36                    .6
+        lda     generalCounter36                ; 9CFF A5 36                    .6
         clc                                     ; 9D01 18                       .
         adc     #$0C                            ; 9D02 69 0C                    i.
         tay                                     ; 9D04 A8                       .
@@ -4298,7 +4306,7 @@ L9CE8:
         ldy     $07F9                           ; 9D21 AC F9 07                 ...
 L9D24:
         stx     $01CB                           ; 9D24 8E CB 01                 ...
-        lda     $36                             ; 9D27 A5 36                    .6
+        lda     generalCounter36                ; 9D27 A5 36                    .6
         cmp     #$10                            ; 9D29 C9 10                    ..
         bne     L9D36                           ; 9D2B D0 09                    ..
         cpx     #$01                            ; 9D2D E0 01                    ..
@@ -4365,20 +4373,20 @@ L9DA2:
 L9DA3:
         stx     $07F0                           ; 9DA3 8E F0 07                 ...
         lda     $07E0,x                         ; 9DA6 BD E0 07                 ...
-        sta     $37                             ; 9DA9 85 37                    .7
+        sta     generalCounter37                ; 9DA9 85 37                    .7
         lda     LA0DA,y                         ; 9DAB B9 DA A0                 ...
         cmp     #$80                            ; 9DAE C9 80                    ..
         beq     L9DFF                           ; 9DB0 F0 4D                    .M
         cpx     #$0C                            ; 9DB2 E0 0C                    ..
         bcs     L9E30                           ; 9DB4 B0 7A                    .z
         inc     $07F0                           ; 9DB6 EE F0 07                 ...
-        adc     $37                             ; 9DB9 65 37                    e7
+        adc     generalCounter37                ; 9DB9 65 37                    e7
         sec                                     ; 9DBB 38                       8
         sbc     $07E1,x                         ; 9DBC FD E1 07                 ...
         bcc     L9DC7                           ; 9DBF 90 06                    ..
         eor     #$FF                            ; 9DC1 49 FF                    I.
-        adc     $37                             ; 9DC3 65 37                    e7
-        sta     $37                             ; 9DC5 85 37                    .7
+        adc     generalCounter37                ; 9DC3 65 37                    e7
+        sta     generalCounter37                ; 9DC5 85 37                    .7
 L9DC7:
         lda     LA0DB,y                         ; 9DC7 B9 DB A0                 ...
         cmp     #$80                            ; 9DCA C9 80                    ..
@@ -4386,13 +4394,13 @@ L9DC7:
         cpx     #$0C                            ; 9DCE E0 0C                    ..
         bcs     L9E30                           ; 9DD0 B0 5E                    .^
         inc     $07F0                           ; 9DD2 EE F0 07                 ...
-        adc     $37                             ; 9DD5 65 37                    e7
+        adc     generalCounter37                ; 9DD5 65 37                    e7
         sec                                     ; 9DD7 38                       8
         sbc     $07E2,x                         ; 9DD8 FD E2 07                 ...
         bcc     L9DE3                           ; 9DDB 90 06                    ..
         eor     #$FF                            ; 9DDD 49 FF                    I.
-        adc     $37                             ; 9DDF 65 37                    e7
-        sta     $37                             ; 9DE1 85 37                    .7
+        adc     generalCounter37                ; 9DDF 65 37                    e7
+        sta     generalCounter37                ; 9DE1 85 37                    .7
 L9DE3:
         lda     LA0DC,y                         ; 9DE3 B9 DC A0                 ...
         cmp     #$80                            ; 9DE6 C9 80                    ..
@@ -4400,20 +4408,20 @@ L9DE3:
         cpx     #$0C                            ; 9DEA E0 0C                    ..
         bcs     L9E30                           ; 9DEC B0 42                    .B
         inc     $07F0                           ; 9DEE EE F0 07                 ...
-        adc     $37                             ; 9DF1 65 37                    e7
+        adc     generalCounter37                ; 9DF1 65 37                    e7
         sec                                     ; 9DF3 38                       8
         sbc     $07E3,x                         ; 9DF4 FD E3 07                 ...
         bcc     L9DFF                           ; 9DF7 90 06                    ..
         eor     #$FF                            ; 9DF9 49 FF                    I.
-        adc     $37                             ; 9DFB 65 37                    e7
-        sta     $37                             ; 9DFD 85 37                    .7
+        adc     generalCounter37                ; 9DFB 65 37                    e7
+        sta     generalCounter37                ; 9DFD 85 37                    .7
 L9DFF:
         sty     $07F1                           ; 9DFF 8C F1 07                 ...
         ldy     $07F0                           ; 9E02 AC F0 07                 ...
         lda     #$00                            ; 9E05 A9 00                    ..
         jsr     L9E31                           ; 9E07 20 31 9E                  1.
         ldy     $07F1                           ; 9E0A AC F1 07                 ...
-        lda     $37                             ; 9E0D A5 37                    .7
+        lda     generalCounter37                ; 9E0D A5 37                    .7
         sec                                     ; 9E0F 38                       8
         sbc     $07F0                           ; 9E10 ED F0 07                 ...
         bcc     L9E30                           ; 9E13 90 1B                    ..
@@ -4473,10 +4481,10 @@ L9E61:
         lda     #$3C                            ; 9E6A A9 3C                    .<
         sta     player2FallTimer                ; 9E6C 85 6B                    .k
         lda     #$00                            ; 9E6E A9 00                    ..
-        sta     player1TetriminoCurrent         ; 9E70 85 64                    .d
-        sta     player2TetriminoCurrent         ; 9E72 85 65                    .e
-        sta     player1TetriminoNext            ; 9E74 85 66                    .f
-        sta     player2TetriminoNext            ; 9E76 85 67                    .g
+        sta     player1TetrominoCurrent         ; 9E70 85 64                    .d
+        sta     player2TetrominoCurrent         ; 9E72 85 65                    .e
+        sta     player1TetrominoNext            ; 9E74 85 66                    .f
+        sta     player2TetrominoNext            ; 9E76 85 67                    .g
         sta     $01CE                           ; 9E78 8D CE 01                 ...
         sta     $01CF                           ; 9E7B 8D CF 01                 ...
         jsr     LB3E9                           ; 9E7E 20 E9 B3                  ..
@@ -4520,10 +4528,10 @@ L9EBC:
         jsr     LB3E9                           ; 9EC4 20 E9 B3                  ..
         lda     #$3E                            ; 9EC7 A9 3E                    .>
         ldy     #$00                            ; 9EC9 A0 00                    ..
-        sty     player1TetriminoCurrent         ; 9ECB 84 64                    .d
-        sty     player2TetriminoCurrent         ; 9ECD 84 65                    .e
-        sty     player1TetriminoNext            ; 9ECF 84 66                    .f
-        sty     player2TetriminoNext            ; 9ED1 84 67                    .g
+        sty     player1TetrominoCurrent         ; 9ECB 84 64                    .d
+        sty     player2TetrominoCurrent         ; 9ECD 84 65                    .e
+        sty     player1TetrominoNext            ; 9ECF 84 66                    .f
+        sty     player2TetrominoNext            ; 9ED1 84 67                    .g
         sty     $01CE                           ; 9ED3 8C CE 01                 ...
         sty     $01CF                           ; 9ED6 8C CF 01                 ...
         jsr     LA06F                           ; 9ED9 20 6F A0                  o.
@@ -4531,7 +4539,7 @@ L9EBC:
 L9EDE:
         lda     player1ScoreMirrorPossible,x    ; 9EDE BD 30 04                 .0.
         sta     player1ScoreHundredThousands,x  ; 9EE1 9D 18 04                 ...
-        lda     unknownScoreSlot,x              ; 9EE4 BD 36 04                 .6.
+        lda     player1LinesMirrorPossible,x    ; 9EE4 BD 36 04                 .6.
         sta     player1LinesThousands,x         ; 9EE7 9D 24 04                 .$.
         dex                                     ; 9EEA CA                       .
         bpl     L9EDE                           ; 9EEB 10 F1                    ..
@@ -4767,7 +4775,7 @@ LA06A:
 LA06F:
         pha                                     ; A06F 48                       H
         jsr     LA3DB                           ; A070 20 DB A3                  ..
-        sty     $36                             ; A073 84 36                    .6
+        sty     generalCounter36                ; A073 84 36                    .6
         lda     menuGameMode,y                  ; A075 B9 F0 04                 ...
         clc                                     ; A078 18                       .
         adc     LA0DD,y                         ; A079 79 DD A0                 y..
@@ -4779,7 +4787,7 @@ LA06F:
         sta     $17,x                           ; A086 95 17                    ..
         pla                                     ; A088 68                       h
         beq     LA090                           ; A089 F0 05                    ..
-        ldy     $36                             ; A08B A4 36                    .6
+        ldy     generalCounter36                ; A08B A4 36                    .6
         lda     LA0A5,y                         ; A08D B9 A5 A0                 ...
 LA090:
         ldy     #$00                            ; A090 A0 00                    ..
@@ -4791,7 +4799,7 @@ LA090:
         inc     $48                             ; A09C E6 48                    .H
         lda     #$01                            ; A09E A9 01                    ..
         sta     $24,x                           ; A0A0 95 24                    .$
-        ldy     $36                             ; A0A2 A4 36                    .6
+        ldy     generalCounter36                ; A0A2 A4 36                    .6
         rts                                     ; A0A4 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -4837,25 +4845,25 @@ LA159:
         asl     a                               ; A159 0A                       .
         tay                                     ; A15A A8                       .
         lda     LA189,y                         ; A15B B9 89 A1                 ...
-        sta     $3C                             ; A15E 85 3C                    .<
+        sta     generalCounter3c                ; A15E 85 3C                    .<
         lda     LA189+1,y                       ; A160 B9 8A A1                 ...
-        sta     $3D                             ; A163 85 3D                    .=
+        sta     generalCounter3d                ; A163 85 3D                    .=
         ldy     #$00                            ; A165 A0 00                    ..
 LA167:
-        lda     ($3C),y                         ; A167 B1 3C                    .<
+        lda     (generalCounter3c),y            ; A167 B1 3C                    .<
         beq     LA188                           ; A169 F0 1D                    ..
         bit     PPUSTATUS                       ; A16B 2C 02 20                 ,. 
         tax                                     ; A16E AA                       .
         iny                                     ; A16F C8                       .
-        lda     ($3C),y                         ; A170 B1 3C                    .<
+        lda     (generalCounter3c),y            ; A170 B1 3C                    .<
         sta     PPUADDR                         ; A172 8D 06 20                 .. 
         stx     PPUADDR                         ; A175 8E 06 20                 .. 
         iny                                     ; A178 C8                       .
-        lda     ($3C),y                         ; A179 B1 3C                    .<
+        lda     (generalCounter3c),y            ; A179 B1 3C                    .<
 LA17B:
         sta     PPUDATA                         ; A17B 8D 07 20                 .. 
         iny                                     ; A17E C8                       .
-        lda     ($3C),y                         ; A17F B1 3C                    .<
+        lda     (generalCounter3c),y            ; A17F B1 3C                    .<
         cmp     #$FF                            ; A181 C9 FF                    ..
         bne     LA17B                           ; A183 D0 F6                    ..
         iny                                     ; A185 C8                       .
@@ -5153,16 +5161,16 @@ LA47B:
         lda     #$C0                            ; A485 A9 C0                    ..
         sta     PPUADDR                         ; A487 8D 06 20                 .. 
         lda     LA4A8,x                         ; A48A BD A8 A4                 ...
-        sta     $3C                             ; A48D 85 3C                    .<
+        sta     generalCounter3c                ; A48D 85 3C                    .<
         lda     LA4A9,x                         ; A48F BD A9 A4                 ...
-        sta     $3D                             ; A492 85 3D                    .=
+        sta     generalCounter3d                ; A492 85 3D                    .=
         ldy     #$00                            ; A494 A0 00                    ..
 LA496:
-        lda     ($3C),y                         ; A496 B1 3C                    .<
+        lda     (generalCounter3c),y            ; A496 B1 3C                    .<
         beq     LA4A7                           ; A498 F0 0D                    ..
         tax                                     ; A49A AA                       .
         iny                                     ; A49B C8                       .
-        lda     ($3C),y                         ; A49C B1 3C                    .<
+        lda     (generalCounter3c),y            ; A49C B1 3C                    .<
 LA49E:
         sta     PPUDATA                         ; A49E 8D 07 20                 .. 
         dex                                     ; A4A1 CA                       .
@@ -5305,10 +5313,10 @@ LA768:
         sta     $16,x                           ; A76D 95 16                    ..
         lda     #$3F                            ; A76F A9 3F                    .?
         sta     $17,x                           ; A771 95 17                    ..
-        sty     $36                             ; A773 84 36                    .6
+        sty     generalCounter36                ; A773 84 36                    .6
         tya                                     ; A775 98                       .
         asl     a                               ; A776 0A                       .
-        adc     $36                             ; A777 65 36                    e6
+        adc     generalCounter36                ; A777 65 36                    e6
         adc     #$88                            ; A779 69 88                    i.
         sta     ppuDataAddress1,x               ; A77B 95 08                    ..
         lda     #$A7                            ; A77D A9 A7                    ..
@@ -5682,7 +5690,7 @@ LA9E9:
 LA9EF:
         ldy     #$00                            ; A9EF A0 00                    ..
         lda     ($76),y                         ; A9F1 B1 76                    .v
-        sta     $39                             ; A9F3 85 39                    .9
+        sta     generalCounter39                ; A9F3 85 39                    .9
         bne     LAA1D                           ; A9F5 D0 26                    .&
         ldx     #$4C                            ; A9F7 A2 4C                    .L
         ldy     #$2D                            ; A9F9 A0 2D                    .-
@@ -5720,10 +5728,10 @@ LAA1D:
 LAA2C:
         iny                                     ; AA2C C8                       .
         lda     ($76),y                         ; AA2D B1 76                    .v
-        sta     $38                             ; AA2F 85 38                    .8
+        sta     generalCounter38                ; AA2F 85 38                    .8
         iny                                     ; AA31 C8                       .
         lda     ($76),y                         ; AA32 B1 76                    .v
-        sta     $36                             ; AA34 85 36                    .6
+        sta     generalCounter36                ; AA34 85 36                    .6
         lda     $76                             ; AA36 A5 76                    .v
         clc                                     ; AA38 18                       .
         adc     #$03                            ; AA39 69 03                    i.
@@ -5736,12 +5744,12 @@ LAA41:
 LAA45:
         lda     oamStaging,x                    ; AA45 BD 00 05                 ...
         clc                                     ; AA48 18                       .
-        adc     $36                             ; AA49 65 36                    e6
+        adc     generalCounter36                ; AA49 65 36                    e6
         sta     oamStaging,x                    ; AA4B 9D 00 05                 ...
         lda     oamStaging+2,x                  ; AA4E BD 02 05                 ...
         and     #$04                            ; AA51 29 04                    ).
         beq     LAA57                           ; AA53 F0 02                    ..
-        lda     ($38),y                         ; AA55 B1 38                    .8
+        lda     (generalCounter38),y            ; AA55 B1 38                    .8
 LAA57:
         sta     oamStaging+1,x                  ; AA57 9D 01 05                 ...
         inx                                     ; AA5A E8                       .
@@ -5780,7 +5788,7 @@ LAA89:
         sta     $76                             ; AA8D 85 76                    .v
         lda     LAB26,y                         ; AA8F B9 26 AB                 .&.
         sta     $77                             ; AA92 85 77                    .w
-        sta     $37                             ; AA94 85 37                    .7
+        sta     generalCounter37                ; AA94 85 37                    .7
         ldy     gameStatePossible               ; AA96 A4 29                    .)
         lda     #$50                            ; AA98 A9 50                    .P
         cpy     #$FA                            ; AA9A C0 FA                    ..
@@ -5931,23 +5939,23 @@ LACA0:
         bpl     LACBF                           ; ACBB 10 02                    ..
         ora     #$F0                            ; ACBD 09 F0                    ..
 LACBF:
-        sta     $36                             ; ACBF 85 36                    .6
+        sta     generalCounter36                ; ACBF 85 36                    .6
         jsr     L9A0D                           ; ACC1 20 0D 9A                  ..
         and     #$07                            ; ACC4 29 07                    ).
-        sta     $37                             ; ACC6 85 37                    .7
+        sta     generalCounter37                ; ACC6 85 37                    .7
         jsr     L9A0D                           ; ACC8 20 0D 9A                  ..
         and     #$03                            ; ACCB 29 03                    ).
         ora     #$24                            ; ACCD 09 24                    .$
-        sta     $38                             ; ACCF 85 38                    .8
+        sta     generalCounter38                ; ACCF 85 38                    .8
         ldx     #$4C                            ; ACD1 A2 4C                    .L
 LACD3:
-        lda     $38                             ; ACD3 A5 38                    .8
+        lda     generalCounter38                ; ACD3 A5 38                    .8
         sta     oamStaging+2,x                  ; ACD5 9D 02 05                 ...
-        lda     $36                             ; ACD8 A5 36                    .6
+        lda     generalCounter36                ; ACD8 A5 36                    .6
         clc                                     ; ACDA 18                       .
         adc     oamStaging+3,x                  ; ACDB 7D 03 05                 }..
         sta     oamStaging+3,x                  ; ACDE 9D 03 05                 ...
-        lda     $37                             ; ACE1 A5 37                    .7
+        lda     generalCounter37                ; ACE1 A5 37                    .7
         clc                                     ; ACE3 18                       .
         adc     oamStaging,x                    ; ACE4 7D 00 05                 }..
         sta     oamStaging,x                    ; ACE7 9D 00 05                 ...
@@ -5973,15 +5981,15 @@ LACF3:
         bne     LACF3                           ; AD01 D0 F0                    ..
 LAD03:
         lda     LAD23,y                         ; AD03 B9 23 AD                 .#.
-        sta     $36                             ; AD06 85 36                    .6
+        sta     generalCounter36                ; AD06 85 36                    .6
         lda     LAD24,y                         ; AD08 B9 24 AD                 .$.
-        sta     $37                             ; AD0B 85 37                    .7
+        sta     generalCounter37                ; AD0B 85 37                    .7
         ldx     #$4C                            ; AD0D A2 4C                    .L
         ldy     #$00                            ; AD0F A0 00                    ..
 LAD11:
         lda     oamStaging+2,x                  ; AD11 BD 02 05                 ...
         and     #$FB                            ; AD14 29 FB                    ).
-        ora     ($36),y                         ; AD16 11 36                    .6
+        ora     (generalCounter36),y            ; AD16 11 36                    .6
         sta     oamStaging+2,x                  ; AD18 9D 02 05                 ...
         inx                                     ; AD1B E8                       .
         inx                                     ; AD1C E8                       .
@@ -6108,33 +6116,33 @@ LB01E:
 
 ; ----------------------------------------------------------------------------
 LB029:
-        sta     $37                             ; B029 85 37                    .7
+        sta     generalCounter37                ; B029 85 37                    .7
         lda     $019A,y                         ; B02B B9 9A 01                 ...
-        sta     $36                             ; B02E 85 36                    .6
-        sty     $3A                             ; B030 84 3A                    .:
+        sta     generalCounter36                ; B02E 85 36                    .6
+        sty     generalCounter3a                ; B030 84 3A                    .:
         lda     frameCounterLow                 ; B032 A5 32                    .2
         and     #$07                            ; B034 29 07                    ).
         bne     LB043                           ; B036 D0 0B                    ..
-        lda     $36                             ; B038 A5 36                    .6
+        lda     generalCounter36                ; B038 A5 36                    .6
         clc                                     ; B03A 18                       .
         adc     #$02                            ; B03B 69 02                    i.
-        sta     $36                             ; B03D 85 36                    .6
+        sta     generalCounter36                ; B03D 85 36                    .6
         bcc     LB043                           ; B03F 90 02                    ..
-        inc     $37                             ; B041 E6 37                    .7
+        inc     generalCounter37                ; B041 E6 37                    .7
 LB043:
         ldy     #$00                            ; B043 A0 00                    ..
-        lda     ($36),y                         ; B045 B1 36                    .6
-        sta     $38                             ; B047 85 38                    .8
+        lda     (generalCounter36),y            ; B045 B1 36                    .6
+        sta     generalCounter38                ; B047 85 38                    .8
         iny                                     ; B049 C8                       .
         cmp     #$4D                            ; B04A C9 4D                    .M
-        lda     ($36),y                         ; B04C B1 36                    .6
-        sta     $39                             ; B04E 85 39                    .9
+        lda     (generalCounter36),y            ; B04C B1 36                    .6
+        sta     generalCounter39                ; B04E 85 39                    .9
         sbc     #$B1                            ; B050 E9 B1                    ..
         bcs     LB077                           ; B052 B0 23                    .#
         lda     player1FallTimer                ; B054 A5 6A                    .j
         cmp     #$70                            ; B056 C9 70                    .p
         bcs     LB064                           ; B058 B0 0A                    ..
-        ldy     $3A                             ; B05A A4 3A                    .:
+        ldy     generalCounter3a                ; B05A A4 3A                    .:
         cmp     #$16                            ; B05C C9 16                    ..
         bcs     LB01E                           ; B05E B0 BE                    ..
         inc     player1FallTimer                ; B060 E6 6A                    .j
@@ -6143,44 +6151,44 @@ LB064:
         jsr     L9A0D                           ; B064 20 0D 9A                  ..
         and     #$1E                            ; B067 29 1E                    ).
         tay                                     ; B069 A8                       .
-        lda     ($38),y                         ; B06A B1 38                    .8
-        sta     $36                             ; B06C 85 36                    .6
+        lda     (generalCounter38),y            ; B06A B1 38                    .8
+        sta     generalCounter36                ; B06C 85 36                    .6
         iny                                     ; B06E C8                       .
-        lda     ($38),y                         ; B06F B1 38                    .8
-        sta     $37                             ; B071 85 37                    .7
-        ldy     $3A                             ; B073 A4 3A                    .:
+        lda     (generalCounter38),y            ; B06F B1 38                    .8
+        sta     generalCounter37                ; B071 85 37                    .7
+        ldy     generalCounter3a                ; B073 A4 3A                    .:
         bpl     LB043                           ; B075 10 CC                    ..
 LB077:
-        lda     $38                             ; B077 A5 38                    .8
+        lda     generalCounter38                ; B077 A5 38                    .8
         cmp     #$BC                            ; B079 C9 BC                    ..
-        lda     $39                             ; B07B A5 39                    .9
+        lda     generalCounter39                ; B07B A5 39                    .9
         sbc     #$C8                            ; B07D E9 C8                    ..
         bcs     LB08D                           ; B07F B0 0C                    ..
-        lda     $38                             ; B081 A5 38                    .8
-        sta     $36                             ; B083 85 36                    .6
-        lda     $39                             ; B085 A5 39                    .9
-        sta     $37                             ; B087 85 37                    .7
-        ldy     $3A                             ; B089 A4 3A                    .:
+        lda     generalCounter38                ; B081 A5 38                    .8
+        sta     generalCounter36                ; B083 85 36                    .6
+        lda     generalCounter39                ; B085 A5 39                    .9
+        sta     generalCounter37                ; B087 85 37                    .7
+        ldy     generalCounter3a                ; B089 A4 3A                    .:
         bpl     LB043                           ; B08B 10 B6                    ..
 LB08D:
         ldy     #$00                            ; B08D A0 00                    ..
         lda     oamStaging+2,x                  ; B08F BD 02 05                 ...
         and     #$40                            ; B092 29 40                    )@
         bne     LB0D8                           ; B094 D0 42                    .B
-        lda     ($38),y                         ; B096 B1 38                    .8
+        lda     (generalCounter38),y            ; B096 B1 38                    .8
         sta     oamStaging+1,x                  ; B098 9D 01 05                 ...
         iny                                     ; B09B C8                       .
-        lda     ($38),y                         ; B09C B1 38                    .8
+        lda     (generalCounter38),y            ; B09C B1 38                    .8
         sta     oamStaging+5,x                  ; B09E 9D 05 05                 ...
         iny                                     ; B0A1 C8                       .
-        lda     ($38),y                         ; B0A2 B1 38                    .8
+        lda     (generalCounter38),y            ; B0A2 B1 38                    .8
         sta     oamStaging+9,x                  ; B0A4 9D 09 05                 ...
         iny                                     ; B0A7 C8                       .
-        lda     ($38),y                         ; B0A8 B1 38                    .8
+        lda     (generalCounter38),y            ; B0A8 B1 38                    .8
         sta     oamStaging+13,x                 ; B0AA 9D 0D 05                 ...
-        lda     $36                             ; B0AD A5 36                    .6
+        lda     generalCounter36                ; B0AD A5 36                    .6
         cmp     #$81                            ; B0AF C9 81                    ..
-        lda     $37                             ; B0B1 A5 37                    .7
+        lda     generalCounter37                ; B0B1 A5 37                    .7
         sbc     #$B1                            ; B0B3 E9 B1                    ..
         bcs     LB0C9                           ; B0B5 B0 12                    ..
         lda     frameCounterLow                 ; B0B7 A5 32                    .2
@@ -6191,11 +6199,11 @@ LB08D:
         inc     oamStaging+11,x                 ; B0C3 FE 0B 05                 ...
         inc     oamStaging+15,x                 ; B0C6 FE 0F 05                 ...
 LB0C9:
-        ldy     $3A                             ; B0C9 A4 3A                    .:
+        ldy     generalCounter3a                ; B0C9 A4 3A                    .:
 LB0CB:
-        lda     $36                             ; B0CB A5 36                    .6
+        lda     generalCounter36                ; B0CB A5 36                    .6
         sta     $019A,y                         ; B0CD 99 9A 01                 ...
-        lda     $37                             ; B0D0 A5 37                    .7
+        lda     generalCounter37                ; B0D0 A5 37                    .7
         sta     $01A2,y                         ; B0D2 99 A2 01                 ...
         jmp     LB01E                           ; B0D5 4C 1E B0                 L..
 
@@ -6298,16 +6306,16 @@ drawCathedralSpriteTile:
         lda     cathedralSpriteTabel+1,x        ; B374 BD A1 B3                 ...
         sta     oamStaging+2,x                  ; B377 9D 02 05                 ...
         lda     cathedralSpriteTabel+3,x        ; B37A BD A3 B3                 ...
-        sta     $36                             ; B37D 85 36                    .6
+        sta     generalCounter36                ; B37D 85 36                    .6
         lda     cathedralSpriteTabel+2,x        ; B37F BD A2 B3                 ...
         asl     a                               ; B382 0A                       .
         asl     a                               ; B383 0A                       .
         asl     a                               ; B384 0A                       .
         sta     oamStaging+3,x                  ; B385 9D 03 05                 ...
         lda     cathedralSpriteTabel+2,x        ; B388 BD A2 B3                 ...
-        lsr     $36                             ; B38B 46 36                    F6
+        lsr     generalCounter36                ; B38B 46 36                    F6
         ror     a                               ; B38D 6A                       j
-        lsr     $36                             ; B38E 46 36                    F6
+        lsr     generalCounter36                ; B38E 46 36                    F6
         ror     a                               ; B390 6A                       j
         and     #$F8                            ; B391 29 F8                    ).
         clc                                     ; B393 18                       .
@@ -6335,7 +6343,7 @@ LB3E9:
         asl     a                               ; B3EA 0A                       .
         tax                                     ; B3EB AA                       .
         lda     #$04                            ; B3EC A9 04                    ..
-        sta     $38                             ; B3EE 85 38                    .8
+        sta     generalCounter38                ; B3EE 85 38                    .8
         bit     PPUSTATUS                       ; B3F0 2C 02 20                 ,. 
         lda     #$20                            ; B3F3 A9 20                    . 
         sta     PPUADDR                         ; B3F5 8D 06 20                 .. 
@@ -6348,47 +6356,47 @@ LB404:
         sta     PPUDATA                         ; B404 8D 07 20                 .. 
         iny                                     ; B407 C8                       .
         bne     LB404                           ; B408 D0 FA                    ..
-        dec     $38                             ; B40A C6 38                    .8
+        dec     generalCounter38                ; B40A C6 38                    .8
         bne     LB404                           ; B40C D0 F6                    ..
         beq     LB425                           ; B40E F0 15                    ..
 LB410:
-        sta     $37                             ; B410 85 37                    .7
+        sta     generalCounter37                ; B410 85 37                    .7
         lda     LB47E,x                         ; B412 BD 7E B4                 .~.
-        sta     $36                             ; B415 85 36                    .6
+        sta     generalCounter36                ; B415 85 36                    .6
 LB417:
-        lda     ($36),y                         ; B417 B1 36                    .6
+        lda     (generalCounter36),y            ; B417 B1 36                    .6
         sta     PPUDATA                         ; B419 8D 07 20                 .. 
         iny                                     ; B41C C8                       .
         bne     LB417                           ; B41D D0 F8                    ..
-        inc     $37                             ; B41F E6 37                    .7
-        dec     $38                             ; B421 C6 38                    .8
+        inc     generalCounter37                ; B41F E6 37                    .7
+        dec     generalCounter38                ; B421 C6 38                    .8
         bne     LB417                           ; B423 D0 F2                    ..
 LB425:
         lda     LB490,x                         ; B425 BD 90 B4                 ...
-        sta     $36                             ; B428 85 36                    .6
+        sta     generalCounter36                ; B428 85 36                    .6
         lda     LB490+1,x                       ; B42A BD 91 B4                 ...
-        sta     $37                             ; B42D 85 37                    .7
+        sta     generalCounter37                ; B42D 85 37                    .7
 LB42F:
         ldy     #$00                            ; B42F A0 00                    ..
         ldx     #$00                            ; B431 A2 00                    ..
 LB433:
-        lda     ($36),y                         ; B433 B1 36                    .6
-        sta     $38,x                           ; B435 95 38                    .8
+        lda     (generalCounter36),y            ; B433 B1 36                    .6
+        sta     generalCounter38,x              ; B435 95 38                    .8
         iny                                     ; B437 C8                       .
         inx                                     ; B438 E8                       .
         cpx     #$06                            ; B439 E0 06                    ..
         bne     LB433                           ; B43B D0 F6                    ..
-        lda     $36                             ; B43D A5 36                    .6
+        lda     generalCounter36                ; B43D A5 36                    .6
         clc                                     ; B43F 18                       .
         adc     #$06                            ; B440 69 06                    i.
-        sta     $36                             ; B442 85 36                    .6
+        sta     generalCounter36                ; B442 85 36                    .6
         bcc     LB448                           ; B444 90 02                    ..
         .byte   $E6,$37                         ; B446 E6 37                    .7
 ; ----------------------------------------------------------------------------
 LB448:
         ldy     #$00                            ; B448 A0 00                    ..
 LB44A:
-        ldx     $38                             ; B44A A6 38                    .8
+        ldx     generalCounter38                ; B44A A6 38                    .8
         bne     LB457                           ; B44C D0 09                    ..
         pla                                     ; B44E 68                       h
         pha                                     ; B44F 48                       H
@@ -6399,25 +6407,25 @@ LB44A:
 ; ----------------------------------------------------------------------------
 LB457:
         bit     PPUSTATUS                       ; B457 2C 02 20                 ,. 
-        lda     $3B                             ; B45A A5 3B                    .;
+        lda     generalCounter3b                ; B45A A5 3B                    .;
         sta     PPUADDR                         ; B45C 8D 06 20                 .. 
-        lda     $3A                             ; B45F A5 3A                    .:
+        lda     generalCounter3a                ; B45F A5 3A                    .:
         sta     PPUADDR                         ; B461 8D 06 20                 .. 
 LB464:
-        lda     ($3C),y                         ; B464 B1 3C                    .<
+        lda     (generalCounter3c),y            ; B464 B1 3C                    .<
         sta     PPUDATA                         ; B466 8D 07 20                 .. 
         iny                                     ; B469 C8                       .
         dex                                     ; B46A CA                       .
         bne     LB464                           ; B46B D0 F7                    ..
-        lda     $3A                             ; B46D A5 3A                    .:
+        lda     generalCounter3a                ; B46D A5 3A                    .:
         clc                                     ; B46F 18                       .
         adc     #$20                            ; B470 69 20                    i 
-        sta     $3A                             ; B472 85 3A                    .:
+        sta     generalCounter3a                ; B472 85 3A                    .:
         bcc     LB478                           ; B474 90 02                    ..
         .byte   $E6,$3B                         ; B476 E6 3B                    .;
 ; ----------------------------------------------------------------------------
 LB478:
-        dec     $39                             ; B478 C6 39                    .9
+        dec     generalCounter39                ; B478 C6 39                    .9
         bne     LB44A                           ; B47A D0 CE                    ..
         beq     LB42F                           ; B47C F0 B1                    ..
 LB47E:
@@ -6469,7 +6477,7 @@ LB4C8:
         beq     LB52B                           ; B4D5 F0 54                    .T
         cpy     #$1C                            ; B4D7 C0 1C                    ..
         beq     LB559                           ; B4D9 F0 7E                    .~
-        stx     $37                             ; B4DB 86 37                    .7
+        stx     generalCounter37                ; B4DB 86 37                    .7
         txa                                     ; B4DD 8A                       .
         asl     a                               ; B4DE 0A                       .
         tax                                     ; B4DF AA                       .
@@ -6499,7 +6507,7 @@ LB4FF:
         ldx     #$00                            ; B512 A2 00                    ..
 LB514:
         jsr     LA756                           ; B514 20 56 A7                  V.
-        ldx     $37                             ; B517 A6 37                    .7
+        ldx     generalCounter37                ; B517 A6 37                    .7
         inc     $50,x                           ; B519 F6 50                    .P
         lda     #$3C                            ; B51B A9 3C                    .<
         sta     player1FallTimer,x              ; B51D 95 6A                    .j
@@ -6521,21 +6529,21 @@ LB52B:
         bne     LB52A                           ; B52E D0 FA                    ..
         lda     #$01                            ; B530 A9 01                    ..
         sta     longBarCodeUsedP1,x             ; B532 9D B8 01                 ...
-        sta     player1TetriminoCurrent,x       ; B535 95 64                    .d
+        sta     player1TetrominoCurrent,x       ; B535 95 64                    .d
 LB537:
         lda     #$04                            ; B537 A9 04                    ..
-        sta     player1TetriminoY,x             ; B539 95 60                    .`
+        sta     player1TetrominoY,x             ; B539 95 60                    .`
         lda     seven                           ; B53B AD ED 99                 ...
         bit     playMode                        ; B53E 24 2F                    $/
         bpl     LB545                           ; B540 10 03                    ..
-        lda     coopTetriminoX,x                ; B542 BD EB 99                 ...
+        lda     coopTetrominoX,x                ; B542 BD EB 99                 ...
 LB545:
-        sta     player1TetriminoX,x             ; B545 95 62                    .b
+        sta     player1TetrominoX,x             ; B545 95 62                    .b
         lda     #$00                            ; B547 A9 00                    ..
-        sta     player1TetriminoOrientation,x   ; B549 95 68                    .h
+        sta     player1TetrominoOrientation,x   ; B549 95 68                    .h
         lda     #$3C                            ; B54B A9 3C                    .<
         sta     player1FallTimer,x              ; B54D 95 6A                    .j
-        ldy     player1TetriminoCurrent,x       ; B54F B4 64                    .d
+        ldy     player1TetrominoCurrent,x       ; B54F B4 64                    .d
         jsr     LA763                           ; B551 20 63 A7                  c.
         lda     #$15                            ; B554 A9 15                    ..
         jmp     possibleSetSoundOrMusic         ; B556 4C B1 CF                 L..
@@ -6547,24 +6555,24 @@ LB559:
         lda     lastCurrentBlockP1,x            ; B55E BD BC 01                 ...
         beq     LB52A                           ; B561 F0 C7                    ..
         inc     removeBlockCodeUsedP1,x         ; B563 FE BA 01                 ...
-        lda     player1TetriminoCurrent,x       ; B566 B5 64                    .d
+        lda     player1TetrominoCurrent,x       ; B566 B5 64                    .d
         beq     LB576                           ; B568 F0 0C                    ..
-        sta     player1TetriminoNext,x          ; B56A 95 66                    .f
+        sta     player1TetrominoNext,x          ; B56A 95 66                    .f
         tay                                     ; B56C A8                       .
-        stx     $3A                             ; B56D 86 3A                    .:
+        stx     generalCounter3a                ; B56D 86 3A                    .:
         inx                                     ; B56F E8                       .
         inx                                     ; B570 E8                       .
         jsr     LA763                           ; B571 20 63 A7                  c.
-        ldx     $3A                             ; B574 A6 3A                    .:
+        ldx     generalCounter3a                ; B574 A6 3A                    .:
 LB576:
         lda     lastOrientationP1,x             ; B576 BD BE 01                 ...
-        sta     player1TetriminoOrientation,x   ; B579 95 68                    .h
-        lda     lastTetriminoXP1,x              ; B57B BD C2 01                 ...
-        sta     player1TetriminoX,x             ; B57E 95 62                    .b
-        lda     lastTetriminoYP1,x              ; B580 BD C0 01                 ...
-        sta     player1TetriminoY,x             ; B583 95 60                    .`
+        sta     player1TetrominoOrientation,x   ; B579 95 68                    .h
+        lda     lastTetrominoXP1,x              ; B57B BD C2 01                 ...
+        sta     player1TetrominoX,x             ; B57E 95 62                    .b
+        lda     lastTetrominoYP1,x              ; B580 BD C0 01                 ...
+        sta     player1TetrominoY,x             ; B583 95 60                    .`
         lda     lastCurrentBlockP1,x            ; B585 BD BC 01                 ...
-        sta     player1TetriminoCurrent,x       ; B588 95 64                    .d
+        sta     player1TetrominoCurrent,x       ; B588 95 64                    .d
         txa                                     ; B58A 8A                       .
         asl     a                               ; B58B 0A                       .
         tay                                     ; B58C A8                       .
@@ -6631,55 +6639,55 @@ LB603:
         asl     a                               ; B603 0A                       .
         tay                                     ; B604 A8                       .
         lda     LB65D,y                         ; B605 B9 5D B6                 .].
-        sta     $3C                             ; B608 85 3C                    .<
+        sta     generalCounter3c                ; B608 85 3C                    .<
         lda     LB65E,y                         ; B60A B9 5E B6                 .^.
-        sta     $3D                             ; B60D 85 3D                    .=
+        sta     generalCounter3d                ; B60D 85 3D                    .=
         ldy     #$00                            ; B60F A0 00                    ..
 LB611:
         ldx     #$00                            ; B611 A2 00                    ..
-        lda     ($3C),y                         ; B613 B1 3C                    .<
+        lda     (generalCounter3c),y            ; B613 B1 3C                    .<
         bne     LB61A                           ; B615 D0 03                    ..
         rts                                     ; B617 60                       `
 
 ; ----------------------------------------------------------------------------
 LB618:
-        lda     ($3C),y                         ; B618 B1 3C                    .<
+        lda     (generalCounter3c),y            ; B618 B1 3C                    .<
 LB61A:
-        sta     $36,x                           ; B61A 95 36                    .6
+        sta     generalCounter36,x              ; B61A 95 36                    .6
         iny                                     ; B61C C8                       .
         inx                                     ; B61D E8                       .
         cpx     #$06                            ; B61E E0 06                    ..
         bne     LB618                           ; B620 D0 F6                    ..
 LB622:
         jsr     LA3DB                           ; B622 20 DB A3                  ..
-        lda     $38                             ; B625 A5 38                    .8
+        lda     generalCounter38                ; B625 A5 38                    .8
         sta     $16,x                           ; B627 95 16                    ..
-        lda     $39                             ; B629 A5 39                    .9
+        lda     generalCounter39                ; B629 A5 39                    .9
         sta     $17,x                           ; B62B 95 17                    ..
-        lda     $3A                             ; B62D A5 3A                    .:
+        lda     generalCounter3a                ; B62D A5 3A                    .:
         sta     ppuDataAddress1,x               ; B62F 95 08                    ..
-        lda     $3B                             ; B631 A5 3B                    .;
+        lda     generalCounter3b                ; B631 A5 3B                    .;
         sta     ppuDataAddress1+1,x             ; B633 95 09                    ..
-        lda     $36                             ; B635 A5 36                    .6
+        lda     generalCounter36                ; B635 A5 36                    .6
         and     #$7F                            ; B637 29 7F                    ).
         sta     $24,x                           ; B639 95 24                    .$
-        dec     $37                             ; B63B C6 37                    .7
+        dec     generalCounter37                ; B63B C6 37                    .7
         beq     LB611                           ; B63D F0 D2                    ..
-        lda     $38                             ; B63F A5 38                    .8
+        lda     generalCounter38                ; B63F A5 38                    .8
         clc                                     ; B641 18                       .
         adc     #$20                            ; B642 69 20                    i 
-        sta     $38                             ; B644 85 38                    .8
-        lda     $39                             ; B646 A5 39                    .9
+        sta     generalCounter38                ; B644 85 38                    .8
+        lda     generalCounter39                ; B646 A5 39                    .9
         adc     #$00                            ; B648 69 00                    i.
-        sta     $39                             ; B64A 85 39                    .9
-        lda     $36                             ; B64C A5 36                    .6
+        sta     generalCounter39                ; B64A 85 39                    .9
+        lda     generalCounter36                ; B64C A5 36                    .6
         bpl     LB622                           ; B64E 10 D2                    ..
         and     #$7F                            ; B650 29 7F                    ).
         clc                                     ; B652 18                       .
-        adc     $3A                             ; B653 65 3A                    e:
-        sta     $3A                             ; B655 85 3A                    .:
+        adc     generalCounter3a                ; B653 65 3A                    e:
+        sta     generalCounter3a                ; B655 85 3A                    .:
         bcc     LB622                           ; B657 90 C9                    ..
-        inc     $3B                             ; B659 E6 3B                    .;
+        inc     generalCounter3b                ; B659 E6 3B                    .;
         bne     LB622                           ; B65B D0 C5                    ..
 LB65D:
         .byte   $79                             ; B65D 79                       y

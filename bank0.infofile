@@ -30,6 +30,16 @@ LABEL { ADDR $0033; NAME "frameCounterHigh"; };
 
 LABEL { ADDR $0034; NAME "rngSeed"; SIZE $2; };
 
+LABEL { ADDR $0036; NAME "generalCounter36"; };
+LABEL { ADDR $0037; NAME "generalCounter37"; };
+LABEL { ADDR $0038; NAME "generalCounter38"; };
+LABEL { ADDR $0039; NAME "generalCounter39"; };
+LABEL { ADDR $003a; NAME "generalCounter3a"; };
+LABEL { ADDR $003b; NAME "generalCounter3b"; };
+LABEL { ADDR $003c; NAME "generalCounter3c"; };
+LABEL { ADDR $003d; NAME "generalCounter3d"; };
+
+
 LABEL { ADDR $003E; NAME "player1ControllerLastFrame"; };
 LABEL { ADDR $003F; NAME "player2ControllerLastFrame"; };
 LABEL { ADDR $0040; NAME "player1ExpansionLastFrame"; };
@@ -45,18 +55,18 @@ LABEL { ADDR $005a; NAME "savedRNGSeedForSomething"; SIZE $2; };
 LABEL { ADDR $005c; NAME "player1RNGSeed"; SIZE $2; }; 
 LABEL { ADDR $005e; NAME "player2RNGSeed"; SIZE $2; }; 
 
-LABEL { ADDR $0060; NAME "player1TetriminoY"; };
-LABEL { ADDR $0061; NAME "player2TetriminoY"; };
+LABEL { ADDR $0060; NAME "player1TetrominoY"; };
+LABEL { ADDR $0061; NAME "player2TetrominoY"; };
 
-LABEL { ADDR $0062; NAME "player1TetriminoX"; };
-LABEL { ADDR $0063; NAME "player2TetriminoX"; };
+LABEL { ADDR $0062; NAME "player1TetrominoX"; };
+LABEL { ADDR $0063; NAME "player2TetrominoX"; };
 
-LABEL { ADDR $0064; NAME "player1TetriminoCurrent"; };     
-LABEL { ADDR $0065; NAME "player2TetriminoCurrent"; };     
-LABEL { ADDR $0066; NAME "player1TetriminoNext"; };        
-LABEL { ADDR $0067; NAME "player2TetriminoNext"; };        
-LABEL { ADDR $0068; NAME "player1TetriminoOrientation"; }; 
-LABEL { ADDR $0069; NAME "player2TetriminoOrientation"; }; 
+LABEL { ADDR $0064; NAME "player1TetrominoCurrent"; };     
+LABEL { ADDR $0065; NAME "player2TetrominoCurrent"; };     
+LABEL { ADDR $0066; NAME "player1TetrominoNext"; };        
+LABEL { ADDR $0067; NAME "player2TetrominoNext"; };        
+LABEL { ADDR $0068; NAME "player1TetrominoOrientation"; }; 
+LABEL { ADDR $0069; NAME "player2TetrominoOrientation"; }; 
 
 LABEL { ADDR $006a; NAME "player1FallTimer"; }; 
 LABEL { ADDR $006b; NAME "player2FallTimer"; }; 
@@ -71,10 +81,10 @@ LABEL { ADDR $01bc; NAME "lastCurrentBlockP1"; };
 LABEL { ADDR $01bd; NAME "lastCurrentBlockP2"; }; 
 LABEL { ADDR $01be; NAME "lastOrientationP1"; }; 
 LABEL { ADDR $01bf; NAME "lastOrientationP2"; }; 
-LABEL { ADDR $01c0; NAME "lastTetriminoYP1"; }; 
-LABEL { ADDR $01c1; NAME "lastTetriminoYP2"; }; 
-LABEL { ADDR $01c2; NAME "lastTetriminoXP1"; }; 
-LABEL { ADDR $01c3; NAME "lastTetriminoXP2"; }; 
+LABEL { ADDR $01c0; NAME "lastTetrominoYP1"; }; 
+LABEL { ADDR $01c1; NAME "lastTetrominoYP2"; }; 
+LABEL { ADDR $01c2; NAME "lastTetrominoXP1"; }; 
+LABEL { ADDR $01c3; NAME "lastTetrominoXP2"; }; 
 LABEL { ADDR $01c4; NAME "lastRNGSeedP1"; SIZE $2; }; 
 LABEL { ADDR $01c6; NAME "lastRNGSeedP2"; SIZE $2; }; 
 
@@ -114,7 +124,7 @@ LABEL { ADDR $0422; NAME "player2ScoreTens"; };
 LABEL { ADDR $0423; NAME "player2ScoreOnes"; };
 
 LABEL { ADDR $0430; NAME "player1ScoreMirrorPossible"; SIZE $6; };
-LABEL { ADDR $0436; NAME "unknownScoreSlot"; SIZE $6; };
+LABEL { ADDR $0436; NAME "player1LinesMirrorPossible"; SIZE $6; };
 
 LABEL { ADDR $043c; NAME "highScoreHundredThousands"; }; 
 LABEL { ADDR $043d; NAME "highScoreTenThousands"; }; 
@@ -205,10 +215,10 @@ LABEL { ADDR $8a59; NAME "twoSpacesAfterTetris"; SIZE $2; };
 
 LABEL { ADDR $984c; NAME "initHandicapGarbage";  };
 
-LABEL { ADDR $9929; NAME "getNextTetrimino"; };
+LABEL { ADDR $9929; NAME "getNextTetromino"; };
 
 
-LABEL { ADDR $99eb; NAME "coopTetriminoX"; SIZE $2; };
+LABEL { ADDR $99eb; NAME "coopTetrominoX"; SIZE $2; };
 LABEL { ADDR $99ed; NAME "seven"; };
 LABEL { ADDR $99ee; NAME "genNextPseudoRandom5x"; };
 LABEL { ADDR $99f4; NAME "genNextPseudoRandom3x"; };
