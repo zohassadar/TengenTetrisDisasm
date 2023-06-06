@@ -73,14 +73,14 @@ player2ControllerNew:  .res $1 ; $0047
 .res $1 ; $004f
 .res $1 ; $0050
 .res $1 ; $0051
-.res $1 ; $0052
-.res $1 ; $0053
-.res $1 ; $0054
-.res $1 ; $0055
-.res $1 ; $0056
-.res $1 ; $0057
-.res $1 ; $0058
-.res $1 ; $0059
+pieceStatistics: .res $1 ; $0052 ; Doesn't seem to be used but is the offset point
+pieceStatsI: .res $1 ; $0053
+pieceStatsT: .res $1 ; $0054
+pieceStatsO: .res $1 ; $0055
+pieceStatsJ: .res $1 ; $0056
+pieceStatsL: .res $1 ; $0057
+pieceStatsS: .res $1 ; $0058
+pieceStatsZ: .res $1 ; $0059
 savedRNGSeedForSomething: .res 2 ; $005a
 player1RNGSeed: .res $2 ; $005c
 player2RNGSeed: .res $2 ; $005e
@@ -131,9 +131,9 @@ lastTetrominoXP1: .res $1 ; $01c2
 lastTetrominoXP2: .res $1 ; $01c3
 lastRNGSeedP1: .res $2 ; $01c4
 lastRNGSeedP2: .res $2 ; $01c6
+pointsDisplayTimerP1: .res $1 ; $01c8
+pointsDisplayTimerP2: .res $1 ; $01c9
 
-.res $1 ; $01c8 ; used by not stack
-.res $1 ; $01c9 ; used by not stack
 .res $1 ; $01ca ; used by not stack
 .res $1 ; $01cb ; used by not stack
 .res $1 ; $01cc ; used by not stack

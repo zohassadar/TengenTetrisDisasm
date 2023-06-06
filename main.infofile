@@ -51,6 +51,15 @@ LABEL { ADDR $0045; NAME "player2ExpansionHeld"; };
 LABEL { ADDR $0046; NAME "player1ControllerNew"; };
 LABEL { ADDR $0047; NAME "player2ControllerNew"; };
 
+LABEL { ADDR $0052; NAME "pieceStatistics"; };
+LABEL { ADDR $0053; NAME "pieceStatsI"; }; 
+LABEL { ADDR $0054; NAME "pieceStatsT"; }; 
+LABEL { ADDR $0055; NAME "pieceStatsO"; }; 
+LABEL { ADDR $0056; NAME "pieceStatsJ"; }; 
+LABEL { ADDR $0057; NAME "pieceStatsL"; }; 
+LABEL { ADDR $0058; NAME "pieceStatsS"; }; 
+LABEL { ADDR $0059; NAME "pieceStatsZ"; }; 
+
 LABEL { ADDR $005a; NAME "savedRNGSeedForSomething"; SIZE $2; }; 
 LABEL { ADDR $005c; NAME "player1RNGSeed"; SIZE $2; }; 
 LABEL { ADDR $005e; NAME "player2RNGSeed"; SIZE $2; }; 
@@ -87,6 +96,8 @@ LABEL { ADDR $01c2; NAME "lastTetrominoXP1"; };
 LABEL { ADDR $01c3; NAME "lastTetrominoXP2"; }; 
 LABEL { ADDR $01c4; NAME "lastRNGSeedP1"; SIZE $2; }; 
 LABEL { ADDR $01c6; NAME "lastRNGSeedP2"; SIZE $2; }; 
+LABEL { ADDR $01c8; NAME "pointsDisplayTimerP1"; }; 
+LABEL { ADDR $01c9; NAME "pointsDisplayTimerP2"; }; 
 
 LABEL { ADDR $01d3; NAME "stack"; SIZE $1d; }; 
 
@@ -213,6 +224,7 @@ LABEL { ADDR $8a4d; NAME "twoSpacesAfterTriple"; SIZE $2; };
 LABEL { ADDR $8a4f; NAME "lineClearTetris"; SIZE $A; };
 LABEL { ADDR $8a59; NAME "twoSpacesAfterTetris"; SIZE $2; };
 
+LABEL { ADDR $94bf; NAME "renderLeaderboardInitials";  };
 LABEL { ADDR $984c; NAME "initHandicapGarbage";  };
 
 LABEL { ADDR $9929; NAME "getNextTetromino"; };
@@ -228,6 +240,9 @@ LABEL { ADDR $99fa; NAME "genNextPseudoRandom"; };
 LABEL { ADDR $9b36; NAME "possibleFallTimerTable"; };
 LABEL { ADDR $97C1; NAME "initializePlayfields"; };
 
+LABEL { ADDR $9bdc; NAME "statsDataAddresses"; SIZE $E; };
+LABEL { ADDR $9bea; NAME "statsPPUAddresses"; SIZE $12; };
+
 LABEL { ADDR $9f51; NAME "playModeTable"; COMMENT "1p, 2p, coop, vs comp, with comp"; };
 
 LABEL { ADDR $9c0b; NAME "moveScreenUpOrDown"; };
@@ -239,6 +254,8 @@ LABEL { ADDR $A02F; NAME "@branchOnModeLevelMenu"; };
 LABEL { ADDR $A032; NAME "@branchOnModeHandicapMenu"; };
 
 LABEL { ADDR $a043; NAME "musicSelectTable"; };
+
+LABEL { ADDR $a0ab; NAME "ppuAddressTable1"; SIZE $32; };
 
 LABEL { ADDR $a19b; NAME "ppuPatchGameSelect"; };
 LABEL { ADDR $a1a9; NAME "ppuPatch1Player"; };
@@ -595,8 +612,13 @@ RANGE {
 };
 RANGE { 
   START $9bd5; 
-  END $9bfb; 
+  END $9bdb; 
   TYPE BYTETABLE; 
+};
+RANGE { 
+  START $9bdc; 
+  END $9bfb; 
+  TYPE ADDRTABLE; 
 };
 RANGE { 
   START $9bfc; 
@@ -625,6 +647,16 @@ RANGE {
 };
 RANGE { 
   START $a0a5; 
+  END $a0aa; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $a0ab; 
+  END $a0dc; 
+  TYPE ADDRTABLE; 
+};
+RANGE { 
+  START $a0dd; 
   END $a158; 
   TYPE BYTETABLE; 
 };

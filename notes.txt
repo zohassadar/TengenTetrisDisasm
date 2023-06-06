@@ -83,7 +83,7 @@ L855C/L855F - tables with low/high bytes of top left corner of player1, player2 
 6 - S
 7 - Z
 
-Stats for pieces appear to be offset using $52 (starting at $53 with I)
+$52 (pieceStatistics) gets a zero stored in it but doesn't seem to be read
 
 ****
 L9997 - line clear stat columns
@@ -115,16 +115,6 @@ left, down, right, up, left, down, right, b, a
 
 ****
 
-L94BF render leaderboard initials
-
-
-L9BDC looks like an address table pointing to ram
-
-LA0AB possible ppu address table
-
-LA0AB possible sprite related address table?
-
-
 LB0D8 big chunk of possible code?
 
 LD93D another jump table?
@@ -137,8 +127,6 @@ DB13 same
 DB40 same
 
 AD25 big table of unreferenced data?
-
-01c8 - countdown for points sprites?
 
 ****
 

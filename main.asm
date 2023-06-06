@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-06 07:01:35
+; Created:    2023-06-06 07:38:03
 ; Input file: clean.nes
 ; Page:       1
 
@@ -40,6 +40,14 @@ player1ExpansionHeld:= $0044
 player2ExpansionHeld:= $0045
 player1ControllerNew:= $0046
 player2ControllerNew:= $0047
+pieceStatistics := $0052
+pieceStatsI     := $0053
+pieceStatsT     := $0054
+pieceStatsO     := $0055
+pieceStatsJ     := $0056
+pieceStatsL     := $0057
+pieceStatsS     := $0058
+pieceStatsZ     := $0059
 savedRNGSeedForSomething:= $005A
 player1RNGSeed  := $005C
 player2RNGSeed  := $005E
@@ -71,6 +79,8 @@ lastTetrominoXP1:= $01C2
 lastTetrominoXP2:= $01C3
 lastRNGSeedP1   := $01C4
 lastRNGSeedP2   := $01C6
+pointsDisplayTimerP1:= $01C8
+pointsDisplayTimerP2:= $01C9
 stack           := $01D3
 player1ScoreHundredThousands:= $0418
 player1ScoreTenThousands:= $0419
@@ -125,6 +135,40 @@ OAMDATA         := $2004
 PPUSCROLL       := $2005
 PPUADDR         := $2006
 PPUDATA         := $2007
+L2047           := $2047
+L2053           := $2053
+L2089           := $2089
+L2093           := $2093
+L2096           := $2096
+L20CB           := $20CB
+L20D3           := $20D3
+L2184           := $2184
+L218D           := $218D
+L2191           := $2191
+L21AD           := $21AD
+L21B1           := $21B1
+L21B8           := $21B8
+L21CD           := $21CD
+L21D1           := $21D1
+L21ED           := $21ED
+L21F1           := $21F1
+L220A           := $220A
+L220D           := $220D
+L2211           := $2211
+L222A           := $222A
+L222D           := $222D
+L2231           := $2231
+L224A           := $224A
+L224D           := $224D
+L2251           := $2251
+L226A           := $226A
+L226D           := $226D
+L2271           := $2271
+L228A           := $228A
+L228D           := $228D
+L2291           := $2291
+L22AD           := $22AD
+L22B1           := $22B1
 SQ1_VOL         := $4000
 SQ1_SWEEP       := $4001
 SQ1_LO          := $4002
@@ -379,7 +423,7 @@ L817E:
         sta     oamStaging+9,y                  ; 8185 99 09 05                 ...
         ldx     generalCounter39                ; 8188 A6 39                    .9
         lda     #$3C                            ; 818A A9 3C                    .<
-        sta     $01C8,x                         ; 818C 9D C8 01                 ...
+        sta     pointsDisplayTimerP1,x          ; 818C 9D C8 01                 ...
         rts                                     ; 818F 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -393,7 +437,7 @@ L8198:
 L819A:
         lda     $01CE,x                         ; 819A BD CE 01                 ...
         bne     L81DC                           ; 819D D0 3D                    .=
-        lda     $01C8,x                         ; 819F BD C8 01                 ...
+        lda     pointsDisplayTimerP1,x          ; 819F BD C8 01                 ...
         beq     L81DC                           ; 81A2 F0 38                    .8
         ldy     L8198,x                         ; 81A4 BC 98 81                 ...
         cmp     #$3C                            ; 81A7 C9 3C                    .<
@@ -414,7 +458,7 @@ L81C3:
         sta     oamStaging+6,y                  ; 81C6 99 06 05                 ...
         sta     oamStaging+10,y                 ; 81C9 99 0A 05                 ...
 L81CC:
-        dec     $01C8,x                         ; 81CC DE C8 01                 ...
+        dec     pointsDisplayTimerP1,x          ; 81CC DE C8 01                 ...
         bne     L81DC                           ; 81CF D0 0B                    ..
         lda     #$F7                            ; 81D1 A9 F7                    ..
         sta     oamStaging,y                    ; 81D3 99 00 05                 ...
@@ -3074,7 +3118,7 @@ L943C:
         sta     PPUADDR                         ; 9441 8D 06 20                 .. 
         lda     generalCounter36                ; 9444 A5 36                    .6
         sta     PPUADDR                         ; 9446 8D 06 20                 .. 
-        jsr     L94BF                           ; 9449 20 BF 94                  ..
+        jsr     renderLeaderboardInitials       ; 9449 20 BF 94                  ..
         lda     #$00                            ; 944C A9 00                    ..
         sta     PPUDATA                         ; 944E 8D 07 20                 .. 
         sta     generalCounter38                ; 9451 85 38                    .8
@@ -3141,7 +3185,7 @@ L9493:
         jmp     LA465                           ; 94BC 4C 65 A4                 Le.
 
 ; ----------------------------------------------------------------------------
-L94BF:
+renderLeaderboardInitials:
         lda     leaderboardInitials,y           ; 94BF B9 C3 04                 ...
         and     #$3F                            ; 94C2 29 3F                    )?
         tax                                     ; 94C4 AA                       .
@@ -3352,7 +3396,7 @@ L960C:
         inx                                     ; 963B E8                       .
         bne     L9640                           ; 963C D0 02                    ..
 L963E:
-        sta     $52                             ; 963E 85 52                    .R
+        sta     pieceStatistics                 ; 963E 85 52                    .R
 L9640:
         lda     menuPlayer1StartLevel           ; 9640 AD F1 04                 ...
         clc                                     ; 9643 18                       .
@@ -3776,7 +3820,7 @@ L9992:
 ; ----------------------------------------------------------------------------
 L9997:
         ldx     player1TetrominoCurrent         ; 9997 A6 64                    .d
-        lda     $52,x                           ; 9999 B5 52                    .R
+        lda     pieceStatistics,x               ; 9999 B5 52                    .R
         cmp     #$90                            ; 999B C9 90                    ..
         bcs     L99EA                           ; 999D B0 4B                    .K
         and     #$07                            ; 999F 29 07                    ).
@@ -3795,7 +3839,7 @@ L9997:
         lda     #$23                            ; 99B9 A9 23                    .#
         sta     $17,x                           ; 99BB 95 17                    ..
         ldy     player1TetrominoCurrent         ; 99BD A4 64                    .d
-        lda     $52,y                           ; 99BF B9 52 00                 .R.
+        lda     pieceStatistics,y               ; 99BF B9 52 00                 .R.
         and     #$F8                            ; 99C2 29 F8                    ).
         asl     a                               ; 99C4 0A                       .
         bcc     L99CB                           ; 99C5 90 04                    ..
@@ -3819,7 +3863,7 @@ L99D0:
         lda     #$01                            ; 99E2 A9 01                    ..
         sta     $24,x                           ; 99E4 95 24                    .$
         ldx     player1TetrominoCurrent         ; 99E6 A6 64                    .d
-        inc     $52,x                           ; 99E8 F6 52                    .R
+        inc     pieceStatistics,x               ; 99E8 F6 52                    .R
 L99EA:
         rts                                     ; 99EA 60                       `
 
@@ -4056,10 +4100,10 @@ L9B64:
         asl     a                               ; 9B6F 0A                       .
         tay                                     ; 9B70 A8                       .
         jsr     LA3DB                           ; 9B71 20 DB A3                  ..
-        lda     L9BDC,y                         ; 9B74 B9 DC 9B                 ...
+        lda     statsDataAddresses,y            ; 9B74 B9 DC 9B                 ...
         sta     ppuDataAddress1,x               ; 9B77 95 08                    ..
         sta     generalCounter36                ; 9B79 85 36                    .6
-        lda     L9BDD,y                         ; 9B7B B9 DD 9B                 ...
+        lda     statsDataAddresses+1,y          ; 9B7B B9 DD 9B                 ...
         sta     ppuDataAddress1+1,x             ; 9B7E 95 09                    ..
         sta     generalCounter37                ; 9B80 85 37                    .7
         bit     playMode                        ; 9B82 24 2F                    $/
@@ -4073,9 +4117,9 @@ L9B64:
         bcs     L9B96                           ; 9B92 B0 02                    ..
         ldy     #$0E                            ; 9B94 A0 0E                    ..
 L9B96:
-        lda     L9BEA,y                         ; 9B96 B9 EA 9B                 ...
+        lda     statsPPUAddresses,y             ; 9B96 B9 EA 9B                 ...
         sta     $16,x                           ; 9B99 95 16                    ..
-        lda     L9BEB,y                         ; 9B9B B9 EB 9B                 ...
+        lda     statsPPUAddresses+1,y           ; 9B9B B9 EB 9B                 ...
         sta     $17,x                           ; 9B9E 95 17                    ..
         sty     generalCounter3a                ; 9BA0 84 3A                    .:
         ldy     generalCounter38                ; 9BA2 A4 38                    .8
@@ -4114,17 +4158,25 @@ L9BD1:
 ; ----------------------------------------------------------------------------
 L9BD5:
         .byte   $06,$06,$04,$04,$02,$02,$06     ; 9BD5 06 06 04 04 02 02 06     .......
-L9BDC:
-        .byte   $18                             ; 9BDC 18                       .
-L9BDD:
-        .byte   $04,$1E,$04,$24,$04,$28,$04,$2C ; 9BDD 04 1E 04 24 04 28 04 2C  ...$.(.,
-        .byte   $04,$2E,$04,$3C,$04             ; 9BE5 04 2E 04 3C 04           ...<.
-L9BEA:
-        .byte   $47                             ; 9BEA 47                       G
-L9BEB:
-        .byte   $20,$53,$20,$89,$20,$93,$20,$CB ; 9BEB 20 53 20 89 20 93 20 CB   S . . .
-        .byte   $20,$D3,$20,$96,$20,$84,$21,$B8 ; 9BF3 20 D3 20 96 20 84 21 B8   . . .!.
-        .byte   $21                             ; 9BFB 21                       !
+; ----------------------------------------------------------------------------
+statsDataAddresses:
+        .addr   player1ScoreHundredThousands    ; 9BDC 18 04                    ..
+        .addr   player2ScoreHundredThousands    ; 9BDE 1E 04                    ..
+        .addr   player1LinesThousands           ; 9BE0 24 04                    $.
+        .addr   player2LinesThousands           ; 9BE2 28 04                    (.
+        .addr   player1LevelTens                ; 9BE4 2C 04                    ,.
+        .addr   player2LevelTens                ; 9BE6 2E 04                    ..
+        .addr   highScoreHundredThousands       ; 9BE8 3C 04                    <.
+statsPPUAddresses:
+        .addr   L2047                           ; 9BEA 47 20                    G 
+        .addr   L2053                           ; 9BEC 53 20                    S 
+        .addr   L2089                           ; 9BEE 89 20                    . 
+        .addr   L2093                           ; 9BF0 93 20                    . 
+        .addr   L20CB                           ; 9BF2 CB 20                    . 
+        .addr   L20D3                           ; 9BF4 D3 20                    . 
+        .addr   L2096                           ; 9BF6 96 20                    . 
+        .addr   L2184                           ; 9BF8 84 21                    .!
+        .addr   L21B8                           ; 9BFA B8 21                    .!
 ; ----------------------------------------------------------------------------
 L9BFC:
         ldx     #$00                            ; 9BFC A2 00                    ..
@@ -4322,7 +4374,7 @@ L9D36:
 ; ----------------------------------------------------------------------------
 L9D3A:
         stx     $07F0                           ; 9D3A 8E F0 07                 ...
-        lda     LA0DA,y                         ; 9D3D B9 DA A0                 ...
+        lda     ppuAddressTable1+47,y           ; 9D3D B9 DA A0                 ...
         cmp     #$80                            ; 9D40 C9 80                    ..
         beq     L9D76                           ; 9D42 F0 32                    .2
         inc     $07F0                           ; 9D44 EE F0 07                 ...
@@ -4330,7 +4382,7 @@ L9D3A:
         adc     $07E0,x                         ; 9D48 7D E0 07                 }..
         cmp     $07E1,x                         ; 9D4B DD E1 07                 ...
         bne     L9DA3                           ; 9D4E D0 53                    .S
-        lda     LA0DB,y                         ; 9D50 B9 DB A0                 ...
+        lda     ppuAddressTable1+48,y           ; 9D50 B9 DB A0                 ...
         cmp     #$80                            ; 9D53 C9 80                    ..
         beq     L9D76                           ; 9D55 F0 1F                    ..
         inc     $07F0                           ; 9D57 EE F0 07                 ...
@@ -4338,7 +4390,7 @@ L9D3A:
         adc     $07E0,x                         ; 9D5B 7D E0 07                 }..
         cmp     $07E2,x                         ; 9D5E DD E2 07                 ...
         bne     L9DA3                           ; 9D61 D0 40                    .@
-        lda     LA0DC,y                         ; 9D63 B9 DC A0                 ...
+        lda     ppuAddressTable1+49,y           ; 9D63 B9 DC A0                 ...
         cmp     #$80                            ; 9D66 C9 80                    ..
         beq     L9D76                           ; 9D68 F0 0C                    ..
         inc     $07F0                           ; 9D6A EE F0 07                 ...
@@ -4356,7 +4408,7 @@ L9D76:
         sec                                     ; 9D87 38                       8
         sbc     $07F0                           ; 9D88 ED F0 07                 ...
         clc                                     ; 9D8B 18                       .
-        adc     LA0D9,y                         ; 9D8C 79 D9 A0                 y..
+        adc     ppuAddressTable1+46,y           ; 9D8C 79 D9 A0                 y..
         cmp     $07FC                           ; 9D8F CD FC 07                 ...
         bcc     L9DA2                           ; 9D92 90 0E                    ..
         sta     $07FC                           ; 9D94 8D FC 07                 ...
@@ -4374,7 +4426,7 @@ L9DA3:
         stx     $07F0                           ; 9DA3 8E F0 07                 ...
         lda     $07E0,x                         ; 9DA6 BD E0 07                 ...
         sta     generalCounter37                ; 9DA9 85 37                    .7
-        lda     LA0DA,y                         ; 9DAB B9 DA A0                 ...
+        lda     ppuAddressTable1+47,y           ; 9DAB B9 DA A0                 ...
         cmp     #$80                            ; 9DAE C9 80                    ..
         beq     L9DFF                           ; 9DB0 F0 4D                    .M
         cpx     #$0C                            ; 9DB2 E0 0C                    ..
@@ -4388,7 +4440,7 @@ L9DA3:
         adc     generalCounter37                ; 9DC3 65 37                    e7
         sta     generalCounter37                ; 9DC5 85 37                    .7
 L9DC7:
-        lda     LA0DB,y                         ; 9DC7 B9 DB A0                 ...
+        lda     ppuAddressTable1+48,y           ; 9DC7 B9 DB A0                 ...
         cmp     #$80                            ; 9DCA C9 80                    ..
         beq     L9DFF                           ; 9DCC F0 31                    .1
         cpx     #$0C                            ; 9DCE E0 0C                    ..
@@ -4402,7 +4454,7 @@ L9DC7:
         adc     generalCounter37                ; 9DDF 65 37                    e7
         sta     generalCounter37                ; 9DE1 85 37                    .7
 L9DE3:
-        lda     LA0DC,y                         ; 9DE3 B9 DC A0                 ...
+        lda     ppuAddressTable1+49,y           ; 9DE3 B9 DC A0                 ...
         cmp     #$80                            ; 9DE6 C9 80                    ..
         beq     L9DFF                           ; 9DE8 F0 15                    ..
         cpx     #$0C                            ; 9DEA E0 0C                    ..
@@ -4428,7 +4480,7 @@ L9DFF:
         cmp     #$20                            ; 9E15 C9 20                    . 
         bcc     L9E30                           ; 9E17 90 17                    ..
         clc                                     ; 9E19 18                       .
-        adc     LA0D9,y                         ; 9E1A 79 D9 A0                 y..
+        adc     ppuAddressTable1+46,y           ; 9E1A 79 D9 A0                 y..
         cmp     $07FD                           ; 9E1D CD FD 07                 ...
         bcc     L9E30                           ; 9E20 90 0E                    ..
         sta     $07FD                           ; 9E22 8D FD 07                 ...
@@ -4781,9 +4833,9 @@ LA06F:
         adc     LA0DD,y                         ; A079 79 DD A0                 y..
         asl     a                               ; A07C 0A                       .
         tay                                     ; A07D A8                       .
-        lda     LA0AB,y                         ; A07E B9 AB A0                 ...
+        lda     ppuAddressTable1,y              ; A07E B9 AB A0                 ...
         sta     $16,x                           ; A081 95 16                    ..
-        lda     LA0AC,y                         ; A083 B9 AC A0                 ...
+        lda     ppuAddressTable1+1,y            ; A083 B9 AC A0                 ...
         sta     $17,x                           ; A086 95 17                    ..
         pla                                     ; A088 68                       h
         beq     LA090                           ; A089 F0 05                    ..
@@ -4805,23 +4857,34 @@ LA090:
 ; ----------------------------------------------------------------------------
 LA0A5:
         .byte   $3E,$3E,$3F,$3E,$3F,$3E         ; A0A5 3E 3E 3F 3E 3F 3E        >>?>?>
-LA0AB:
-        .byte   $0A                             ; A0AB 0A                       .
-LA0AC:
-        .byte   $22,$2A,$22,$4A,$22,$6A,$22,$8A ; A0AC 22 2A 22 4A 22 6A 22 8A  "*"J"j".
-        .byte   $22,$8D,$21,$AD,$21,$CD,$21,$ED ; A0B4 22 8D 21 AD 21 CD 21 ED  ".!.!.!.
-        .byte   $21,$0D,$22,$2D,$22,$4D,$22,$6D ; A0BC 21 0D 22 2D 22 4D 22 6D  !."-"M"m
-        .byte   $22,$8D,$22,$AD,$22,$91,$21,$B1 ; A0C4 22 8D 22 AD 22 91 21 B1  ".".".!.
-        .byte   $21,$D1,$21,$F1,$21,$11,$22,$31 ; A0CC 21 D1 21 F1 21 11 22 31  !.!.!."1
-        .byte   $22,$51,$22,$71,$22             ; A0D4 22 51 22 71 22           "Q"q"
-LA0D9:
-        .byte   $91                             ; A0D9 91                       .
-LA0DA:
-        .byte   $22                             ; A0DA 22                       "
-LA0DB:
-        .byte   $B1                             ; A0DB B1                       .
-LA0DC:
-        .byte   $22                             ; A0DC 22                       "
+; ----------------------------------------------------------------------------
+ppuAddressTable1:
+        .addr   L220A                           ; A0AB 0A 22                    ."
+        .addr   L222A                           ; A0AD 2A 22                    *"
+        .addr   L224A                           ; A0AF 4A 22                    J"
+        .addr   L226A                           ; A0B1 6A 22                    j"
+        .addr   L228A                           ; A0B3 8A 22                    ."
+        .addr   L218D                           ; A0B5 8D 21                    .!
+        .addr   L21AD                           ; A0B7 AD 21                    .!
+        .addr   L21CD                           ; A0B9 CD 21                    .!
+        .addr   L21ED                           ; A0BB ED 21                    .!
+        .addr   L220D                           ; A0BD 0D 22                    ."
+        .addr   L222D                           ; A0BF 2D 22                    -"
+        .addr   L224D                           ; A0C1 4D 22                    M"
+        .addr   L226D                           ; A0C3 6D 22                    m"
+        .addr   L228D                           ; A0C5 8D 22                    ."
+        .addr   L22AD                           ; A0C7 AD 22                    ."
+        .addr   L2191                           ; A0C9 91 21                    .!
+        .addr   L21B1                           ; A0CB B1 21                    .!
+        .addr   L21D1                           ; A0CD D1 21                    .!
+        .addr   L21F1                           ; A0CF F1 21                    .!
+        .addr   L2211                           ; A0D1 11 22                    ."
+        .addr   L2231                           ; A0D3 31 22                    1"
+        .addr   L2251                           ; A0D5 51 22                    Q"
+        .addr   L2271                           ; A0D7 71 22                    q"
+        .addr   L2291                           ; A0D9 91 22                    ."
+        .addr   L22B1                           ; A0DB B1 22                    ."
+; ----------------------------------------------------------------------------
 LA0DD:
         .byte   $00,$05,$0F,$05,$0F,$05         ; A0DD 00 05 0F 05 0F 05        ......
 LA0E3:
