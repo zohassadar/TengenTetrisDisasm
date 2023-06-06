@@ -112,3 +112,7 @@ up down up down left right b b a
 
 remove block:
 left, down, right, up, left, down, right, b, a
+
+****
+
+L94BF render leaderboard initials
