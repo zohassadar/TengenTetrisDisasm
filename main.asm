@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-06 10:49:37
+; Created:    2023-06-06 12:09:01
 ; Input file: clean.nes
 ; Page:       1
 
@@ -11,6 +11,7 @@ ppuControl      := $0000
 ppuMask         := $0001
 ppuScrollX      := $0002
 ppuScrollY      := $0003
+currentCHRBank  := $0004                        ; Only $04 relevant.  will be 0 or 4
 ppuDataAddress1 := $0008
 ppuDataAddress2 := $000A
 ppuDataAddress3 := $000C
@@ -4526,13 +4527,13 @@ L9E61:
 
 ; ----------------------------------------------------------------------------
 L9EB0:
-        stx     $04                             ; 9EB0 86 04                    ..
+        stx     currentCHRBank                  ; 9EB0 86 04                    ..
         inx                                     ; 9EB2 E8                       .
-        stx     $05                             ; 9EB3 86 05                    ..
+        stx     currentCHRBank+1                ; 9EB3 86 05                    ..
         inx                                     ; 9EB5 E8                       .
-        stx     $06                             ; 9EB6 86 06                    ..
+        stx     currentCHRBank+2                ; 9EB6 86 06                    ..
         inx                                     ; 9EB8 E8                       .
-        stx     $07                             ; 9EB9 86 07                    ..
+        stx     currentCHRBank+3                ; 9EB9 86 07                    ..
         rts                                     ; 9EBB 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -5380,15 +5381,15 @@ nmi:
         bne     LA7D0                           ; A7CC D0 02                    ..
         inc     frameCounterHigh                ; A7CE E6 33                    .3
 LA7D0:
-        ldx     $04                             ; A7D0 A6 04                    ..
+        ldx     currentCHRBank                  ; A7D0 A6 04                    ..
         sta     $6000,x                         ; A7D2 9D 00 60                 ..`
-        ldx     $05                             ; A7D5 A6 05                    ..
+        ldx     currentCHRBank+1                ; A7D5 A6 05                    ..
         sta     $6010,x                         ; A7D7 9D 10 60                 ..`
-        ldx     $06                             ; A7DA A6 06                    ..
+        ldx     currentCHRBank+2                ; A7DA A6 06                    ..
         sta     $6020,x                         ; A7DC 9D 20 60                 . `
-        ldx     $07                             ; A7DF A6 07                    ..
+        ldx     currentCHRBank+3                ; A7DF A6 07                    ..
         sta     $6030,x                         ; A7E1 9D 30 60                 .0`
-        lda     $04                             ; A7E4 A5 04                    ..
+        lda     currentCHRBank                  ; A7E4 A5 04                    ..
         lsr     a                               ; A7E6 4A                       J
         lsr     a                               ; A7E7 4A                       J
         tax                                     ; A7E8 AA                       .

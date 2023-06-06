@@ -14,6 +14,7 @@ LABEL { ADDR $0000; NAME "ppuControl"; };
 LABEL { ADDR $0001; NAME "ppuMask"; }; 
 LABEL { ADDR $0002; NAME "ppuScrollX"; }; 
 LABEL { ADDR $0003; NAME "ppuScrollY"; }; 
+LABEL { ADDR $0004; NAME "currentCHRBank"; SIZE $4; COMMENT "Only $04 relevant.  will be 0 or 4"; };
 LABEL { ADDR $0008; NAME "ppuDataAddress1"; SIZE $2; };
 LABEL { ADDR $000A; NAME "ppuDataAddress2"; SIZE $2; };
 LABEL { ADDR $000C; NAME "ppuDataAddress3"; SIZE $2; };

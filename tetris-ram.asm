@@ -3,10 +3,7 @@
 .res $1 ; $0001
 ppuScrollX: .res $1 ; $0002
 ppuScrollY: .res $1 ; $0003
-.res $1 ; $0004
-.res $1 ; $0005
-.res $1 ; $0006
-.res $1 ; $0007
+currentCHRBank: .res $4 ; $0004
 ppuDataAddress1: .res $2 ; $0008
 ppuDataAddress2: .res $2 ; $000a
 ppuDataAddress3: .res $2 ; $000c
