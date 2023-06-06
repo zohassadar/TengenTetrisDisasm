@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-06 07:38:03
+; Created:    2023-06-06 10:07:37
 ; Input file: clean.nes
 ; Page:       1
 
@@ -7,6 +7,8 @@
         .setcpu "6502"
 
 ; ----------------------------------------------------------------------------
+ppuControl      := $0000
+ppuMask         := $0001
 ppuScrollX      := $0002
 ppuScrollY      := $0003
 ppuDataAddress1 := $0008
@@ -135,19 +137,10 @@ OAMDATA         := $2004
 PPUSCROLL       := $2005
 PPUADDR         := $2006
 PPUDATA         := $2007
-L2047           := $2047
-L2053           := $2053
-L2089           := $2089
-L2093           := $2093
-L2096           := $2096
-L20CB           := $20CB
-L20D3           := $20D3
-L2184           := $2184
 L218D           := $218D
 L2191           := $2191
 L21AD           := $21AD
 L21B1           := $21B1
-L21B8           := $21B8
 L21CD           := $21CD
 L21D1           := $21D1
 L21ED           := $21ED
@@ -2170,9 +2163,9 @@ L8D6B:
         sta     player1FallTimer                ; 8D6D 85 6A                    .j
         lda     #$0D                            ; 8D6F A9 0D                    ..
         jsr     possibleSetSoundOrMusic         ; 8D71 20 B1 CF                  ..
-        lda     $00                             ; 8D74 A5 00                    ..
+        lda     ppuControl                      ; 8D74 A5 00                    ..
         ora     #$08                            ; 8D76 09 08                    ..
-        sta     $00                             ; 8D78 85 00                    ..
+        sta     ppuControl                      ; 8D78 85 00                    ..
         jsr     L972E                           ; 8D7A 20 2E 97                  ..
         lda     #$05                            ; 8D7D A9 05                    ..
         jsr     LA6BE                           ; 8D7F 20 BE A6                  ..
@@ -2598,9 +2591,9 @@ L90C5:
         sta     $6C,x                           ; 90C5 95 6C                    .l
         dex                                     ; 90C7 CA                       .
         bpl     L90C5                           ; 90C8 10 FB                    ..
-        lda     $00                             ; 90CA A5 00                    ..
+        lda     ppuControl                      ; 90CA A5 00                    ..
         and     #$F7                            ; 90CC 29 F7                    ).
-        sta     $00                             ; 90CE 85 00                    ..
+        sta     ppuControl                      ; 90CE 85 00                    ..
         jsr     L970F                           ; 90D0 20 0F 97                  ..
         bit     playMode                        ; 90D3 24 2F                    $/
         bmi     L90DC                           ; 90D5 30 05                    0.
@@ -3333,7 +3326,7 @@ L95C1:
         jmp     possibleSetSoundOrMusic         ; 95C3 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
-L95C6:
+demoStart:
         lda     #$FB                            ; 95C6 A9 FB                    ..
         sta     gameStatePossible               ; 95C8 85 29                    .)
         lda     #$00                            ; 95CA A9 00                    ..
@@ -3372,7 +3365,7 @@ L95FA:
         lda     #$00                            ; 9608 A9 00                    ..
         ldx     #$4B                            ; 960A A2 4B                    .K
 L960C:
-        sta     $00,x                           ; 960C 95 00                    ..
+        sta     ppuControl,x                    ; 960C 95 00                    ..
         inx                                     ; 960E E8                       .
         cpx     #$EF                            ; 960F E0 EF                    ..
         bne     L960C                           ; 9611 D0 F9                    ..
@@ -3881,18 +3874,18 @@ genNextPseudoRandom3x:
 genNextPseudoRandom2x:
         jsr     genNextPseudoRandom             ; 99F7 20 FA 99                  ..
 genNextPseudoRandom:
-        lda     $00,x                           ; 99FA B5 00                    ..
-        eor     $01,x                           ; 99FC 55 01                    U.
+        lda     ppuControl,x                    ; 99FA B5 00                    ..
+        eor     ppuMask,x                       ; 99FC 55 01                    U.
         bne     L9A04                           ; 99FE D0 04                    ..
-        cmp     $01,x                           ; 9A00 D5 01                    ..
+        cmp     ppuMask,x                       ; 9A00 D5 01                    ..
         beq     L9A06                           ; 9A02 F0 02                    ..
 L9A04:
         asl     a                               ; 9A04 0A                       .
         asl     a                               ; 9A05 0A                       .
 L9A06:
-        rol     $00,x                           ; 9A06 36 00                    6.
-        rol     $01,x                           ; 9A08 36 01                    6.
-        lda     $00,x                           ; 9A0A B5 00                    ..
+        rol     ppuControl,x                    ; 9A06 36 00                    6.
+        rol     ppuMask,x                       ; 9A08 36 01                    6.
+        lda     ppuControl,x                    ; 9A0A B5 00                    ..
         rts                                     ; 9A0C 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -4167,16 +4160,11 @@ statsDataAddresses:
         .addr   player1LevelTens                ; 9BE4 2C 04                    ,.
         .addr   player2LevelTens                ; 9BE6 2E 04                    ..
         .addr   highScoreHundredThousands       ; 9BE8 3C 04                    <.
+; ----------------------------------------------------------------------------
 statsPPUAddresses:
-        .addr   L2047                           ; 9BEA 47 20                    G 
-        .addr   L2053                           ; 9BEC 53 20                    S 
-        .addr   L2089                           ; 9BEE 89 20                    . 
-        .addr   L2093                           ; 9BF0 93 20                    . 
-        .addr   L20CB                           ; 9BF2 CB 20                    . 
-        .addr   L20D3                           ; 9BF4 D3 20                    . 
-        .addr   L2096                           ; 9BF6 96 20                    . 
-        .addr   L2184                           ; 9BF8 84 21                    .!
-        .addr   L21B8                           ; 9BFA B8 21                    .!
+        .word   $2047,$2053,$2089,$2093         ; 9BEA 47 20 53 20 89 20 93 20  G S . . 
+        .word   $20CB,$20D3,$2096,$2184         ; 9BF2 CB 20 D3 20 96 20 84 21  . . . .!
+        .word   $21B8                           ; 9BFA B8 21                    .!
 ; ----------------------------------------------------------------------------
 L9BFC:
         ldx     #$00                            ; 9BFC A2 00                    ..
@@ -4194,7 +4182,7 @@ moveScreenUpOrDown:
         jsr     LA9CE                           ; 9C0B 20 CE A9                  ..
         lda     frameCounterLow                 ; 9C0E A5 32                    .2
         and     #$0F                            ; 9C10 29 0F                    ).
-        bne     L9C3D                           ; 9C12 D0 29                    .)
+        bne     @checkForDemoStart              ; 9C12 D0 29                    .)
         lda     player1ControllerHeld           ; 9C14 A5 42                    .B
         sta     generalCounter36                ; 9C16 85 36                    .6
         lda     player2ControllerHeld           ; 9C18 A5 43                    .C
@@ -4205,26 +4193,26 @@ moveScreenUpOrDown:
         beq     @bothUpsNotPressed              ; 9C23 F0 05                    ..
         iny                                     ; 9C25 C8                       .
         cpy     #$09                            ; 9C26 C0 09                    ..
-        beq     L9C3D                           ; 9C28 F0 13                    ..
+        beq     @checkForDemoStart              ; 9C28 F0 13                    ..
 @bothUpsNotPressed:
         lda     generalCounter36                ; 9C2A A5 36                    .6
         and     #$20                            ; 9C2C 29 20                    ) 
         beq     @bothDownsNotPressed            ; 9C2E F0 05                    ..
         dey                                     ; 9C30 88                       .
         cpy     #$F7                            ; 9C31 C0 F7                    ..
-        beq     L9C3D                           ; 9C33 F0 08                    ..
+        beq     @checkForDemoStart              ; 9C33 F0 08                    ..
 @bothDownsNotPressed:
         sty     ppuScrollYOffset                ; 9C35 8C F6 04                 ...
         sty     ppuScrollY                      ; 9C38 84 03                    ..
         jsr     drawCathedralSprites            ; 9C3A 20 69 B3                  i.
-L9C3D:
+@checkForDemoStart:
         lda     frameCounterHigh                ; 9C3D A5 33                    .3
         cmp     #$05                            ; 9C3F C9 05                    ..
         bne     L9C0A                           ; 9C41 D0 C7                    ..
         lda     frameCounterLow                 ; 9C43 A5 32                    .2
         cmp     #$20                            ; 9C45 C9 20                    . 
         bne     L9C0A                           ; 9C47 D0 C1                    ..
-        jmp     L95C6                           ; 9C49 4C C6 95                 L..
+        jmp     demoStart                       ; 9C49 4C C6 95                 L..
 
 ; ----------------------------------------------------------------------------
 L9C4C:
@@ -4382,7 +4370,7 @@ L9D3A:
         adc     $07E0,x                         ; 9D48 7D E0 07                 }..
         cmp     $07E1,x                         ; 9D4B DD E1 07                 ...
         bne     L9DA3                           ; 9D4E D0 53                    .S
-        lda     ppuAddressTable1+48,y           ; 9D50 B9 DB A0                 ...
+        lda     ppuAddressTable1+47+1,y         ; 9D50 B9 DB A0                 ...
         cmp     #$80                            ; 9D53 C9 80                    ..
         beq     L9D76                           ; 9D55 F0 1F                    ..
         inc     $07F0                           ; 9D57 EE F0 07                 ...
@@ -4390,7 +4378,7 @@ L9D3A:
         adc     $07E0,x                         ; 9D5B 7D E0 07                 }..
         cmp     $07E2,x                         ; 9D5E DD E2 07                 ...
         bne     L9DA3                           ; 9D61 D0 40                    .@
-        lda     ppuAddressTable1+49,y           ; 9D63 B9 DC A0                 ...
+        lda     ppuAddressTable1+47+1+1,y       ; 9D63 B9 DC A0                 ...
         cmp     #$80                            ; 9D66 C9 80                    ..
         beq     L9D76                           ; 9D68 F0 0C                    ..
         inc     $07F0                           ; 9D6A EE F0 07                 ...
@@ -4440,7 +4428,7 @@ L9DA3:
         adc     generalCounter37                ; 9DC3 65 37                    e7
         sta     generalCounter37                ; 9DC5 85 37                    .7
 L9DC7:
-        lda     ppuAddressTable1+48,y           ; 9DC7 B9 DB A0                 ...
+        lda     ppuAddressTable1+47+1,y         ; 9DC7 B9 DB A0                 ...
         cmp     #$80                            ; 9DCA C9 80                    ..
         beq     L9DFF                           ; 9DCC F0 31                    .1
         cpx     #$0C                            ; 9DCE E0 0C                    ..
@@ -4454,7 +4442,7 @@ L9DC7:
         adc     generalCounter37                ; 9DDF 65 37                    e7
         sta     generalCounter37                ; 9DE1 85 37                    .7
 L9DE3:
-        lda     ppuAddressTable1+49,y           ; 9DE3 B9 DC A0                 ...
+        lda     ppuAddressTable1+47+1+1,y       ; 9DE3 B9 DC A0                 ...
         cmp     #$80                            ; 9DE6 C9 80                    ..
         beq     L9DFF                           ; 9DE8 F0 15                    ..
         cpx     #$0C                            ; 9DEA E0 0C                    ..
@@ -5118,7 +5106,7 @@ LA3DB:
         ldx     $25                             ; A3DB A6 25                    .%
         lda     $24,x                           ; A3DD B5 24                    .$
         beq     LA3F2                           ; A3DF F0 11                    ..
-        lda     $00                             ; A3E1 A5 00                    ..
+        lda     ppuControl                      ; A3E1 A5 00                    ..
         bmi     LA3EA                           ; A3E3 30 05                    0.
         ora     #$80                            ; A3E5 09 80                    ..
         sta     PPUCTRL                         ; A3E7 8D 00 20                 .. 
@@ -5183,7 +5171,7 @@ LA41C:
 
 ; ----------------------------------------------------------------------------
 LA44A:
-        lda     $00                             ; A44A A5 00                    ..
+        lda     ppuControl                      ; A44A A5 00                    ..
         bpl     LA458                           ; A44C 10 0A                    ..
 LA44E:
         ldx     $25                             ; A44E A6 25                    .%
@@ -5194,15 +5182,15 @@ LA44E:
 LA458:
         lda     #$00                            ; A458 A9 00                    ..
         sta     PPUCTRL                         ; A45A 8D 00 20                 .. 
-        sta     $00                             ; A45D 85 00                    ..
+        sta     ppuControl                      ; A45D 85 00                    ..
         sta     PPUMASK                         ; A45F 8D 01 20                 .. 
-        sta     $01                             ; A462 85 01                    ..
+        sta     ppuMask                         ; A462 85 01                    ..
         rts                                     ; A464 60                       `
 
 ; ----------------------------------------------------------------------------
 LA465:
         ldy     #$1A                            ; A465 A0 1A                    ..
-        sty     $01                             ; A467 84 01                    ..
+        sty     ppuMask                         ; A467 84 01                    ..
 LA469:
         bit     PPUSTATUS                       ; A469 2C 02 20                 ,. 
         bmi     LA469                           ; A46C 30 FB                    0.
@@ -5210,7 +5198,7 @@ LA46E:
         bit     PPUSTATUS                       ; A46E 2C 02 20                 ,. 
         bpl     LA46E                           ; A471 10 FB                    ..
         ora     #$80                            ; A473 09 80                    ..
-        sta     $00                             ; A475 85 00                    ..
+        sta     ppuControl                      ; A475 85 00                    ..
         sta     PPUCTRL                         ; A477 8D 00 20                 .. 
         rts                                     ; A47A 60                       `
 
@@ -5408,7 +5396,7 @@ nmi:
         sta     OAMADDR                         ; A7B6 8D 03 20                 .. 
         lda     #$05                            ; A7B9 A9 05                    ..
         sta     OAMDMA                          ; A7BB 8D 14 40                 ..@
-        lda     $00                             ; A7BE A5 00                    ..
+        lda     ppuControl                      ; A7BE A5 00                    ..
         and     #$FB                            ; A7C0 29 FB                    ).
         sta     PPUCTRL                         ; A7C2 8D 00 20                 .. 
         jsr     renderJumpRoutine               ; A7C5 20 0E A8                  ..
@@ -5436,9 +5424,9 @@ LA7D0:
         sta     PPUSCROLL                       ; A7F3 8D 05 20                 .. 
         lda     ppuScrollY                      ; A7F6 A5 03                    ..
         sta     PPUSCROLL                       ; A7F8 8D 05 20                 .. 
-        lda     $00                             ; A7FB A5 00                    ..
+        lda     ppuControl                      ; A7FB A5 00                    ..
         sta     PPUCTRL                         ; A7FD 8D 00 20                 .. 
-        lda     $01                             ; A800 A5 01                    ..
+        lda     ppuMask                         ; A800 A5 01                    ..
         sta     PPUMASK                         ; A802 8D 01 20                 .. 
         jsr     LCFCA                           ; A805 20 CA CF                  ..
         pla                                     ; A808 68                       h
@@ -5705,7 +5693,7 @@ LA994:
 LA9A1:
         txa                                     ; A9A1 8A                       .
 LA9A2:
-        sta     $00,x                           ; A9A2 95 00                    ..
+        sta     ppuControl,x                    ; A9A2 95 00                    ..
         sta     $0100,x                         ; A9A4 9D 00 01                 ...
         sta     oamStaging,x                    ; A9A7 9D 00 05                 ...
         sta     player1Playfield,x              ; A9AA 9D 00 06                 ...
