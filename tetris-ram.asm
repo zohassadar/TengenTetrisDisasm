@@ -270,13 +270,25 @@ lastTetriminoXP2: .res 1 ; $01c3
 lastRNGSeedP1: .res 2 ; $01c4
 lastRNGSeedP2: .res 2 ; $01c6
 
-.res $38
+.res 1 ; $01c8 ; used by not stack
+.res 1 ; $01c9 ; used by not stack
+.res 1 ; $01ca ; used by not stack
+.res 1 ; $01cb ; used by not stack
+.res 1 ; $01cc ; used by not stack
+.res 1 ; $01cd ; used by not stack
+.res 1 ; $01ce ; used by not stack
+.res 1 ; $01cf ; used by not stack
+.res 1 ; $01d0 ; used by not stack
+.res 1 ; $01d1 ; used by not stack
+.res 1 ; $01d2 ; used by not stack
+
+stack: .res $2d ; $01d3
 
 page2:
-.res $100
+.res $100 ; music/sound?
 
 page3:
-.res $100
+.res $100  ; music/sound?
 
 page4:
 .res $18

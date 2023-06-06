@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-05 17:18:06
+; Created:    2023-06-05 17:31:19
 ; Input file: clean.nes
 ; Page:       1
 
@@ -63,6 +63,7 @@ lastTetriminoXP1:= $01C2
 lastTetriminoXP2:= $01C3
 lastRNGSeedP1   := $01C4
 lastRNGSeedP2   := $01C6
+stack           := $01D3
 player1ScoreHundredThousands:= $0418
 player1ScoreTenThousands:= $0419
 player1ScoreThousands:= $041A

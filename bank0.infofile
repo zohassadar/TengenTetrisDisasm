@@ -79,6 +79,7 @@ LABEL { ADDR $01c3; NAME "lastTetriminoXP2"; };
 LABEL { ADDR $01c4; NAME "lastRNGSeedP1"; SIZE $2; }; 
 LABEL { ADDR $01c6; NAME "lastRNGSeedP2"; SIZE $2; }; 
 
+LABEL { ADDR $01d3; NAME "stack"; SIZE $1d; }; 
 
 LABEL { ADDR $0500; NAME "oamStaging"; SIZE $100; }; 
 
