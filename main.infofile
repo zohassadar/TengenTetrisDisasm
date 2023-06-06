@@ -1,6 +1,6 @@
 GLOBAL { 
   INPUTNAME "clean.nes"; 
-  OUTPUTNAME "bank0.asm"; 
+  OUTPUTNAME "main.asm"; 
   INPUTOFFS $0010; 
   INPUTSIZE $8000; 
   COMMENTS $4; 

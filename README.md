@@ -25,7 +25,7 @@ Todo after above is complete:
 
 Requires a backup of of the original game with the filename `clean.nes` in the project root directory.  
 
-bank0.asm is dynamically generated based off of bank0.infofile.  This means comments and constants for specific values can't be added yet (unless someone knows a trick and wants to tell me).  To update, add label label information to bank0.infofile.  If label is for a RAM address ($0000-$07FF), update tetris-ram.asm. Then run `make disassembly`.  This will update bank0.asm with the new labels.  
+main.asm is dynamically generated using main.infofile.  This means comments and constants for specific values can't be added yet (unless someone knows a trick and wants to tell me).  To update, add label label information to main.infofile.  If label is for a RAM address ($0000-$07FF), update tetris-ram.asm. Then run `make disassembly`.  This will update main.asm with the new labels.  
 
 ## Build
 

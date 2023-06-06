@@ -1,9 +1,9 @@
 .segment "HEADER"
 .include "constants.asm"
 .include "header.asm"
-.scope bank0 
+.scope main 
 .segment "PRG0" 
-.include "bank0.asm" 
+.include "main.asm" 
 .endscope 
 
 .segment "CHR" 
