@@ -116,3 +116,24 @@ left, down, right, up, left, down, right, b, a
 ****
 
 L94BF render leaderboard initials
+
+
+L9BDC looks like an address table pointing to ram
+
+LA0AB possible ppu address table
+
+LA0AB possible sprite related address table?
+
+
+LB0D8 big chunk of possible code?
+
+LD93D another jump table?
+
+LD93E also looks like there be code
+
+
+DA3B probably block of code that's not referenced (yet)
+DB13 same
+DB40 same
+
+AD25 big table of unreferenced data?
