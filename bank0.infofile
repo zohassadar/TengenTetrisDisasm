@@ -207,6 +207,9 @@ LABEL { ADDR $984c; NAME "initHandicapGarbage";  };
 
 LABEL { ADDR $9929; NAME "getNextTetrimino"; };
 
+
+LABEL { ADDR $99eb; NAME "coopTetriminoX"; SIZE $2; };
+LABEL { ADDR $99ed; NAME "seven"; };
 LABEL { ADDR $99ee; NAME "genNextPseudoRandom5x"; };
 LABEL { ADDR $99f4; NAME "genNextPseudoRandom3x"; };
 LABEL { ADDR $99f7; NAME "genNextPseudoRandom2x"; };

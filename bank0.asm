@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-05 19:16:54
+; Created:    2023-06-05 19:43:10
 ; Input file: clean.nes
 ; Page:       1
 
@@ -2540,7 +2540,7 @@ L90F4:
         bne     L9133                           ; 9100 D0 31                    .1
         lda     #$04                            ; 9102 A9 04                    ..
         sta     player2TetriminoY               ; 9104 85 61                    .a
-        lda     L99ED                           ; 9106 AD ED 99                 ...
+        lda     seven                           ; 9106 AD ED 99                 ...
         bit     playMode                        ; 9109 24 2F                    $/
         bpl     L9110                           ; 910B 10 03                    ..
         .byte   $AD,$EC,$99                     ; 910D AD EC 99                 ...
@@ -2576,7 +2576,7 @@ L9133:
         beq     L9176                           ; 9143 F0 31                    .1
         lda     #$04                            ; 9145 A9 04                    ..
         sta     player1TetriminoY               ; 9147 85 60                    .`
-        lda     L99ED                           ; 9149 AD ED 99                 ...
+        lda     seven                           ; 9149 AD ED 99                 ...
         bit     playMode                        ; 914C 24 2F                    $/
         bpl     L9153                           ; 914E 10 03                    ..
         .byte   $AD,$EB,$99                     ; 9150 AD EB 99                 ...
@@ -3685,10 +3685,10 @@ L9950:
         sta     player1TetriminoOrientation,x   ; 9952 95 68                    .h
         lda     #$04                            ; 9954 A9 04                    ..
         sta     player1TetriminoY,x             ; 9956 95 60                    .`
-        lda     L99ED                           ; 9958 AD ED 99                 ...
+        lda     seven                           ; 9958 AD ED 99                 ...
         ldy     playMode                        ; 995B A4 2F                    ./
         bpl     L9962                           ; 995D 10 03                    ..
-        lda     L99EB,x                         ; 995F BD EB 99                 ...
+        lda     coopTetriminoX,x                ; 995F BD EB 99                 ...
 L9962:
         sta     player1TetriminoX,x             ; 9962 95 62                    .b
         ldy     player1TetriminoCurrent,x       ; 9964 B4 64                    .d
@@ -3772,9 +3772,9 @@ L99EA:
         rts                                     ; 99EA 60                       `
 
 ; ----------------------------------------------------------------------------
-L99EB:
+coopTetriminoX:
         .byte   $03,$09                         ; 99EB 03 09                    ..
-L99ED:
+seven:
         .byte   $07                             ; 99ED 07                       .
 ; ----------------------------------------------------------------------------
 genNextPseudoRandom5x:
@@ -6449,10 +6449,10 @@ LB52B:
 LB537:
         lda     #$04                            ; B537 A9 04                    ..
         sta     player1TetriminoY,x             ; B539 95 60                    .`
-        lda     L99ED                           ; B53B AD ED 99                 ...
+        lda     seven                           ; B53B AD ED 99                 ...
         bit     playMode                        ; B53E 24 2F                    $/
         bpl     LB545                           ; B540 10 03                    ..
-        lda     L99EB,x                         ; B542 BD EB 99                 ...
+        lda     coopTetriminoX,x                ; B542 BD EB 99                 ...
 LB545:
         sta     player1TetriminoX,x             ; B545 95 62                    .b
         lda     #$00                            ; B547 A9 00                    ..
