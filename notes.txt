@@ -112,10 +112,3 @@ up down up down left right b b a
 
 remove block:
 left, down, right, up, left, down, right, b, a
-
-****
-
-high score table follows high score.  
-lines start at 0496
-high score names start at 04c3, end at 04ef
-1-15 numbers are for high score entries

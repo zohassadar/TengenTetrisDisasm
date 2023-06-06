@@ -323,19 +323,19 @@ player1LevelOnes: .res 1 ; $042d
 player2LevelTens: .res 1 ; $042e
 player2LevelOnes: .res 1 ; $042f
 
-.res $c
-
+player1ScoreMirrorPossible: .res $6 ; $0430
+unknownScoreSlot: .res $6 ; $0436
 highScoreHundredThousands: .res 1 ; $043c
 highScoreTenThousands: .res 1 ; $043d
 highScoreThousands: .res 1 ; $043e
 highScoreHundreds: .res 1 ; $043f
 highScoreTens: .res 1 ; $0440
 highScoreOnes: .res 1 ; $0441
+leaderboardScores: .res $54 ; $0442
+leaderboardLines: .res $2d ; $0496
+leaderboardInitials: .res $2d ; $04c3
 
-
-.res $ae
-
-menuGameMode: .res 1 ; $04f1 ; 1p,2p,coop,vs,with
+menuGameMode: .res 1 ; $04f0 ; 1p,2p,coop,vs,with
 menuPlayer1StartLevel: .res 1 ; $04f1
 menuPlayer2StartLevel: .res 1 ; $04f2
 menuPlayer1Handicap: .res 1 ; $04f3

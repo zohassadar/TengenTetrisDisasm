@@ -114,12 +114,19 @@ LABEL { ADDR $0421; NAME "player2ScoreHundreds"; };
 LABEL { ADDR $0422; NAME "player2ScoreTens"; };
 LABEL { ADDR $0423; NAME "player2ScoreOnes"; };
 
+LABEL { ADDR $0430; NAME "player1ScoreMirrorPossible"; SIZE $6; };
+LABEL { ADDR $0436; NAME "unknownScoreSlot"; SIZE $6; };
+
 LABEL { ADDR $043c; NAME "highScoreHundredThousands"; }; 
 LABEL { ADDR $043d; NAME "highScoreTenThousands"; }; 
 LABEL { ADDR $043e; NAME "highScoreThousands"; }; 
 LABEL { ADDR $043f; NAME "highScoreHundreds"; }; 
 LABEL { ADDR $0440; NAME "highScoreTens"; }; 
 LABEL { ADDR $0441; NAME "highScoreOnes"; }; 
+
+LABEL { ADDR $0442; NAME "leaderboardScores:"; SIZE $54; };
+LABEL { ADDR $0496; NAME "leaderboardLines"; SIZE $2d; };
+LABEL { ADDR $04c3; NAME "leaderboardInitials"; SIZE $2d; };
 
 LABEL { ADDR $04f0; NAME "menuGameMode"; };
 LABEL { ADDR $04f1; NAME "menuPlayer1StartLevel"; };
@@ -237,16 +244,16 @@ LABEL { ADDR $a1ef; NAME "ppuPatchLicensedBy"; };
 
 LABEL { ADDR $a20d; NAME "ppuPatchLevelSelectZero"; };
 LABEL { ADDR $a20e; NAME "ppuPatchLevelSelect"; };
-LABEL { ADDR $a21d; NAME "ppuPatchNumber0"; };
-LABEL { ADDR $a221; NAME "ppuPatchNumber1"; };
-LABEL { ADDR $a225; NAME "ppuPatchNumber2"; };
-LABEL { ADDR $a229; NAME "ppuPatchNumber3"; };
-LABEL { ADDR $a22d; NAME "ppuPatchNumber4"; };
-LABEL { ADDR $a231; NAME "ppuPatchNumber5"; };
-LABEL { ADDR $a235; NAME "ppuPatchNumber6"; };
-LABEL { ADDR $a239; NAME "ppuPatchNumber7"; };
-LABEL { ADDR $a23d; NAME "ppuPatchNumber8"; };
-LABEL { ADDR $a241; NAME "ppuPatchNumber9"; };
+LABEL { ADDR $a21d; NAME "ppuPatchLevel0"; };
+LABEL { ADDR $a221; NAME "ppuPatchLevel1"; };
+LABEL { ADDR $a225; NAME "ppuPatchLevel2"; };
+LABEL { ADDR $a229; NAME "ppuPatchLevel3"; };
+LABEL { ADDR $a22d; NAME "ppuPatchLevel4"; };
+LABEL { ADDR $a231; NAME "ppuPatchLevel5"; };
+LABEL { ADDR $a235; NAME "ppuPatchLevel6"; };
+LABEL { ADDR $a239; NAME "ppuPatchLevel7"; };
+LABEL { ADDR $a23d; NAME "ppuPatchLevel8"; };
+LABEL { ADDR $a241; NAME "ppuPatchLevel9"; };
 LABEL { ADDR $a245; NAME "ppuPatchConceptBy"; };
 LABEL { ADDR $a263; NAME "ppuPatchDesignBy"; };
 
@@ -273,21 +280,21 @@ LABEL { ADDR $a322; NAME "ppuPatchAudioBy"; };
 LABEL { ADDR $a339; NAME "ppuPatchHighScoresZero"; };
 LABEL { ADDR $a33a; NAME "ppuPatchHighScores"; };
 
-LABEL { ADDR $a34e; NAME "ppuPatchOtherNumber1"; };
-LABEL { ADDR $a353; NAME "ppuPatchOtherNumber2"; };
-LABEL { ADDR $a358; NAME "ppuPatchOtherNumber3"; };
-LABEL { ADDR $a35d; NAME "ppuPatchOtherNumber4"; };
-LABEL { ADDR $a362; NAME "ppuPatchOtherNumber5"; };
-LABEL { ADDR $a367; NAME "ppuPatchOtherNumber6"; };
-LABEL { ADDR $a36c; NAME "ppuPatchOtherNumber7"; };
-LABEL { ADDR $a371; NAME "ppuPatchOtherNumber8"; };
-LABEL { ADDR $a376; NAME "ppuPatchOtherNumber9"; };
-LABEL { ADDR $a37b; NAME "ppuPatchOtherNumber10"; };
-LABEL { ADDR $a381; NAME "ppuPatchOtherNumber11"; };
-LABEL { ADDR $a387; NAME "ppuPatchOtherNumber12"; };
-LABEL { ADDR $a38d; NAME "ppuPatchOtherNumber13"; };
-LABEL { ADDR $a393; NAME "ppuPatchOtherNumber14"; };
-LABEL { ADDR $a399; NAME "ppuPatchOtherNumber15"; };
+LABEL { ADDR $a34e; NAME "ppuPatchLeaderboard1"; };
+LABEL { ADDR $a353; NAME "ppuPatchLeaderboard2"; };
+LABEL { ADDR $a358; NAME "ppuPatchLeaderboard3"; };
+LABEL { ADDR $a35d; NAME "ppuPatchLeaderboard4"; };
+LABEL { ADDR $a362; NAME "ppuPatchLeaderboard5"; };
+LABEL { ADDR $a367; NAME "ppuPatchLeaderboard6"; };
+LABEL { ADDR $a36c; NAME "ppuPatchLeaderboard7"; };
+LABEL { ADDR $a371; NAME "ppuPatchLeaderboard8"; };
+LABEL { ADDR $a376; NAME "ppuPatchLeaderboard9"; };
+LABEL { ADDR $a37b; NAME "ppuPatchLeaderboard10"; };
+LABEL { ADDR $a381; NAME "ppuPatchLeaderboard11"; };
+LABEL { ADDR $a387; NAME "ppuPatchLeaderboard12"; };
+LABEL { ADDR $a38d; NAME "ppuPatchLeaderboard13"; };
+LABEL { ADDR $a393; NAME "ppuPatchLeaderboard14"; };
+LABEL { ADDR $a399; NAME "ppuPatchLeaderboard15"; };
 
 LABEL { ADDR $a39f; NAME "unknownData01"; };
 

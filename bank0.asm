@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-05 17:31:19
+; Created:    2023-06-05 18:27:53
 ; Input file: clean.nes
 ; Page:       1
 
@@ -88,12 +88,17 @@ player1LevelTens:= $042C
 player1LevelOnes:= $042D
 player2LevelTens:= $042E
 player2LevelOnes:= $042F
+player1ScoreMirrorPossible:= $0430
+unknownScoreSlot:= $0436
 highScoreHundredThousands:= $043C
 highScoreTenThousands:= $043D
 highScoreThousands:= $043E
 highScoreHundreds:= $043F
 highScoreTens   := $0440
 highScoreOnes   := $0441
+leaderboardScores::= $0442
+leaderboardLines:= $0496
+leaderboardInitials:= $04C3
 menuGameMode    := $04F0
 menuPlayer1StartLevel:= $04F1
 menuPlayer2StartLevel:= $04F2
@@ -490,17 +495,17 @@ L822D:
 ; ----------------------------------------------------------------------------
 L8275:
         lda     player1LinesHundreds,y          ; 8275 B9 25 04                 .%.
-        sta     $0496,x                         ; 8278 9D 96 04                 ...
+        sta     leaderboardLines,x              ; 8278 9D 96 04                 ...
         lda     player1LinesTens,y              ; 827B B9 26 04                 .&.
-        sta     $0497,x                         ; 827E 9D 97 04                 ...
+        sta     leaderboardLines+1,x            ; 827E 9D 97 04                 ...
         lda     player1LinesOnes,y              ; 8281 B9 27 04                 .'.
-        sta     $0498,x                         ; 8284 9D 98 04                 ...
+        sta     leaderboardLines+2,x            ; 8284 9D 98 04                 ...
         lda     #$01                            ; 8287 A9 01                    ..
         ldy     $36                             ; 8289 A4 36                    .6
         ora     L93DA,y                         ; 828B 19 DA 93                 ...
-        sta     $04C3,x                         ; 828E 9D C3 04                 ...
-        sta     $04C4,x                         ; 8291 9D C4 04                 ...
-        sta     $04C5,x                         ; 8294 9D C5 04                 ...
+        sta     leaderboardInitials,x           ; 828E 9D C3 04                 ...
+        sta     leaderboardInitials+1,x         ; 8291 9D C4 04                 ...
+        sta     leaderboardInitials+2,x         ; 8294 9D C5 04                 ...
 L8297:
         ldx     $36                             ; 8297 A6 36                    .6
         rts                                     ; 8299 60                       `
@@ -514,17 +519,17 @@ L829A:
 L82A2:
         dex                                     ; 82A2 CA                       .
         lda     highScoreHundredThousands,x     ; 82A3 BD 3C 04                 .<.
-        sta     $0442,x                         ; 82A6 9D 42 04                 .B.
+        sta     leaderboardScores:,x            ; 82A6 9D 42 04                 .B.
         cpx     $37                             ; 82A9 E4 37                    .7
         bne     L82A2                           ; 82AB D0 F5                    ..
         lsr     $37                             ; 82AD 46 37                    F7
         ldx     #$2A                            ; 82AF A2 2A                    .*
 L82B1:
         dex                                     ; 82B1 CA                       .
-        lda     $0496,x                         ; 82B2 BD 96 04                 ...
-        sta     $0499,x                         ; 82B5 9D 99 04                 ...
-        lda     $04C3,x                         ; 82B8 BD C3 04                 ...
-        sta     $04C6,x                         ; 82BB 9D C6 04                 ...
+        lda     leaderboardLines,x              ; 82B2 BD 96 04                 ...
+        sta     leaderboardLines+3,x            ; 82B5 9D 99 04                 ...
+        lda     leaderboardInitials,x           ; 82B8 BD C3 04                 ...
+        sta     leaderboardInitials+3,x         ; 82BB 9D C6 04                 ...
         cpx     $37                             ; 82BE E4 37                    .7
         bne     L82B1                           ; 82C0 D0 EF                    ..
         lda     $37                             ; 82C2 A5 37                    .7
@@ -2707,7 +2712,7 @@ L9215:
 L9216:
         ldy     #$2C                            ; 9216 A0 2C                    .,
 L9218:
-        lda     $04C3,y                         ; 9218 B9 C3 04                 ...
+        lda     leaderboardInitials,y           ; 9218 B9 C3 04                 ...
         and     #$C0                            ; 921B 29 C0                    ).
         beq     L9226                           ; 921D F0 07                    ..
         asl     a                               ; 921F 0A                       .
@@ -2801,7 +2806,7 @@ L92A4:
         lda     #$02                            ; 92A4 A9 02                    ..
         sta     $37                             ; 92A6 85 37                    .7
 L92A8:
-        lda     $04C3,y                         ; 92A8 B9 C3 04                 ...
+        lda     leaderboardInitials,y           ; 92A8 B9 C3 04                 ...
         and     L93DA,x                         ; 92AB 3D DA 93                 =..
         bne     L92BA                           ; 92AE D0 0A                    ..
         dey                                     ; 92B0 88                       .
@@ -2812,7 +2817,7 @@ L92A8:
         .byte   $60                             ; 92B9 60                       `
 ; ----------------------------------------------------------------------------
 L92BA:
-        lda     $04C3,y                         ; 92BA B9 C3 04                 ...
+        lda     leaderboardInitials,y           ; 92BA B9 C3 04                 ...
         and     #$3F                            ; 92BD 29 3F                    )?
         clc                                     ; 92BF 18                       .
         adc     $39                             ; 92C0 65 39                    e9
@@ -2834,7 +2839,7 @@ L92D9:
         .byte   $A5,$39                         ; 92E1 A5 39                    .9
 ; ----------------------------------------------------------------------------
 L92E3:
-        sta     $04C3,y                         ; 92E3 99 C3 04                 ...
+        sta     leaderboardInitials,y           ; 92E3 99 C3 04                 ...
         stx     $38                             ; 92E6 86 38                    .8
         jsr     LA3DB                           ; 92E8 20 DB A3                  ..
         lda     $36                             ; 92EB A5 36                    .6
@@ -2858,7 +2863,7 @@ L92FD:
         and     #$03                            ; 9304 29 03                    ).
         adc     #$21                            ; 9306 69 21                    i!
         sta     $17,x                           ; 9308 95 17                    ..
-        lda     $04C3,y                         ; 930A B9 C3 04                 ...
+        lda     leaderboardInitials,y           ; 930A B9 C3 04                 ...
         and     #$3F                            ; 930D 29 3F                    )?
         clc                                     ; 930F 18                       .
         adc     #$DC                            ; 9310 69 DC                    i.
@@ -2883,23 +2888,23 @@ L932A:
         lda     #$0E                            ; 932E A9 0E                    ..
         sta     $3A                             ; 9330 85 3A                    .:
 L9332:
-        lda     $04C3,y                         ; 9332 B9 C3 04                 ...
-        ora     $04C4,y                         ; 9335 19 C4 04                 ...
-        ora     $04C5,y                         ; 9338 19 C5 04                 ...
+        lda     leaderboardInitials,y           ; 9332 B9 C3 04                 ...
+        ora     leaderboardInitials+1,y         ; 9335 19 C4 04                 ...
+        ora     leaderboardInitials+2,y         ; 9338 19 C5 04                 ...
         and     #$C0                            ; 933B 29 C0                    ).
         beq     L93B0                           ; 933D F0 71                    .q
         asl     a                               ; 933F 0A                       .
         rol     a                               ; 9340 2A                       *
         sta     $38                             ; 9341 85 38                    .8
-        lda     $04C3,y                         ; 9343 B9 C3 04                 ...
+        lda     leaderboardInitials,y           ; 9343 B9 C3 04                 ...
         and     #$3F                            ; 9346 29 3F                    )?
-        sta     $04C3,y                         ; 9348 99 C3 04                 ...
-        lda     $04C4,y                         ; 934B B9 C4 04                 ...
+        sta     leaderboardInitials,y           ; 9348 99 C3 04                 ...
+        lda     leaderboardInitials+1,y         ; 934B B9 C4 04                 ...
         and     #$3F                            ; 934E 29 3F                    )?
-        sta     $04C4,y                         ; 9350 99 C4 04                 ...
-        lda     $04C5,y                         ; 9353 B9 C5 04                 ...
+        sta     leaderboardInitials+1,y         ; 9350 99 C4 04                 ...
+        lda     leaderboardInitials+2,y         ; 9353 B9 C5 04                 ...
         and     #$3F                            ; 9356 29 3F                    )?
-        sta     $04C5,y                         ; 9358 99 C5 04                 ...
+        sta     leaderboardInitials+2,y         ; 9358 99 C5 04                 ...
         sty     $37                             ; 935B 84 37                    .7
         ldy     $38                             ; 935D A4 38                    .8
         lda     $74,y                           ; 935F B9 74 00                 .t.
@@ -2908,9 +2913,9 @@ L9332:
         adc     $37                             ; 9365 65 37                    e7
         stx     $36                             ; 9367 86 36                    .6
         tax                                     ; 9369 AA                       .
-        lda     $04C2,x                         ; 936A BD C2 04                 ...
+        lda     leaderboardLines+44,x           ; 936A BD C2 04                 ...
         ora     L93DA,y                         ; 936D 19 DA 93                 ...
-        sta     $04C2,x                         ; 9370 9D C2 04                 ...
+        sta     leaderboardLines+44,x           ; 9370 9D C2 04                 ...
         and     #$3F                            ; 9373 29 3F                    )?
         beq     L937B                           ; 9375 F0 04                    ..
         ora     #$40                            ; 9377 09 40                    .@
@@ -2992,9 +2997,9 @@ L93F7:
         jsr     LB3E9                           ; 93FF 20 E9 B3                  ..
         ldx     #$05                            ; 9402 A2 05                    ..
 L9404:
-        lda     $0430,x                         ; 9404 BD 30 04                 .0.
+        lda     player1ScoreMirrorPossible,x    ; 9404 BD 30 04                 .0.
         sta     player1ScoreHundredThousands,x  ; 9407 9D 18 04                 ...
-        lda     $0436,x                         ; 940A BD 36 04                 .6.
+        lda     unknownScoreSlot,x              ; 940A BD 36 04                 .6.
         sta     player1LinesThousands,x         ; 940D 9D 24 04                 .$.
         dex                                     ; 9410 CA                       .
         bpl     L9404                           ; 9411 10 F1                    ..
@@ -3056,7 +3061,7 @@ L9469:
         tay                                     ; 947B A8                       .
         ldx     #$03                            ; 947C A2 03                    ..
 L947E:
-        lda     $0496,y                         ; 947E B9 96 04                 ...
+        lda     leaderboardLines,y              ; 947E B9 96 04                 ...
         cmp     #$30                            ; 9481 C9 30                    .0
         bne     L9491                           ; 9483 D0 0C                    ..
         cpx     #$01                            ; 9485 E0 01                    ..
@@ -3092,17 +3097,17 @@ L9493:
 
 ; ----------------------------------------------------------------------------
 L94BF:
-        lda     $04C3,y                         ; 94BF B9 C3 04                 ...
+        lda     leaderboardInitials,y           ; 94BF B9 C3 04                 ...
         and     #$3F                            ; 94C2 29 3F                    )?
         tax                                     ; 94C4 AA                       .
         lda     L93DC,x                         ; 94C5 BD DC 93                 ...
         sta     PPUDATA                         ; 94C8 8D 07 20                 .. 
-        lda     $04C4,y                         ; 94CB B9 C4 04                 ...
+        lda     leaderboardInitials+1,y         ; 94CB B9 C4 04                 ...
         and     #$3F                            ; 94CE 29 3F                    )?
         tax                                     ; 94D0 AA                       .
         lda     L93DC,x                         ; 94D1 BD DC 93                 ...
         sta     PPUDATA                         ; 94D4 8D 07 20                 .. 
-        lda     $04C5,y                         ; 94D7 B9 C5 04                 ...
+        lda     leaderboardInitials+2,y         ; 94D7 B9 C5 04                 ...
         and     #$3F                            ; 94DA 29 3F                    )?
         tax                                     ; 94DC AA                       .
         lda     L93DC,x                         ; 94DD BD DC 93                 ...
@@ -3920,9 +3925,9 @@ L9ADC:
         ldy     #$05                            ; 9ADC A0 05                    ..
 L9ADE:
         lda     player1ScoreHundredThousands,y  ; 9ADE B9 18 04                 ...
-        sta     $0430,y                         ; 9AE1 99 30 04                 .0.
+        sta     player1ScoreMirrorPossible,y    ; 9AE1 99 30 04                 .0.
         lda     player1LinesThousands,y         ; 9AE4 B9 24 04                 .$.
-        sta     $0436,y                         ; 9AE7 99 36 04                 .6.
+        sta     unknownScoreSlot,y              ; 9AE7 99 36 04                 .6.
         dey                                     ; 9AEA 88                       .
         bpl     L9ADE                           ; 9AEB 10 F1                    ..
 L9AED:
@@ -4469,9 +4474,9 @@ L9EBC:
         jsr     LA06F                           ; 9ED9 20 6F A0                  o.
         ldx     #$05                            ; 9EDC A2 05                    ..
 L9EDE:
-        lda     $0430,x                         ; 9EDE BD 30 04                 .0.
+        lda     player1ScoreMirrorPossible,x    ; 9EDE BD 30 04                 .0.
         sta     player1ScoreHundredThousands,x  ; 9EE1 9D 18 04                 ...
-        lda     $0436,x                         ; 9EE4 BD 36 04                 .6.
+        lda     unknownScoreSlot,x              ; 9EE4 BD 36 04                 .6.
         sta     player1LinesThousands,x         ; 9EE7 9D 24 04                 .$.
         dex                                     ; 9EEA CA                       .
         bpl     L9EDE                           ; 9EEB 10 F1                    ..
