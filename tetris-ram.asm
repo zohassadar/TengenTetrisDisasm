@@ -46,8 +46,7 @@ playMode: .res 1 ; $002f
 .res 1 ; $0031
 frameCounterLow:        .res 1 ; $0032
 frameCounterHigh:       .res 1 ; $0033
-.res 1 ; $0034
-.res 1 ; $0035
+rngSeed: .res 2 ; $0034
 .res 1 ; $0036
 .res 1 ; $0037
 .res 1 ; $0038
@@ -84,12 +83,9 @@ player2ControllerNew:  .res 1 ; $0047
 .res 1 ; $0057
 .res 1 ; $0058
 .res 1 ; $0059
-.res 1 ; $005a
-.res 1 ; $005b
-.res 1 ; $005c
-.res 1 ; $005d
-.res 1 ; $005e
-.res 1 ; $005f
+savedRNGSeedForSomething: .res 2 ; $005a
+player1RNGSeed: .res 2 ; $005c
+player2RNGSeed: .res 2 ; $005e
 player1TetriminoY:          .res 1 ; $0060
 player2TetriminoY:          .res 1 ; $0061
 player1TetriminoX:          .res 1 ; $0062
@@ -253,8 +249,28 @@ player2FallTimer: .res 1 ; $006b
 
 .bss
 
-stack:
-.res $100
+page1:
+
+.res $b6
+
+codeInputPlayer1: .res 1 ; $01b6
+codeInputPlayer2: .res 1 ; $01b7
+longBarCodeUsedP1: .res 1 ; $01b8
+longBarCodeUsedP2: .res 1 ; $01b9
+removeBlockCodeUsedP1: .res 1 ; $01ba
+removeBlockCodeUsedP2: .res 1 ; $01bb
+lastCurrentBlockP1: .res 1 ; $01bc
+lastCurrentBlockP2: .res 1 ; $01bd
+lastOrientationP1: .res 1 ; $01be
+lastOrientationP2: .res 1 ; $01bf
+lastTetriminoYP1: .res 1 ; $01c0
+lastTetriminoYP2: .res 1 ; $01c1
+lastTetriminoXP1: .res 1 ; $01c2
+lastTetriminoXP2: .res 1 ; $01c3
+lastRNGSeedP1: .res 2 ; $01c4
+lastRNGSeedP2: .res 2 ; $01c6
+
+.res $38
 
 page2:
 .res $100
@@ -320,8 +336,8 @@ ppuScrollYOffset: .res 1 ; $04f6
 oamStaging:  ; $0500-05ff
 .res $100
 
-player1Playfield:   .res $df ; $0600-06df
-.res $21
+player1Playfield:   .res $e0 ; $0600-06df
+.res $20
 
-player2Playfield:   .res $df ; $0700-07df
-.res $21
+player2Playfield:   .res $e0 ; $0700-07df
+.res $20

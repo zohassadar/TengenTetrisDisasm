@@ -28,6 +28,8 @@ LABEL { ADDR $002f; NAME "playMode"; COMMENT "FF: Coop, 00: 1p, 01: 2p"; };
 LABEL { ADDR $0032; NAME "frameCounterLow"; };
 LABEL { ADDR $0033; NAME "frameCounterHigh"; };
 
+LABEL { ADDR $0034; NAME "rngSeed"; SIZE $2; };
+
 LABEL { ADDR $003E; NAME "player1ControllerLastFrame"; };
 LABEL { ADDR $003F; NAME "player2ControllerLastFrame"; };
 LABEL { ADDR $0040; NAME "player1ExpansionLastFrame"; };
@@ -38,6 +40,10 @@ LABEL { ADDR $0044; NAME "player1ExpansionHeld"; };
 LABEL { ADDR $0045; NAME "player2ExpansionHeld"; };
 LABEL { ADDR $0046; NAME "player1ControllerNew"; };
 LABEL { ADDR $0047; NAME "player2ControllerNew"; };
+
+LABEL { ADDR $005a; NAME "savedRNGSeedForSomething"; SIZE $2; }; 
+LABEL { ADDR $005c; NAME "player1RNGSeed"; SIZE $2; }; 
+LABEL { ADDR $005e; NAME "player2RNGSeed"; SIZE $2; }; 
 
 LABEL { ADDR $0060; NAME "player1TetriminoY"; };
 LABEL { ADDR $0061; NAME "player2TetriminoY"; };
@@ -54,6 +60,25 @@ LABEL { ADDR $0069; NAME "player2TetriminoOrientation"; };
 
 LABEL { ADDR $006a; NAME "player1FallTimer"; }; 
 LABEL { ADDR $006b; NAME "player2FallTimer"; }; 
+
+
+LABEL { ADDR $01b6; NAME "codeInputPlayer1"; }; 
+LABEL { ADDR $01b7; NAME "codeInputPlayer2"; }; 
+LABEL { ADDR $01b8; NAME "longBarCodeUsedP1"; }; 
+LABEL { ADDR $01b9; NAME "longBarCodeUsedP2"; }; 
+LABEL { ADDR $01ba; NAME "removeBlockCodeUsedP1"; }; 
+LABEL { ADDR $01bb; NAME "removeBlockCodeUsedP2"; }; 
+LABEL { ADDR $01bc; NAME "lastCurrentBlockP1"; }; 
+LABEL { ADDR $01bd; NAME "lastCurrentBlockP2"; }; 
+LABEL { ADDR $01be; NAME "lastOrientationP1"; }; 
+LABEL { ADDR $01bf; NAME "lastOrientationP2"; }; 
+LABEL { ADDR $01c0; NAME "lastTetriminoYP1"; }; 
+LABEL { ADDR $01c1; NAME "lastTetriminoYP2"; }; 
+LABEL { ADDR $01c2; NAME "lastTetriminoXP1"; }; 
+LABEL { ADDR $01c3; NAME "lastTetriminoXP2"; }; 
+LABEL { ADDR $01c4; NAME "lastRNGSeedP1"; SIZE $2; }; 
+LABEL { ADDR $01c6; NAME "lastRNGSeedP2"; SIZE $2; }; 
+
 
 LABEL { ADDR $0500; NAME "oamStaging"; SIZE $100; }; 
 
@@ -289,6 +314,10 @@ LABEL { ADDR $b369; NAME "drawCathedralSprites"; };
 LABEL { ADDR $b36b; NAME "cathedralCheckComplete"; };
 LABEL { ADDR $b371; NAME "drawCathedralSpriteTile"; };
 LABEL { ADDR $b3a0; NAME "cathedralSpriteTabel"; SIZE $48; };
+
+LABEL { ADDR $B5a8; NAME "levelUpCode"; SIZE $a; };
+LABEL { ADDR $B5B2; NAME "getLongbarCode"; SIZE $9; };
+LABEL { ADDR $B5Bb; NAME "removeBlockCode"; SIZE $a; };
 
 LABEL { ADDR $b8a8; NAME "possibleMenuNametable"; SIZE $400; };
 LABEL { ADDR $bca8; NAME "dataPastPossibleMenuNametable"; };

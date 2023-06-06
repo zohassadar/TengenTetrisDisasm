@@ -101,3 +101,14 @@ L8565 - plant pieces in playfield
 playfield is stored with 1 tile per nibble.  nibble aligns with tile index.  0 is clear.  
 walls are built with F0 on left, 0F on right
 Floor is built with FF
+
+****
+
+add longbar:
+down down left right left right b a
+
+level up:
+up down up down left right b b a
+
+remove block:
+left, down, right, up, left, down, right, b, a

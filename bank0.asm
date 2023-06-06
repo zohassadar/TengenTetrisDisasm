@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-05 15:54:34
+; Created:    2023-06-05 17:18:06
 ; Input file: clean.nes
 ; Page:       1
 
@@ -21,6 +21,7 @@ frameCounterLowLastFrame:= $002B
 playMode        := $002F                        ; FF: Coop, 00: 1p, 01: 2p
 frameCounterLow := $0032
 frameCounterHigh:= $0033
+rngSeed         := $0034
 player1ControllerLastFrame:= $003E
 player2ControllerLastFrame:= $003F
 player1ExpansionLastFrame:= $0040
@@ -31,6 +32,9 @@ player1ExpansionHeld:= $0044
 player2ExpansionHeld:= $0045
 player1ControllerNew:= $0046
 player2ControllerNew:= $0047
+savedRNGSeedForSomething:= $005A
+player1RNGSeed  := $005C
+player2RNGSeed  := $005E
 player1TetriminoY:= $0060
 player2TetriminoY:= $0061
 player1TetriminoX:= $0062
@@ -43,6 +47,22 @@ player1TetriminoOrientation:= $0068
 player2TetriminoOrientation:= $0069
 player1FallTimer:= $006A
 player2FallTimer:= $006B
+codeInputPlayer1:= $01B6
+codeInputPlayer2:= $01B7
+longBarCodeUsedP1:= $01B8
+longBarCodeUsedP2:= $01B9
+removeBlockCodeUsedP1:= $01BA
+removeBlockCodeUsedP2:= $01BB
+lastCurrentBlockP1:= $01BC
+lastCurrentBlockP2:= $01BD
+lastOrientationP1:= $01BE
+lastOrientationP2:= $01BF
+lastTetriminoYP1:= $01C0
+lastTetriminoYP2:= $01C1
+lastTetriminoXP1:= $01C2
+lastTetriminoXP2:= $01C3
+lastRNGSeedP1   := $01C4
+lastRNGSeedP2   := $01C6
 player1ScoreHundredThousands:= $0418
 player1ScoreTenThousands:= $0419
 player1ScoreThousands:= $041A
@@ -564,10 +584,10 @@ L8312:
         txa                                     ; 8312 8A                       .
         bne     L82D6                           ; 8313 D0 C1                    ..
 L8315:
-        lda     $5A                             ; 8315 A5 5A                    .Z
-        sta     $34                             ; 8317 85 34                    .4
-        lda     $5B                             ; 8319 A5 5B                    .[
-        sta     $35                             ; 831B 85 35                    .5
+        lda     savedRNGSeedForSomething        ; 8315 A5 5A                    .Z
+        sta     rngSeed                         ; 8317 85 34                    .4
+        lda     savedRNGSeedForSomething+1      ; 8319 A5 5B                    .[
+        sta     rngSeed+1                       ; 831B 85 35                    .5
         jmp     L95E3                           ; 831D 4C E3 95                 L..
 
 ; ----------------------------------------------------------------------------
@@ -982,20 +1002,20 @@ L85B0:
 ; ----------------------------------------------------------------------------
 L85B3:
         lda     player1TetriminoCurrent,x       ; 85B3 B5 64                    .d
-        sta     $01BC,x                         ; 85B5 9D BC 01                 ...
+        sta     lastCurrentBlockP1,x            ; 85B5 9D BC 01                 ...
         lda     player1TetriminoY,x             ; 85B8 B5 60                    .`
-        sta     $01C0,x                         ; 85BA 9D C0 01                 ...
+        sta     lastTetriminoYP1,x              ; 85BA 9D C0 01                 ...
         lda     player1TetriminoX,x             ; 85BD B5 62                    .b
-        sta     $01C2,x                         ; 85BF 9D C2 01                 ...
+        sta     lastTetriminoXP1,x              ; 85BF 9D C2 01                 ...
         lda     player1TetriminoOrientation,x   ; 85C2 B5 68                    .h
-        sta     $01BE,x                         ; 85C4 9D BE 01                 ...
+        sta     lastOrientationP1,x             ; 85C4 9D BE 01                 ...
         txa                                     ; 85C7 8A                       .
         asl     a                               ; 85C8 0A                       .
         tay                                     ; 85C9 A8                       .
-        lda     $5C,y                           ; 85CA B9 5C 00                 .\.
-        sta     $01C4,y                         ; 85CD 99 C4 01                 ...
-        lda     $5D,y                           ; 85D0 B9 5D 00                 .].
-        sta     $01C5,y                         ; 85D3 99 C5 01                 ...
+        lda     player1RNGSeed,y                ; 85CA B9 5C 00                 .\.
+        sta     lastRNGSeedP1,y                 ; 85CD 99 C4 01                 ...
+        lda     player1RNGSeed+1,y              ; 85D0 B9 5D 00                 .].
+        sta     lastRNGSeedP1+1,y               ; 85D3 99 C5 01                 ...
         jsr     L869B                           ; 85D6 20 9B 86                  ..
 L85D9:
         asl     $36                             ; 85D9 06 36                    .6
@@ -3091,11 +3111,11 @@ L94BF:
 ; ----------------------------------------------------------------------------
 L94E4:
         lda     #$00                            ; 94E4 A9 00                    ..
-        sta     $01BC,x                         ; 94E6 9D BC 01                 ...
+        sta     lastCurrentBlockP1,x            ; 94E6 9D BC 01                 ...
         bit     playMode                        ; 94E9 24 2F                    $/
         bpl     L94F3                           ; 94EB 10 06                    ..
-        sta     $01BC                           ; 94ED 8D BC 01                 ...
-        sta     $01BD                           ; 94F0 8D BD 01                 ...
+        sta     lastCurrentBlockP1              ; 94ED 8D BC 01                 ...
+        sta     lastCurrentBlockP2              ; 94F0 8D BD 01                 ...
 L94F3:
         lda     #$30                            ; 94F3 A9 30                    .0
         sta     $36                             ; 94F5 85 36                    .6
@@ -3189,7 +3209,7 @@ L957A:
         inc     $50,x                           ; 9595 F6 50                    .P
         inc     $01D2                           ; 9597 EE D2 01                 ...
         lda     #$00                            ; 959A A9 00                    ..
-        sta     $01B8,x                         ; 959C 9D B8 01                 ...
+        sta     longBarCodeUsedP1,x             ; 959C 9D B8 01                 ...
         bit     playMode                        ; 959F 24 2F                    $/
         bpl     L95B3                           ; 95A1 10 10                    ..
         .byte   $98,$49,$02,$A8,$A5,$36,$99,$2C ; 95A3 98 49 02 A8 A5 36 99 2C  .I...6.,
@@ -3253,12 +3273,12 @@ L960C:
         inx                                     ; 960E E8                       .
         cpx     #$EF                            ; 960F E0 EF                    ..
         bne     L960C                           ; 9611 D0 F9                    ..
-        sta     $01B8                           ; 9613 8D B8 01                 ...
-        sta     $01B9                           ; 9616 8D B9 01                 ...
-        sta     $01BA                           ; 9619 8D BA 01                 ...
-        sta     $01BB                           ; 961C 8D BB 01                 ...
-        sta     $01BC                           ; 961F 8D BC 01                 ...
-        sta     $01BD                           ; 9622 8D BD 01                 ...
+        sta     longBarCodeUsedP1               ; 9613 8D B8 01                 ...
+        sta     longBarCodeUsedP2               ; 9616 8D B9 01                 ...
+        sta     removeBlockCodeUsedP1           ; 9619 8D BA 01                 ...
+        sta     removeBlockCodeUsedP2           ; 961C 8D BB 01                 ...
+        sta     lastCurrentBlockP1              ; 961F 8D BC 01                 ...
+        sta     lastCurrentBlockP2              ; 9622 8D BD 01                 ...
         lda     #$01                            ; 9625 A9 01                    ..
         sta     $4A                             ; 9627 85 4A                    .J
         sta     $4C                             ; 9629 85 4C                    .L
@@ -3313,14 +3333,14 @@ L967B:
         ldx     #$02                            ; 9692 A2 02                    ..
         jsr     LA756                           ; 9694 20 56 A7                  V.
 L9697:
-        lda     $34                             ; 9697 A5 34                    .4
-        sta     $5C                             ; 9699 85 5C                    .\
-        sta     $5E                             ; 969B 85 5E                    .^
-        sta     $5A                             ; 969D 85 5A                    .Z
-        lda     $35                             ; 969F A5 35                    .5
-        sta     $5D                             ; 96A1 85 5D                    .]
-        sta     $5F                             ; 96A3 85 5F                    ._
-        sta     $5B                             ; 96A5 85 5B                    .[
+        lda     rngSeed                         ; 9697 A5 34                    .4
+        sta     player1RNGSeed                  ; 9699 85 5C                    .\
+        sta     player2RNGSeed                  ; 969B 85 5E                    .^
+        sta     savedRNGSeedForSomething        ; 969D 85 5A                    .Z
+        lda     rngSeed+1                       ; 969F A5 35                    .5
+        sta     player1RNGSeed+1                ; 96A1 85 5D                    .]
+        sta     player2RNGSeed+1                ; 96A3 85 5F                    ._
+        sta     savedRNGSeedForSomething+1      ; 96A5 85 5B                    .[
         jsr     initializePlayfields            ; 96A7 20 C1 97                  ..
         lda     gameStatePossible               ; 96AA A5 29                    .)
         bne     L96B7                           ; 96AC D0 09                    ..
@@ -3498,10 +3518,10 @@ initHandicapGarbage:
         sta     $3B                             ; 9856 85 3B                    .;
         lda     #$00                            ; 9858 A9 00                    ..
         sta     $3A                             ; 985A 85 3A                    .:
-        lda     $5A                             ; 985C A5 5A                    .Z
-        sta     $34                             ; 985E 85 34                    .4
-        lda     $5B                             ; 9860 A5 5B                    .[
-        sta     $35                             ; 9862 85 35                    .5
+        lda     savedRNGSeedForSomething        ; 985C A5 5A                    .Z
+        sta     rngSeed                         ; 985E 85 34                    .4
+        lda     savedRNGSeedForSomething+1      ; 9860 A5 5B                    .[
+        sta     rngSeed+1                       ; 9862 85 35                    .5
 L9864:
         lda     #$00                            ; 9864 A9 00                    ..
         sta     $37                             ; 9866 85 37                    .7
@@ -5566,7 +5586,7 @@ LA9A2:
         lda     #$47                            ; A9C2 A9 47                    .G
         sta     $04FA                           ; A9C4 8D FA 04                 ...
         lda     #$5A                            ; A9C7 A9 5A                    .Z
-        sta     $34                             ; A9C9 85 34                    .4
+        sta     rngSeed                         ; A9C9 85 34                    .4
         jmp     L8003                           ; A9CB 4C 03 80                 L..
 
 ; ----------------------------------------------------------------------------
@@ -6346,22 +6366,22 @@ LB4A9:
         beq     LB52A                           ; B4AB F0 7D                    .}
         lda     player1ControllerNew,x          ; B4AD B5 46                    .F
         beq     LB52A                           ; B4AF F0 79                    .y
-        ldy     $01B6,x                         ; B4B1 BC B6 01                 ...
+        ldy     codeInputPlayer1,x              ; B4B1 BC B6 01                 ...
         bne     LB4C8                           ; B4B4 D0 12                    ..
-        cmp     LB5BB,y                         ; B4B6 D9 BB B5                 ...
+        cmp     removeBlockCode,y               ; B4B6 D9 BB B5                 ...
         bne     LB4BF                           ; B4B9 D0 04                    ..
         .byte   $A0,$14,$D0,$67                 ; B4BB A0 14 D0 67              ...g
 ; ----------------------------------------------------------------------------
 LB4BF:
-        cmp     LB5B2,y                         ; B4BF D9 B2 B5                 ...
+        cmp     getLongbarCode,y                ; B4BF D9 B2 B5                 ...
         bne     LB4C8                           ; B4C2 D0 04                    ..
         ldy     #$0B                            ; B4C4 A0 0B                    ..
         bne     LB526                           ; B4C6 D0 5E                    .^
 LB4C8:
-        cmp     LB5A8,y                         ; B4C8 D9 A8 B5                 ...
+        cmp     levelUpCode,y                   ; B4C8 D9 A8 B5                 ...
         bne     LB524                           ; B4CB D0 57                    .W
         iny                                     ; B4CD C8                       .
-        lda     LB5A8,y                         ; B4CE B9 A8 B5                 ...
+        lda     levelUpCode,y                   ; B4CE B9 A8 B5                 ...
         bne     LB526                           ; B4D1 D0 53                    .S
         cpy     #$12                            ; B4D3 C0 12                    ..
         beq     LB52B                           ; B4D5 F0 54                    .T
@@ -6409,16 +6429,16 @@ LB524:
         ldy     #$00                            ; B524 A0 00                    ..
 LB526:
         tya                                     ; B526 98                       .
-        sta     $01B6,x                         ; B527 9D B6 01                 ...
+        sta     codeInputPlayer1,x              ; B527 9D B6 01                 ...
 LB52A:
         rts                                     ; B52A 60                       `
 
 ; ----------------------------------------------------------------------------
 LB52B:
-        lda     $01B8,x                         ; B52B BD B8 01                 ...
+        lda     longBarCodeUsedP1,x             ; B52B BD B8 01                 ...
         bne     LB52A                           ; B52E D0 FA                    ..
         lda     #$01                            ; B530 A9 01                    ..
-        sta     $01B8,x                         ; B532 9D B8 01                 ...
+        sta     longBarCodeUsedP1,x             ; B532 9D B8 01                 ...
         sta     player1TetriminoCurrent,x       ; B535 95 64                    .d
 LB537:
         lda     #$04                            ; B537 A9 04                    ..
@@ -6440,11 +6460,11 @@ LB545:
 
 ; ----------------------------------------------------------------------------
 LB559:
-        lda     $01BA,x                         ; B559 BD BA 01                 ...
+        lda     removeBlockCodeUsedP1,x         ; B559 BD BA 01                 ...
         bne     LB52A                           ; B55C D0 CC                    ..
-        lda     $01BC,x                         ; B55E BD BC 01                 ...
+        lda     lastCurrentBlockP1,x            ; B55E BD BC 01                 ...
         beq     LB52A                           ; B561 F0 C7                    ..
-        inc     $01BA,x                         ; B563 FE BA 01                 ...
+        inc     removeBlockCodeUsedP1,x         ; B563 FE BA 01                 ...
         lda     player1TetriminoCurrent,x       ; B566 B5 64                    .d
         beq     LB576                           ; B568 F0 0C                    ..
         sta     player1TetriminoNext,x          ; B56A 95 66                    .f
@@ -6455,21 +6475,21 @@ LB559:
         jsr     LA763                           ; B571 20 63 A7                  c.
         ldx     $3A                             ; B574 A6 3A                    .:
 LB576:
-        lda     $01BE,x                         ; B576 BD BE 01                 ...
+        lda     lastOrientationP1,x             ; B576 BD BE 01                 ...
         sta     player1TetriminoOrientation,x   ; B579 95 68                    .h
-        lda     $01C2,x                         ; B57B BD C2 01                 ...
+        lda     lastTetriminoXP1,x              ; B57B BD C2 01                 ...
         sta     player1TetriminoX,x             ; B57E 95 62                    .b
-        lda     $01C0,x                         ; B580 BD C0 01                 ...
+        lda     lastTetriminoYP1,x              ; B580 BD C0 01                 ...
         sta     player1TetriminoY,x             ; B583 95 60                    .`
-        lda     $01BC,x                         ; B585 BD BC 01                 ...
+        lda     lastCurrentBlockP1,x            ; B585 BD BC 01                 ...
         sta     player1TetriminoCurrent,x       ; B588 95 64                    .d
         txa                                     ; B58A 8A                       .
         asl     a                               ; B58B 0A                       .
         tay                                     ; B58C A8                       .
-        lda     $01C4,y                         ; B58D B9 C4 01                 ...
-        sta     $5C,y                           ; B590 99 5C 00                 .\.
-        lda     $01C5,y                         ; B593 B9 C5 01                 ...
-        sta     $5D,y                           ; B596 99 5D 00                 .].
+        lda     lastRNGSeedP1,y                 ; B58D B9 C4 01                 ...
+        sta     player1RNGSeed,y                ; B590 99 5C 00                 .\.
+        lda     lastRNGSeedP1+1,y               ; B593 B9 C5 01                 ...
+        sta     player1RNGSeed+1,y              ; B596 99 5D 00                 .].
         jsr     L84D8                           ; B599 20 D8 84                  ..
         jsr     L8607                           ; B59C 20 07 86                  ..
         jsr     L8565                           ; B59F 20 65 85                  e.
@@ -6477,13 +6497,13 @@ LB576:
         jmp     LB537                           ; B5A5 4C 37 B5                 L7.
 
 ; ----------------------------------------------------------------------------
-LB5A8:
+levelUpCode:
         .byte   $10,$20,$10,$20,$40,$80,$02,$02 ; B5A8 10 20 10 20 40 80 02 02  . . @...
         .byte   $01,$00                         ; B5B0 01 00                    ..
-LB5B2:
+getLongbarCode:
         .byte   $20,$20,$40,$80,$40,$80,$02,$01 ; B5B2 20 20 40 80 40 80 02 01    @.@...
         .byte   $00                             ; B5BA 00                       .
-LB5BB:
+removeBlockCode:
         .byte   $40,$20,$80,$10,$40,$20,$80,$02 ; B5BB 40 20 80 10 40 20 80 02  @ ..@ ..
         .byte   $01,$00                         ; B5C3 01 00                    ..
 ; ----------------------------------------------------------------------------
