@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-05 18:27:53
+; Created:    2023-06-05 19:16:54
 ; Input file: clean.nes
 ; Page:       1
 
@@ -4847,25 +4847,25 @@ ppuPatchLevelSelectZero:
 ppuPatchLevelSelect:
         .byte   $4A,$21,$4C,$45,$56,$45,$4C,$20 ; A20E 4A 21 4C 45 56 45 4C 20  J!LEVEL 
         .byte   $53,$45,$4C,$45,$43,$54,$FF     ; A216 53 45 4C 45 43 54 FF     SELECT.
-ppuPatchNumber0:
+ppuPatchLevel0:
         .byte   $8F,$21,$30,$FF                 ; A21D 8F 21 30 FF              .!0.
-ppuPatchNumber1:
+ppuPatchLevel1:
         .byte   $AF,$21,$31,$FF                 ; A221 AF 21 31 FF              .!1.
-ppuPatchNumber2:
+ppuPatchLevel2:
         .byte   $CF,$21,$32,$FF                 ; A225 CF 21 32 FF              .!2.
-ppuPatchNumber3:
+ppuPatchLevel3:
         .byte   $EF,$21,$33,$FF                 ; A229 EF 21 33 FF              .!3.
-ppuPatchNumber4:
+ppuPatchLevel4:
         .byte   $0F,$22,$34,$FF                 ; A22D 0F 22 34 FF              ."4.
-ppuPatchNumber5:
+ppuPatchLevel5:
         .byte   $2F,$22,$35,$FF                 ; A231 2F 22 35 FF              /"5.
-ppuPatchNumber6:
+ppuPatchLevel6:
         .byte   $4F,$22,$36,$FF                 ; A235 4F 22 36 FF              O"6.
-ppuPatchNumber7:
+ppuPatchLevel7:
         .byte   $6F,$22,$37,$FF                 ; A239 6F 22 37 FF              o"7.
-ppuPatchNumber8:
+ppuPatchLevel8:
         .byte   $8F,$22,$38,$FF                 ; A23D 8F 22 38 FF              ."8.
-ppuPatchNumber9:
+ppuPatchLevel9:
         .byte   $AF,$22,$39,$FF                 ; A241 AF 22 39 FF              ."9.
 ppuPatchConceptBy:
         .byte   $02,$23,$43,$4F,$4E,$43,$45,$50 ; A245 02 23 43 4F 4E 43 45 50  .#CONCEP
@@ -4932,35 +4932,35 @@ ppuPatchHighScores:
         .byte   $48,$21,$48,$49,$47,$48,$20,$53 ; A33A 48 21 48 49 47 48 20 53  H!HIGH S
         .byte   $43,$4F,$52,$45,$53,$2D,$4C,$49 ; A342 43 4F 52 45 53 2D 4C 49  CORES-LI
         .byte   $4E,$45,$53,$FF                 ; A34A 4E 45 53 FF              NES.
-ppuPatchOtherNumber1:
+ppuPatchLeaderboard1:
         .byte   $88,$21,$31,$2E,$FF             ; A34E 88 21 31 2E FF           .!1..
-ppuPatchOtherNumber2:
+ppuPatchLeaderboard2:
         .byte   $A8,$21,$32,$2E,$FF             ; A353 A8 21 32 2E FF           .!2..
-ppuPatchOtherNumber3:
+ppuPatchLeaderboard3:
         .byte   $C8,$21,$33,$2E,$FF             ; A358 C8 21 33 2E FF           .!3..
-ppuPatchOtherNumber4:
+ppuPatchLeaderboard4:
         .byte   $E8,$21,$34,$2E,$FF             ; A35D E8 21 34 2E FF           .!4..
-ppuPatchOtherNumber5:
+ppuPatchLeaderboard5:
         .byte   $08,$22,$35,$2E,$FF             ; A362 08 22 35 2E FF           ."5..
-ppuPatchOtherNumber6:
+ppuPatchLeaderboard6:
         .byte   $28,$22,$36,$2E,$FF             ; A367 28 22 36 2E FF           ("6..
-ppuPatchOtherNumber7:
+ppuPatchLeaderboard7:
         .byte   $48,$22,$37,$2E,$FF             ; A36C 48 22 37 2E FF           H"7..
-ppuPatchOtherNumber8:
+ppuPatchLeaderboard8:
         .byte   $68,$22,$38,$2E,$FF             ; A371 68 22 38 2E FF           h"8..
-ppuPatchOtherNumber9:
+ppuPatchLeaderboard9:
         .byte   $88,$22,$39,$2E,$FF             ; A376 88 22 39 2E FF           ."9..
-ppuPatchOtherNumber10:
+ppuPatchLeaderboard10:
         .byte   $A7,$22,$31,$30,$2E,$FF         ; A37B A7 22 31 30 2E FF        ."10..
-ppuPatchOtherNumber11:
+ppuPatchLeaderboard11:
         .byte   $C7,$22,$31,$31,$2E,$FF         ; A381 C7 22 31 31 2E FF        ."11..
-ppuPatchOtherNumber12:
+ppuPatchLeaderboard12:
         .byte   $E7,$22,$31,$32,$2E,$FF         ; A387 E7 22 31 32 2E FF        ."12..
-ppuPatchOtherNumber13:
+ppuPatchLeaderboard13:
         .byte   $07,$23,$31,$33,$2E,$FF         ; A38D 07 23 31 33 2E FF        .#13..
-ppuPatchOtherNumber14:
+ppuPatchLeaderboard14:
         .byte   $27,$23,$31,$34,$2E,$FF         ; A393 27 23 31 34 2E FF        '#14..
-ppuPatchOtherNumber15:
+ppuPatchLeaderboard15:
         .byte   $47,$23,$31,$35,$2E,$FF         ; A399 47 23 31 35 2E FF        G#15..
 unknownData01:
         .byte   $00,$10,$05,$49,$FF,$18,$69,$01 ; A39F 00 10 05 49 FF 18 69 01  ...I..i.
