@@ -144,3 +144,15 @@ L8CA7 - negative3 thru 3
 
 a189 - address table?
 
+
+
+L9E61 - initialize title?
+
+LA3DB - enable NMI?
+LA465 - also enable NMI?
+
+LA44A - disable NMI?
+
+
+
+A7BE in NMI makes sure PPU writing is horizontal
