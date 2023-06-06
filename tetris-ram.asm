@@ -1,6 +1,6 @@
 .zeropage
-.res $1 ; $0000
-.res $1 ; $0001
+ppuControl: .res $1 ; $0000
+ppuMask: .res $1 ; $0001
 ppuScrollX: .res $1 ; $0002
 ppuScrollY: .res $1 ; $0003
 currentCHRBank: .res $4 ; $0004
