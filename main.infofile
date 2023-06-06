@@ -806,16 +806,6 @@ RANGE {
 };
 RANGE { 
   START $d02e; 
-  END $d115; 
-  TYPE CODE; 
-};
-RANGE { 
-  START $d116; 
-  END $d116; 
-  TYPE BYTETABLE; 
-};
-RANGE { 
-  START $d117; 
   END $d93c; 
   TYPE CODE; 
 };
@@ -861,6 +851,16 @@ RANGE {
 };
 RANGE { 
   START $dd1e; 
+  END $df70; 
+  TYPE BYTETABLE; 
+};
+RANGE { 
+  START $df71; 
+  END $dfce; 
+  TYPE AddrTable; 
+};
+RANGE { 
+  START $dfcf; 
   END $fff9; 
   TYPE BYTETABLE; 
 };
