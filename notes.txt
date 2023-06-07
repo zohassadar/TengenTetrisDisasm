@@ -138,3 +138,28 @@ LA44A - disable NMI?
 
 
 A7BE in NMI makes sure PPU writing is horizontal
+
+**********
+
+orientation table is 2 bytes for 16 possible locations, 1 bit per tile
+
+Example T Down:
+
+0000 0
+1110 E
+0100 4
+0000 0
+
+would be: $0E,$40
+
+Need to learn more about the order of orienations, but these replacements allow for T spins. Unforunately the rotation is backwards with it.
+
+orientationForT:
+        .byte   $0E,$40,$4C,$40,$4E,$00,$46,$40 ; 86D3 E4 00 8C 80 4E 00 4C 40  ....N.L@
+
+tilesForT:
+        .byte   $01,$09,$03,$06,$04,$01,$0A,$06 ; 8713 01 09 03 06 04 08 03 06  ........
+        .byte   $04,$01,$07,$03,$04,$08,$03,$06 ; 871B 04 01 07 03 04 01 0A 06  ........
+
+*********
+
