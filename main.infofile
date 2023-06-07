@@ -46,6 +46,7 @@ LABEL { ADDR $0044; NAME "player1ExpansionHeld"; };
 LABEL { ADDR $0045; NAME "player2ExpansionHeld"; };
 LABEL { ADDR $0046; NAME "player1ControllerNew"; };
 LABEL { ADDR $0047; NAME "player2ControllerNew"; };
+LABEL { ADDR $0048; NAME "ppuStagingAddress"; SIZE $2; };
 LABEL { ADDR $0052; NAME "pieceStatistics"; };
 LABEL { ADDR $0053; NAME "pieceStatsI"; }; 
 LABEL { ADDR $0054; NAME "pieceStatsT"; }; 
@@ -69,6 +70,8 @@ LABEL { ADDR $0068; NAME "player1TetrominoOrientation"; };
 LABEL { ADDR $0069; NAME "player2TetrominoOrientation"; }; 
 LABEL { ADDR $006a; NAME "player1FallTimer"; }; 
 LABEL { ADDR $006b; NAME "player2FallTimer"; }; 
+
+LABEL { ADDR $0100; NAME "ppuStaging"; SIZE $46; };
 LABEL { ADDR $01b6; NAME "codeInputPlayer1"; }; 
 LABEL { ADDR $01b7; NAME "codeInputPlayer2"; }; 
 LABEL { ADDR $01b8; NAME "longBarCodeUsedP1"; }; 
@@ -88,9 +91,6 @@ LABEL { ADDR $01c6; NAME "lastRNGSeedP2"; SIZE $2; };
 LABEL { ADDR $01c8; NAME "pointsDisplayTimerP1"; }; 
 LABEL { ADDR $01c9; NAME "pointsDisplayTimerP2"; }; 
 LABEL { ADDR $01d3; NAME "stack"; SIZE $1d; }; 
-LABEL { ADDR $0500; NAME "oamStaging"; SIZE $100; }; 
-LABEL { ADDR $0600; NAME "player1Playfield"; SIZE $DF; }; 
-LABEL { ADDR $0700; NAME "player2Playfield"; SIZE $DF; }; 
 LABEL { ADDR $0424; NAME "player1LinesThousands"; };
 LABEL { ADDR $0425; NAME "player1LinesHundreds"; };
 LABEL { ADDR $0426; NAME "player1LinesTens"; };
@@ -133,6 +133,12 @@ LABEL { ADDR $04f3; NAME "menuPlayer1Handicap"; };
 LABEL { ADDR $04f4; NAME "menuPlayer2Handicap"; };
 LABEL { ADDR $04f5; NAME "menuMusic"; };
 LABEL { ADDR $04f6; NAME "ppuScrollYOffset"; };
+
+LABEL { ADDR $0500; NAME "oamStaging"; SIZE $100; };
+
+LABEL { ADDR $0600; NAME "player1Playfield"; SIZE $DF; }; 
+
+LABEL { ADDR $0700; NAME "player2Playfield"; SIZE $DF; }; 
 
 LABEL { ADDR $2000; NAME "PPUCTRL"; };
 LABEL { ADDR $2001; NAME "PPUMASK"; };

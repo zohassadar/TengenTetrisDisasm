@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-06 17:59:38
+; Created:    2023-06-06 18:17:32
 ; Input file: clean.nes
 ; Page:       1
 
@@ -43,6 +43,7 @@ player1ExpansionHeld:= $0044
 player2ExpansionHeld:= $0045
 player1ControllerNew:= $0046
 player2ControllerNew:= $0047
+ppuStagingAddress:= $0048
 pieceStatistics := $0052
 pieceStatsI     := $0053
 pieceStatsT     := $0054
@@ -66,6 +67,7 @@ player1TetrominoOrientation:= $0068
 player2TetrominoOrientation:= $0069
 player1FallTimer:= $006A
 player2FallTimer:= $006B
+ppuStaging      := $0100
 codeInputPlayer1:= $01B6
 codeInputPlayer2:= $01B7
 longBarCodeUsedP1:= $01B8
@@ -166,7 +168,7 @@ player2controllerPort:= $4017
 ; ----------------------------------------------------------------------------
 L8003:
         lda     #$01                            ; 8003 A9 01                    ..
-        sta     $49                             ; 8005 85 49                    .I
+        sta     ppuStagingAddress+1             ; 8005 85 49                    .I
         jsr     L9E61                           ; 8007 20 61 9E                  a.
 mainLoop:
         ldx     #$34                            ; 800A A2 34                    .4
@@ -179,7 +181,7 @@ mainLoop:
         cmp     $27                             ; 8019 C5 27                    .'
         bne     L8021                           ; 801B D0 04                    ..
         lda     #$00                            ; 801D A9 00                    ..
-        sta     $48                             ; 801F 85 48                    .H
+        sta     ppuStagingAddress               ; 801F 85 48                    .H
 L8021:
         jsr     pollController                  ; 8021 20 00 A4                  ..
         jsr     L9F87                           ; 8024 20 87 9F                  ..
@@ -804,7 +806,7 @@ L845E:
         ldy     #$00                            ; 8465 A0 00                    ..
 L8467:
         lda     $B2,x                           ; 8467 B5 B2                    ..
-        sta     ($48),y                         ; 8469 91 48                    .H
+        sta     (ppuStagingAddress),y           ; 8469 91 48                    .H
         iny                                     ; 846B C8                       .
         inx                                     ; 846C E8                       .
         dec     generalCounter37                ; 846D C6 37                    .7
@@ -812,9 +814,9 @@ L8467:
         txa                                     ; 8471 8A                       .
         tay                                     ; 8472 A8                       .
         ldx     generalCounter3a                ; 8473 A6 3A                    .:
-        lda     $48                             ; 8475 A5 48                    .H
+        lda     ppuStagingAddress               ; 8475 A5 48                    .H
         sta     ppuDataAddress1,x               ; 8477 95 08                    ..
-        lda     $49                             ; 8479 A5 49                    .I
+        lda     ppuStagingAddress+1             ; 8479 A5 49                    .I
         sta     ppuDataAddress1+1,x             ; 847B 95 09                    ..
         lda     generalCounter38                ; 847D A5 38                    .8
         and     #$07                            ; 847F 29 07                    ).
@@ -830,8 +832,8 @@ L8467:
         adc     #$00                            ; 8491 69 00                    i.
         sta     $24,x                           ; 8493 95 24                    .$
         clc                                     ; 8495 18                       .
-        adc     $48                             ; 8496 65 48                    eH
-        sta     $48                             ; 8498 85 48                    .H
+        adc     ppuStagingAddress               ; 8496 65 48                    eH
+        sta     ppuStagingAddress               ; 8498 85 48                    .H
         jmp     L843A                           ; 849A 4C 3A 84                 L:.
 
 ; ----------------------------------------------------------------------------
@@ -855,7 +857,7 @@ L84B2:
         lsr     a                               ; 84B6 4A                       J
         lsr     a                               ; 84B7 4A                       J
         ldy     generalCounter36                ; 84B8 A4 36                    .6
-        sta     ($48),y                         ; 84BA 91 48                    .H
+        sta     (ppuStagingAddress),y           ; 84BA 91 48                    .H
         inc     generalCounter36                ; 84BC E6 36                    .6
         ldy     generalCounter37                ; 84BE A4 37                    .7
         dec     generalCounter38                ; 84C0 C6 38                    .8
@@ -866,7 +868,7 @@ L84C4:
         sty     generalCounter37                ; 84C7 84 37                    .7
         and     #$0F                            ; 84C9 29 0F                    ).
         ldy     generalCounter36                ; 84CB A4 36                    .6
-        sta     ($48),y                         ; 84CD 91 48                    .H
+        sta     (ppuStagingAddress),y           ; 84CD 91 48                    .H
         inc     generalCounter36                ; 84CF E6 36                    .6
         ldy     generalCounter37                ; 84D1 A4 37                    .7
         dec     generalCounter38                ; 84D3 C6 38                    .8
@@ -1779,9 +1781,9 @@ L8B0E:
         jsr     LA3DB                           ; 8B12 20 DB A3                  ..
         sty     generalCounter39                ; 8B15 84 39                    .9
         jsr     L849D                           ; 8B17 20 9D 84                  ..
-        lda     $48                             ; 8B1A A5 48                    .H
+        lda     ppuStagingAddress               ; 8B1A A5 48                    .H
         sta     ppuDataAddress1,x               ; 8B1C 95 08                    ..
-        lda     $49                             ; 8B1E A5 49                    .I
+        lda     ppuStagingAddress+1             ; 8B1E A5 49                    .I
         sta     ppuDataAddress1+1,x             ; 8B20 95 09                    ..
         lda     $ED                             ; 8B22 A5 ED                    ..
         sta     $16,x                           ; 8B24 95 16                    ..
@@ -1790,8 +1792,8 @@ L8B0E:
         lda     generalCounter36                ; 8B2A A5 36                    .6
         sta     $24,x                           ; 8B2C 95 24                    .$
         clc                                     ; 8B2E 18                       .
-        adc     $48                             ; 8B2F 65 48                    eH
-        sta     $48                             ; 8B31 85 48                    .H
+        adc     ppuStagingAddress               ; 8B2F 65 48                    eH
+        sta     ppuStagingAddress               ; 8B31 85 48                    .H
         ldy     generalCounter39                ; 8B33 A4 39                    .9
         bne     L8AF7                           ; 8B35 D0 C0                    ..
 L8B37:
@@ -2683,9 +2685,9 @@ L9188:
         bcc     L919E                           ; 919A 90 02                    ..
         inc     generalCounter37                ; 919C E6 37                    .7
 L919E:
-        lda     $49                             ; 919E A5 49                    .I
+        lda     ppuStagingAddress+1             ; 919E A5 49                    .I
         sta     ppuDataAddress1+1,x             ; 91A0 95 09                    ..
-        lda     $48                             ; 91A2 A5 48                    .H
+        lda     ppuStagingAddress               ; 91A2 A5 48                    .H
         sta     ppuDataAddress1,x               ; 91A4 95 08                    ..
         ldy     generalCounter38                ; 91A6 A4 38                    .8
         lda     $6C,y                           ; 91A8 B9 6C 00                 .l.
@@ -2703,16 +2705,16 @@ L91B9:
         beq     L91C0                           ; 91BC F0 02                    ..
         ora     #$30                            ; 91BE 09 30                    .0
 L91C0:
-        sta     ($48),y                         ; 91C0 91 48                    .H
+        sta     (ppuStagingAddress),y           ; 91C0 91 48                    .H
         pla                                     ; 91C2 68                       h
         ora     #$30                            ; 91C3 09 30                    .0
         iny                                     ; 91C5 C8                       .
-        sta     ($48),y                         ; 91C6 91 48                    .H
+        sta     (ppuStagingAddress),y           ; 91C6 91 48                    .H
         lda     #$02                            ; 91C8 A9 02                    ..
         sta     $24,x                           ; 91CA 95 24                    .$
         clc                                     ; 91CC 18                       .
-        adc     $48                             ; 91CD 65 48                    eH
-        sta     $48                             ; 91CF 85 48                    .H
+        adc     ppuStagingAddress               ; 91CD 65 48                    eH
+        sta     ppuStagingAddress               ; 91CF 85 48                    .H
         ldx     generalCounter38                ; 91D1 A6 38                    .8
         inx                                     ; 91D3 E8                       .
         inx                                     ; 91D4 E8                       .
@@ -3798,13 +3800,13 @@ L9997:
         adc     #$21                            ; 99A4 69 21                    i!
         sta     generalCounter36                ; 99A6 85 36                    .6
         jsr     LA3DB                           ; 99A8 20 DB A3                  ..
-        lda     $48                             ; 99AB A5 48                    .H
+        lda     ppuStagingAddress               ; 99AB A5 48                    .H
         sta     ppuDataAddress1,x               ; 99AD 95 08                    ..
-        lda     $49                             ; 99AF A5 49                    .I
+        lda     ppuStagingAddress+1             ; 99AF A5 49                    .I
         sta     ppuDataAddress1+1,x             ; 99B1 95 09                    ..
         lda     generalCounter36                ; 99B3 A5 36                    .6
-        sta     ($48),y                         ; 99B5 91 48                    .H
-        inc     $48                             ; 99B7 E6 48                    .H
+        sta     (ppuStagingAddress),y           ; 99B5 91 48                    .H
+        inc     ppuStagingAddress               ; 99B7 E6 48                    .H
         lda     #$23                            ; 99B9 A9 23                    .#
         sta     $17,x                           ; 99BB 95 17                    ..
         ldy     player1TetrominoCurrent         ; 99BD A4 64                    .d
@@ -4807,12 +4809,12 @@ LA06F:
         lda     LA0A5,y                         ; A08D B9 A5 A0                 ...
 LA090:
         ldy     #$00                            ; A090 A0 00                    ..
-        sta     ($48),y                         ; A092 91 48                    .H
-        lda     $48                             ; A094 A5 48                    .H
+        sta     (ppuStagingAddress),y           ; A092 91 48                    .H
+        lda     ppuStagingAddress               ; A094 A5 48                    .H
         sta     ppuDataAddress1,x               ; A096 95 08                    ..
-        lda     $49                             ; A098 A5 49                    .I
+        lda     ppuStagingAddress+1             ; A098 A5 49                    .I
         sta     ppuDataAddress1+1,x             ; A09A 95 09                    ..
-        inc     $48                             ; A09C E6 48                    .H
+        inc     ppuStagingAddress               ; A09C E6 48                    .H
         lda     #$01                            ; A09E A9 01                    ..
         sta     $24,x                           ; A0A0 95 24                    .$
         ldy     generalCounter36                ; A0A2 A4 36                    .6
@@ -5070,7 +5072,7 @@ LA3DB:
         sta     PPUCTRL                         ; A3E7 8D 00 20                 .. 
 LA3EA:
         lda     #$00                            ; A3EA A9 00                    ..
-        sta     $48                             ; A3EC 85 48                    .H
+        sta     ppuStagingAddress               ; A3EC 85 48                    .H
 LA3EE:
         lda     $24,x                           ; A3EE B5 24                    .$
         bne     LA3EE                           ; A3F0 D0 FC                    ..
@@ -5670,7 +5672,7 @@ LA9A1:
         txa                                     ; A9A1 8A                       .
 LA9A2:
         sta     ppuControl,x                    ; A9A2 95 00                    ..
-        sta     $0100,x                         ; A9A4 9D 00 01                 ...
+        sta     ppuStaging,x                    ; A9A4 9D 00 01                 ...
         sta     oamStaging,x                    ; A9A7 9D 00 05                 ...
         sta     player1Playfield,x              ; A9AA 9D 00 06                 ...
         sta     player2Playfield,x              ; A9AD 9D 00 07                 ...

@@ -60,8 +60,7 @@ player1ExpansionHeld:  .res $1 ; $0044
 player2ExpansionHeld:  .res $1 ; $0045
 player1ControllerNew:  .res $1 ; $0046
 player2ControllerNew:  .res $1 ; $0047
-.res $1 ; $0048
-.res $1 ; $0049
+ppuStagingAddress: .res $2 ; $0048
 .res $1 ; $004a
 .res $1 ; $004b
 .res $1 ; $004c
@@ -110,7 +109,9 @@ player2FallTimer: .res $1 ; $006b
 
 page1:
 
-.res $b6
+ppuStaging: .res $46 ; $0100 - $0145 (This needs to be confirmed)
+
+.res $70
 
 codeInputPlayer1: .res $1 ; $01b6
 codeInputPlayer2: .res $1 ; $01b7
