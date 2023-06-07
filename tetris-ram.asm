@@ -30,7 +30,7 @@ ppuDataAddress7: .res $2 ; $0014
 .res $1 ; $0026
 .res $1 ; $0027
 .res $1 ; $0028
-gameStatePossible: .res $1 ; $0029
+gameState: .res $1 ; $0029
 .res $1 ; $002a
 frameCounterLowLastFrame: .res $1 ; $002b
 .res $1 ; $002c

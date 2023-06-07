@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-06 12:09:01
+; Created:    2023-06-06 17:59:38
 ; Input file: clean.nes
 ; Page:       1
 
@@ -19,7 +19,7 @@ ppuDataAddress4 := $000E
 ppuDataAddress5 := $0010
 ppuDataAddress6 := $0012
 ppuDataAddress7 := $0014
-gameStatePossible:= $0029
+gameState       := $0029
 frameCounterLowLastFrame:= $002B
 playMode        := $002F                        ; FF: Coop, 00: 1p, 01: 2p
 frameCounterLow := $0032
@@ -210,7 +210,7 @@ L8050:
         cpy     #$03                            ; 805B C0 03                    ..
         bcs     @ret                            ; 805D B0 04                    ..
 @player1Active:
-        ldy     gameStatePossible               ; 805F A4 29                    .)
+        ldy     gameState                       ; 805F A4 29                    .)
         beq     doSomethingWithInputDuringGameplay; 8061 F0 01                  ..
 @ret:
         rts                                     ; 8063 60                       `
@@ -564,7 +564,7 @@ L82C6:
 ; ----------------------------------------------------------------------------
 L82C7:
         jsr     L819A                           ; 82C7 20 9A 81                  ..
-        ldy     gameStatePossible               ; 82CA A4 29                    .)
+        ldy     gameState                       ; 82CA A4 29                    .)
         beq     L82D7                           ; 82CC F0 09                    ..
         cpy     #$FB                            ; 82CE C0 FB                    ..
         beq     L82D7                           ; 82D0 F0 05                    ..
@@ -715,7 +715,7 @@ L83B1:
         sta     $4B                             ; 83DC 85 4B                    .K
 L83DE:
         sta     $4A,x                           ; 83DE 95 4A                    .J
-        lda     gameStatePossible               ; 83E0 A5 29                    .)
+        lda     gameState                       ; 83E0 A5 29                    .)
         bne     L83E7                           ; 83E2 D0 03                    ..
         jsr     L81DD                           ; 83E4 20 DD 81                  ..
 L83E7:
@@ -723,7 +723,7 @@ L83E7:
         ora     $4B                             ; 83E9 05 4B                    .K
         bne     L83F8                           ; 83EB D0 0B                    ..
         lda     #$F9                            ; 83ED A9 F9                    ..
-        sta     gameStatePossible               ; 83EF 85 29                    .)
+        sta     gameState                       ; 83EF 85 29                    .)
         sta     player1FallTimer                ; 83F1 85 6A                    .j
         lda     #$08                            ; 83F3 A9 08                    ..
         jsr     possibleSetSoundOrMusic         ; 83F5 20 B1 CF                  ..
@@ -1540,7 +1540,7 @@ L8935:
 
 ; ----------------------------------------------------------------------------
 L8967:
-        lda     gameStatePossible               ; 8967 A5 29                    .)
+        lda     gameState                       ; 8967 A5 29                    .)
         bne     L8998                           ; 8969 D0 2D                    .-
         ldx     #$00                            ; 896B A2 00                    ..
         jsr     L897C                           ; 896D 20 7C 89                  |.
@@ -1795,7 +1795,7 @@ L8B0E:
         ldy     generalCounter39                ; 8B33 A4 39                    .9
         bne     L8AF7                           ; 8B35 D0 C0                    ..
 L8B37:
-        lda     gameStatePossible               ; 8B37 A5 29                    .)
+        lda     gameState                       ; 8B37 A5 29                    .)
         cmp     #$F9                            ; 8B39 C9 F9                    ..
         beq     L8B45                           ; 8B3B F0 08                    ..
         cmp     #$FB                            ; 8B3D C9 FB                    ..
@@ -2027,7 +2027,7 @@ L8CAE:
 ; ----------------------------------------------------------------------------
 L8CB5:
         lda     #$03                            ; 8CB5 A9 03                    ..
-        sta     gameStatePossible               ; 8CB7 85 29                    .)
+        sta     gameState                       ; 8CB7 85 29                    .)
         inc     $78                             ; 8CB9 E6 78                    .x
         inc     $78                             ; 8CBB E6 78                    .x
         inc     $79                             ; 8CBD E6 79                    .y
@@ -2057,7 +2057,7 @@ L8CD7:
 
 ; ----------------------------------------------------------------------------
 L8CE5:
-        lda     gameStatePossible               ; 8CE5 A5 29                    .)
+        lda     gameState                       ; 8CE5 A5 29                    .)
         cmp     #$03                            ; 8CE7 C9 03                    ..
         bne     L8D0D                           ; 8CE9 D0 22                    ."
         lda     player1FallTimer                ; 8CEB A5 6A                    .j
@@ -2562,7 +2562,7 @@ L90B4:
         bne     L90B4                           ; 90BD D0 F5                    ..
         ldx     #$07                            ; 90BF A2 07                    ..
         lda     #$00                            ; 90C1 A9 00                    ..
-        sta     gameStatePossible               ; 90C3 85 29                    .)
+        sta     gameState                       ; 90C3 85 29                    .)
 L90C5:
         sta     $6C,x                           ; 90C5 95 6C                    .l
         dex                                     ; 90C7 CA                       .
@@ -2729,7 +2729,7 @@ L91DE:
         .byte   $21,$62,$21,$74,$21             ; 91DE 21 62 21 74 21           !b!t!
 ; ----------------------------------------------------------------------------
 L91E3:
-        ldy     gameStatePossible               ; 91E3 A4 29                    .)
+        ldy     gameState                       ; 91E3 A4 29                    .)
         cpy     #$F8                            ; 91E5 C0 F8                    ..
         bne     L9205                           ; 91E7 D0 1C                    ..
         jsr     LA9CE                           ; 91E9 20 CE A9                  ..
@@ -3062,7 +3062,7 @@ L9404:
         dex                                     ; 9410 CA                       .
         bpl     L9404                           ; 9411 10 F1                    ..
         lda     #$F8                            ; 9413 A9 F8                    ..
-        sta     gameStatePossible               ; 9415 85 29                    .)
+        sta     gameState                       ; 9415 85 29                    .)
         sta     $4C                             ; 9417 85 4C                    .L
         sta     $4D                             ; 9419 85 4D                    .M
         sta     $4E                             ; 941B 85 4E                    .N
@@ -3243,7 +3243,7 @@ L955B:
         txa                                     ; 955B 8A                       .
         lsr     a                               ; 955C 4A                       J
         ldx     generalCounter37                ; 955D A6 37                    .7
-        bit     gameStatePossible               ; 955F 24 29                    $)
+        bit     gameState                       ; 955F 24 29                    $)
         bpl     L9567                           ; 9561 10 04                    ..
         adc     #$09                            ; 9563 69 09                    i.
         bne     L956A                           ; 9565 D0 03                    ..
@@ -3304,7 +3304,7 @@ L95C1:
 ; ----------------------------------------------------------------------------
 demoStart:
         lda     #$FB                            ; 95C6 A9 FB                    ..
-        sta     gameStatePossible               ; 95C8 85 29                    .)
+        sta     gameState                       ; 95C8 85 29                    .)
         lda     #$00                            ; 95CA A9 00                    ..
         sta     playMode                        ; 95CC 85 2F                    ./
         lda     #$01                            ; 95CE A9 01                    ..
@@ -3321,7 +3321,7 @@ L95D7:
 ; ----------------------------------------------------------------------------
 L95E3:
         lda     #$00                            ; 95E3 A9 00                    ..
-        sta     gameStatePossible               ; 95E5 85 29                    .)
+        sta     gameState                       ; 95E5 85 29                    .)
         ldx     #$05                            ; 95E7 A2 05                    ..
         lda     #$30                            ; 95E9 A9 30                    .0
 L95EB:
@@ -3377,7 +3377,7 @@ L9640:
         lda     #$30                            ; 9651 A9 30                    .0
         sta     player1LevelTens                ; 9653 8D 2C 04                 .,.
         sta     player2LevelTens                ; 9656 8D 2E 04                 ...
-        bit     gameStatePossible               ; 9659 24 29                    $)
+        bit     gameState                       ; 9659 24 29                    $)
         bpl     L9662                           ; 965B 10 05                    ..
         lda     #$39                            ; 965D A9 39                    .9
         sta     player1LevelOnes                ; 965F 8D 2D 04                 .-.
@@ -3414,7 +3414,7 @@ L9697:
         sta     player2RNGSeed+1                ; 96A3 85 5F                    ._
         sta     savedRNGSeedForSomething+1      ; 96A5 85 5B                    .[
         jsr     initializePlayfields            ; 96A7 20 C1 97                  ..
-        lda     gameStatePossible               ; 96AA A5 29                    .)
+        lda     gameState                       ; 96AA A5 29                    .)
         bne     L96B7                           ; 96AC D0 09                    ..
         lda     playMode                        ; 96AE A5 2F                    ./
         cmp     #$01                            ; 96B0 C9 01                    ..
@@ -3767,7 +3767,7 @@ L9962:
         ldx     generalCounter3b                ; 9972 A6 3B                    .;
         lda     player1TetrominoCurrent,x       ; 9974 B5 64                    .d
         beq     L99EA                           ; 9976 F0 72                    .r
-        lda     gameStatePossible               ; 9978 A5 29                    .)
+        lda     gameState                       ; 9978 A5 29                    .)
         cmp     #$FB                            ; 997A C9 FB                    ..
         bne     L9984                           ; 997C D0 06                    ..
         jsr     L9C8D                           ; 997E 20 8D 9C                  ..
@@ -3980,7 +3980,7 @@ L9ABB:
 L9AC9:
         sta     player1ScoreHundredThousands,y  ; 9AC9 99 18 04                 ...
         inc     $4C,x                           ; 9ACC F6 4C                    .L
-        lda     gameStatePossible               ; 9ACE A5 29                    .)
+        lda     gameState                       ; 9ACE A5 29                    .)
         bne     L9AED                           ; 9AD0 D0 1B                    ..
         lda     menuGameMode                    ; 9AD2 AD F0 04                 ...
         cmp     #$03                            ; 9AD5 C9 03                    ..
@@ -4077,7 +4077,7 @@ L9B64:
         sta     generalCounter37                ; 9B80 85 37                    .7
         bit     playMode                        ; 9B82 24 2F                    $/
         bpl     L9B96                           ; 9B84 10 10                    ..
-        lda     gameStatePossible               ; 9B86 A5 29                    .)
+        lda     gameState                       ; 9B86 A5 29                    .)
         bmi     L9B96                           ; 9B88 30 0C                    0.
         cpy     #$08                            ; 9B8A C0 08                    ..
         bcc     L9B96                           ; 9B8C 90 08                    ..
@@ -4144,7 +4144,7 @@ statsPPUAddresses:
 ; ----------------------------------------------------------------------------
 L9BFC:
         ldx     #$00                            ; 9BFC A2 00                    ..
-        lda     gameStatePossible               ; 9BFE A5 29                    .)
+        lda     gameState                       ; 9BFE A5 29                    .)
         beq     L9C4C                           ; 9C00 F0 4A                    .J
         cmp     #$FB                            ; 9C02 C9 FB                    ..
         beq     L9C58                           ; 9C04 F0 52                    .R
@@ -4505,7 +4505,7 @@ L9E61:
         sta     $01CF                           ; 9E7B 8D CF 01                 ...
         jsr     LB3E9                           ; 9E7E 20 E9 B3                  ..
         lda     #$FA                            ; 9E81 A9 FA                    ..
-        sta     gameStatePossible               ; 9E83 85 29                    .)
+        sta     gameState                       ; 9E83 85 29                    .)
         lda     #$00                            ; 9E85 A9 00                    ..
         sta     frameCounterLow                 ; 9E87 85 32                    .2
         sta     frameCounterHigh                ; 9E89 85 33                    .3
@@ -4561,7 +4561,7 @@ L9EDE:
         bpl     L9EDE                           ; 9EEB 10 F1                    ..
         lda     #$FC                            ; 9EED A9 FC                    ..
         sta     player1FallTimer                ; 9EEF 85 6A                    .j
-        sta     gameStatePossible               ; 9EF1 85 29                    .)
+        sta     gameState                       ; 9EF1 85 29                    .)
         sta     $4C                             ; 9EF3 85 4C                    .L
         sta     $4D                             ; 9EF5 85 4D                    .M
         sta     $4E                             ; 9EF7 85 4E                    .N
@@ -4598,7 +4598,7 @@ L9F1B:
 L9F3A:
         lda     #$FD                            ; 9F3A A9 FD                    ..
 L9F3C:
-        sta     gameStatePossible               ; 9F3C 85 29                    .)
+        sta     gameState                       ; 9F3C 85 29                    .)
         sta     player1FallTimer                ; 9F3E 85 6A                    .j
         sta     $4C                             ; 9F40 85 4C                    .L
         sta     $4D                             ; 9F42 85 4D                    .M
@@ -4639,7 +4639,7 @@ L9F74:
         lda     #$FF                            ; 9F83 A9 FF                    ..
         bne     L9F3C                           ; 9F85 D0 B5                    ..
 L9F87:
-        lda     gameStatePossible               ; 9F87 A5 29                    .)
+        lda     gameState                       ; 9F87 A5 29                    .)
         bmi     L9F8C                           ; 9F89 30 01                    0.
 L9F8B:
         rts                                     ; 9F8B 60                       `
@@ -4682,7 +4682,7 @@ L9FB8:
         sta     player1FallTimer                ; 9FC2 85 6A                    .j
         lda     #$14                            ; 9FC4 A9 14                    ..
         jsr     possibleSetSoundOrMusic         ; 9FC6 20 B1 CF                  ..
-        lda     gameStatePossible               ; 9FC9 A5 29                    .)
+        lda     gameState                       ; 9FC9 A5 29                    .)
         cmp     #$FF                            ; 9FCB C9 FF                    ..
         beq     L9FDB                           ; 9FCD F0 0C                    ..
         cmp     #$FC                            ; 9FCF C9 FC                    ..
@@ -4717,7 +4717,7 @@ L9FF4:
 LA001:
         jsr     LA048                           ; A001 20 48 A0                  H.
 LA004:
-        lda     gameStatePossible               ; A004 A5 29                    .)
+        lda     gameState                       ; A004 A5 29                    .)
         cmp     #$FF                            ; A006 C9 FF                    ..
         bne     LA00D                           ; A008 D0 03                    ..
         jsr     LA035                           ; A00A 20 35 A0                  5.
@@ -4732,7 +4732,7 @@ LA00D:
 LA016:
         lda     #$15                            ; A016 A9 15                    ..
         jsr     possibleSetSoundOrMusic         ; A018 20 B1 CF                  ..
-        lda     gameStatePossible               ; A01B A5 29                    .)
+        lda     gameState                       ; A01B A5 29                    .)
         cmp     #$FC                            ; A01D C9 FC                    ..
         beq     @branchOnModeGameTypeMenu       ; A01F F0 0B                    ..
         cmp     #$FD                            ; A021 C9 FD                    ..
@@ -5692,7 +5692,7 @@ LA9A2:
 LA9CE:
         lda     player2FallTimer                ; A9CE A5 6B                    .k
         beq     LA9E9                           ; A9D0 F0 17                    ..
-        lda     gameStatePossible               ; A9D2 A5 29                    .)
+        lda     gameState                       ; A9D2 A5 29                    .)
         cmp     #$FA                            ; A9D4 C9 FA                    ..
         beq     LA9DE                           ; A9D6 F0 06                    ..
         lda     $74                             ; A9D8 A5 74                    .t
@@ -5730,7 +5730,7 @@ LA9FD:
         inx                                     ; AA03 E8                       .
         dey                                     ; AA04 88                       .
         bne     LA9FD                           ; AA05 D0 F6                    ..
-        lda     gameStatePossible               ; AA07 A5 29                    .)
+        lda     gameState                       ; AA07 A5 29                    .)
         cmp     #$FA                            ; AA09 C9 FA                    ..
         bne     LAA13                           ; AA0B D0 06                    ..
         lda     frameCounterHigh                ; AA0D A5 33                    .3
@@ -5798,7 +5798,7 @@ differentMusicSelectTable:
         .byte   $16,$17,$18,$19                 ; AA6C 16 17 18 19              ....
 ; ----------------------------------------------------------------------------
 LAA70:
-        ldy     gameStatePossible               ; AA70 A4 29                    .)
+        ldy     gameState                       ; AA70 A4 29                    .)
         lda     #$00                            ; AA72 A9 00                    ..
         cpy     #$FA                            ; AA74 C0 FA                    ..
         beq     LAA89                           ; AA76 F0 11                    ..
@@ -5816,7 +5816,7 @@ LAA89:
         lda     LAB26,y                         ; AA8F B9 26 AB                 .&.
         sta     $77                             ; AA92 85 77                    .w
         sta     generalCounter37                ; AA94 85 37                    .7
-        ldy     gameStatePossible               ; AA96 A4 29                    .)
+        ldy     gameState                       ; AA96 A4 29                    .)
         lda     #$50                            ; AA98 A9 50                    .P
         cpy     #$FA                            ; AA9A C0 FA                    ..
         beq     LAAA0                           ; AA9C F0 02                    ..
@@ -6623,7 +6623,7 @@ removeBlockCode:
         .byte   $01,$00                         ; B5C3 01 00                    ..
 ; ----------------------------------------------------------------------------
 LB5C5:
-        ldy     gameStatePossible               ; B5C5 A4 29                    .)
+        ldy     gameState                       ; B5C5 A4 29                    .)
         dey                                     ; B5C7 88                       .
         bne     LB5D4                           ; B5C8 D0 0A                    ..
         ldx     #$00                            ; B5CA A2 00                    ..
@@ -6640,17 +6640,17 @@ LB5DC:
 
 ; ----------------------------------------------------------------------------
 LB5DD:
-        ldy     gameStatePossible               ; B5DD A4 29                    .)
+        ldy     gameState                       ; B5DD A4 29                    .)
         cpy     #$01                            ; B5DF C0 01                    ..
         beq     LB5F0                           ; B5E1 F0 0D                    ..
         bcs     LB5DC                           ; B5E3 B0 F7                    ..
-        inc     gameStatePossible               ; B5E5 E6 29                    .)
+        inc     gameState                       ; B5E5 E6 29                    .)
         lda     #$01                            ; B5E7 A9 01                    ..
         jsr     possibleSetSoundOrMusic         ; B5E9 20 B1 CF                  ..
         lda     #$00                            ; B5EC A9 00                    ..
         beq     LB5FC                           ; B5EE F0 0C                    ..
 LB5F0:
-        dec     gameStatePossible               ; B5F0 C6 29                    .)
+        dec     gameState                       ; B5F0 C6 29                    .)
         lda     #$02                            ; B5F2 A9 02                    ..
         jsr     possibleSetSoundOrMusic         ; B5F4 20 B1 CF                  ..
         jsr     L8967                           ; B5F7 20 67 89                  g.

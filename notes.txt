@@ -20,22 +20,6 @@ B8A8 - menu nametable??
 c028 - game nametable??
 
 
-
-gameStatePossible:
-
-F8 - Score screen
-F9 - ??
-FA - title screen
-FB - Demo mode???
-FC - gameTypeMenu
-FD - levelSelectMenu
-FE - handicapSelect
-FF - musicSelect
-00 - playing
-01 - paused
-
-
-
 *****************
 
 
@@ -65,8 +49,6 @@ mesen tracelog exclude loop:
 
 
 ****
-
-LA0AB - table with PPU addresses
 
 
 L855C/L855F - tables with low/high bytes of top left corner of player1, player2 & coop
