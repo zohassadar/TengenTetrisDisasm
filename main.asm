@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-06 22:17:42
+; Created:    2023-06-06 22:20:13
 ; Input file: clean.nes
 ; Page:       1
 
@@ -1242,7 +1242,7 @@ orientationForJ:
         .byte   $E2,$00,$C8,$80,$8E,$00,$44,$C0 ; 86E3 E2 00 C8 80 8E 00 44 C0  ......D.
 orientationForL:
         .byte   $E8,$00,$88,$C0,$2E,$00,$C4,$40 ; 86EB E8 00 88 C0 2E 00 C4 40  .......@
-; this shows up as the offset point for the tiles (id * 16 * 2)
+; this shows up as the offset point for the tiles (id * 16)
 orientationForSandTilesOffset:
         .byte   $6C,$00,$8C,$40,$6C,$00,$8C,$40 ; 86F3 6C 00 8C 40 6C 00 8C 40  l..@l..@
 orientationForZ:

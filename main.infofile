@@ -203,7 +203,7 @@ LABEL { ADDR $86d3; SIZE $8; NAME "orientationForT"; };
 LABEL { ADDR $86db; SIZE $8; NAME "orientationForO"; };
 LABEL { ADDR $86e3; SIZE $8; NAME "orientationForJ"; };
 LABEL { ADDR $86eb; SIZE $8; NAME "orientationForL"; };
-LABEL { ADDR $86f3; SIZE $8; NAME "orientationForSandTilesOffset"; COMMENT "this shows up as the offset point for the tiles (id * 16 * 2)"; };
+LABEL { ADDR $86f3; SIZE $8; NAME "orientationForSandTilesOffset"; COMMENT "this shows up as the offset point for the tiles (id * 16)"; };
 LABEL { ADDR $86fb; SIZE $8; NAME "orientationForZ"; };
 LABEL { ADDR $8703; SIZE $10; NAME "tilesForI"; };
 LABEL { ADDR $8713; SIZE $10; NAME "tilesForT"; };
