@@ -26,9 +26,9 @@ ppuDataAddress7: .res $2 ; $0014
 .res $1 ; $0022
 .res $1 ; $0023
 .res $1 ; $0024
-.res $1 ; $0025
+ppuRenderFlagBefore: .res $1 ; $0025
 .res $1 ; $0026
-.res $1 ; $0027
+ppuRenderFlagAfter: .res $1 ; $0027
 .res $1 ; $0028
 gameState: .res $1 ; $0029
 .res $1 ; $002a

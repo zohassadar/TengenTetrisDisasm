@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-06 18:17:32
+; Created:    2023-06-06 18:30:33
 ; Input file: clean.nes
 ; Page:       1
 
@@ -19,6 +19,8 @@ ppuDataAddress4 := $000E
 ppuDataAddress5 := $0010
 ppuDataAddress6 := $0012
 ppuDataAddress7 := $0014
+ppuRenderFlagBefore:= $0025
+ppuRenderFlagAfter:= $0027
 gameState       := $0029
 frameCounterLowLastFrame:= $002B
 playMode        := $002F                        ; FF: Coop, 00: 1p, 01: 2p
@@ -177,8 +179,8 @@ mainLoop:
         cmp     frameCounterLowLastFrame        ; 8011 C5 2B                    .+
         beq     mainLoop                        ; 8013 F0 F5                    ..
         sta     frameCounterLowLastFrame        ; 8015 85 2B                    .+
-        lda     $25                             ; 8017 A5 25                    .%
-        cmp     $27                             ; 8019 C5 27                    .'
+        lda     ppuRenderFlagBefore             ; 8017 A5 25                    .%
+        cmp     ppuRenderFlagAfter              ; 8019 C5 27                    .'
         bne     L8021                           ; 801B D0 04                    ..
         lda     #$00                            ; 801D A9 00                    ..
         sta     ppuStagingAddress               ; 801F 85 48                    .H
@@ -2311,8 +2313,8 @@ L8EC6:
         lda     generalCounter3a                ; 8ECC A5 3A                    .:
         beq     L8ED8                           ; 8ECE F0 08                    ..
 L8ED0:
-        lda     $25                             ; 8ED0 A5 25                    .%
-        cmp     $27                             ; 8ED2 C5 27                    .'
+        lda     ppuRenderFlagBefore             ; 8ED0 A5 25                    .%
+        cmp     ppuRenderFlagAfter              ; 8ED2 C5 27                    .'
         bne     L8ED0                           ; 8ED4 D0 FA                    ..
         beq     L8EA2                           ; 8ED6 F0 CA                    ..
 L8ED8:
@@ -5063,7 +5065,7 @@ LA3C4:
 
 ; ----------------------------------------------------------------------------
 LA3DB:
-        ldx     $25                             ; A3DB A6 25                    .%
+        ldx     ppuRenderFlagBefore             ; A3DB A6 25                    .%
         lda     $24,x                           ; A3DD B5 24                    .$
         beq     LA3F2                           ; A3DF F0 11                    ..
         lda     ppuControl                      ; A3E1 A5 00                    ..
@@ -5077,14 +5079,14 @@ LA3EE:
         lda     $24,x                           ; A3EE B5 24                    .$
         bne     LA3EE                           ; A3F0 D0 FC                    ..
 LA3F2:
-        lda     $25                             ; A3F2 A5 25                    .%
+        lda     ppuRenderFlagBefore             ; A3F2 A5 25                    .%
         clc                                     ; A3F4 18                       .
         adc     #$02                            ; A3F5 69 02                    i.
         cmp     #$0E                            ; A3F7 C9 0E                    ..
         bcc     LA3FD                           ; A3F9 90 02                    ..
         lda     #$00                            ; A3FB A9 00                    ..
 LA3FD:
-        sta     $25                             ; A3FD 85 25                    .%
+        sta     ppuRenderFlagBefore             ; A3FD 85 25                    .%
         rts                                     ; A3FF 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -5134,8 +5136,8 @@ LA44A:
         lda     ppuControl                      ; A44A A5 00                    ..
         bpl     LA458                           ; A44C 10 0A                    ..
 LA44E:
-        ldx     $25                             ; A44E A6 25                    .%
-        cpx     $27                             ; A450 E4 27                    .'
+        ldx     ppuRenderFlagBefore             ; A44E A6 25                    .%
+        cpx     ppuRenderFlagAfter              ; A450 E4 27                    .'
         bne     LA44E                           ; A452 D0 FA                    ..
         lda     $24,x                           ; A454 B5 24                    .$
         bne     LA44E                           ; A456 D0 F6                    ..
@@ -5378,7 +5380,7 @@ nmi:
         and     #$FB                            ; A7C0 29 FB                    ).
         sta     PPUCTRL                         ; A7C2 8D 00 20                 .. 
         jsr     renderJumpRoutine               ; A7C5 20 0E A8                  ..
-        stx     $27                             ; A7C8 86 27                    .'
+        stx     ppuRenderFlagAfter              ; A7C8 86 27                    .'
         inc     frameCounterLow                 ; A7CA E6 32                    .2
         bne     LA7D0                           ; A7CC D0 02                    ..
         inc     frameCounterHigh                ; A7CE E6 33                    .3
@@ -5416,7 +5418,7 @@ LA7D0:
 
 ; ----------------------------------------------------------------------------
 renderJumpRoutine:
-        ldx     $27                             ; A80E A6 27                    .'
+        ldx     ppuRenderFlagAfter              ; A80E A6 27                    .'
         lda     renderJumpTable+1,x             ; A810 BD 04 A9                 ...
         pha                                     ; A813 48                       H
         lda     renderJumpTable,x               ; A814 BD 03 A9                 ...

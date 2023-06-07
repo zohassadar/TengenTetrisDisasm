@@ -22,6 +22,8 @@ LABEL { ADDR $000E; NAME "ppuDataAddress4"; SIZE $2; };
 LABEL { ADDR $0010; NAME "ppuDataAddress5"; SIZE $2; };
 LABEL { ADDR $0012; NAME "ppuDataAddress6"; SIZE $2; };
 LABEL { ADDR $0014; NAME "ppuDataAddress7"; SIZE $2; };
+LABEL { ADDR $0025; NAME "ppuRenderFlagBefore";  };
+LABEL { ADDR $0027; NAME "ppuRenderFlagAfter";  };
 LABEL { ADDR $0029; NAME "gameState"; };
 LABEL { ADDR $002b; NAME "frameCounterLowLastFrame"; };
 LABEL { ADDR $002f; NAME "playMode"; COMMENT "FF: Coop, 00: 1p, 01: 2p"; };
