@@ -23,9 +23,9 @@ Todo after above is complete:
 
 ## Disassemble
 
-Requires a backup of of the original game with the filename `clean.nes` in the project root directory.  
+Requires a backup of the original game with the filename `clean.nes` in the project root directory.  
 
-main.asm is dynamically generated using main.infofile.  This means comments outside of labels and constants for specific values can't be added yet (unless someone knows a trick and wants to tell me).  To update, add label label information to main.infofile.  If label is for a RAM address ($0000-$07FF), update tetris-ram.asm. Then run `make disassembly`.  This will update main.asm with the new labels.  
+main.asm is dynamically generated using main.infofile.  This means comments outside of labels and constants for specific values can't be added yet (unless someone knows a trick and wants to tell me).  To update, add label information to main.infofile.  If label is for a RAM address ($0000-$07FF), update tetris-ram.asm. Then run `make disassembly`.  This will update main.asm with the new labels.  
 
 ## Build
 
@@ -45,6 +45,7 @@ This requires the same backup of the original game with the filename `clean.nes`
 `make compare`
 
 ## Thanks
+[threecreepio](https://github.com/threecreepio/da65ify) getting this started
 
 [CelestialAmber](https://github.com/CelestialAmber/TetrisNESDisasm) disassembly structure
 
