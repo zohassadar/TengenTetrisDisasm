@@ -181,6 +181,7 @@ LABEL { ADDR $4017; NAME "player2controllerPort"; };
 LABEL { ADDR $8000; NAME "unusedJumpToReset"; };
 LABEL { ADDR $8003; NAME "resetContinued"; };
 LABEL { ADDR $800a; NAME "mainLoop"; };
+LABEL { ADDR $8021; NAME "@skipResetPPUStagingAddress"; };
 LABEL { ADDR $8052; NAME "@allButtonsExceptDown"; };
 LABEL { ADDR $805F; NAME "@player1Active"; };
 LABEL { ADDR $8063; NAME "@ret"; };
@@ -334,13 +335,12 @@ LABEL { ADDR $B4A8; NAME "ppuPatchTableSkipPatch"; COMMENT "0 columns skips the 
 LABEL { ADDR $B5a8; NAME "levelUpCode"; SIZE $a; };
 LABEL { ADDR $B5B2; NAME "getLongbarCode"; SIZE $9; };
 LABEL { ADDR $B5Bb; NAME "removeBlockCode"; SIZE $a; };
-LABEL { ADDR $b8a8; NAME "possibleMenuNametable"; SIZE $360; };
-LABEL { ADDR $bc68; NAME "unknownNameTable1"; };
-
-LABEL { ADDR $c028; NAME "possibleGameNametable"; SIZE $360; };
-LABEL { ADDR $c3e8; NAME "unknownNameTable2"; SIZE $360; };
-LABEL { ADDR $ca00; NAME "possibleTitleScreenNametable"; SIZE $360; };
-LABEL { ADDR $ce00; NAME "dataPastPossibleTitle"; };
+LABEL { ADDR $b8a8; NAME "menuNametable"; SIZE $3c0; };
+LABEL { ADDR $bc68; NAME "gameModeNametableCoop"; SIZE $3c0; };
+LABEL { ADDR $c028; NAME "gameModeNametable1P"; SIZE $3c0; };
+LABEL { ADDR $c3e8; NAME "gameModeNametable2P"; SIZE $3c0; };
+LABEL { ADDR $ca00; NAME "titleScreenNametable"; SIZE $3c0; };
+LABEL { ADDR $cdc0; NAME "possibleUnusedData"; };
 LABEL { ADDR $cfb1; NAME "setMusicOrSoundEffect"; };
 
 LABEL { ADDR $d010; NAME "possibleJumpTable"; SIZE $1a; };
