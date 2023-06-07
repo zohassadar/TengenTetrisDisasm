@@ -136,8 +136,8 @@ pointsDisplayTimerP2: .res $1 ; $01c9
 .res $1 ; $01cb ; used by not stack
 .res $1 ; $01cc ; used by not stack
 .res $1 ; $01cd ; used by not stack
-.res $1 ; $01ce ; used by not stack
-.res $1 ; $01cf ; used by not stack
+lineClearTimerP1: .res $1 ; $01ce
+lineClearTimerP2: .res $1 ; $01cf
 .res $1 ; $01d0 ; used by not stack
 .res $1 ; $01d1 ; used by not stack
 .res $1 ; $01d2 ; used by not stack

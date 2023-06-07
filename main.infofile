@@ -92,6 +92,9 @@ LABEL { ADDR $01c4; NAME "lastRNGSeedP1"; SIZE $2; };
 LABEL { ADDR $01c6; NAME "lastRNGSeedP2"; SIZE $2; }; 
 LABEL { ADDR $01c8; NAME "pointsDisplayTimerP1"; }; 
 LABEL { ADDR $01c9; NAME "pointsDisplayTimerP2"; }; 
+LABEL { ADDR $01ce; NAME "lineClearTimerP1"; }; 
+LABEL { ADDR $01cf; NAME "lineClearTimerP2"; }; 
+
 LABEL { ADDR $01d3; NAME "stack"; SIZE $1d; }; 
 LABEL { ADDR $0424; NAME "player1LinesThousands"; };
 LABEL { ADDR $0425; NAME "player1LinesHundreds"; };
@@ -191,16 +194,15 @@ LABEL { ADDR $80B4; NAME "@RightNotPressed"; };
 LABEL { ADDR $80D0; NAME "@BNotPressed"; };
 LABEL { ADDR $80EC; NAME "@ANotPressed"; };
 LABEL { ADDR $80F3; NAME "@DownLeftRight"; };
-
+LABEL { ADDR $819A; NAME "stageDropPointSprites"; };
 LABEL { ADDR $8562; NAME "playfieldIdPossible"; };
-LABEL { ADDR $8a2b; NAME "lineClearSingle"; SIZE $A; };
-LABEL { ADDR $8a35; NAME "twoSpacesAfterSingle"; SIZE $2; };
-LABEL { ADDR $8a37; NAME "lineClearDouble"; SIZE $A; };
-LABEL { ADDR $8a41; NAME "twoSpacesAfterDouble"; SIZE $2; };
-LABEL { ADDR $8a43; NAME "lineClearTriple"; SIZE $A; };
-LABEL { ADDR $8a4d; NAME "twoSpacesAfterTriple"; SIZE $2; };
-LABEL { ADDR $8a4f; NAME "lineClearTetris"; SIZE $A; };
-LABEL { ADDR $8a59; NAME "twoSpacesAfterTetris"; SIZE $2; };
+LABEL { ADDR $8650; NAME "checkPositionAndClearFlagsOnCarrySet"; };
+LABEL { ADDR $86c3; SIZE $30; NAME "pieceTable"; };
+LABEL { ADDR $8848; NAME "stageLineClearAnimation"; };
+LABEL { ADDR $8a2b; NAME "lineClearSingle"; SIZE $C; };
+LABEL { ADDR $8a37; NAME "lineClearDouble"; SIZE $C; };
+LABEL { ADDR $8a43; NAME "lineClearTriple"; SIZE $C; };
+LABEL { ADDR $8a4f; NAME "lineClearTetris"; SIZE $C; };
 
 LABEL { ADDR $93f7; NAME "initializeLeaderboard";  };
 LABEL { ADDR $94bf; NAME "renderLeaderboardInitials";  };

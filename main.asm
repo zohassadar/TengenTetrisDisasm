@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-06 20:12:53
+; Created:    2023-06-06 21:33:05
 ; Input file: clean.nes
 ; Page:       1
 
@@ -88,6 +88,8 @@ lastRNGSeedP1   := $01C4
 lastRNGSeedP2   := $01C6
 pointsDisplayTimerP1:= $01C8
 pointsDisplayTimerP2:= $01C9
+lineClearTimerP1:= $01CE
+lineClearTimerP2:= $01CF
 stack           := $01D3
 player1ScoreHundredThousands:= $0418
 player1ScoreTenThousands:= $0419
@@ -193,9 +195,9 @@ L8021:
         jsr     L91E3                           ; 802D 20 E3 91                  ..
         jsr     L9BFC                           ; 8030 20 FC 9B                  ..
         ldx     #$00                            ; 8033 A2 00                    ..
-        jsr     L8848                           ; 8035 20 48 88                  H.
+        jsr     stageLineClearAnimation         ; 8035 20 48 88                  H.
         ldx     #$01                            ; 8038 A2 01                    ..
-        jsr     L8848                           ; 803A 20 48 88                  H.
+        jsr     stageLineClearAnimation         ; 803A 20 48 88                  H.
         ldx     #$00                            ; 803D A2 00                    ..
         jsr     L82C7                           ; 803F 20 C7 82                  ..
         ldx     #$01                            ; 8042 A2 01                    ..
@@ -408,8 +410,8 @@ L8194:
 L8198:
         .byte   $E0,$EC                         ; 8198 E0 EC                    ..
 ; ----------------------------------------------------------------------------
-L819A:
-        lda     $01CE,x                         ; 819A BD CE 01                 ...
+stageDropPointSprites:
+        lda     lineClearTimerP1,x              ; 819A BD CE 01                 ...
         bne     L81DC                           ; 819D D0 3D                    .=
         lda     pointsDisplayTimerP1,x          ; 819F BD C8 01                 ...
         beq     L81DC                           ; 81A2 F0 38                    .8
@@ -568,7 +570,7 @@ L82C6:
 
 ; ----------------------------------------------------------------------------
 L82C7:
-        jsr     L819A                           ; 82C7 20 9A 81                  ..
+        jsr     stageDropPointSprites           ; 82C7 20 9A 81                  ..
         ldy     gameState                       ; 82CA A4 29                    .)
         beq     L82D7                           ; 82CC F0 09                    ..
         cpy     #$FB                            ; 82CE C0 FB                    ..
@@ -580,12 +582,12 @@ L82D6:
 
 ; ----------------------------------------------------------------------------
 L82D7:
-        lda     $01CE,x                         ; 82D7 BD CE 01                 ...
+        lda     lineClearTimerP1,x              ; 82D7 BD CE 01                 ...
         bne     L82D6                           ; 82DA D0 FA                    ..
         ldy     playMode                        ; 82DC A4 2F                    ./
         bpl     L82E8                           ; 82DE 10 08                    ..
-        lda     $01CE                           ; 82E0 AD CE 01                 ...
-        ora     $01CF                           ; 82E3 0D CF 01                 ...
+        lda     lineClearTimerP1                ; 82E0 AD CE 01                 ...
+        ora     lineClearTimerP2                ; 82E3 0D CF 01                 ...
         bne     L82D6                           ; 82E6 D0 EE                    ..
 L82E8:
         lda     $4A,x                           ; 82E8 B5 4A                    .J
@@ -642,7 +644,7 @@ L8330:
         and     #$40                            ; 833B 29 40                    )@
         beq     L8352                           ; 833D F0 13                    ..
         dec     player1TetrominoX,x             ; 833F D6 62                    .b
-        jsr     L8650                           ; 8341 20 50 86                  P.
+        jsr     checkPositionAndClearFlagsOnCarrySet; 8341 20 50 86              P.
         bcs     L8352                           ; 8344 B0 0C                    ..
         lda     #$09                            ; 8346 A9 09                    ..
         sta     $01AA,x                         ; 8348 9D AA 01                 ...
@@ -654,7 +656,7 @@ L8352:
         and     #$80                            ; 8354 29 80                    ).
         beq     L836B                           ; 8356 F0 13                    ..
         inc     player1TetrominoX,x             ; 8358 F6 62                    .b
-        jsr     L8650                           ; 835A 20 50 86                  P.
+        jsr     checkPositionAndClearFlagsOnCarrySet; 835A 20 50 86              P.
         bcs     L836B                           ; 835D B0 0C                    ..
         lda     #$09                            ; 835F A9 09                    ..
         sta     $01AC,x                         ; 8361 9D AC 01                 ...
@@ -671,10 +673,10 @@ L836B:
         adc     #$01                            ; 8376 69 01                    i.
         and     #$03                            ; 8378 29 03                    ).
         sta     player1TetrominoOrientation,x   ; 837A 95 68                    .h
-        jsr     L8650                           ; 837C 20 50 86                  P.
+        jsr     checkPositionAndClearFlagsOnCarrySet; 837C 20 50 86              P.
         bcs     L838E                           ; 837F B0 0D                    ..
         dec     player1TetrominoX,x             ; 8381 D6 62                    .b
-        jsr     L8650                           ; 8383 20 50 86                  P.
+        jsr     checkPositionAndClearFlagsOnCarrySet; 8383 20 50 86              P.
         bcs     L838E                           ; 8386 B0 06                    ..
         inc     player1TetrominoX,x             ; 8388 F6 62                    .b
         lda     generalCounter3a                ; 838A A5 3A                    .:
@@ -689,10 +691,10 @@ L838E:
         sbc     #$01                            ; 8399 E9 01                    ..
         and     #$03                            ; 839B 29 03                    ).
         sta     player1TetrominoOrientation,x   ; 839D 95 68                    .h
-        jsr     L8650                           ; 839F 20 50 86                  P.
+        jsr     checkPositionAndClearFlagsOnCarrySet; 839F 20 50 86              P.
         bcs     L83B1                           ; 83A2 B0 0D                    ..
         dec     player1TetrominoX,x             ; 83A4 D6 62                    .b
-        jsr     L8650                           ; 83A6 20 50 86                  P.
+        jsr     checkPositionAndClearFlagsOnCarrySet; 83A6 20 50 86              P.
         bcs     L83B1                           ; 83A9 B0 06                    ..
         inc     player1TetrominoX,x             ; 83AB F6 62                    .b
         lda     generalCounter3a                ; 83AD A5 3A                    .:
@@ -1140,7 +1142,7 @@ L863C:
         rts                                     ; 864F 60                       `
 
 ; ----------------------------------------------------------------------------
-L8650:
+checkPositionAndClearFlagsOnCarrySet:
         jsr     L8C15                           ; 8650 20 15 8C                  ..
         bcc     L8658                           ; 8653 90 03                    ..
         clv                                     ; 8655 B8                       .
@@ -1208,9 +1210,9 @@ L869B:
         tay                                     ; 86A2 A8                       .
         asl     a                               ; 86A3 0A                       .
         sta     generalCounter39                ; 86A4 85 39                    .9
-        lda     L86C3,y                         ; 86A6 B9 C3 86                 ...
+        lda     pieceTable,y                    ; 86A6 B9 C3 86                 ...
         sta     generalCounter36                ; 86A9 85 36                    .6
-        lda     L86C4,y                         ; 86AB B9 C4 86                 ...
+        lda     pieceTable+1,y                  ; 86AB B9 C4 86                 ...
         sta     generalCounter37                ; 86AE 85 37                    .7
         lda     player1TetrominoY,x             ; 86B0 B5 60                    .`
         sec                                     ; 86B2 38                       8
@@ -1227,15 +1229,13 @@ L869B:
         rts                                     ; 86C2 60                       `
 
 ; ----------------------------------------------------------------------------
-L86C3:
-        .byte   $00                             ; 86C3 00                       .
-L86C4:
-        .byte   $00,$00,$00,$00,$00,$00,$00,$F0 ; 86C4 00 00 00 00 00 00 00 F0  ........
-        .byte   $00,$44,$44,$F0,$00,$44,$44,$E4 ; 86CC 00 44 44 F0 00 44 44 E4  .DD..DD.
-        .byte   $00,$8C,$80,$4E,$00,$4C,$40,$CC ; 86D4 00 8C 80 4E 00 4C 40 CC  ...N.L@.
-        .byte   $00,$CC,$00,$CC,$00,$CC,$00,$E2 ; 86DC 00 CC 00 CC 00 CC 00 E2  ........
-        .byte   $00,$C8,$80,$8E,$00,$44,$C0,$E8 ; 86E4 00 C8 80 8E 00 44 C0 E8  .....D..
-        .byte   $00,$88,$C0,$2E,$00,$C4,$40     ; 86EC 00 88 C0 2E 00 C4 40     ......@
+pieceTable:
+        .byte   $00,$00,$00,$00,$00,$00,$00,$00 ; 86C3 00 00 00 00 00 00 00 00  ........
+        .byte   $F0,$00,$44,$44,$F0,$00,$44,$44 ; 86CB F0 00 44 44 F0 00 44 44  ..DD..DD
+        .byte   $E4,$00,$8C,$80,$4E,$00,$4C,$40 ; 86D3 E4 00 8C 80 4E 00 4C 40  ....N.L@
+        .byte   $CC,$00,$CC,$00,$CC,$00,$CC,$00 ; 86DB CC 00 CC 00 CC 00 CC 00  ........
+        .byte   $E2,$00,$C8,$80,$8E,$00,$44,$C0 ; 86E3 E2 00 C8 80 8E 00 44 C0  ......D.
+        .byte   $E8,$00,$88,$C0,$2E,$00,$C4,$40 ; 86EB E8 00 88 C0 2E 00 C4 40  .......@
 L86F3:
         .byte   $6C,$00,$8C,$40,$6C,$00,$8C,$40 ; 86F3 6C 00 8C 40 6C 00 8C 40  l..@l..@
         .byte   $C6,$00,$4C,$80,$C6,$00,$4C,$80 ; 86FB C6 00 4C 80 C6 00 4C 80  ..L...L.
@@ -1304,7 +1304,7 @@ L87A5:
         bpl     L87C4                           ; 87C0 10 02                    ..
         lda     #$21                            ; 87C2 A9 21                    .!
 L87C4:
-        sta     $01CE,x                         ; 87C4 9D CE 01                 ...
+        sta     lineClearTimerP1,x              ; 87C4 9D CE 01                 ...
         tya                                     ; 87C7 98                       .
         sta     $01D0,x                         ; 87C8 9D D0 01                 ...
         inc     $01CC,x                         ; 87CB FE CC 01                 ...
@@ -1380,13 +1380,13 @@ L8840:
 L8846:
         .byte   $40,$90                         ; 8846 40 90                    @.
 ; ----------------------------------------------------------------------------
-L8848:
-        lda     $01CE,x                         ; 8848 BD CE 01                 ...
+stageLineClearAnimation:
+        lda     lineClearTimerP1,x              ; 8848 BD CE 01                 ...
         beq     L88C7                           ; 884B F0 7A                    .z
         stx     generalCounter3a                ; 884D 86 3A                    .:
         ldy     L8846,x                         ; 884F BC 46 88                 .F.
-        dec     $01CE,x                         ; 8852 DE CE 01                 ...
-        lda     $01CE,x                         ; 8855 BD CE 01                 ...
+        dec     lineClearTimerP1,x              ; 8852 DE CE 01                 ...
+        lda     lineClearTimerP1,x              ; 8855 BD CE 01                 ...
         beq     L88C8                           ; 8858 F0 6E                    .n
         lsr     a                               ; 885A 4A                       J
         bcc     L88C7                           ; 885B 90 6A                    .j
@@ -1656,24 +1656,16 @@ L89E9:
 ; ----------------------------------------------------------------------------
 lineClearSingle:
         .byte   $20,$53,$49,$4E,$47,$4C,$45,$20 ; 8A2B 20 53 49 4E 47 4C 45 20   SINGLE 
-        .byte   $20,$20                         ; 8A33 20 20                      
-twoSpacesAfterSingle:
-        .byte   $20,$20                         ; 8A35 20 20                      
+        .byte   $20,$20,$20,$20                 ; 8A33 20 20 20 20                  
 lineClearDouble:
         .byte   $20,$44,$4F,$55,$42,$4C,$45,$20 ; 8A37 20 44 4F 55 42 4C 45 20   DOUBLE 
-        .byte   $20,$20                         ; 8A3F 20 20                      
-twoSpacesAfterDouble:
-        .byte   $20,$20                         ; 8A41 20 20                      
+        .byte   $20,$20,$20,$20                 ; 8A3F 20 20 20 20                  
 lineClearTriple:
         .byte   $20,$54,$52,$49,$50,$4C,$45,$20 ; 8A43 20 54 52 49 50 4C 45 20   TRIPLE 
-        .byte   $20,$20                         ; 8A4B 20 20                      
-twoSpacesAfterTriple:
-        .byte   $20,$20                         ; 8A4D 20 20                      
+        .byte   $20,$20,$20,$20                 ; 8A4B 20 20 20 20                  
 lineClearTetris:
         .byte   $20,$54,$45,$54,$52,$49,$53,$20 ; 8A4F 20 54 45 54 52 49 53 20   TETRIS 
-        .byte   $20,$20                         ; 8A57 20 20                      
-twoSpacesAfterTetris:
-        .byte   $20,$20                         ; 8A59 20 20                      
+        .byte   $20,$20,$20,$20                 ; 8A57 20 20 20 20                  
 ; ----------------------------------------------------------------------------
 L8A5B:
         lda     $01D0,x                         ; 8A5B BD D0 01                 ...
@@ -1823,9 +1815,9 @@ L8B55:
         tay                                     ; 8B56 A8                       .
         asl     a                               ; 8B57 0A                       .
         sta     generalCounter3b                ; 8B58 85 3B                    .;
-        lda     L86C3,y                         ; 8B5A B9 C3 86                 ...
+        lda     pieceTable,y                    ; 8B5A B9 C3 86                 ...
         sta     generalCounter36                ; 8B5D 85 36                    .6
-        lda     L86C4,y                         ; 8B5F B9 C4 86                 ...
+        lda     pieceTable+1,y                  ; 8B5F B9 C4 86                 ...
         sta     generalCounter37                ; 8B62 85 37                    .7
         ora     generalCounter36                ; 8B64 05 36                    .6
         bne     L8B84                           ; 8B66 D0 1C                    ..
@@ -1974,9 +1966,9 @@ L8C15:
         ora     player1TetrominoOrientation,y   ; 8C50 19 68 00                 .h.
         asl     a                               ; 8C53 0A                       .
         tay                                     ; 8C54 A8                       .
-        lda     L86C3,x                         ; 8C55 BD C3 86                 ...
+        lda     pieceTable,x                    ; 8C55 BD C3 86                 ...
         sta     generalCounter38                ; 8C58 85 38                    .8
-        lda     L86C4,x                         ; 8C5A BD C4 86                 ...
+        lda     pieceTable+1,x                  ; 8C5A BD C4 86                 ...
         sta     generalCounter39                ; 8C5D 85 39                    .9
         ldx     generalCounter36                ; 8C5F A6 36                    .6
         lda     L8CA7,x                         ; 8C61 BD A7 8C                 ...
@@ -2007,10 +1999,10 @@ L8C81:
         lda     generalCounter39                ; 8C8A A5 39                    .9
         and     L8CAE,x                         ; 8C8C 3D AE 8C                 =..
         sta     generalCounter39                ; 8C8F 85 39                    .9
-        lda     L86C3,y                         ; 8C91 B9 C3 86                 ...
+        lda     pieceTable,y                    ; 8C91 B9 C3 86                 ...
         and     generalCounter38                ; 8C94 25 38                    %8
         bne     L8CA3                           ; 8C96 D0 0B                    ..
-        lda     L86C4,y                         ; 8C98 B9 C4 86                 ...
+        lda     pieceTable+1,y                  ; 8C98 B9 C4 86                 ...
         and     generalCounter39                ; 8C9B 25 39                    %9
         bne     L8CA3                           ; 8C9D D0 04                    ..
 L8C9F:
@@ -4506,8 +4498,8 @@ initializeTitleScreen:
         sta     player2TetrominoCurrent         ; 9E72 85 65                    .e
         sta     player1TetrominoNext            ; 9E74 85 66                    .f
         sta     player2TetrominoNext            ; 9E76 85 67                    .g
-        sta     $01CE                           ; 9E78 8D CE 01                 ...
-        sta     $01CF                           ; 9E7B 8D CF 01                 ...
+        sta     lineClearTimerP1                ; 9E78 8D CE 01                 ...
+        sta     lineClearTimerP2                ; 9E7B 8D CF 01                 ...
         jsr     sendBulkDataToPPU               ; 9E7E 20 E9 B3                  ..
         lda     #$FA                            ; 9E81 A9 FA                    ..
         sta     gameState                       ; 9E83 85 29                    .)
@@ -4553,8 +4545,8 @@ initializeGameSelectMenu:
         sty     player2TetrominoCurrent         ; 9ECD 84 65                    .e
         sty     player1TetrominoNext            ; 9ECF 84 66                    .f
         sty     player2TetrominoNext            ; 9ED1 84 67                    .g
-        sty     $01CE                           ; 9ED3 8C CE 01                 ...
-        sty     $01CF                           ; 9ED6 8C CF 01                 ...
+        sty     lineClearTimerP1                ; 9ED3 8C CE 01                 ...
+        sty     lineClearTimerP2                ; 9ED6 8C CF 01                 ...
         jsr     LA06F                           ; 9ED9 20 6F A0                  o.
         ldx     #$05                            ; 9EDC A2 05                    ..
 L9EDE:
