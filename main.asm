@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-06 18:30:33
+; Created:    2023-06-06 20:12:53
 ; Input file: clean.nes
 ; Page:       1
 
@@ -165,13 +165,14 @@ SND_CHN         := $4015
 player1controllerPort:= $4016
 player2controllerPort:= $4017
 ; ----------------------------------------------------------------------------
+unusedJumpToReset:
         jmp     reset                           ; 8000 4C 11 A9                 L..
 
 ; ----------------------------------------------------------------------------
-L8003:
+resetContinued:
         lda     #$01                            ; 8003 A9 01                    ..
         sta     ppuStagingAddress+1             ; 8005 85 49                    .I
-        jsr     L9E61                           ; 8007 20 61 9E                  a.
+        jsr     initializeTitleScreen           ; 8007 20 61 9E                  a.
 mainLoop:
         ldx     #$34                            ; 800A A2 34                    .4
         jsr     genNextPseudoRandom             ; 800C 20 FA 99                  ..
@@ -621,7 +622,7 @@ L8315:
         sta     rngSeed                         ; 8317 85 34                    .4
         lda     savedRNGSeedForSomething+1      ; 8319 A5 5B                    .[
         sta     rngSeed+1                       ; 831B 85 35                    .5
-        jmp     L95E3                           ; 831D 4C E3 95                 L..
+        jmp     initializeGameMode              ; 831D 4C E3 95                 L..
 
 ; ----------------------------------------------------------------------------
 L8320:
@@ -730,7 +731,7 @@ L83E7:
         sta     gameState                       ; 83EF 85 29                    .)
         sta     player1FallTimer                ; 83F1 85 6A                    .j
         lda     #$08                            ; 83F3 A9 08                    ..
-        jsr     possibleSetSoundOrMusic         ; 83F5 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; 83F5 20 B1 CF                  ..
 L83F8:
         txa                                     ; 83F8 8A                       .
         lda     #$02                            ; 83F9 A9 02                    ..
@@ -742,7 +743,7 @@ L83F8:
 L8403:
         jsr     LB603                           ; 8403 20 03 B6                  ..
         lda     #$0A                            ; 8406 A9 0A                    ..
-        jmp     possibleSetSoundOrMusic         ; 8408 4C B1 CF                 L..
+        jmp     setMusicOrSoundEffect           ; 8408 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 L840B:
@@ -759,7 +760,7 @@ L8417:
         lda     #$00                            ; 8417 A9 00                    ..
         sta     player1TetrominoCurrent,x       ; 8419 95 64                    .d
         lda     #$0E                            ; 841B A9 0E                    ..
-        jsr     possibleSetSoundOrMusic         ; 841D 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; 841D 20 B1 CF                  ..
         jsr     L8565                           ; 8420 20 65 85                  e.
         jsr     L8773                           ; 8423 20 73 87                  s.
 L8426:
@@ -2057,7 +2058,7 @@ L8CD7:
         dex                                     ; 8CDD CA                       .
         bpl     L8CD7                           ; 8CDE 10 F7                    ..
         lda     #$08                            ; 8CE0 A9 08                    ..
-        jmp     possibleSetSoundOrMusic         ; 8CE2 4C B1 CF                 L..
+        jmp     setMusicOrSoundEffect           ; 8CE2 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 L8CE5:
@@ -2142,7 +2143,7 @@ L8D6B:
         lda     #$7C                            ; 8D6B A9 7C                    .|
         sta     player1FallTimer                ; 8D6D 85 6A                    .j
         lda     #$0D                            ; 8D6F A9 0D                    ..
-        jsr     possibleSetSoundOrMusic         ; 8D71 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; 8D71 20 B1 CF                  ..
         lda     ppuControl                      ; 8D74 A5 00                    ..
         ora     #$08                            ; 8D76 09 08                    ..
         sta     ppuControl                      ; 8D78 85 00                    ..
@@ -2498,7 +2499,7 @@ L9035:
         ora     player2ControllerNew            ; 903F 05 47                    .G
         beq     L9091                           ; 9041 F0 4E                    .N
         lda     #$08                            ; 9043 A9 08                    ..
-        jsr     possibleSetSoundOrMusic         ; 9045 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; 9045 20 B1 CF                  ..
         lda     #$7C                            ; 9048 A9 7C                    .|
         sec                                     ; 904A 38                       8
         sbc     player1FallTimer                ; 904B E5 6A                    .j
@@ -2750,7 +2751,7 @@ L91F8:
         bne     L9215                           ; 91FC D0 17                    ..
         dec     player1FallTimer                ; 91FE C6 6A                    .j
         bne     L9215                           ; 9200 D0 13                    ..
-        jmp     L9E61                           ; 9202 4C 61 9E                 La.
+        jmp     initializeTitleScreen           ; 9202 4C 61 9E                 La.
 
 ; ----------------------------------------------------------------------------
 L9205:
@@ -2761,7 +2762,7 @@ L9205:
         bcs     L9215                           ; 920C B0 07                    ..
         dec     player1FallTimer                ; 920E C6 6A                    .j
         bne     L9215                           ; 9210 D0 03                    ..
-        jmp     L93F7                           ; 9212 4C F7 93                 L..
+        jmp     initializeLeaderboard           ; 9212 4C F7 93                 L..
 
 ; ----------------------------------------------------------------------------
 L9215:
@@ -3052,11 +3053,11 @@ L93DC:
         .byte   $50,$51,$52,$53,$54,$55,$56,$57 ; 93EC 50 51 52 53 54 55 56 57  PQRSTUVW
         .byte   $58,$59,$5A                     ; 93F4 58 59 5A                 XYZ
 ; ----------------------------------------------------------------------------
-L93F7:
-        jsr     LA44A                           ; 93F7 20 4A A4                  J.
-        jsr     LA3C2                           ; 93FA 20 C2 A3                  ..
+initializeLeaderboard:
+        jsr     waitForNMIAndDisablePPURendering; 93F7 20 4A A4                  J.
+        jsr     resetOAMStaging                 ; 93FA 20 C2 A3                  ..
         lda     #$08                            ; 93FD A9 08                    ..
-        jsr     LB3E9                           ; 93FF 20 E9 B3                  ..
+        jsr     sendBulkDataToPPU               ; 93FF 20 E9 B3                  ..
         ldx     #$05                            ; 9402 A2 05                    ..
 L9404:
         lda     player1ScoreMirrorPossible,x    ; 9404 BD 30 04                 .0.
@@ -3153,9 +3154,9 @@ L9493:
         lda     #$06                            ; 94B0 A9 06                    ..
         jsr     LA6BE                           ; 94B2 20 BE A6                  ..
         ldx     #$04                            ; 94B5 A2 04                    ..
-        jsr     L9EB0                           ; 94B7 20 B0 9E                  ..
+        jsr     setCNROMBank                    ; 94B7 20 B0 9E                  ..
         lda     #$18                            ; 94BA A9 18                    ..
-        jmp     LA465                           ; 94BC 4C 65 A4                 Le.
+        jmp     enablePPURendering              ; 94BC 4C 65 A4                 Le.
 
 ; ----------------------------------------------------------------------------
 renderLeaderboardInitials:
@@ -3298,12 +3299,12 @@ L95B3:
         jsr     LA756                           ; 95B7 20 56 A7                  V.
         ldx     generalCounter37                ; 95BA A6 37                    .7
         lda     #$0B                            ; 95BC A9 0B                    ..
-        jmp     possibleSetSoundOrMusic         ; 95BE 4C B1 CF                 L..
+        jmp     setMusicOrSoundEffect           ; 95BE 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 L95C1:
         lda     #$13                            ; 95C1 A9 13                    ..
-        jmp     possibleSetSoundOrMusic         ; 95C3 4C B1 CF                 L..
+        jmp     setMusicOrSoundEffect           ; 95C3 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 demoStart:
@@ -3312,7 +3313,7 @@ demoStart:
         lda     #$00                            ; 95CA A9 00                    ..
         sta     playMode                        ; 95CC 85 2F                    ./
         lda     #$01                            ; 95CE A9 01                    ..
-        jsr     possibleSetSoundOrMusic         ; 95D0 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; 95D0 20 B1 CF                  ..
         ldx     #$05                            ; 95D3 A2 05                    ..
         lda     #$30                            ; 95D5 A9 30                    .0
 L95D7:
@@ -3320,10 +3321,10 @@ L95D7:
         sta     player1LinesThousands,x         ; 95DA 9D 24 04                 .$.
         dex                                     ; 95DD CA                       .
         bpl     L95D7                           ; 95DE 10 F7                    ..
-        jmp     L95FA                           ; 95E0 4C FA 95                 L..
+        jmp     skipOverScoreReset              ; 95E0 4C FA 95                 L..
 
 ; ----------------------------------------------------------------------------
-L95E3:
+initializeGameMode:
         lda     #$00                            ; 95E3 A9 00                    ..
         sta     gameState                       ; 95E5 85 29                    .)
         ldx     #$05                            ; 95E7 A2 05                    ..
@@ -3335,13 +3336,13 @@ L95EB:
         sta     player2LinesTens,x              ; 95F4 9D 2A 04                 .*.
         dex                                     ; 95F7 CA                       .
         bpl     L95EB                           ; 95F8 10 F1                    ..
-L95FA:
-        jsr     LA44A                           ; 95FA 20 4A A4                  J.
-        jsr     LA3C2                           ; 95FD 20 C2 A3                  ..
+skipOverScoreReset:
+        jsr     waitForNMIAndDisablePPURendering; 95FA 20 4A A4                  J.
+        jsr     resetOAMStaging                 ; 95FD 20 C2 A3                  ..
         lda     #$06                            ; 9600 A9 06                    ..
         clc                                     ; 9602 18                       .
         adc     playMode                        ; 9603 65 2F                    e/
-        jsr     LB3E9                           ; 9605 20 E9 B3                  ..
+        jsr     sendBulkDataToPPU               ; 9605 20 E9 B3                  ..
         lda     #$00                            ; 9608 A9 00                    ..
         ldx     #$4B                            ; 960A A2 4B                    .K
 L960C:
@@ -3458,9 +3459,9 @@ L96B7:
         sta     oamStaging+222                  ; 9702 8D DE 05                 ...
 L9705:
         ldx     #$00                            ; 9705 A2 00                    ..
-        jsr     L9EB0                           ; 9707 20 B0 9E                  ..
+        jsr     setCNROMBank                    ; 9707 20 B0 9E                  ..
         lda     #$00                            ; 970A A9 00                    ..
-        jmp     LA465                           ; 970C 4C 65 A4                 Le.
+        jmp     enablePPURendering              ; 970C 4C 65 A4                 Le.
 
 ; ----------------------------------------------------------------------------
 L970F:
@@ -3468,11 +3469,11 @@ L970F:
         sta     oamStaging+205                  ; 9712 8D CD 05                 ...
         lda     possibleGameNametable+857       ; 9715 AD 81 C3                 ...
         sta     oamStaging+209                  ; 9718 8D D1 05                 ...
-        lda     possibleGameNametable+889       ; 971B AD A1 C3                 ...
+        lda     LC3A1                           ; 971B AD A1 C3                 ...
         sta     oamStaging+217                  ; 971E 8D D9 05                 ...
         lda     possibleGameNametable+858       ; 9721 AD 82 C3                 ...
         sta     oamStaging+213                  ; 9724 8D D5 05                 ...
-        lda     possibleGameNametable+890       ; 9727 AD A2 C3                 ...
+        lda     LC3A2                           ; 9727 AD A2 C3                 ...
         sta     oamStaging+221                  ; 972A 8D DD 05                 ...
         rts                                     ; 972D 60                       `
 
@@ -4494,9 +4495,9 @@ L9E5B:
         rts                                     ; 9E60 60                       `
 
 ; ----------------------------------------------------------------------------
-L9E61:
-        jsr     LA44A                           ; 9E61 20 4A A4                  J.
-        jsr     LA3C2                           ; 9E64 20 C2 A3                  ..
+initializeTitleScreen:
+        jsr     waitForNMIAndDisablePPURendering; 9E61 20 4A A4                  J.
+        jsr     resetOAMStaging                 ; 9E64 20 C2 A3                  ..
         jsr     drawCathedralSprites            ; 9E67 20 69 B3                  i.
         lda     #$3C                            ; 9E6A A9 3C                    .<
         sta     player2FallTimer                ; 9E6C 85 6B                    .k
@@ -4507,7 +4508,7 @@ L9E61:
         sta     player2TetrominoNext            ; 9E76 85 67                    .g
         sta     $01CE                           ; 9E78 8D CE 01                 ...
         sta     $01CF                           ; 9E7B 8D CF 01                 ...
-        jsr     LB3E9                           ; 9E7E 20 E9 B3                  ..
+        jsr     sendBulkDataToPPU               ; 9E7E 20 E9 B3                  ..
         lda     #$FA                            ; 9E81 A9 FA                    ..
         sta     gameState                       ; 9E83 85 29                    .)
         lda     #$00                            ; 9E85 A9 00                    ..
@@ -4519,18 +4520,18 @@ L9E61:
         sta     ppuScrollY                      ; 9E92 85 03                    ..
         jsr     LCF79                           ; 9E94 20 79 CF                  y.
         lda     #$09                            ; 9E97 A9 09                    ..
-        jsr     possibleSetSoundOrMusic         ; 9E99 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; 9E99 20 B1 CF                  ..
         lda     #$00                            ; 9E9C A9 00                    ..
         jsr     LA6BE                           ; 9E9E 20 BE A6                  ..
         lda     #$04                            ; 9EA1 A9 04                    ..
         jsr     LA6BE                           ; 9EA3 20 BE A6                  ..
         ldx     #$04                            ; 9EA6 A2 04                    ..
-        jsr     L9EB0                           ; 9EA8 20 B0 9E                  ..
+        jsr     setCNROMBank                    ; 9EA8 20 B0 9E                  ..
         lda     #$08                            ; 9EAB A9 08                    ..
-        jmp     LA465                           ; 9EAD 4C 65 A4                 Le.
+        jmp     enablePPURendering              ; 9EAD 4C 65 A4                 Le.
 
 ; ----------------------------------------------------------------------------
-L9EB0:
+setCNROMBank:
         stx     currentCHRBank                  ; 9EB0 86 04                    ..
         inx                                     ; 9EB2 E8                       .
         stx     currentCHRBank+1                ; 9EB3 86 05                    ..
@@ -4541,11 +4542,11 @@ L9EB0:
         rts                                     ; 9EBB 60                       `
 
 ; ----------------------------------------------------------------------------
-L9EBC:
-        jsr     LA44A                           ; 9EBC 20 4A A4                  J.
-        jsr     LA3C2                           ; 9EBF 20 C2 A3                  ..
+initializeGameSelectMenu:
+        jsr     waitForNMIAndDisablePPURendering; 9EBC 20 4A A4                  J.
+        jsr     resetOAMStaging                 ; 9EBF 20 C2 A3                  ..
         lda     #$01                            ; 9EC2 A9 01                    ..
-        jsr     LB3E9                           ; 9EC4 20 E9 B3                  ..
+        jsr     sendBulkDataToPPU               ; 9EC4 20 E9 B3                  ..
         lda     #$3E                            ; 9EC7 A9 3E                    .>
         ldy     #$00                            ; 9EC9 A0 00                    ..
         sty     player1TetrominoCurrent         ; 9ECB 84 64                    .d
@@ -4574,21 +4575,21 @@ L9EDE:
         sta     $51                             ; 9EFD 85 51                    .Q
         jsr     LCF79                           ; 9EFF 20 79 CF                  y.
         lda     #$15                            ; 9F02 A9 15                    ..
-        jsr     possibleSetSoundOrMusic         ; 9F04 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; 9F04 20 B1 CF                  ..
         lda     #$01                            ; 9F07 A9 01                    ..
         jsr     LA6BE                           ; 9F09 20 BE A6                  ..
         lda     #$03                            ; 9F0C A9 03                    ..
         jsr     LA6BE                           ; 9F0E 20 BE A6                  ..
         ldx     #$00                            ; 9F11 A2 00                    ..
-        jsr     L9EB0                           ; 9F13 20 B0 9E                  ..
+        jsr     setCNROMBank                    ; 9F13 20 B0 9E                  ..
         lda     #$00                            ; 9F16 A9 00                    ..
-        jmp     LA465                           ; 9F18 4C 65 A4                 Le.
+        jmp     enablePPURendering              ; 9F18 4C 65 A4                 Le.
 
 ; ----------------------------------------------------------------------------
-L9F1B:
-        jsr     LA44A                           ; 9F1B 20 4A A4                  J.
+initializeLevelSelectMenu:
+        jsr     waitForNMIAndDisablePPURendering; 9F1B 20 4A A4                  J.
         lda     #$02                            ; 9F1E A9 02                    ..
-        jsr     LB3E9                           ; 9F20 20 E9 B3                  ..
+        jsr     sendBulkDataToPPU               ; 9F20 20 E9 B3                  ..
         lda     #$3E                            ; 9F23 A9 3E                    .>
         ldy     #$01                            ; 9F25 A0 01                    ..
         jsr     LA06F                           ; 9F27 20 6F A0                  o.
@@ -4611,17 +4612,17 @@ L9F3C:
         sta     $50                             ; 9F48 85 50                    .P
         sta     $51                             ; 9F4A 85 51                    .Q
         lda     #$00                            ; 9F4C A9 00                    ..
-        jmp     LA465                           ; 9F4E 4C 65 A4                 Le.
+        jmp     enablePPURendering              ; 9F4E 4C 65 A4                 Le.
 
 ; ----------------------------------------------------------------------------
 ; 1p, 2p, coop, vs comp, with comp
 playModeTable:
         .byte   $00,$01,$FF,$01,$FF             ; 9F51 00 01 FF 01 FF           .....
 ; ----------------------------------------------------------------------------
-L9F56:
-        jsr     LA44A                           ; 9F56 20 4A A4                  J.
+initializeHandicapMenu:
+        jsr     waitForNMIAndDisablePPURendering; 9F56 20 4A A4                  J.
         lda     #$03                            ; 9F59 A9 03                    ..
-        jsr     LB3E9                           ; 9F5B 20 E9 B3                  ..
+        jsr     sendBulkDataToPPU               ; 9F5B 20 E9 B3                  ..
         lda     #$3E                            ; 9F5E A9 3E                    .>
         ldy     #$03                            ; 9F60 A0 03                    ..
         jsr     LA06F                           ; 9F62 20 6F A0                  o.
@@ -4633,10 +4634,10 @@ L9F56:
 L9F70:
         lda     #$FE                            ; 9F70 A9 FE                    ..
         bne     L9F3C                           ; 9F72 D0 C8                    ..
-L9F74:
-        jsr     LA44A                           ; 9F74 20 4A A4                  J.
+initializeMusicSelectMenu:
+        jsr     waitForNMIAndDisablePPURendering; 9F74 20 4A A4                  J.
         lda     #$04                            ; 9F77 A9 04                    ..
-        jsr     LB3E9                           ; 9F79 20 E9 B3                  ..
+        jsr     sendBulkDataToPPU               ; 9F79 20 E9 B3                  ..
         lda     #$3E                            ; 9F7C A9 3E                    .>
         ldy     #$05                            ; 9F7E A0 05                    ..
         jsr     LA06F                           ; 9F80 20 6F A0                  o.
@@ -4665,7 +4666,7 @@ L9F9A:
         ora     player2ControllerNew            ; 9FA2 05 47                    .G
         and     #$0C                            ; 9FA4 29 0C                    ).
         beq     L9F8B                           ; 9FA6 F0 E3                    ..
-        jmp     L9EBC                           ; 9FA8 4C BC 9E                 L..
+        jmp     initializeGameSelectMenu        ; 9FA8 4C BC 9E                 L..
 
 ; ----------------------------------------------------------------------------
 L9FAB:
@@ -4674,7 +4675,7 @@ L9FAB:
         bne     L9FB8                           ; 9FAF D0 07                    ..
         dec     player1FallTimer                ; 9FB1 C6 6A                    .j
         bne     L9FB8                           ; 9FB3 D0 03                    ..
-        jmp     L9E61                           ; 9FB5 4C 61 9E                 La.
+        jmp     initializeTitleScreen           ; 9FB5 4C 61 9E                 La.
 
 ; ----------------------------------------------------------------------------
 L9FB8:
@@ -4685,7 +4686,7 @@ L9FB8:
         lda     #$FF                            ; 9FC0 A9 FF                    ..
         sta     player1FallTimer                ; 9FC2 85 6A                    .j
         lda     #$14                            ; 9FC4 A9 14                    ..
-        jsr     possibleSetSoundOrMusic         ; 9FC6 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; 9FC6 20 B1 CF                  ..
         lda     gameState                       ; 9FC9 A5 29                    .)
         cmp     #$FF                            ; 9FCB C9 FF                    ..
         beq     L9FDB                           ; 9FCD F0 0C                    ..
@@ -4735,7 +4736,7 @@ LA00D:
 ; ----------------------------------------------------------------------------
 LA016:
         lda     #$15                            ; A016 A9 15                    ..
-        jsr     possibleSetSoundOrMusic         ; A018 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; A018 20 B1 CF                  ..
         lda     gameState                       ; A01B A5 29                    .)
         cmp     #$FC                            ; A01D C9 FC                    ..
         beq     @branchOnModeGameTypeMenu       ; A01F F0 0B                    ..
@@ -4743,27 +4744,27 @@ LA016:
         beq     @branchOnModeLevelMenu          ; A023 F0 0A                    ..
         cmp     #$FE                            ; A025 C9 FE                    ..
         beq     @branchOnModeHandicapMenu       ; A027 F0 09                    ..
-        jmp     L95E3                           ; A029 4C E3 95                 L..
+        jmp     initializeGameMode              ; A029 4C E3 95                 L..
 
 ; ----------------------------------------------------------------------------
 @branchOnModeGameTypeMenu:
-        jmp     L9F1B                           ; A02C 4C 1B 9F                 L..
+        jmp     initializeLevelSelectMenu       ; A02C 4C 1B 9F                 L..
 
 ; ----------------------------------------------------------------------------
 @branchOnModeLevelMenu:
-        jmp     L9F56                           ; A02F 4C 56 9F                 LV.
+        jmp     initializeHandicapMenu          ; A02F 4C 56 9F                 LV.
 
 ; ----------------------------------------------------------------------------
 @branchOnModeHandicapMenu:
-        jmp     L9F74                           ; A032 4C 74 9F                 Lt.
+        jmp     initializeMusicSelectMenu       ; A032 4C 74 9F                 Lt.
 
 ; ----------------------------------------------------------------------------
 LA035:
         lda     #$08                            ; A035 A9 08                    ..
-        jsr     possibleSetSoundOrMusic         ; A037 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; A037 20 B1 CF                  ..
         ldy     menuMusic                       ; A03A AC F5 04                 ...
         lda     musicSelectTable,y              ; A03D B9 43 A0                 .C.
-        jmp     possibleSetSoundOrMusic         ; A040 4C B1 CF                 L..
+        jmp     setMusicOrSoundEffect           ; A040 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 musicSelectTable:
@@ -5047,7 +5048,7 @@ unknownData01:
         .byte   $AA,$8D,$07,$20,$E8,$D0,$FA,$88 ; A3B7 AA 8D 07 20 E8 D0 FA 88  ... ....
         .byte   $D0,$F7,$60                     ; A3BF D0 F7 60                 ..`
 ; ----------------------------------------------------------------------------
-LA3C2:
+resetOAMStaging:
         ldx     #$00                            ; A3C2 A2 00                    ..
 LA3C4:
         lda     #$F7                            ; A3C4 A9 F7                    ..
@@ -5132,16 +5133,16 @@ LA41C:
         rts                                     ; A449 60                       `
 
 ; ----------------------------------------------------------------------------
-LA44A:
+waitForNMIAndDisablePPURendering:
         lda     ppuControl                      ; A44A A5 00                    ..
-        bpl     LA458                           ; A44C 10 0A                    ..
-LA44E:
+        bpl     @nmiDisabled                    ; A44C 10 0A                    ..
+@waitForNMI:
         ldx     ppuRenderFlagBefore             ; A44E A6 25                    .%
         cpx     ppuRenderFlagAfter              ; A450 E4 27                    .'
-        bne     LA44E                           ; A452 D0 FA                    ..
+        bne     @waitForNMI                     ; A452 D0 FA                    ..
         lda     $24,x                           ; A454 B5 24                    .$
-        bne     LA44E                           ; A456 D0 F6                    ..
-LA458:
+        bne     @waitForNMI                     ; A456 D0 F6                    ..
+@nmiDisabled:
         lda     #$00                            ; A458 A9 00                    ..
         sta     PPUCTRL                         ; A45A 8D 00 20                 .. 
         sta     ppuControl                      ; A45D 85 00                    ..
@@ -5150,7 +5151,7 @@ LA458:
         rts                                     ; A464 60                       `
 
 ; ----------------------------------------------------------------------------
-LA465:
+enablePPURendering:
         ldy     #$1A                            ; A465 A0 1A                    ..
         sty     ppuMask                         ; A467 84 01                    ..
 LA469:
@@ -5690,7 +5691,7 @@ LA9A2:
         sta     $04FA                           ; A9C4 8D FA 04                 ...
         lda     #$5A                            ; A9C7 A9 5A                    .Z
         sta     rngSeed                         ; A9C9 85 34                    .4
-        jmp     L8003                           ; A9CB 4C 03 80                 L..
+        jmp     resetContinued                  ; A9CB 4C 03 80                 L..
 
 ; ----------------------------------------------------------------------------
 LA9CE:
@@ -5798,7 +5799,7 @@ LAA5E:
         rts                                     ; AA6B 60                       `
 
 ; ----------------------------------------------------------------------------
-differentMusicSelectTable:
+topoutSoundsTable:
         .byte   $16,$17,$18,$19                 ; AA6C 16 17 18 19              ....
 ; ----------------------------------------------------------------------------
 LAA70:
@@ -5809,8 +5810,8 @@ LAA70:
         jsr     L9A0D                           ; AA78 20 0D 9A                  ..
         and     #$03                            ; AA7B 29 03                    ).
         tay                                     ; AA7D A8                       .
-        lda     differentMusicSelectTable,y     ; AA7E B9 6C AA                 .l.
-        jsr     possibleSetSoundOrMusic         ; AA81 20 B1 CF                  ..
+        lda     topoutSoundsTable,y             ; AA7E B9 6C AA                 .l.
+        jsr     setMusicOrSoundEffect           ; AA81 20 B1 CF                  ..
         jsr     L9A0D                           ; AA84 20 0D 9A                  ..
         and     #$06                            ; AA87 29 06                    ).
 LAA89:
@@ -5963,8 +5964,8 @@ LACA0:
         jsr     L9A0D                           ; ACAA 20 0D 9A                  ..
         and     #$03                            ; ACAD 29 03                    ).
         tax                                     ; ACAF AA                       .
-        lda     differentMusicSelectTable,x     ; ACB0 BD 6C AA                 .l.
-        jsr     possibleSetSoundOrMusic         ; ACB3 20 B1 CF                  ..
+        lda     topoutSoundsTable,x             ; ACB0 BD 6C AA                 .l.
+        jsr     setMusicOrSoundEffect           ; ACB3 20 B1 CF                  ..
         jsr     L9A0D                           ; ACB6 20 0D 9A                  ..
         and     #$8F                            ; ACB9 29 8F                    ).
         bpl     LACBF                           ; ACBB 10 02                    ..
@@ -6369,7 +6370,7 @@ cathedralSpriteTabel:
         .byte   $12,$00,$94,$02,$13,$00,$B4,$02 ; B3E0 12 00 94 02 13 00 B4 02  ........
         .byte   $00                             ; B3E8 00                       .
 ; ----------------------------------------------------------------------------
-LB3E9:
+sendBulkDataToPPU:
         pha                                     ; B3E9 48                       H
         asl     a                               ; B3EA 0A                       .
         tax                                     ; B3EB AA                       .
@@ -6381,7 +6382,7 @@ LB3E9:
         lda     #$00                            ; B3F8 A9 00                    ..
         sta     PPUADDR                         ; B3FA 8D 06 20                 .. 
         ldy     #$00                            ; B3FD A0 00                    ..
-        lda     LB47F,x                         ; B3FF BD 7F B4                 ...
+        lda     nametableAddressTable+1,x       ; B3FF BD 7F B4                 ...
         bne     LB410                           ; B402 D0 0C                    ..
 LB404:
         sta     PPUDATA                         ; B404 8D 07 20                 .. 
@@ -6392,7 +6393,7 @@ LB404:
         beq     LB425                           ; B40E F0 15                    ..
 LB410:
         sta     generalCounter37                ; B410 85 37                    .7
-        lda     LB47E,x                         ; B412 BD 7E B4                 .~.
+        lda     nametableAddressTable,x         ; B412 BD 7E B4                 .~.
         sta     generalCounter36                ; B415 85 36                    .6
 LB417:
         lda     (generalCounter36),y            ; B417 B1 36                    .6
@@ -6403,9 +6404,9 @@ LB417:
         dec     generalCounter38                ; B421 C6 38                    .8
         bne     LB417                           ; B423 D0 F2                    ..
 LB425:
-        lda     LB490,x                         ; B425 BD 90 B4                 ...
+        lda     ppuPatchTable2,x                ; B425 BD 90 B4                 ...
         sta     generalCounter36                ; B428 85 36                    .6
-        lda     LB490+1,x                       ; B42A BD 91 B4                 ...
+        lda     ppuPatchTable2+1,x              ; B42A BD 91 B4                 ...
         sta     generalCounter37                ; B42D 85 37                    .7
 LB42F:
         ldy     #$00                            ; B42F A0 00                    ..
@@ -6457,27 +6458,32 @@ LB478:
         dec     generalCounter39                ; B478 C6 39                    .9
         bne     LB44A                           ; B47A D0 CE                    ..
         beq     LB42F                           ; B47C F0 B1                    ..
-LB47E:
-        .byte   $00                             ; B47E 00                       .
-LB47F:
-        .byte   $CA,$A8,$B8,$A8,$B8,$A8,$B8,$A8 ; B47F CA A8 B8 A8 B8 A8 B8 A8  ........
-        .byte   $B8,$68,$BC,$28,$C0,$E8,$C3,$A8 ; B487 B8 68 BC 28 C0 E8 C3 A8  .h.(....
-        .byte   $B8                             ; B48F B8                       .
+nametableAddressTable:
+        .addr   possibleTitleScreenNametable    ; B47E 00 CA                    ..
+        .addr   possibleMenuNametable           ; B480 A8 B8                    ..
+        .addr   possibleMenuNametable           ; B482 A8 B8                    ..
+        .addr   possibleMenuNametable           ; B484 A8 B8                    ..
+        .addr   possibleMenuNametable           ; B486 A8 B8                    ..
+        .addr   unknownNameTable1               ; B488 68 BC                    h.
+        .addr   possibleGameNametable           ; B48A 28 C0                    (.
+        .addr   unknownNameTable2               ; B48C E8 C3                    ..
+        .addr   possibleMenuNametable           ; B48E A8 B8                    ..
+ppuPatchTable2:
+        .addr   ppuPatchTableSkipPatch          ; B490 A8 B4                    ..
+        .addr   ppuPatchTable1                  ; B492 A2 B4                    ..
+        .addr   ppuPatchTableSkipPatch          ; B494 A8 B4                    ..
+        .addr   ppuPatchTableSkipPatch          ; B496 A8 B4                    ..
+        .addr   ppuPatchTableSkipPatch          ; B498 A8 B4                    ..
+        .addr   ppuPatchTableSkipPatch          ; B49A A8 B4                    ..
+        .addr   ppuPatchTableSkipPatch          ; B49C A8 B4                    ..
+        .addr   ppuPatchTableSkipPatch          ; B49E A8 B4                    ..
+        .addr   ppuPatchTableSkipPatch          ; B4A0 A8 B4                    ..
 ; ----------------------------------------------------------------------------
-LB490:
-        .addr   LB4A8                           ; B490 A8 B4                    ..
-        .addr   LB4A2                           ; B492 A2 B4                    ..
-        .addr   LB4A8                           ; B494 A8 B4                    ..
-        .addr   LB4A8                           ; B496 A8 B4                    ..
-        .addr   LB4A8                           ; B498 A8 B4                    ..
-        .addr   LB4A8                           ; B49A A8 B4                    ..
-        .addr   LB4A8                           ; B49C A8 B4                    ..
-        .addr   LB4A8                           ; B49E A8 B4                    ..
-        .addr   LB4A8                           ; B4A0 A8 B4                    ..
-; ----------------------------------------------------------------------------
-LB4A2:
+; columns, rows, ppu address (2 bytes), data address (2 bytes)
+ppuPatchTable1:
         .byte   $18,$03,$44,$21,$A8,$C7         ; B4A2 18 03 44 21 A8 C7        ..D!..
-LB4A8:
+; 0 columns skips the routine. 5 bytes are taken from code anyway
+ppuPatchTableSkipPatch:
         .byte   $00                             ; B4A8 00                       .
 ; ----------------------------------------------------------------------------
 LB4A9:
@@ -6541,7 +6547,7 @@ LB514:
         lda     #$3C                            ; B51B A9 3C                    .<
         sta     player1FallTimer,x              ; B51D 95 6A                    .j
         lda     #$15                            ; B51F A9 15                    ..
-        jmp     possibleSetSoundOrMusic         ; B521 4C B1 CF                 L..
+        jmp     setMusicOrSoundEffect           ; B521 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 LB524:
@@ -6575,7 +6581,7 @@ LB545:
         ldy     player1TetrominoCurrent,x       ; B54F B4 64                    .d
         jsr     LA763                           ; B551 20 63 A7                  c.
         lda     #$15                            ; B554 A9 15                    ..
-        jmp     possibleSetSoundOrMusic         ; B556 4C B1 CF                 L..
+        jmp     setMusicOrSoundEffect           ; B556 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
 LB559:
@@ -6650,13 +6656,13 @@ LB5DD:
         bcs     LB5DC                           ; B5E3 B0 F7                    ..
         inc     gameState                       ; B5E5 E6 29                    .)
         lda     #$01                            ; B5E7 A9 01                    ..
-        jsr     possibleSetSoundOrMusic         ; B5E9 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; B5E9 20 B1 CF                  ..
         lda     #$00                            ; B5EC A9 00                    ..
         beq     LB5FC                           ; B5EE F0 0C                    ..
 LB5F0:
         dec     gameState                       ; B5F0 C6 29                    .)
         lda     #$02                            ; B5F2 A9 02                    ..
-        jsr     possibleSetSoundOrMusic         ; B5F4 20 B1 CF                  ..
+        jsr     setMusicOrSoundEffect           ; B5F4 20 B1 CF                  ..
         jsr     L8967                           ; B5F7 20 67 89                  g.
         lda     #$01                            ; B5FA A9 01                    ..
 LB5FC:
@@ -6916,6 +6922,7 @@ possibleMenuNametable:
         .byte   $8E,$8E,$8E,$8E,$8E,$8E,$8E,$8E ; BC50 8E 8E 8E 8E 8E 8E 8E 8E  ........
         .byte   $8E,$8E,$8E,$8E,$8E,$8E,$8E,$8E ; BC58 8E 8E 8E 8E 8E 8E 8E 8E  ........
         .byte   $8E,$8E,$8E,$8E,$8E,$8E,$8F,$90 ; BC60 8E 8E 8E 8E 8E 8E 8F 90  ........
+unknownNameTable1:
         .byte   $60,$61,$62,$62,$62,$62,$62,$62 ; BC68 60 61 62 62 62 62 62 62  `abbbbbb
         .byte   $62,$62,$62,$62,$62,$62,$62,$62 ; BC70 62 62 62 62 62 62 62 62  bbbbbbbb
         .byte   $62,$62,$62,$62,$62,$62,$62,$62 ; BC78 62 62 62 62 62 62 62 62  bbbbbbbb
@@ -6924,7 +6931,6 @@ possibleMenuNametable:
         .byte   $67,$67,$67,$67,$67,$67,$67,$67 ; BC90 67 67 67 67 67 67 67 67  gggggggg
         .byte   $67,$67,$67,$67,$67,$67,$67,$67 ; BC98 67 67 67 67 67 67 67 67  gggggggg
         .byte   $67,$67,$67,$67,$67,$67,$68,$69 ; BCA0 67 67 67 67 67 67 68 69  gggggghi
-dataPastPossibleMenuNametable:
         .byte   $6A,$6B,$91,$92,$93,$94,$6C,$00 ; BCA8 6A 6B 91 92 93 94 6C 00  jk....l.
         .byte   $00,$00,$00,$00,$00,$6D,$6E,$6F ; BCB0 00 00 00 00 00 6D 6E 6F  .....mno
         .byte   $70,$71,$72,$00,$00,$00,$00,$00 ; BCB8 70 71 72 00 00 00 00 00  pqr.....
@@ -7149,15 +7155,20 @@ possibleGameNametable:
         .byte   $6A,$6B,$00,$00,$00,$00,$00,$00 ; C388 6A 6B 00 00 00 00 00 00  jk......
         .byte   $00,$00,$00,$00,$73,$74,$A4,$C4 ; C390 00 00 00 00 73 74 A4 C4  ....st..
         .byte   $C5,$A7,$6A,$6B,$00,$C6,$C7,$00 ; C398 C5 A7 6A 6B 00 C6 C7 00  ..jk....
-        .byte   $C8,$C9,$CA,$C7,$00,$00,$73,$74 ; C3A0 C8 C9 CA C7 00 00 73 74  ......st
-        .byte   $87,$88,$89,$89,$89,$89,$89,$89 ; C3A8 87 88 89 89 89 89 89 89  ........
-        .byte   $89,$89,$89,$89,$8A,$CB,$CC,$CC ; C3B0 89 89 89 89 8A CB CC CC  ........
-        .byte   $CC,$CC,$CD,$88,$89,$89,$89,$89 ; C3B8 CC CC CD 88 89 89 89 89  ........
-        .byte   $89,$89,$89,$89,$89,$89,$8A,$8B ; C3C0 89 89 89 89 89 89 8A 8B  ........
-        .byte   $8C,$8D,$8E,$8E,$8E,$8E,$8E,$8E ; C3C8 8C 8D 8E 8E 8E 8E 8E 8E  ........
-        .byte   $8E,$8E,$8E,$8E,$8F,$CE,$CF,$CF ; C3D0 8E 8E 8E 8E 8F CE CF CF  ........
-        .byte   $CF,$CF,$D0,$8D,$8E,$8E,$8E,$8E ; C3D8 CF CF D0 8D 8E 8E 8E 8E  ........
-        .byte   $8E,$8E,$8E,$8E,$8E,$8E,$8F,$D1 ; C3E0 8E 8E 8E 8E 8E 8E 8F D1  ........
+        .byte   $C8                             ; C3A0 C8                       .
+LC3A1:
+        .byte   $C9                             ; C3A1 C9                       .
+LC3A2:
+        .byte   $CA,$C7,$00,$00,$73,$74,$87,$88 ; C3A2 CA C7 00 00 73 74 87 88  ....st..
+        .byte   $89,$89,$89,$89,$89,$89,$89,$89 ; C3AA 89 89 89 89 89 89 89 89  ........
+        .byte   $89,$89,$8A,$CB,$CC,$CC,$CC,$CC ; C3B2 89 89 8A CB CC CC CC CC  ........
+        .byte   $CD,$88,$89,$89,$89,$89,$89,$89 ; C3BA CD 88 89 89 89 89 89 89  ........
+        .byte   $89,$89,$89,$89,$8A,$8B,$8C,$8D ; C3C2 89 89 89 89 8A 8B 8C 8D  ........
+        .byte   $8E,$8E,$8E,$8E,$8E,$8E,$8E,$8E ; C3CA 8E 8E 8E 8E 8E 8E 8E 8E  ........
+        .byte   $8E,$8E,$8F,$CE,$CF,$CF,$CF,$CF ; C3D2 8E 8E 8F CE CF CF CF CF  ........
+        .byte   $D0,$8D,$8E,$8E,$8E,$8E,$8E,$8E ; C3DA D0 8D 8E 8E 8E 8E 8E 8E  ........
+        .byte   $8E,$8E,$8E,$8E,$8F,$D1         ; C3E2 8E 8E 8E 8E 8F D1        ......
+unknownNameTable2:
         .byte   $60,$61,$62,$62,$62,$62,$62,$62 ; C3E8 60 61 62 62 62 62 62 62  `abbbbbb
         .byte   $62,$62,$62,$62,$62,$62,$62,$62 ; C3F0 62 62 62 62 62 62 62 62  bbbbbbbb
         .byte   $62,$62,$62,$62,$62,$62,$62,$62 ; C3F8 62 62 62 62 62 62 62 62  bbbbbbbb
@@ -7166,7 +7177,6 @@ possibleGameNametable:
         .byte   $67,$67,$67,$67,$67,$67,$67,$67 ; C410 67 67 67 67 67 67 67 67  gggggggg
         .byte   $67,$67,$67,$67,$67,$67,$67,$67 ; C418 67 67 67 67 67 67 67 67  gggggggg
         .byte   $67,$67,$67,$67,$67,$67,$68,$69 ; C420 67 67 67 67 67 67 68 69  gggggghi
-dataPastPossibleGameNametable:
         .byte   $6A,$6B,$91,$92,$93,$94,$6C,$00 ; C428 6A 6B 91 92 93 94 6C 00  jk....l.
         .byte   $00,$00,$00,$00,$00,$6D,$6E,$6F ; C430 00 00 00 00 00 6D 6E 6F  .....mno
         .byte   $70,$71,$72,$00,$00,$00,$00,$00 ; C438 70 71 72 00 00 00 00 00  pqr.....
@@ -7561,7 +7571,7 @@ LCF95:
         rts                                     ; CFB0 60                       `
 
 ; ----------------------------------------------------------------------------
-possibleSetSoundOrMusic:
+setMusicOrSoundEffect:
         ldy     $0209                           ; CFB1 AC 09 02                 ...
         iny                                     ; CFB4 C8                       .
         cpy     #$08                            ; CFB5 C0 08                    ..
