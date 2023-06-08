@@ -166,27 +166,5 @@ tilesForT:
 
 LB65D - game background modification address table
 
-table:
-pause
-unpause
-gameoverCoop
-gameover1p
-gameover2p
-clearScoresP1
-clearSomething
-pauseCoop
-unpauseCoop
-DisplayStatsP1
-DisplayStatsP2
-DisplayStatsCoop
-setMidLevelAnimation
-unsetAnimation
 
-first bit of first byte controls repeat
-remaining 7 bits is # of columns
 
-next byte is rows
-
-next two bytes are PPU address
-
-next two bytes are address of tiles
