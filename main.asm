@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-07 19:50:20
+; Created:    2023-06-07 21:04:48
 ; Input file: clean.nes
 ; Page:       1
 
@@ -190,7 +190,7 @@ mainLoop:
 @skipResetPPUStagingAddress:
         jsr     pollController                  ; 8021 20 00 A4                  ..
         jsr     L9F87                           ; 8024 20 87 9F                  ..
-        jsr     LB5C5                           ; 8027 20 C5 B5                  ..
+        jsr     pauseOrUnpause                  ; 8027 20 C5 B5                  ..
         jsr     L8CE5                           ; 802A 20 E5 8C                  ..
         jsr     L91E3                           ; 802D 20 E3 91                  ..
         jsr     L9BFC                           ; 8030 20 FC 9B                  ..
@@ -743,7 +743,7 @@ L83F8:
         clc                                     ; 8400 18                       .
         adc     #$03                            ; 8401 69 03                    i.
 L8403:
-        jsr     loadDataIntoPPUStagingPossible  ; 8403 20 03 B6                  ..
+        jsr     updateGameBackground            ; 8403 20 03 B6                  ..
         lda     #$0A                            ; 8406 A9 0A                    ..
         jmp     setMusicOrSoundEffect           ; 8408 4C B1 CF                 L..
 
@@ -2107,7 +2107,7 @@ L8D19:
         ldy     $4B                             ; 8D21 A4 4B                    .K
         beq     L8D36                           ; 8D23 F0 11                    ..
         lda     #$0A                            ; 8D25 A9 0A                    ..
-        jsr     loadDataIntoPPUStagingPossible  ; 8D27 20 03 B6                  ..
+        jsr     updateGameBackground            ; 8D27 20 03 B6                  ..
         ldy     #$01                            ; 8D2A A0 01                    ..
         jsr     L9177                           ; 8D2C 20 77 91                  w.
         lda     #$04                            ; 8D2F A9 04                    ..
@@ -2119,7 +2119,7 @@ L8D36:
 L8D3A:
         lda     #$09                            ; 8D3A A9 09                    ..
 L8D3C:
-        jsr     loadDataIntoPPUStagingPossible  ; 8D3C 20 03 B6                  ..
+        jsr     updateGameBackground            ; 8D3C 20 03 B6                  ..
         ldy     playMode                        ; 8D3F A4 2F                    ./
         cpy     #$01                            ; 8D41 C0 01                    ..
         bne     L8D46                           ; 8D43 D0 01                    ..
@@ -2160,7 +2160,7 @@ L8D6B:
         bit     playMode                        ; 8D82 24 2F                    $/
         bmi     L8D8B                           ; 8D84 30 05                    0.
         lda     #$0C                            ; 8D86 A9 0C                    ..
-        jsr     loadDataIntoPPUStagingPossible  ; 8D88 20 03 B6                  ..
+        jsr     updateGameBackground            ; 8D88 20 03 B6                  ..
 L8D8B:
         lda     $4A                             ; 8D8B A5 4A                    .J
         beq     L8D94                           ; 8D8D F0 05                    ..
@@ -2586,7 +2586,7 @@ L90C5:
         bit     playMode                        ; 90D3 24 2F                    $/
         bmi     L90DC                           ; 90D5 30 05                    0.
         lda     #$0D                            ; 90D7 A9 0D                    ..
-        jsr     loadDataIntoPPUStagingPossible  ; 90D9 20 03 B6                  ..
+        jsr     updateGameBackground            ; 90D9 20 03 B6                  ..
 L90DC:
         lda     #$5A                            ; 90DC A9 5A                    .Z
         sta     player1FallTimer                ; 90DE 85 6A                    .j
@@ -6639,7 +6639,7 @@ removeBlockCode:
         .byte   $40,$20,$80,$10,$40,$20,$80,$02 ; B5BB 40 20 80 10 40 20 80 02  @ ..@ ..
         .byte   $01,$00                         ; B5C3 01 00                    ..
 ; ----------------------------------------------------------------------------
-LB5C5:
+pauseOrUnpause:
         ldy     gameState                       ; B5C5 A4 29                    .)
         dey                                     ; B5C7 88                       .
         bne     @gameNotPaused                  ; B5C8 D0 0A                    ..
@@ -6675,10 +6675,10 @@ LB5C5:
         lda     #$01                            ; B5FA A9 01                    ..
 @jumpOverUnpause:
         bit     playMode                        ; B5FC 24 2F                    $/
-        bpl     loadDataIntoPPUStagingPossible  ; B5FE 10 03                    ..
+        bpl     updateGameBackground            ; B5FE 10 03                    ..
         clc                                     ; B600 18                       .
         adc     #$07                            ; B601 69 07                    i.
-loadDataIntoPPUStagingPossible:
+updateGameBackground:
         asl     a                               ; B603 0A                       .
         tay                                     ; B604 A8                       .
         lda     LB65D,y                         ; B605 B9 5D B6                 .].
@@ -6755,7 +6755,7 @@ pausePPUAddr1:
         .word   $210C                           ; B67B 0C 21                    .!
 ; ----------------------------------------------------------------------------
 pauseTilesAddr1:
-        .addr   LC7F0                           ; B67D F0 C7                    ..
+        .addr   pauseTiles                      ; B67D F0 C7                    ..
 ; ----------------------------------------------------------------------------
 pauseColsRows2:
         .byte   $02,$01                         ; B67F 02 01                    ..
@@ -6764,7 +6764,7 @@ pausePPUAddr2:
         .word   $23D3                           ; B681 D3 23                    .#
 ; ----------------------------------------------------------------------------
 pauseTilesAddr2:
-        .addr   LB898                           ; B683 98 B8                    ..
+        .addr   pauseAttrs                      ; B683 98 B8                    ..
 ; ----------------------------------------------------------------------------
 pauseEnd:
         .byte   $00                             ; B685 00                       .
@@ -6793,7 +6793,7 @@ unpausePPUAddr3:
         .word   $23D3                           ; B694 D3 23                    .#
 ; ----------------------------------------------------------------------------
 unpauseTilesAddr3:
-        .addr   LB89A                           ; B696 9A B8                    ..
+        .addr   unpauseAttrs                    ; B696 9A B8                    ..
 ; ----------------------------------------------------------------------------
 unpauseEnd:
         .byte   $00                             ; B698 00                       .
@@ -6804,7 +6804,7 @@ gameOverCoopPPUAddr1:
         .word   $218C                           ; B69B 8C 21                    .!
 ; ----------------------------------------------------------------------------
 gameOverCoopTilesAddr1:
-        .addr   LC800                           ; B69D 00 C8                    ..
+        .addr   gameOverTiles                   ; B69D 00 C8                    ..
 ; ----------------------------------------------------------------------------
 gameOverCoopColsRows2:
         .byte   $02,$01                         ; B69F 02 01                    ..
@@ -6813,7 +6813,7 @@ gameOverCoopPPUAddr2:
         .word   $23DB                           ; B6A1 DB 23                    .#
 ; ----------------------------------------------------------------------------
 gameOverCoopTilesAddr2:
-        .addr   LB89C                           ; B6A3 9C B8                    ..
+        .addr   gameOverAttrs                   ; B6A3 9C B8                    ..
 ; ----------------------------------------------------------------------------
 gameOverCoopEnd:
         .byte   $00                             ; B6A5 00                       .
@@ -6824,7 +6824,7 @@ gameOver1pPPUAddr1:
         .word   $2184                           ; B6A8 84 21                    .!
 ; ----------------------------------------------------------------------------
 gameOver1pTilesAddr1:
-        .addr   LC800                           ; B6AA 00 C8                    ..
+        .addr   gameOverTiles                   ; B6AA 00 C8                    ..
 ; ----------------------------------------------------------------------------
 gameOver1pColsRows2:
         .byte   $02,$01                         ; B6AC 02 01                    ..
@@ -6833,7 +6833,7 @@ gameOver1pPPUAddr2:
         .word   $23D9                           ; B6AE D9 23                    .#
 ; ----------------------------------------------------------------------------
 gameOver1pTilesAddr2:
-        .addr   LB89C                           ; B6B0 9C B8                    ..
+        .addr   gameOverAttrs                   ; B6B0 9C B8                    ..
 ; ----------------------------------------------------------------------------
 gameOver1pEnd:
         .byte   $00                             ; B6B2 00                       .
@@ -6844,7 +6844,7 @@ gameOver2pPPUAddr1:
         .word   $2196                           ; B6B5 96 21                    .!
 ; ----------------------------------------------------------------------------
 gameOver2pTilesAddr1:
-        .addr   LC800                           ; B6B7 00 C8                    ..
+        .addr   gameOverTiles                   ; B6B7 00 C8                    ..
 ; ----------------------------------------------------------------------------
 gameOver2pColsRows2:
         .byte   $02,$01                         ; B6B9 02 01                    ..
@@ -6853,7 +6853,7 @@ gameOver2pPPUAddr2:
         .word   $23DD                           ; B6BB DD 23                    .#
 ; ----------------------------------------------------------------------------
 gameOver2pTilesAddr2:
-        .addr   LB89E                           ; B6BD 9E B8                    ..
+        .addr   gameOverAttrsP2                 ; B6BD 9E B8                    ..
 ; ----------------------------------------------------------------------------
 gameOver2pEnd:
         .byte   $00                             ; B6BF 00                       .
@@ -6976,7 +6976,7 @@ pauseCoopPPUAddr1:
         .word   $20CC                           ; B70C CC 20                    . 
 ; ----------------------------------------------------------------------------
 pauseCoopTilesAddr1:
-        .addr   LC7F0                           ; B70E F0 C7                    ..
+        .addr   pauseTiles                      ; B70E F0 C7                    ..
 ; ----------------------------------------------------------------------------
 pauseCoopColsRows2:
         .byte   $02,$01                         ; B710 02 01                    ..
@@ -6985,7 +6985,7 @@ pauseCoopPPUAddr2:
         .word   $23CB                           ; B712 CB 23                    .#
 ; ----------------------------------------------------------------------------
 pauseCoopTilesAddr2:
-        .addr   LB8A4                           ; B714 A4 B8                    ..
+        .addr   pauseAttrsCoop                  ; B714 A4 B8                    ..
 ; ----------------------------------------------------------------------------
 pauseCoopEnd:
         .byte   $00                             ; B716 00                       .
@@ -7005,7 +7005,7 @@ unpauseCoopPPUAddr2:
         .word   $23CB                           ; B71F CB 23                    .#
 ; ----------------------------------------------------------------------------
 unpauseCoopTilesAddr2:
-        .addr   LB8A6                           ; B721 A6 B8                    ..
+        .addr   unpauseAttrsCoop                ; B721 A6 B8                    ..
 ; ----------------------------------------------------------------------------
 unpauseCoopEnd:
         .byte   $00                             ; B723 00                       .
@@ -7025,7 +7025,7 @@ displayStatsP1PPUAddr2:
         .word   $2102                           ; B72C 02 21                    .!
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr2:
-        .addr   LC818                           ; B72E 18 C8                    ..
+        .addr   statsTiles1                     ; B72E 18 C8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsP1ColsRows3:
         .byte   $07,$01                         ; B730 07 01                    ..
@@ -7034,7 +7034,7 @@ displayStatsP1PPUAddr3:
         .word   $2165                           ; B732 65 21                    e!
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr3:
-        .addr   LB84F                           ; B734 4F B8                    O.
+        .addr   statsTiles2                     ; B734 4F B8                    O.
 ; ----------------------------------------------------------------------------
 displayStatsP1ColsRows4:
         .byte   $0A,$01                         ; B736 0A 01                    ..
@@ -7043,7 +7043,7 @@ displayStatsP1PPUAddr4:
         .word   $2182                           ; B738 82 21                    .!
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr4:
-        .addr   LB856                           ; B73A 56 B8                    V.
+        .addr   statsTiles3                     ; B73A 56 B8                    V.
 ; ----------------------------------------------------------------------------
 displayStatsP1ColsRows5:
         .byte   $07,$01                         ; B73C 07 01                    ..
@@ -7052,7 +7052,7 @@ displayStatsP1PPUAddr5:
         .word   $21E5                           ; B73E E5 21                    .!
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr5:
-        .addr   LB860                           ; B740 60 B8                    `.
+        .addr   statsTiles4                     ; B740 60 B8                    `.
 ; ----------------------------------------------------------------------------
 displayStatsP1ColsRows6:
         .byte   $0A,$01                         ; B742 0A 01                    ..
@@ -7061,7 +7061,7 @@ displayStatsP1PPUAddr6:
         .word   $2202                           ; B744 02 22                    ."
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr6:
-        .addr   LB867                           ; B746 67 B8                    g.
+        .addr   statsTiles5                     ; B746 67 B8                    g.
 ; ----------------------------------------------------------------------------
 displayStatsP1ColsRows7:
         .byte   $07,$01                         ; B748 07 01                    ..
@@ -7070,7 +7070,7 @@ displayStatsP1PPUAddr7:
         .word   $2265                           ; B74A 65 22                    e"
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr7:
-        .addr   LB871                           ; B74C 71 B8                    q.
+        .addr   statsTiles6                     ; B74C 71 B8                    q.
 ; ----------------------------------------------------------------------------
 displayStatsP1ColsRows8:
         .byte   $0A,$01                         ; B74E 0A 01                    ..
@@ -7079,7 +7079,7 @@ displayStatsP1PPUAddr8:
         .word   $2282                           ; B750 82 22                    ."
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr8:
-        .addr   LB878                           ; B752 78 B8                    x.
+        .addr   statsTiles7                     ; B752 78 B8                    x.
 ; ----------------------------------------------------------------------------
 displayStatsP1ColsRows9:
         .byte   $06,$01                         ; B754 06 01                    ..
@@ -7088,7 +7088,7 @@ displayStatsP1PPUAddr9:
         .word   $22E5                           ; B756 E5 22                    ."
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr9:
-        .addr   LB882                           ; B758 82 B8                    ..
+        .addr   statsTiles8                     ; B758 82 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsP1ColsRows10:
         .byte   $0A,$01                         ; B75A 0A 01                    ..
@@ -7097,7 +7097,7 @@ displayStatsP1PPUAddr10:
         .word   $2302                           ; B75C 02 23                    .#
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr10:
-        .addr   LB889                           ; B75E 89 B8                    ..
+        .addr   statsTilesA                     ; B75E 89 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsP1ColsRows11:
         .byte   $05,$01                         ; B760 05 01                    ..
@@ -7106,7 +7106,7 @@ displayStatsP1PPUAddr11:
         .word   $2342                           ; B762 42 23                    B#
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr11:
-        .addr   LB893                           ; B764 93 B8                    ..
+        .addr   statsTilesC                     ; B764 93 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsP1ColsRows12:
         .byte   $02,$01                         ; B766 02 01                    ..
@@ -7115,7 +7115,7 @@ displayStatsP1PPUAddr12:
         .word   $236A                           ; B768 6A 23                    j#
 ; ----------------------------------------------------------------------------
 displayStatsP1TilesAddr12:
-        .addr   LB891                           ; B76A 91 B8                    ..
+        .addr   statsTilesB                     ; B76A 91 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsP1End:
         .byte   $00                             ; B76C 00                       .
@@ -7135,7 +7135,7 @@ displayStatsP2PPUAddr2:
         .word   $2114                           ; B775 14 21                    .!
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr2:
-        .addr   LC818                           ; B777 18 C8                    ..
+        .addr   statsTiles1                     ; B777 18 C8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsP2ColsRows3:
         .byte   $07,$01                         ; B779 07 01                    ..
@@ -7144,7 +7144,7 @@ displayStatsP2PPUAddr3:
         .word   $2177                           ; B77B 77 21                    w!
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr3:
-        .addr   LB84F                           ; B77D 4F B8                    O.
+        .addr   statsTiles2                     ; B77D 4F B8                    O.
 ; ----------------------------------------------------------------------------
 displayStatsP2ColsRows4:
         .byte   $0A,$01                         ; B77F 0A 01                    ..
@@ -7153,7 +7153,7 @@ displayStatsP2PPUAddr4:
         .word   $2194                           ; B781 94 21                    .!
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr4:
-        .addr   LB856                           ; B783 56 B8                    V.
+        .addr   statsTiles3                     ; B783 56 B8                    V.
 ; ----------------------------------------------------------------------------
 displayStatsP2ColsRows5:
         .byte   $07,$01                         ; B785 07 01                    ..
@@ -7162,7 +7162,7 @@ displayStatsP2PPUAddr5:
         .word   $21F7                           ; B787 F7 21                    .!
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr5:
-        .addr   LB860                           ; B789 60 B8                    `.
+        .addr   statsTiles4                     ; B789 60 B8                    `.
 ; ----------------------------------------------------------------------------
 displayStatsP2ColsRows6:
         .byte   $0A,$01                         ; B78B 0A 01                    ..
@@ -7171,7 +7171,7 @@ displayStatsP2PPUAddr6:
         .word   $2214                           ; B78D 14 22                    ."
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr6:
-        .addr   LB867                           ; B78F 67 B8                    g.
+        .addr   statsTiles5                     ; B78F 67 B8                    g.
 ; ----------------------------------------------------------------------------
 displayStatsP2ColsRows7:
         .byte   $07,$01                         ; B791 07 01                    ..
@@ -7180,7 +7180,7 @@ displayStatsP2PPUAddr7:
         .word   $2277                           ; B793 77 22                    w"
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr7:
-        .addr   LB871                           ; B795 71 B8                    q.
+        .addr   statsTiles6                     ; B795 71 B8                    q.
 ; ----------------------------------------------------------------------------
 displayStatsP2ColsRows8:
         .byte   $0A,$01                         ; B797 0A 01                    ..
@@ -7189,7 +7189,7 @@ displayStatsP2PPUAddr8:
         .word   $2294                           ; B799 94 22                    ."
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr8:
-        .addr   LB878                           ; B79B 78 B8                    x.
+        .addr   statsTiles7                     ; B79B 78 B8                    x.
 ; ----------------------------------------------------------------------------
 displayStatsP2ColsRows9:
         .byte   $06,$01                         ; B79D 06 01                    ..
@@ -7198,7 +7198,7 @@ displayStatsP2PPUAddr9:
         .word   $22F7                           ; B79F F7 22                    ."
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr9:
-        .addr   LB882                           ; B7A1 82 B8                    ..
+        .addr   statsTiles8                     ; B7A1 82 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsP2ColsRows10:
         .byte   $0A,$01                         ; B7A3 0A 01                    ..
@@ -7207,7 +7207,7 @@ displayStatsP2PPUAddr10:
         .word   $2314                           ; B7A5 14 23                    .#
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr10:
-        .addr   LB889                           ; B7A7 89 B8                    ..
+        .addr   statsTilesA                     ; B7A7 89 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsP2ColsRows11:
         .byte   $05,$01                         ; B7A9 05 01                    ..
@@ -7216,7 +7216,7 @@ displayStatsP2PPUAddr11:
         .word   $2354                           ; B7AB 54 23                    T#
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr11:
-        .addr   LB893                           ; B7AD 93 B8                    ..
+        .addr   statsTilesC                     ; B7AD 93 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsP2ColsRows12:
         .byte   $02,$01                         ; B7AF 02 01                    ..
@@ -7225,7 +7225,7 @@ displayStatsP2PPUAddr12:
         .word   $237C                           ; B7B1 7C 23                    |#
 ; ----------------------------------------------------------------------------
 displayStatsP2TilesAddr12:
-        .addr   LB891                           ; B7B3 91 B8                    ..
+        .addr   statsTilesB                     ; B7B3 91 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsP2End:
         .byte   $00                             ; B7B5 00                       .
@@ -7245,7 +7245,7 @@ displayStatsCoopPPUAddr2:
         .word   $210B                           ; B7BE 0B 21                    .!
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr2:
-        .addr   LC818                           ; B7C0 18 C8                    ..
+        .addr   statsTiles1                     ; B7C0 18 C8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsCoopColsRows3:
         .byte   $07,$01                         ; B7C2 07 01                    ..
@@ -7254,7 +7254,7 @@ displayStatsCoopPPUAddr3:
         .word   $216E                           ; B7C4 6E 21                    n!
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr3:
-        .addr   LB84F                           ; B7C6 4F B8                    O.
+        .addr   statsTiles2                     ; B7C6 4F B8                    O.
 ; ----------------------------------------------------------------------------
 displayStatsCoopColsRows4:
         .byte   $0A,$01                         ; B7C8 0A 01                    ..
@@ -7263,7 +7263,7 @@ displayStatsCoopPPUAddr4:
         .word   $218B                           ; B7CA 8B 21                    .!
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr4:
-        .addr   LB856                           ; B7CC 56 B8                    V.
+        .addr   statsTiles3                     ; B7CC 56 B8                    V.
 ; ----------------------------------------------------------------------------
 displayStatsCoopColsRows5:
         .byte   $07,$01                         ; B7CE 07 01                    ..
@@ -7272,7 +7272,7 @@ displayStatsCoopPPUAddr5:
         .word   $21EE                           ; B7D0 EE 21                    .!
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr5:
-        .addr   LB860                           ; B7D2 60 B8                    `.
+        .addr   statsTiles4                     ; B7D2 60 B8                    `.
 ; ----------------------------------------------------------------------------
 displayStatsCoopColsRows6:
         .byte   $0A,$01                         ; B7D4 0A 01                    ..
@@ -7281,7 +7281,7 @@ displayStatsCoopPPUAddr6:
         .word   $220B                           ; B7D6 0B 22                    ."
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr6:
-        .addr   LB867                           ; B7D8 67 B8                    g.
+        .addr   statsTiles5                     ; B7D8 67 B8                    g.
 ; ----------------------------------------------------------------------------
 displayStatsCoopColsRows7:
         .byte   $07,$01                         ; B7DA 07 01                    ..
@@ -7290,7 +7290,7 @@ displayStatsCoopPPUAddr7:
         .word   $226E                           ; B7DC 6E 22                    n"
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr7:
-        .addr   LB871                           ; B7DE 71 B8                    q.
+        .addr   statsTiles6                     ; B7DE 71 B8                    q.
 ; ----------------------------------------------------------------------------
 displayStatsCoopColsRows8:
         .byte   $0A,$01                         ; B7E0 0A 01                    ..
@@ -7299,7 +7299,7 @@ displayStatsCoopPPUAddr8:
         .word   $228B                           ; B7E2 8B 22                    ."
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr8:
-        .addr   LB878                           ; B7E4 78 B8                    x.
+        .addr   statsTiles7                     ; B7E4 78 B8                    x.
 ; ----------------------------------------------------------------------------
 displayStatsCoopColsRows9:
         .byte   $06,$01                         ; B7E6 06 01                    ..
@@ -7308,7 +7308,7 @@ displayStatsCoopPPUAddr9:
         .word   $22EE                           ; B7E8 EE 22                    ."
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr9:
-        .addr   LB882                           ; B7EA 82 B8                    ..
+        .addr   statsTiles8                     ; B7EA 82 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsCoopColsRows10:
         .byte   $0B,$01                         ; B7EC 0B 01                    ..
@@ -7317,7 +7317,7 @@ displayStatsCoopPPUAddr10:
         .word   $230A                           ; B7EE 0A 23                    .#
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr10:
-        .addr   LB888                           ; B7F0 88 B8                    ..
+        .addr   statsTiles9                     ; B7F0 88 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsCoopColsRows11:
         .byte   $05,$01                         ; B7F2 05 01                    ..
@@ -7326,7 +7326,7 @@ displayStatsCoopPPUAddr11:
         .word   $234B                           ; B7F4 4B 23                    K#
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr11:
-        .addr   LB893                           ; B7F6 93 B8                    ..
+        .addr   statsTilesC                     ; B7F6 93 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsCoopColsRows12:
         .byte   $02,$01                         ; B7F8 02 01                    ..
@@ -7335,7 +7335,7 @@ displayStatsCoopPPUAddr12:
         .word   $2373                           ; B7FA 73 23                    s#
 ; ----------------------------------------------------------------------------
 displayStatsCoopTilesAddr12:
-        .addr   LB891                           ; B7FC 91 B8                    ..
+        .addr   statsTilesB                     ; B7FC 91 B8                    ..
 ; ----------------------------------------------------------------------------
 displayStatsCoopEnd:
         .byte   $00                             ; B7FE 00                       .
@@ -7457,46 +7457,46 @@ LB84B:
         .byte   $EE,$BB                         ; B84B EE BB                    ..
 LB84D:
         .byte   $AA,$AA                         ; B84D AA AA                    ..
-LB84F:
+statsTiles2:
         .byte   $53,$49,$4E,$47,$4C,$45,$53     ; B84F 53 49 4E 47 4C 45 53     SINGLES
-LB856:
+statsTiles3:
         .byte   $58,$31,$30,$30,$3D,$20,$20,$20 ; B856 58 31 30 30 3D 20 20 20  X100=   
         .byte   $30,$30                         ; B85E 30 30                    00
-LB860:
+statsTiles4:
         .byte   $44,$4F,$55,$42,$4C,$45,$53     ; B860 44 4F 55 42 4C 45 53     DOUBLES
-LB867:
+statsTiles5:
         .byte   $58,$34,$30,$30,$3D,$20,$20,$20 ; B867 58 34 30 30 3D 20 20 20  X400=   
         .byte   $30,$30                         ; B86F 30 30                    00
-LB871:
+statsTiles6:
         .byte   $54,$52,$49,$50,$4C,$45,$53     ; B871 54 52 49 50 4C 45 53     TRIPLES
-LB878:
+statsTiles7:
         .byte   $58,$39,$30,$30,$3D,$20,$20,$20 ; B878 58 39 30 30 3D 20 20 20  X900=   
         .byte   $30,$30                         ; B880 30 30                    00
-LB882:
+statsTiles8:
         .byte   $54,$45,$54,$52,$49,$53         ; B882 54 45 54 52 49 53        TETRIS
-LB888:
+statsTiles9:
         .byte   $58                             ; B888 58                       X
-LB889:
+statsTilesA:
         .byte   $32,$35,$30,$30,$3D,$20,$20,$20 ; B889 32 35 30 30 3D 20 20 20  2500=   
-LB891:
+statsTilesB:
         .byte   $30,$30                         ; B891 30 30                    00
-LB893:
+statsTilesC:
         .byte   $54,$4F,$54,$41,$4C             ; B893 54 4F 54 41 4C           TOTAL
-LB898:
+pauseAttrs:
         .byte   $EF,$BF                         ; B898 EF BF                    ..
-LB89A:
+unpauseAttrs:
         .byte   $EA,$BA                         ; B89A EA BA                    ..
-LB89C:
+gameOverAttrs:
         .byte   $FF,$33                         ; B89C FF 33                    .3
-LB89E:
+gameOverAttrsP2:
         .byte   $DD,$FF                         ; B89E DD FF                    ..
 LB8A0:
         .byte   $00,$00                         ; B8A0 00 00                    ..
 LB8A2:
         .byte   $55,$55                         ; B8A2 55 55                    UU
-LB8A4:
+pauseAttrsCoop:
         .byte   $FF,$FF                         ; B8A4 FF FF                    ..
-LB8A6:
+unpauseAttrsCoop:
         .byte   $0F,$0F                         ; B8A6 0F 0F                    ..
 menuNametable:
         .byte   $60,$61,$62,$62,$62,$62,$62,$62 ; B8A8 60 61 62 62 62 62 62 62  `abbbbbb
@@ -7992,14 +7992,14 @@ dataBlockPastGameModeNameTable:
         .byte   $A4,$A5,$A6,$A7,$A4,$AB,$AC,$AD ; C7D8 A4 A5 A6 A7 A4 AB AC AD  ........
         .byte   $A4,$A5,$A6,$A7,$A4,$B2,$B3,$A7 ; C7E0 A4 A5 A6 A7 A4 B2 B3 A7  ........
         .byte   $A4,$A5,$A6,$A7,$A4,$C4,$C5,$A7 ; C7E8 A4 A5 A6 A7 A4 C4 C5 A7  ........
-LC7F0:
+pauseTiles:
         .byte   $10,$11,$D2,$D3,$D4,$D5,$D6,$12 ; C7F0 10 11 D2 D3 D4 D5 D6 12  ........
         .byte   $13,$14,$D7,$D8,$D9,$DA,$DB,$15 ; C7F8 13 14 D7 D8 D9 DA DB 15  ........
-LC800:
+gameOverTiles:
         .byte   $29,$2A,$2A,$2A,$2A,$2B,$2C,$47 ; C800 29 2A 2A 2A 2A 2B 2C 47  )****+,G
         .byte   $41,$4D,$45,$2F,$2C,$4F,$56,$45 ; C808 41 4D 45 2F 2C 4F 56 45  AME/,OVE
         .byte   $52,$2F,$3A,$3B,$3B,$3B,$3B,$3C ; C810 52 2F 3A 3B 3B 3B 3B 3C  R/:;;;;<
-LC818:
+statsTiles1:
         .byte   $DC,$DD,$DE,$DF,$E0,$E1,$E1,$E2 ; C818 DC DD DE DF E0 E1 E1 E2  ........
         .byte   $E3,$E4,$E5,$E6,$E7,$E8,$E9,$E9 ; C820 E3 E4 E5 E6 E7 E8 E9 E9  ........
         .byte   $EA,$EB,$EC,$ED                 ; C828 EA EB EC ED              ....
