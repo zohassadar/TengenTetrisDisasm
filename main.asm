@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-07 21:04:48
+; Created:    2023-06-08 05:51:23
 ; Input file: clean.nes
 ; Page:       1
 
@@ -74,8 +74,8 @@ codeInputPlayer1:= $01B6
 codeInputPlayer2:= $01B7
 longBarCodeUsedP1:= $01B8
 longBarCodeUsedP2:= $01B9
-removeBlockCodeUsedP1:= $01BA
-removeBlockCodeUsedP2:= $01BB
+undoCodeUsedP1  := $01BA
+undoCodeUsedP2  := $01BB
 lastCurrentBlockP1:= $01BC
 lastCurrentBlockP2:= $01BD
 lastOrientationP1:= $01BE
@@ -191,8 +191,8 @@ mainLoop:
         jsr     pollController                  ; 8021 20 00 A4                  ..
         jsr     L9F87                           ; 8024 20 87 9F                  ..
         jsr     pauseOrUnpause                  ; 8027 20 C5 B5                  ..
-        jsr     L8CE5                           ; 802A 20 E5 8C                  ..
-        jsr     L91E3                           ; 802D 20 E3 91                  ..
+        jsr     checkLevelUp                    ; 802A 20 E5 8C                  ..
+        jsr     somethingWithLeaderboard        ; 802D 20 E3 91                  ..
         jsr     L9BFC                           ; 8030 20 FC 9B                  ..
         ldx     #$00                            ; 8033 A2 00                    ..
         jsr     stageLineClearAnimation         ; 8035 20 48 88                  H.
@@ -704,7 +704,7 @@ L83B1:
         and     #$20                            ; 83B3 29 20                    ) 
         beq     L8416                           ; 83B5 F0 5F                    ._
         inc     player1TetrominoY,x             ; 83B7 F6 60                    .`
-        jsr     L8C15                           ; 83B9 20 15 8C                  ..
+        jsr     checkPosition                   ; 83B9 20 15 8C                  ..
         bcs     L840B                           ; 83BC B0 4D                    .M
         jsr     L8658                           ; 83BE 20 58 86                  X.
         bcs     L8416                           ; 83C1 B0 53                    .S
@@ -1120,7 +1120,7 @@ L862B:
 ; ----------------------------------------------------------------------------
 L862E:
         inc     player1TetrominoY,x             ; 862E F6 60                    .`
-        jsr     L8C15                           ; 8630 20 15 8C                  ..
+        jsr     checkPosition                   ; 8630 20 15 8C                  ..
         dec     player1TetrominoY,x             ; 8633 D6 60                    .`
         bcc     L863C                           ; 8635 90 05                    ..
 L8637:
@@ -1143,7 +1143,7 @@ L863C:
 
 ; ----------------------------------------------------------------------------
 checkPositionAndClearFlagsOnCarrySet:
-        jsr     L8C15                           ; 8650 20 15 8C                  ..
+        jsr     checkPosition                   ; 8650 20 15 8C                  ..
         bcc     L8658                           ; 8653 90 03                    ..
         clv                                     ; 8655 B8                       .
         clc                                     ; 8656 18                       .
@@ -1569,7 +1569,7 @@ L8967:
         jsr     L897C                           ; 8974 20 7C 89                  |.
         bne     L8998                           ; 8977 D0 1F                    ..
 L8979:
-        jmp     L8CB5                           ; 8979 4C B5 8C                 L..
+        jmp     showLevelBonus                  ; 8979 4C B5 8C                 L..
 
 ; ----------------------------------------------------------------------------
 L897C:
@@ -1943,7 +1943,7 @@ L8C0F:
 L8C11:
         .byte   $F7,$09,$03,$09                 ; 8C11 F7 09 03 09              ....
 ; ----------------------------------------------------------------------------
-L8C15:
+checkPosition:
         stx     generalCounter3c                ; 8C15 86 3C                    .<
         txa                                     ; 8C17 8A                       .
         eor     #$01                            ; 8C18 49 01                    I.
@@ -2037,7 +2037,7 @@ L8CA7:
 L8CAE:
         .byte   $88,$CC,$EE,$FF,$77,$33,$11     ; 8CAE 88 CC EE FF 77 33 11     ....w3.
 ; ----------------------------------------------------------------------------
-L8CB5:
+showLevelBonus:
         lda     #$03                            ; 8CB5 A9 03                    ..
         sta     gameState                       ; 8CB7 85 29                    .)
         inc     $78                             ; 8CB9 E6 78                    .x
@@ -2068,7 +2068,7 @@ L8CD7:
         jmp     setMusicOrSoundEffect           ; 8CE2 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
-L8CE5:
+checkLevelUp:
         lda     gameState                       ; 8CE5 A5 29                    .)
         cmp     #$03                            ; 8CE7 C9 03                    ..
         bne     L8D0D                           ; 8CE9 D0 22                    ."
@@ -2740,7 +2740,7 @@ L91DD:
 L91DE:
         .byte   $21,$62,$21,$74,$21             ; 91DE 21 62 21 74 21           !b!t!
 ; ----------------------------------------------------------------------------
-L91E3:
+somethingWithLeaderboard:
         ldy     gameState                       ; 91E3 A4 29                    .)
         cpy     #$F8                            ; 91E5 C0 F8                    ..
         bne     L9205                           ; 91E7 D0 1C                    ..
@@ -3359,8 +3359,8 @@ L960C:
         bne     L960C                           ; 9611 D0 F9                    ..
         sta     longBarCodeUsedP1               ; 9613 8D B8 01                 ...
         sta     longBarCodeUsedP2               ; 9616 8D B9 01                 ...
-        sta     removeBlockCodeUsedP1           ; 9619 8D BA 01                 ...
-        sta     removeBlockCodeUsedP2           ; 961C 8D BB 01                 ...
+        sta     undoCodeUsedP1                  ; 9619 8D BA 01                 ...
+        sta     undoCodeUsedP2                  ; 961C 8D BB 01                 ...
         sta     lastCurrentBlockP1              ; 961F 8D BC 01                 ...
         sta     lastCurrentBlockP2              ; 9622 8D BD 01                 ...
         lda     #$01                            ; 9625 A9 01                    ..
@@ -6500,7 +6500,7 @@ checkCodeInput:
         beq     LB52A                           ; B4AF F0 79                    .y
         ldy     codeInputPlayer1,x              ; B4B1 BC B6 01                 ...
         bne     LB4C8                           ; B4B4 D0 12                    ..
-        cmp     removeBlockCode,y               ; B4B6 D9 BB B5                 ...
+        cmp     undoCode,y                      ; B4B6 D9 BB B5                 ...
         bne     LB4BF                           ; B4B9 D0 04                    ..
         ldy     #$14                            ; B4BB A0 14                    ..
         bne     LB526                           ; B4BD D0 67                    .g
@@ -6516,9 +6516,9 @@ LB4C8:
         lda     levelUpCode,y                   ; B4CE B9 A8 B5                 ...
         bne     LB526                           ; B4D1 D0 53                    .S
         cpy     #$12                            ; B4D3 C0 12                    ..
-        beq     LB52B                           ; B4D5 F0 54                    .T
+        beq     applyLongbarCode                ; B4D5 F0 54                    .T
         cpy     #$1C                            ; B4D7 C0 1C                    ..
-        beq     LB559                           ; B4D9 F0 7E                    .~
+        beq     applyUndoCode                   ; B4D9 F0 7E                    .~
         stx     generalCounter37                ; B4DB 86 37                    .7
         txa                                     ; B4DD 8A                       .
         asl     a                               ; B4DE 0A                       .
@@ -6566,20 +6566,20 @@ LB52A:
         rts                                     ; B52A 60                       `
 
 ; ----------------------------------------------------------------------------
-LB52B:
+applyLongbarCode:
         lda     longBarCodeUsedP1,x             ; B52B BD B8 01                 ...
         bne     LB52A                           ; B52E D0 FA                    ..
         lda     #$01                            ; B530 A9 01                    ..
         sta     longBarCodeUsedP1,x             ; B532 9D B8 01                 ...
         sta     player1TetrominoCurrent,x       ; B535 95 64                    .d
-LB537:
+spawnReplacementTetromino:
         lda     #$04                            ; B537 A9 04                    ..
         sta     player1TetrominoY,x             ; B539 95 60                    .`
         lda     seven                           ; B53B AD ED 99                 ...
         bit     playMode                        ; B53E 24 2F                    $/
-        bpl     LB545                           ; B540 10 03                    ..
+        bpl     @notCoop                        ; B540 10 03                    ..
         lda     coopTetrominoX,x                ; B542 BD EB 99                 ...
-LB545:
+@notCoop:
         sta     player1TetrominoX,x             ; B545 95 62                    .b
         lda     #$00                            ; B547 A9 00                    ..
         sta     player1TetrominoOrientation,x   ; B549 95 68                    .h
@@ -6591,12 +6591,12 @@ LB545:
         jmp     setMusicOrSoundEffect           ; B556 4C B1 CF                 L..
 
 ; ----------------------------------------------------------------------------
-LB559:
-        lda     removeBlockCodeUsedP1,x         ; B559 BD BA 01                 ...
+applyUndoCode:
+        lda     undoCodeUsedP1,x                ; B559 BD BA 01                 ...
         bne     LB52A                           ; B55C D0 CC                    ..
         lda     lastCurrentBlockP1,x            ; B55E BD BC 01                 ...
         beq     LB52A                           ; B561 F0 C7                    ..
-        inc     removeBlockCodeUsedP1,x         ; B563 FE BA 01                 ...
+        inc     undoCodeUsedP1,x                ; B563 FE BA 01                 ...
         lda     player1TetrominoCurrent,x       ; B566 B5 64                    .d
         beq     LB576                           ; B568 F0 0C                    ..
         sta     player1TetrominoNext,x          ; B56A 95 66                    .f
@@ -6626,7 +6626,7 @@ LB576:
         jsr     L8607                           ; B59C 20 07 86                  ..
         jsr     L8565                           ; B59F 20 65 85                  e.
         jsr     L8426                           ; B5A2 20 26 84                  &.
-        jmp     LB537                           ; B5A5 4C 37 B5                 L7.
+        jmp     spawnReplacementTetromino       ; B5A5 4C 37 B5                 L7.
 
 ; ----------------------------------------------------------------------------
 levelUpCode:
@@ -6635,7 +6635,7 @@ levelUpCode:
 getLongbarCode:
         .byte   $20,$20,$40,$80,$40,$80,$02,$01 ; B5B2 20 20 40 80 40 80 02 01    @.@...
         .byte   $00                             ; B5BA 00                       .
-removeBlockCode:
+undoCode:
         .byte   $40,$20,$80,$10,$40,$20,$80,$02 ; B5BB 40 20 80 10 40 20 80 02  @ ..@ ..
         .byte   $01,$00                         ; B5C3 01 00                    ..
 ; ----------------------------------------------------------------------------

@@ -78,8 +78,8 @@ LABEL { ADDR $01b6; NAME "codeInputPlayer1"; };
 LABEL { ADDR $01b7; NAME "codeInputPlayer2"; }; 
 LABEL { ADDR $01b8; NAME "longBarCodeUsedP1"; }; 
 LABEL { ADDR $01b9; NAME "longBarCodeUsedP2"; }; 
-LABEL { ADDR $01ba; NAME "removeBlockCodeUsedP1"; }; 
-LABEL { ADDR $01bb; NAME "removeBlockCodeUsedP2"; }; 
+LABEL { ADDR $01ba; NAME "undoCodeUsedP1"; }; 
+LABEL { ADDR $01bb; NAME "undoCodeUsedP2"; }; 
 LABEL { ADDR $01bc; NAME "lastCurrentBlockP1"; }; 
 LABEL { ADDR $01bd; NAME "lastCurrentBlockP2"; }; 
 LABEL { ADDR $01be; NAME "lastOrientationP1"; }; 
@@ -218,7 +218,11 @@ LABEL { ADDR $8a2b; NAME "lineClearSingle"; SIZE $C; };
 LABEL { ADDR $8a37; NAME "lineClearDouble"; SIZE $C; };
 LABEL { ADDR $8a43; NAME "lineClearTriple"; SIZE $C; };
 LABEL { ADDR $8a4f; NAME "lineClearTetris"; SIZE $C; };
+LABEL { ADDR $8c15; NAME "checkPosition"; };
+LABEL { ADDR $8cb5; NAME "showLevelBonus"; };
+LABEL { ADDR $8ce5; NAME "checkLevelUp"; };
 
+LABEL { ADDR $91e3; NAME "somethingWithLeaderboard";  };
 LABEL { ADDR $93f7; NAME "initializeLeaderboard";  };
 LABEL { ADDR $94bf; NAME "renderLeaderboardInitials";  };
 LABEL { ADDR $95c6; NAME "demoStart"; };
@@ -335,9 +339,13 @@ LABEL { ADDR $b3e9; NAME "sendBulkDataToPPU"; };
 LABEL { ADDR $B4A2; NAME "ppuPatchTable1"; SIZE $6; COMMENT "columns, rows, ppu address (2 bytes), data address (2 bytes)"; };
 LABEL { ADDR $B4A8; NAME "ppuPatchTableSkipPatch"; COMMENT "0 columns skips the routine. 5 bytes are taken from code anyway"; };
 LABEL { ADDR $B4A9; NAME "checkCodeInput"; };
+LABEL { ADDR $B52B; NAME "applyLongbarCode"; };
+LABEL { ADDR $B537; NAME "spawnReplacementTetromino"; };
+LABEL { ADDR $B545; NAME "@notCoop"; };
+LABEL { ADDR $B559; NAME "applyUndoCode"; };
 LABEL { ADDR $B5a8; NAME "levelUpCode"; SIZE $a; };
 LABEL { ADDR $B5B2; NAME "getLongbarCode"; SIZE $9; };
-LABEL { ADDR $B5Bb; NAME "removeBlockCode"; SIZE $a; };
+LABEL { ADDR $B5Bb; NAME "undoCode"; SIZE $a; };
 
 
 LABEL { ADDR $B5C5; NAME "pauseOrUnpause"; };

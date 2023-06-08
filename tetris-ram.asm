@@ -117,8 +117,8 @@ codeInputPlayer1: .res $1 ; $01b6
 codeInputPlayer2: .res $1 ; $01b7
 longBarCodeUsedP1: .res $1 ; $01b8
 longBarCodeUsedP2: .res $1 ; $01b9
-removeBlockCodeUsedP1: .res $1 ; $01ba
-removeBlockCodeUsedP2: .res $1 ; $01bb
+undoCodeUsedP1: .res $1 ; $01ba
+undoCodeUsedP2: .res $1 ; $01bb
 lastCurrentBlockP1: .res $1 ; $01bc
 lastCurrentBlockP2: .res $1 ; $01bd
 lastOrientationP1: .res $1 ; $01be
