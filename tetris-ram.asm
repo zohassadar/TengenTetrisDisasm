@@ -96,7 +96,9 @@ player2FallTimer: .res $1 ; $006b
 .res $1 ; $006d
 .res $1 ; $006e
 .res $1 ; $006f
-.res $10 ; $0070
+.res $6 ; $0070
+relatesToAddrTableAB25: .res $2 ; $0076
+.res $2 ; $007e
 .res $10 ; $0080
 .res $10 ; $0090
 .res $10 ; $00a0
@@ -106,8 +108,6 @@ player2FallTimer: .res $1 ; $006b
 .res $10 ; $00e0
 .res $10 ; $00f0
 .bss
-
-page1:
 
 ppuStaging: .res $46 ; $0100 - $0145 (This needs to be confirmed)
 

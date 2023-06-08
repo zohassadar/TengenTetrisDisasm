@@ -72,7 +72,7 @@ LABEL { ADDR $0068; NAME "player1TetrominoOrientation"; };
 LABEL { ADDR $0069; NAME "player2TetrominoOrientation"; }; 
 LABEL { ADDR $006a; NAME "player1FallTimer"; }; 
 LABEL { ADDR $006b; NAME "player2FallTimer"; }; 
-
+LABEL { ADDR $0076; NAME "relatesToAddrTableAB25"; SIZE $2; }; 
 LABEL { ADDR $0100; NAME "ppuStaging"; SIZE $46; };
 LABEL { ADDR $01b6; NAME "codeInputPlayer1"; }; 
 LABEL { ADDR $01b7; NAME "codeInputPlayer2"; }; 
@@ -336,7 +336,7 @@ LABEL { ADDR $b36b; NAME "cathedralCheckComplete"; };
 LABEL { ADDR $b371; NAME "drawCathedralSpriteTile"; };
 LABEL { ADDR $b3a0; NAME "cathedralSpriteTabel"; SIZE $48; };
 LABEL { ADDR $b3e9; NAME "sendBulkDataToPPU"; };
-LABEL { ADDR $B4A2; NAME "ppuPatchTable1"; SIZE $6; COMMENT "columns, rows, ppu address (2 bytes), data address (2 bytes)"; };
+LABEL { ADDR $B4A2; NAME "ppuPatchTable1"; COMMENT "columns, rows, ppu address (2 bytes), data address (2 bytes)"; };
 LABEL { ADDR $B4A8; NAME "ppuPatchTableSkipPatch"; COMMENT "0 columns skips the routine. 5 bytes are taken from code anyway"; };
 LABEL { ADDR $B4A9; NAME "checkCodeInput"; };
 LABEL { ADDR $B52B; NAME "applyLongbarCode"; };
@@ -426,11 +426,12 @@ RANGE { START $8d46; END $8e53; TYPE CODE; };
 RANGE { START $8e54; END $8ea1; TYPE BYTETABLE; };
 RANGE { START $8ea2; END $9016; TYPE CODE; };
 
-RANGE { START $9017; END $9034; TYPE BYTETABLE; };
+RANGE { START $9017; END $9034; TYPE WORDTABLE; NAME "possiblePPUAddrTable"; };
 RANGE { START $9035; END $9093; TYPE CODE; };
-RANGE { START $9094; END $90af; TYPE BYTETABLE; };
+RANGE { START $9094; END $90af; TYPE ADDRTABLE; NAME "possibleAddressTable"; };
 RANGE { START $90b0; END $91d9; TYPE CODE; };
-RANGE { START $91da; END $91e2; TYPE BYTETABLE; };
+RANGE { START $91da; END $91dc; TYPE BYTETABLE; };
+RANGE { START $91dd; END $91e2; TYPE WORDTABLE; NAME "possiblePPUAddrTable2"; };
 RANGE { START $91e3; END $93ca; TYPE CODE; };
 RANGE { START $93cb; END $93f6; TYPE BYTETABLE; };
 RANGE { START $93f7; END $9535; TYPE CODE; };
@@ -462,7 +463,6 @@ RANGE { START $a189; END $a19a; TYPE AddrTable; };
 RANGE { START $a19b; END $a3c1; TYPE BYTETABLE; };
 RANGE { START $a3c2; END $a4a7; TYPE CODE; };
 RANGE { START $a4a8; END $a4b9; TYPE ADDRTABLE; NAME "attributeAddressTable"; };
-
 RANGE { START $a4ba; END $a508; TYPE BYTETABLE; NAME "attrDataTitleScreen"; };
 RANGE { START $a509; END $a53d; TYPE BYTETABLE; NAME "attrDataGametypeSelect"; };
 RANGE { START $a53e; END $a576; TYPE BYTETABLE; NAME "attrDataLevelHandicapSelect"; };
@@ -480,7 +480,11 @@ RANGE { START $a903; END $a910; TYPE ADDRTABLE; };
 RANGE { START $a911; END $aa6b; TYPE CODE; };
 RANGE { START $aa6c; END $aa6f; TYPE BYTETABLE; };
 RANGE { START $aa70; END $ab1d; TYPE CODE; };
-RANGE { START $ab1e; END $ac9f; TYPE BYTETABLE; };
+RANGE { START $ab1e; END $ab24; TYPE BYTETABLE; };
+
+RANGE { START $ab25; END $ab2c; TYPE ADDRTABLE; NAME "addrTableAB25"; };
+RANGE { START $ab2d; END $ac9f; TYPE BYTETABLE; };
+
 RANGE { START $aca0; END $ad24; TYPE CODE; };
 RANGE { START $ad25; END $b014; TYPE BYTETABLE; };
 
@@ -491,7 +495,10 @@ RANGE { START $b3a0; END $b3e8; TYPE BYTETABLE; };
 RANGE { START $b3e9; END $b47d; TYPE CODE; };
 RANGE { START $b47e; END $b48f; TYPE ADDRTABLE; NAME "nametableAddressTable"; };  
 RANGE { START $b490; END $b4a1; TYPE ADDRTABLE; NAME "ppuPatchTable2"; };  
-RANGE { START $b4a2; END $b4a8; TYPE BYTETABLE; };  
+RANGE { START $b4a2; END $b4a3; TYPE BYTETABLE; };
+RANGE { START $b4a4; END $b4a5; TYPE WORDTABLE; NAME "ppuPatchTable1PPUAddr"; };
+RANGE { START $b4a6; END $b4a7; TYPE ADDRTABLE; NAME "ppuPatchTable1DataAddr"; };
+RANGE { START $b4a8; END $b4a8; TYPE BYTETABLE; };
 RANGE { START $b4a9; END $b5a7; TYPE CODE; };
 RANGE { START $b5a8; END $b5c4; TYPE BYTETABLE; };
 RANGE { START $b5c5; END $b65c; TYPE CODE; };

@@ -166,5 +166,15 @@ tilesForT:
 
 LB65D - game background modification address table
 
+******
+
+LAB2D - relates to fireworks sprites.  Dunno yet what the other groups are for
 
 
+The instances of:
+`lda     #\$DF`
+look to be part of an address.  
+
+
+
+The address table at DF71 when modified to all $FF kills sound
