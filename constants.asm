@@ -11,6 +11,10 @@ BUTTON_RIGHT := $80
 
 BUTTON_DPAD := BUTTON_UP | BUTTON_DOWN | BUTTON_LEFT | BUTTON_RIGHT
 
+; loaded into x several times throughout the code
+PLAYER1 := $00
+PLAYER2 := $00
+
 ; gameState values
 GAMESTATE_LEADERBOARD := $F8
 GAMESTATE_GAMEOVER := $F9

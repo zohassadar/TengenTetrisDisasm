@@ -306,6 +306,7 @@ LABEL { ADDR $a393; NAME "ppuPatchLeaderboard14"; };
 LABEL { ADDR $a399; NAME "ppuPatchLeaderboard15"; };
 LABEL { ADDR $a39f; NAME "unknownData01"; };
 LABEL { ADDR $a3c2; NAME "resetOAMStaging"; };
+LABEL { ADDR $a3db; NAME "doSomethingWithPPUFlagsAndRegisters"; };
 LABEL { ADDR $a400; NAME "pollController"; };
 LABEL { ADDR $a44a; NAME "waitForNMIAndDisablePPURendering"; };
 LABEL { ADDR $a44e; NAME "@waitForNMI"; };
@@ -325,6 +326,7 @@ LABEL { ADDR $A8DE; NAME "renderFakeReturnXIsC"; };
 LABEL { ADDR $A903; NAME "renderJumpTable"; }; 
 LABEL { ADDR $a911; NAME "reset"; };
 LABEL { ADDR $AA6C; NAME "topoutSoundsTable"; };
+
 LABEL { ADDR $b369; NAME "drawCathedralSprites"; };
 LABEL { ADDR $b36b; NAME "cathedralCheckComplete"; };
 LABEL { ADDR $b371; NAME "drawCathedralSpriteTile"; };
@@ -332,11 +334,21 @@ LABEL { ADDR $b3a0; NAME "cathedralSpriteTabel"; SIZE $48; };
 LABEL { ADDR $b3e9; NAME "sendBulkDataToPPU"; };
 LABEL { ADDR $B4A2; NAME "ppuPatchTable1"; SIZE $6; COMMENT "columns, rows, ppu address (2 bytes), data address (2 bytes)"; };
 LABEL { ADDR $B4A8; NAME "ppuPatchTableSkipPatch"; COMMENT "0 columns skips the routine. 5 bytes are taken from code anyway"; };
+LABEL { ADDR $B4A9; NAME "checkCodeInput"; };
 LABEL { ADDR $B5a8; NAME "levelUpCode"; SIZE $a; };
 LABEL { ADDR $B5B2; NAME "getLongbarCode"; SIZE $9; };
 LABEL { ADDR $B5Bb; NAME "removeBlockCode"; SIZE $a; };
+LABEL { ADDR $B5D4; NAME "@gameNotPaused"; };
+LABEL { ADDR $B5DC; NAME "@ret"; };
+LABEL { ADDR $B5DD; NAME "@startPressedOnEitherController"; };
+LABEL { ADDR $B5e5; NAME "@pause"; };
+LABEL { ADDR $B5f0; NAME "@unpause"; };
+LABEL { ADDR $B5fc; NAME "@jumpOverUnpause"; };
+LABEL { ADDR $B603; NAME "loadDataIntoPPUStagingPossible"; };
+LABEL { ADDR $b849; NAME "possibleScorePresentationPatch"; SIZE $5f; };
 LABEL { ADDR $b8a8; NAME "menuNametable"; SIZE $3c0; };
 LABEL { ADDR $bc68; NAME "gameModeNametableCoop"; SIZE $3c0; };
+
 LABEL { ADDR $c028; NAME "gameModeNametable1P"; SIZE $3c0; };
 LABEL { ADDR $c3e8; NAME "gameModeNametable2P"; SIZE $3c0; };
 LABEL { ADDR $ca00; NAME "titleScreenNametable"; SIZE $3c0; };
@@ -452,7 +464,8 @@ RANGE { START $b4a2; END $b4a8; TYPE BYTETABLE; };
 RANGE { START $b4a9; END $b5a7; TYPE CODE; };
 RANGE { START $b5a8; END $b5c4; TYPE BYTETABLE; };
 RANGE { START $b5c5; END $b65c; TYPE CODE; };
-RANGE { START $b65d; END $cf78; TYPE BYTETABLE; };
+RANGE { START $b65d; END $b678; TYPE ADDRTABLE; };
+RANGE { START $b679; END $cf78; TYPE BYTETABLE; };
 
 RANGE { START $cf79; END $d00f; TYPE CODE; };
 

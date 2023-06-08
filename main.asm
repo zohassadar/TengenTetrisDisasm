@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-07 15:03:08
+; Created:    2023-06-07 18:17:47
 ; Input file: clean.nes
 ; Page:       1
 
@@ -743,7 +743,7 @@ L83F8:
         clc                                     ; 8400 18                       .
         adc     #$03                            ; 8401 69 03                    i.
 L8403:
-        jsr     LB603                           ; 8403 20 03 B6                  ..
+        jsr     loadDataIntoPPUStagingPossible  ; 8403 20 03 B6                  ..
         lda     #$0A                            ; 8406 A9 0A                    ..
         jmp     setMusicOrSoundEffect           ; 8408 4C B1 CF                 L..
 
@@ -805,7 +805,7 @@ L8450:
         beq     L8450                           ; 845A F0 F4                    ..
         bne     L844E                           ; 845C D0 F0                    ..
 L845E:
-        jsr     LA3DB                           ; 845E 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; 845E 20 DB A3               ..
         stx     generalCounter3a                ; 8461 86 3A                    .:
         ldx     generalCounter38                ; 8463 A6 38                    .8
         ldy     #$00                            ; 8465 A0 00                    ..
@@ -1639,7 +1639,7 @@ L89E9:
         lsr     a                               ; 89F4 4A                       J
         adc     generalCounter37                ; 89F5 65 37                    e7
         pha                                     ; 89F7 48                       H
-        jsr     LA3DB                           ; 89F8 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; 89F8 20 DB A3               ..
         pla                                     ; 89FB 68                       h
         clc                                     ; 89FC 18                       .
         adc     #$1F                            ; 89FD 69 1F                    i.
@@ -1788,7 +1788,7 @@ L8AF7:
 L8B0E:
         lda     #$FF                            ; 8B0E A9 FF                    ..
         sta     (generalCounter3a),y            ; 8B10 91 3A                    .:
-        jsr     LA3DB                           ; 8B12 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; 8B12 20 DB A3               ..
         sty     generalCounter39                ; 8B15 84 39                    .9
         jsr     L849D                           ; 8B17 20 9D 84                  ..
         lda     ppuStagingAddress               ; 8B1A A5 48                    .H
@@ -2107,7 +2107,7 @@ L8D19:
         ldy     $4B                             ; 8D21 A4 4B                    .K
         beq     L8D36                           ; 8D23 F0 11                    ..
         lda     #$0A                            ; 8D25 A9 0A                    ..
-        jsr     LB603                           ; 8D27 20 03 B6                  ..
+        jsr     loadDataIntoPPUStagingPossible  ; 8D27 20 03 B6                  ..
         ldy     #$01                            ; 8D2A A0 01                    ..
         jsr     L9177                           ; 8D2C 20 77 91                  w.
         lda     #$04                            ; 8D2F A9 04                    ..
@@ -2119,7 +2119,7 @@ L8D36:
 L8D3A:
         lda     #$09                            ; 8D3A A9 09                    ..
 L8D3C:
-        jsr     LB603                           ; 8D3C 20 03 B6                  ..
+        jsr     loadDataIntoPPUStagingPossible  ; 8D3C 20 03 B6                  ..
         ldy     playMode                        ; 8D3F A4 2F                    ./
         cpy     #$01                            ; 8D41 C0 01                    ..
         bne     L8D46                           ; 8D43 D0 01                    ..
@@ -2160,7 +2160,7 @@ L8D6B:
         bit     playMode                        ; 8D82 24 2F                    $/
         bmi     L8D8B                           ; 8D84 30 05                    0.
         lda     #$0C                            ; 8D86 A9 0C                    ..
-        jsr     LB603                           ; 8D88 20 03 B6                  ..
+        jsr     loadDataIntoPPUStagingPossible  ; 8D88 20 03 B6                  ..
 L8D8B:
         lda     $4A                             ; 8D8B A5 4A                    .J
         beq     L8D94                           ; 8D8D F0 05                    ..
@@ -2442,7 +2442,7 @@ L8FB6:
         adc     #$10                            ; 8FC1 69 10                    i.
 L8FC3:
         tay                                     ; 8FC3 A8                       .
-        jsr     LA3DB                           ; 8FC4 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; 8FC4 20 DB A3               ..
         lda     L9018,y                         ; 8FC7 B9 18 90                 ...
         sta     $17,x                           ; 8FCA 95 17                    ..
         lda     L9017,y                         ; 8FCC B9 17 90                 ...
@@ -2467,7 +2467,7 @@ L8FC3:
         lda     #$04                            ; 8FF2 A9 04                    ..
 L8FF4:
         tay                                     ; 8FF4 A8                       .
-        jsr     LA3DB                           ; 8FF5 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; 8FF5 20 DB A3               ..
         lda     L9030,y                         ; 8FF8 B9 30 90                 .0.
         sta     $17,x                           ; 8FFB 95 17                    ..
         lda     L902F,y                         ; 8FFD B9 2F 90                 ./.
@@ -2586,7 +2586,7 @@ L90C5:
         bit     playMode                        ; 90D3 24 2F                    $/
         bmi     L90DC                           ; 90D5 30 05                    0.
         lda     #$0D                            ; 90D7 A9 0D                    ..
-        jsr     LB603                           ; 90D9 20 03 B6                  ..
+        jsr     loadDataIntoPPUStagingPossible  ; 90D9 20 03 B6                  ..
 L90DC:
         lda     #$5A                            ; 90DC A9 5A                    .Z
         sta     player1FallTimer                ; 90DE 85 6A                    .j
@@ -2684,7 +2684,7 @@ L9177:
         sta     generalCounter37                ; 9186 85 37                    .7
 L9188:
         stx     generalCounter38                ; 9188 86 38                    .8
-        jsr     LA3DB                           ; 918A 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; 918A 20 DB A3               ..
         lda     generalCounter37                ; 918D A5 37                    .7
         sta     $17,x                           ; 918F 95 17                    ..
         lda     generalCounter36                ; 9191 A5 36                    .6
@@ -2911,7 +2911,7 @@ L92D9:
 L92E3:
         sta     leaderboardInitials,y           ; 92E3 99 C3 04                 ...
         stx     generalCounter38                ; 92E6 86 38                    .8
-        jsr     LA3DB                           ; 92E8 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; 92E8 20 DB A3               ..
         lda     generalCounter36                ; 92EB A5 36                    .6
         asl     a                               ; 92ED 0A                       .
         asl     a                               ; 92EE 0A                       .
@@ -3809,7 +3809,7 @@ L9997:
         clc                                     ; 99A3 18                       .
         adc     #$21                            ; 99A4 69 21                    i!
         sta     generalCounter36                ; 99A6 85 36                    .6
-        jsr     LA3DB                           ; 99A8 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; 99A8 20 DB A3               ..
         lda     ppuStagingAddress               ; 99AB A5 48                    .H
         sta     ppuDataAddress1,x               ; 99AD 95 08                    ..
         lda     ppuStagingAddress+1             ; 99AF A5 49                    .I
@@ -4080,7 +4080,7 @@ L9B64:
         txa                                     ; 9B6E 8A                       .
         asl     a                               ; 9B6F 0A                       .
         tay                                     ; 9B70 A8                       .
-        jsr     LA3DB                           ; 9B71 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; 9B71 20 DB A3               ..
         lda     statsDataAddresses,y            ; 9B74 B9 DC 9B                 ...
         sta     ppuDataAddress1,x               ; 9B77 95 08                    ..
         sta     generalCounter36                ; 9B79 85 36                    .6
@@ -4802,7 +4802,7 @@ LA06A:
         lda     #$3E                            ; A06D A9 3E                    .>
 LA06F:
         pha                                     ; A06F 48                       H
-        jsr     LA3DB                           ; A070 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; A070 20 DB A3               ..
         sty     generalCounter36                ; A073 84 36                    .6
         lda     menuGameMode,y                  ; A075 B9 F0 04                 ...
         clc                                     ; A078 18                       .
@@ -5072,7 +5072,7 @@ LA3C4:
         rts                                     ; A3DA 60                       `
 
 ; ----------------------------------------------------------------------------
-LA3DB:
+doSomethingWithPPUFlagsAndRegisters:
         ldx     ppuRenderFlagBefore             ; A3DB A6 25                    .%
         lda     $24,x                           ; A3DD B5 24                    .$
         beq     LA3F2                           ; A3DF F0 11                    ..
@@ -5293,7 +5293,7 @@ attrDataLeaderboard:
 ; ----------------------------------------------------------------------------
 LA6BE:
         tay                                     ; A6BE A8                       .
-        jsr     LA3DB                           ; A6BF 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; A6BF 20 DB A3               ..
         lda     #$3F                            ; A6C2 A9 3F                    .?
         sta     $17,x                           ; A6C4 95 17                    ..
         lda     LA6DF,y                         ; A6C6 B9 DF A6                 ...
@@ -5347,7 +5347,7 @@ LA763:
         adc     #$11                            ; A766 69 11                    i.
 LA768:
         pha                                     ; A768 48                       H
-        jsr     LA3DB                           ; A769 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; A769 20 DB A3               ..
         pla                                     ; A76C 68                       h
         sta     $16,x                           ; A76D 95 16                    ..
         lda     #$3F                            ; A76F A9 3F                    .?
@@ -6493,7 +6493,7 @@ ppuPatchTable1:
 ppuPatchTableSkipPatch:
         .byte   $00                             ; B4A8 00                       .
 ; ----------------------------------------------------------------------------
-LB4A9:
+checkCodeInput:
         lda     $4A,x                           ; B4A9 B5 4A                    .J
         beq     LB52A                           ; B4AB F0 7D                    .}
         lda     player1ControllerNew,x          ; B4AD B5 46                    .F
@@ -6642,47 +6642,48 @@ removeBlockCode:
 LB5C5:
         ldy     gameState                       ; B5C5 A4 29                    .)
         dey                                     ; B5C7 88                       .
-        bne     LB5D4                           ; B5C8 D0 0A                    ..
+        bne     @gameNotPaused                  ; B5C8 D0 0A                    ..
         ldx     #$00                            ; B5CA A2 00                    ..
-        jsr     LB4A9                           ; B5CC 20 A9 B4                  ..
+        jsr     checkCodeInput                  ; B5CC 20 A9 B4                  ..
         ldx     #$01                            ; B5CF A2 01                    ..
-        jsr     LB4A9                           ; B5D1 20 A9 B4                  ..
-LB5D4:
+        jsr     checkCodeInput                  ; B5D1 20 A9 B4                  ..
+@gameNotPaused:
         lda     player1ControllerNew            ; B5D4 A5 46                    .F
         ora     player2ControllerNew            ; B5D6 05 47                    .G
         and     #$08                            ; B5D8 29 08                    ).
-        bne     LB5DD                           ; B5DA D0 01                    ..
-LB5DC:
+        bne     @startPressedOnEitherController ; B5DA D0 01                    ..
+@ret:
         rts                                     ; B5DC 60                       `
 
 ; ----------------------------------------------------------------------------
-LB5DD:
+@startPressedOnEitherController:
         ldy     gameState                       ; B5DD A4 29                    .)
         cpy     #$01                            ; B5DF C0 01                    ..
-        beq     LB5F0                           ; B5E1 F0 0D                    ..
-        bcs     LB5DC                           ; B5E3 B0 F7                    ..
+        beq     @unpause                        ; B5E1 F0 0D                    ..
+        bcs     @ret                            ; B5E3 B0 F7                    ..
+@pause:
         inc     gameState                       ; B5E5 E6 29                    .)
         lda     #$01                            ; B5E7 A9 01                    ..
         jsr     setMusicOrSoundEffect           ; B5E9 20 B1 CF                  ..
         lda     #$00                            ; B5EC A9 00                    ..
-        beq     LB5FC                           ; B5EE F0 0C                    ..
-LB5F0:
+        beq     @jumpOverUnpause                ; B5EE F0 0C                    ..
+@unpause:
         dec     gameState                       ; B5F0 C6 29                    .)
         lda     #$02                            ; B5F2 A9 02                    ..
         jsr     setMusicOrSoundEffect           ; B5F4 20 B1 CF                  ..
         jsr     L8967                           ; B5F7 20 67 89                  g.
         lda     #$01                            ; B5FA A9 01                    ..
-LB5FC:
+@jumpOverUnpause:
         bit     playMode                        ; B5FC 24 2F                    $/
-        bpl     LB603                           ; B5FE 10 03                    ..
+        bpl     loadDataIntoPPUStagingPossible  ; B5FE 10 03                    ..
         clc                                     ; B600 18                       .
         adc     #$07                            ; B601 69 07                    i.
-LB603:
+loadDataIntoPPUStagingPossible:
         asl     a                               ; B603 0A                       .
         tay                                     ; B604 A8                       .
         lda     LB65D,y                         ; B605 B9 5D B6                 .].
         sta     generalCounter3c                ; B608 85 3C                    .<
-        lda     LB65E,y                         ; B60A B9 5E B6                 .^.
+        lda     LB65D+1,y                       ; B60A B9 5E B6                 .^.
         sta     generalCounter3d                ; B60D 85 3D                    .=
         ldy     #$00                            ; B60F A0 00                    ..
 LB611:
@@ -6701,7 +6702,7 @@ LB61A:
         cpx     #$06                            ; B61E E0 06                    ..
         bne     LB618                           ; B620 D0 F6                    ..
 LB622:
-        jsr     LA3DB                           ; B622 20 DB A3                  ..
+        jsr     doSomethingWithPPUFlagsAndRegisters; B622 20 DB A3               ..
         lda     generalCounter38                ; B625 A5 38                    .8
         sta     $16,x                           ; B627 95 16                    ..
         lda     generalCounter39                ; B629 A5 39                    .9
@@ -6732,51 +6733,78 @@ LB622:
         inc     generalCounter3b                ; B659 E6 3B                    .;
         bne     LB622                           ; B65B D0 C5                    ..
 LB65D:
-        .byte   $79                             ; B65D 79                       y
-LB65E:
-        .byte   $B6,$86,$B6,$99,$B6,$A6,$B6,$B3 ; B65E B6 86 B6 99 B6 A6 B6 B3  ........
-        .byte   $B6,$C0,$B6,$E5,$B6,$0A,$B7,$17 ; B666 B6 C0 B6 E5 B6 0A B7 17  ........
-        .byte   $B7,$24,$B7,$6D,$B7,$B6,$B7,$FF ; B66E B7 24 B7 6D B7 B6 B7 FF  .$.m....
-        .byte   $B7,$24,$B8,$88,$02,$0C,$21,$F0 ; B676 B7 24 B8 88 02 0C 21 F0  .$....!.
-        .byte   $C7,$02,$01,$D3,$23,$98,$B8,$00 ; B67E C7 02 01 D3 23 98 B8 00  ....#...
+        .addr   LB679                           ; B65D 79 B6                    y.
+        .addr   LB686                           ; B65F 86 B6                    ..
+        .addr   LB699                           ; B661 99 B6                    ..
+        .addr   LB6A6                           ; B663 A6 B6                    ..
+        .addr   LB6B3                           ; B665 B3 B6                    ..
+        .addr   LB6C0                           ; B667 C0 B6                    ..
+        .addr   LB6E5                           ; B669 E5 B6                    ..
+        .addr   LB70A                           ; B66B 0A B7                    ..
+        .addr   LB717                           ; B66D 17 B7                    ..
+        .addr   LB724                           ; B66F 24 B7                    $.
+        .addr   LB76D                           ; B671 6D B7                    m.
+        .addr   LB7B6                           ; B673 B6 B7                    ..
+        .addr   LB7FF                           ; B675 FF B7                    ..
+        .addr   LB824                           ; B677 24 B8                    $.
+; ----------------------------------------------------------------------------
+LB679:
+        .byte   $88,$02,$0C,$21,$F0,$C7,$02,$01 ; B679 88 02 0C 21 F0 C7 02 01  ...!....
+        .byte   $D3,$23,$98,$B8,$00             ; B681 D3 23 98 B8 00           .#...
+LB686:
         .byte   $08,$01,$0C,$21,$34,$C1,$08,$01 ; B686 08 01 0C 21 34 C1 08 01  ...!4...
         .byte   $2C,$21,$54,$C1,$02,$01,$D3,$23 ; B68E 2C 21 54 C1 02 01 D3 23  ,!T....#
-        .byte   $9A,$B8,$00,$86,$04,$8C,$21,$00 ; B696 9A B8 00 86 04 8C 21 00  ......!.
-        .byte   $C8,$02,$01,$DB,$23,$9C,$B8,$00 ; B69E C8 02 01 DB 23 9C B8 00  ....#...
+        .byte   $9A,$B8,$00                     ; B696 9A B8 00                 ...
+LB699:
+        .byte   $86,$04,$8C,$21,$00,$C8,$02,$01 ; B699 86 04 8C 21 00 C8 02 01  ...!....
+        .byte   $DB,$23,$9C,$B8,$00             ; B6A1 DB 23 9C B8 00           .#...
+LB6A6:
         .byte   $86,$04,$84,$21,$00,$C8,$02,$01 ; B6A6 86 04 84 21 00 C8 02 01  ...!....
-        .byte   $D9,$23,$9C,$B8,$00,$86,$04,$96 ; B6AE D9 23 9C B8 00 86 04 96  .#......
-        .byte   $21,$00,$C8,$02,$01,$DD,$23,$9E ; B6B6 21 00 C8 02 01 DD 23 9E  !.....#.
-        .byte   $B8,$00,$02,$01,$D9,$23,$A0,$B8 ; B6BE B8 00 02 01 D9 23 A0 B8  .....#..
-        .byte   $06,$01,$47,$20,$2A,$BD,$04,$01 ; B6C6 06 01 47 20 2A BD 04 01  ..G *...
-        .byte   $89,$20,$2A,$BD,$02,$01,$CB,$20 ; B6CE 89 20 2A BD 02 01 CB 20  . *.... 
-        .byte   $2A,$BD,$08,$02,$C2,$20,$2A,$BD ; B6D6 2A BD 08 02 C2 20 2A BD  *.... *.
-        .byte   $0A,$14,$02,$21,$2A,$BD,$00,$02 ; B6DE 0A 14 02 21 2A BD 00 02  ...!*...
-        .byte   $01,$DD,$23,$A2,$B8,$06,$01,$53 ; B6E6 01 DD 23 A2 B8 06 01 53  ..#....S
-        .byte   $20,$2A,$BD,$04,$01,$93,$20,$2A ; B6EE 20 2A BD 04 01 93 20 2A   *.... *
-        .byte   $BD,$02,$01,$D3,$20,$2A,$BD,$08 ; B6F6 BD 02 01 D3 20 2A BD 08  .... *..
-        .byte   $02,$D6,$20,$2A,$BD,$0A,$14,$14 ; B6FE 02 D6 20 2A BD 0A 14 14  .. *....
-        .byte   $21,$2A,$BD,$00,$88,$02,$CC,$20 ; B706 21 2A BD 00 88 02 CC 20  !*..... 
-        .byte   $F0,$C7,$02,$01,$CB,$23,$A4,$B8 ; B70E F0 C7 02 01 CB 23 A4 B8  .....#..
-        .byte   $00,$08,$02,$CC,$20,$2A,$BD,$02 ; B716 00 08 02 CC 20 2A BD 02  .... *..
-        .byte   $01,$CB,$23,$A6,$B8,$00,$0A,$14 ; B71E 01 CB 23 A6 B8 00 0A 14  ..#.....
-        .byte   $02,$21,$2A,$BD,$8A,$02,$02,$21 ; B726 02 21 2A BD 8A 02 02 21  .!*....!
-        .byte   $18,$C8,$07,$01,$65,$21,$4F,$B8 ; B72E 18 C8 07 01 65 21 4F B8  ....e!O.
-        .byte   $0A,$01,$82,$21,$56,$B8,$07,$01 ; B736 0A 01 82 21 56 B8 07 01  ...!V...
-        .byte   $E5,$21,$60,$B8,$0A,$01,$02,$22 ; B73E E5 21 60 B8 0A 01 02 22  .!`...."
-        .byte   $67,$B8,$07,$01,$65,$22,$71,$B8 ; B746 67 B8 07 01 65 22 71 B8  g...e"q.
-        .byte   $0A,$01,$82,$22,$78,$B8,$06,$01 ; B74E 0A 01 82 22 78 B8 06 01  ..."x...
-        .byte   $E5,$22,$82,$B8,$0A,$01,$02,$23 ; B756 E5 22 82 B8 0A 01 02 23  .".....#
-        .byte   $89,$B8,$05,$01,$42,$23,$93,$B8 ; B75E 89 B8 05 01 42 23 93 B8  ....B#..
-        .byte   $02,$01,$6A,$23,$91,$B8,$00,$0A ; B766 02 01 6A 23 91 B8 00 0A  ..j#....
-        .byte   $14,$14,$21,$2A,$BD,$8A,$02,$14 ; B76E 14 14 21 2A BD 8A 02 14  ..!*....
-        .byte   $21,$18,$C8,$07,$01,$77,$21,$4F ; B776 21 18 C8 07 01 77 21 4F  !....w!O
-        .byte   $B8,$0A,$01,$94,$21,$56,$B8,$07 ; B77E B8 0A 01 94 21 56 B8 07  ....!V..
-        .byte   $01,$F7,$21,$60,$B8,$0A,$01,$14 ; B786 01 F7 21 60 B8 0A 01 14  ..!`....
-        .byte   $22,$67,$B8,$07,$01,$77,$22,$71 ; B78E 22 67 B8 07 01 77 22 71  "g...w"q
-        .byte   $B8,$0A,$01,$94,$22,$78,$B8,$06 ; B796 B8 0A 01 94 22 78 B8 06  ...."x..
-        .byte   $01,$F7,$22,$82,$B8,$0A,$01,$14 ; B79E 01 F7 22 82 B8 0A 01 14  ..".....
-        .byte   $23,$89,$B8,$05,$01,$54,$23,$93 ; B7A6 23 89 B8 05 01 54 23 93  #....T#.
-        .byte   $B8,$02,$01,$7C,$23,$91,$B8,$00 ; B7AE B8 02 01 7C 23 91 B8 00  ...|#...
+        .byte   $D9,$23,$9C,$B8,$00             ; B6AE D9 23 9C B8 00           .#...
+LB6B3:
+        .byte   $86,$04,$96,$21,$00,$C8,$02,$01 ; B6B3 86 04 96 21 00 C8 02 01  ...!....
+        .byte   $DD,$23,$9E,$B8,$00             ; B6BB DD 23 9E B8 00           .#...
+LB6C0:
+        .byte   $02,$01,$D9,$23,$A0,$B8,$06,$01 ; B6C0 02 01 D9 23 A0 B8 06 01  ...#....
+        .byte   $47,$20,$2A,$BD,$04,$01,$89,$20 ; B6C8 47 20 2A BD 04 01 89 20  G *.... 
+        .byte   $2A,$BD,$02,$01,$CB,$20,$2A,$BD ; B6D0 2A BD 02 01 CB 20 2A BD  *.... *.
+        .byte   $08,$02,$C2,$20,$2A,$BD,$0A,$14 ; B6D8 08 02 C2 20 2A BD 0A 14  ... *...
+        .byte   $02,$21,$2A,$BD,$00             ; B6E0 02 21 2A BD 00           .!*..
+LB6E5:
+        .byte   $02,$01,$DD,$23,$A2,$B8,$06,$01 ; B6E5 02 01 DD 23 A2 B8 06 01  ...#....
+        .byte   $53,$20,$2A,$BD,$04,$01,$93,$20 ; B6ED 53 20 2A BD 04 01 93 20  S *.... 
+        .byte   $2A,$BD,$02,$01,$D3,$20,$2A,$BD ; B6F5 2A BD 02 01 D3 20 2A BD  *.... *.
+        .byte   $08,$02,$D6,$20,$2A,$BD,$0A,$14 ; B6FD 08 02 D6 20 2A BD 0A 14  ... *...
+        .byte   $14,$21,$2A,$BD,$00             ; B705 14 21 2A BD 00           .!*..
+LB70A:
+        .byte   $88,$02,$CC,$20,$F0,$C7,$02,$01 ; B70A 88 02 CC 20 F0 C7 02 01  ... ....
+        .byte   $CB,$23,$A4,$B8,$00             ; B712 CB 23 A4 B8 00           .#...
+LB717:
+        .byte   $08,$02,$CC,$20,$2A,$BD,$02,$01 ; B717 08 02 CC 20 2A BD 02 01  ... *...
+        .byte   $CB,$23,$A6,$B8,$00             ; B71F CB 23 A6 B8 00           .#...
+LB724:
+        .byte   $0A,$14,$02,$21,$2A,$BD,$8A,$02 ; B724 0A 14 02 21 2A BD 8A 02  ...!*...
+        .byte   $02,$21,$18,$C8,$07,$01,$65,$21 ; B72C 02 21 18 C8 07 01 65 21  .!....e!
+        .byte   $4F,$B8,$0A,$01,$82,$21,$56,$B8 ; B734 4F B8 0A 01 82 21 56 B8  O....!V.
+        .byte   $07,$01,$E5,$21,$60,$B8,$0A,$01 ; B73C 07 01 E5 21 60 B8 0A 01  ...!`...
+        .byte   $02,$22,$67,$B8,$07,$01,$65,$22 ; B744 02 22 67 B8 07 01 65 22  ."g...e"
+        .byte   $71,$B8,$0A,$01,$82,$22,$78,$B8 ; B74C 71 B8 0A 01 82 22 78 B8  q...."x.
+        .byte   $06,$01,$E5,$22,$82,$B8,$0A,$01 ; B754 06 01 E5 22 82 B8 0A 01  ..."....
+        .byte   $02,$23,$89,$B8,$05,$01,$42,$23 ; B75C 02 23 89 B8 05 01 42 23  .#....B#
+        .byte   $93,$B8,$02,$01,$6A,$23,$91,$B8 ; B764 93 B8 02 01 6A 23 91 B8  ....j#..
+        .byte   $00                             ; B76C 00                       .
+LB76D:
+        .byte   $0A,$14,$14,$21,$2A,$BD,$8A,$02 ; B76D 0A 14 14 21 2A BD 8A 02  ...!*...
+        .byte   $14,$21,$18,$C8,$07,$01,$77,$21 ; B775 14 21 18 C8 07 01 77 21  .!....w!
+        .byte   $4F,$B8,$0A,$01,$94,$21,$56,$B8 ; B77D 4F B8 0A 01 94 21 56 B8  O....!V.
+        .byte   $07,$01,$F7,$21,$60,$B8,$0A,$01 ; B785 07 01 F7 21 60 B8 0A 01  ...!`...
+        .byte   $14,$22,$67,$B8,$07,$01,$77,$22 ; B78D 14 22 67 B8 07 01 77 22  ."g...w"
+        .byte   $71,$B8,$0A,$01,$94,$22,$78,$B8 ; B795 71 B8 0A 01 94 22 78 B8  q...."x.
+        .byte   $06,$01,$F7,$22,$82,$B8,$0A,$01 ; B79D 06 01 F7 22 82 B8 0A 01  ..."....
+        .byte   $14,$23,$89,$B8,$05,$01,$54,$23 ; B7A5 14 23 89 B8 05 01 54 23  .#....T#
+        .byte   $93,$B8,$02,$01,$7C,$23,$91,$B8 ; B7AD 93 B8 02 01 7C 23 91 B8  ....|#..
+        .byte   $00                             ; B7B5 00                       .
+LB7B6:
         .byte   $0C,$14,$0A,$21,$2A,$BD,$8A,$02 ; B7B6 0C 14 0A 21 2A BD 8A 02  ...!*...
         .byte   $0B,$21,$18,$C8,$07,$01,$6E,$21 ; B7BE 0B 21 18 C8 07 01 6E 21  .!....n!
         .byte   $4F,$B8,$0A,$01,$8B,$21,$56,$B8 ; B7C6 4F B8 0A 01 8B 21 56 B8  O....!V.
@@ -6786,28 +6814,32 @@ LB65E:
         .byte   $06,$01,$EE,$22,$82,$B8,$0B,$01 ; B7E6 06 01 EE 22 82 B8 0B 01  ..."....
         .byte   $0A,$23,$88,$B8,$05,$01,$4B,$23 ; B7EE 0A 23 88 B8 05 01 4B 23  .#....K#
         .byte   $93,$B8,$02,$01,$73,$23,$91,$B8 ; B7F6 93 B8 02 01 73 23 91 B8  ....s#..
-        .byte   $00,$84,$12,$4E,$21,$2C,$C8,$02 ; B7FE 00 84 12 4E 21 2C C8 02  ...N!,..
-        .byte   $01,$D3,$23,$4D,$B8,$02,$01,$DB ; B806 01 D3 23 4D B8 02 01 DB  ..#M....
-        .byte   $23,$4D,$B8,$02,$01,$E3,$23,$4D ; B80E 23 4D B8 02 01 E3 23 4D  #M....#M
-        .byte   $B8,$02,$01,$EB,$23,$4D,$B8,$02 ; B816 B8 02 01 EB 23 4D B8 02  ....#M..
-        .byte   $01,$F3,$23,$4D,$B8,$00,$84,$12 ; B81E 01 F3 23 4D B8 00 84 12  ..#M....
-        .byte   $4E,$21,$74,$C8,$02,$01,$D3,$23 ; B826 4E 21 74 C8 02 01 D3 23  N!t....#
-        .byte   $49,$B8,$02,$01,$DB,$23,$4B,$B8 ; B82E 49 B8 02 01 DB 23 4B B8  I....#K.
-        .byte   $02,$01,$E3,$23,$4B,$B8,$02,$01 ; B836 02 01 E3 23 4B B8 02 01  ...#K...
-        .byte   $EB,$23,$4B,$B8,$02,$01,$F3,$23 ; B83E EB 23 4B B8 02 01 F3 23  .#K....#
-        .byte   $4B,$B8,$00,$EA,$BA,$EE,$BB,$AA ; B846 4B B8 00 EA BA EE BB AA  K.......
-        .byte   $AA,$53,$49,$4E,$47,$4C,$45,$53 ; B84E AA 53 49 4E 47 4C 45 53  .SINGLES
-        .byte   $58,$31,$30,$30,$3D,$20,$20,$20 ; B856 58 31 30 30 3D 20 20 20  X100=   
-        .byte   $30,$30,$44,$4F,$55,$42,$4C,$45 ; B85E 30 30 44 4F 55 42 4C 45  00DOUBLE
-        .byte   $53,$58,$34,$30,$30,$3D,$20,$20 ; B866 53 58 34 30 30 3D 20 20  SX400=  
-        .byte   $20,$30,$30,$54,$52,$49,$50,$4C ; B86E 20 30 30 54 52 49 50 4C   00TRIPL
-        .byte   $45,$53,$58,$39,$30,$30,$3D,$20 ; B876 45 53 58 39 30 30 3D 20  ESX900= 
-        .byte   $20,$20,$30,$30,$54,$45,$54,$52 ; B87E 20 20 30 30 54 45 54 52    00TETR
-        .byte   $49,$53,$58,$32,$35,$30,$30,$3D ; B886 49 53 58 32 35 30 30 3D  ISX2500=
-        .byte   $20,$20,$20,$30,$30,$54,$4F,$54 ; B88E 20 20 20 30 30 54 4F 54     00TOT
-        .byte   $41,$4C,$EF,$BF,$EA,$BA,$FF,$33 ; B896 41 4C EF BF EA BA FF 33  AL.....3
-        .byte   $DD,$FF,$00,$00,$55,$55,$FF,$FF ; B89E DD FF 00 00 55 55 FF FF  ....UU..
-        .byte   $0F,$0F                         ; B8A6 0F 0F                    ..
+        .byte   $00                             ; B7FE 00                       .
+LB7FF:
+        .byte   $84,$12,$4E,$21,$2C,$C8,$02,$01 ; B7FF 84 12 4E 21 2C C8 02 01  ..N!,...
+        .byte   $D3,$23,$4D,$B8,$02,$01,$DB,$23 ; B807 D3 23 4D B8 02 01 DB 23  .#M....#
+        .byte   $4D,$B8,$02,$01,$E3,$23,$4D,$B8 ; B80F 4D B8 02 01 E3 23 4D B8  M....#M.
+        .byte   $02,$01,$EB,$23,$4D,$B8,$02,$01 ; B817 02 01 EB 23 4D B8 02 01  ...#M...
+        .byte   $F3,$23,$4D,$B8,$00             ; B81F F3 23 4D B8 00           .#M..
+LB824:
+        .byte   $84,$12,$4E,$21,$74,$C8,$02,$01 ; B824 84 12 4E 21 74 C8 02 01  ..N!t...
+        .byte   $D3,$23,$49,$B8,$02,$01,$DB,$23 ; B82C D3 23 49 B8 02 01 DB 23  .#I....#
+        .byte   $4B,$B8,$02,$01,$E3,$23,$4B,$B8 ; B834 4B B8 02 01 E3 23 4B B8  K....#K.
+        .byte   $02,$01,$EB,$23,$4B,$B8,$02,$01 ; B83C 02 01 EB 23 4B B8 02 01  ...#K...
+        .byte   $F3,$23,$4B,$B8,$00             ; B844 F3 23 4B B8 00           .#K..
+possibleScorePresentationPatch:
+        .byte   $EA,$BA,$EE,$BB,$AA,$AA,$53,$49 ; B849 EA BA EE BB AA AA 53 49  ......SI
+        .byte   $4E,$47,$4C,$45,$53,$58,$31,$30 ; B851 4E 47 4C 45 53 58 31 30  NGLESX10
+        .byte   $30,$3D,$20,$20,$20,$30,$30,$44 ; B859 30 3D 20 20 20 30 30 44  0=   00D
+        .byte   $4F,$55,$42,$4C,$45,$53,$58,$34 ; B861 4F 55 42 4C 45 53 58 34  OUBLESX4
+        .byte   $30,$30,$3D,$20,$20,$20,$30,$30 ; B869 30 30 3D 20 20 20 30 30  00=   00
+        .byte   $54,$52,$49,$50,$4C,$45,$53,$58 ; B871 54 52 49 50 4C 45 53 58  TRIPLESX
+        .byte   $39,$30,$30,$3D,$20,$20,$20,$30 ; B879 39 30 30 3D 20 20 20 30  900=   0
+        .byte   $30,$54,$45,$54,$52,$49,$53,$58 ; B881 30 54 45 54 52 49 53 58  0TETRISX
+        .byte   $32,$35,$30,$30,$3D,$20,$20,$20 ; B889 32 35 30 30 3D 20 20 20  2500=   
+        .byte   $30,$30,$54,$4F,$54,$41,$4C,$EF ; B891 30 30 54 4F 54 41 4C EF  00TOTAL.
+        .byte   $BF,$EA,$BA,$FF,$33,$DD,$FF,$00 ; B899 BF EA BA FF 33 DD FF 00  ....3...
+        .byte   $00,$55,$55,$FF,$FF,$0F,$0F     ; B8A1 00 55 55 FF FF 0F 0F     .UU....
 menuNametable:
         .byte   $60,$61,$62,$62,$62,$62,$62,$62 ; B8A8 60 61 62 62 62 62 62 62  `abbbbbb
         .byte   $62,$62,$62,$62,$62,$62,$62,$62 ; B8B0 62 62 62 62 62 62 62 62  bbbbbbbb
