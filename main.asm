@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-08 08:57:28
+; Created:    2023-06-13 16:21:41
 ; Input file: clean.nes
 ; Page:       1
 
@@ -70,7 +70,20 @@ player2TetrominoOrientation:= $0069
 player1FallTimer:= $006A
 player2FallTimer:= $006B
 relatesToAddrTableAB25:= $0076
+lastZeroPageAddr:= $00FF
 ppuStaging      := $0100
+dasLeftPlayer1  := $01AA
+dasLeftPlayer2  := $01AB
+dasRightPlayer1 := $01AC
+dasRightPlayer2 := $01AD
+autoRotateCounterP1:= $01AE
+autoRotateCounterP2:= $01AF
+autoRotateClockwiseP1:= $01B0
+autoRotateClockwiseP2:= $01B1
+dropRepeatP1    := $01B2
+dropRepeatP2    := $01B3
+dropRatePossibleP1:= $01B4
+dropRatePossibleP2:= $01B5
 codeInputPlayer1:= $01B6
 codeInputPlayer2:= $01B7
 longBarCodeUsedP1:= $01B8
@@ -200,15 +213,16 @@ mainLoop:
         ldx     #$01                            ; 8038 A2 01                    ..
         jsr     stageLineClearAnimation         ; 803A 20 48 88                  H.
         ldx     #$00                            ; 803D A2 00                    ..
-        jsr     L82C7                           ; 803F 20 C7 82                  ..
+        jsr     branchOnActiveDemoOrGameOver    ; 803F 20 C7 82                  ..
         ldx     #$01                            ; 8042 A2 01                    ..
-        jsr     L82C7                           ; 8044 20 C7 82                  ..
+        jsr     branchOnActiveDemoOrGameOver    ; 8044 20 C7 82                  ..
         jsr     L8B37                           ; 8047 20 37 8B                  7.
         jsr     L9B62                           ; 804A 20 62 9B                  b.
         jmp     mainLoop                        ; 804D 4C 0A 80                 L..
 
 ; ----------------------------------------------------------------------------
-L8050:
+; menuGameMode is 3 (vs) or 4 (with) when computer is playing
+testIfComputerPlayingThenMove:
         lda     player1ControllerNew,x          ; 8050 B5 46                    .F
 @allButtonsExceptDown:
         and     #$DF                            ; 8052 29 DF                    ).
@@ -243,31 +257,31 @@ L8073:
         and     #$60                            ; 8077 29 60                    )`
         cmp     #$40                            ; 8079 C9 40                    .@
         bne     @LeftNotPressed                 ; 807B D0 15                    ..
-        lda     $01AA,x                         ; 807D BD AA 01                 ...
+        lda     dasLeftPlayer1,x                ; 807D BD AA 01                 ...
         clc                                     ; 8080 18                       .
         adc     #$01                            ; 8081 69 01                    i.
-        sta     $01AA,x                         ; 8083 9D AA 01                 ...
+        sta     dasLeftPlayer1,x                ; 8083 9D AA 01                 ...
         cmp     #$0B                            ; 8086 C9 0B                    ..
         bcc     L8097                           ; 8088 90 0D                    ..
         tya                                     ; 808A 98                       .
         ora     #$40                            ; 808B 09 40                    .@
         tay                                     ; 808D A8                       .
         lda     #$05                            ; 808E A9 05                    ..
-        bne     L8094                           ; 8090 D0 02                    ..
+        bne     @jumpOverLoad0                  ; 8090 D0 02                    ..
 @LeftNotPressed:
         lda     #$00                            ; 8092 A9 00                    ..
-L8094:
-        sta     $01AA,x                         ; 8094 9D AA 01                 ...
+@jumpOverLoad0:
+        sta     dasLeftPlayer1,x                ; 8094 9D AA 01                 ...
 L8097:
         lda     generalCounter36                ; 8097 A5 36                    .6
 @RightAndDown:
         and     #$A0                            ; 8099 29 A0                    ).
         cmp     #$80                            ; 809B C9 80                    ..
         bne     @RightNotPressed                ; 809D D0 15                    ..
-        lda     $01AC,x                         ; 809F BD AC 01                 ...
+        lda     dasRightPlayer1,x               ; 809F BD AC 01                 ...
         clc                                     ; 80A2 18                       .
         adc     #$01                            ; 80A3 69 01                    i.
-        sta     $01AC,x                         ; 80A5 9D AC 01                 ...
+        sta     dasRightPlayer1,x               ; 80A5 9D AC 01                 ...
         cmp     #$0B                            ; 80A8 C9 0B                    ..
         bcc     L80B9                           ; 80AA 90 0D                    ..
         tya                                     ; 80AC 98                       .
@@ -278,15 +292,15 @@ L8097:
 @RightNotPressed:
         lda     #$00                            ; 80B4 A9 00                    ..
 L80B6:
-        sta     $01AC,x                         ; 80B6 9D AC 01                 ...
+        sta     dasRightPlayer1,x               ; 80B6 9D AC 01                 ...
 L80B9:
         lda     generalCounter36                ; 80B9 A5 36                    .6
         and     #$02                            ; 80BB 29 02                    ).
         beq     @BNotPressed                    ; 80BD F0 11                    ..
-        lda     $01AE,x                         ; 80BF BD AE 01                 ...
+        lda     autoRotateCounterP1,x           ; 80BF BD AE 01                 ...
         clc                                     ; 80C2 18                       .
         adc     #$01                            ; 80C3 69 01                    i.
-        sta     $01AE,x                         ; 80C5 9D AE 01                 ...
+        sta     autoRotateCounterP1,x           ; 80C5 9D AE 01                 ...
         cmp     #$0F                            ; 80C8 C9 0F                    ..
         bcc     L80D5                           ; 80CA 90 09                    ..
         tya                                     ; 80CC 98                       .
@@ -294,15 +308,15 @@ L80B9:
         tay                                     ; 80CF A8                       .
 @BNotPressed:
         lda     #$00                            ; 80D0 A9 00                    ..
-        sta     $01AE,x                         ; 80D2 9D AE 01                 ...
+        sta     autoRotateCounterP1,x           ; 80D2 9D AE 01                 ...
 L80D5:
         lda     generalCounter36                ; 80D5 A5 36                    .6
         and     #$01                            ; 80D7 29 01                    ).
         beq     @ANotPressed                    ; 80D9 F0 11                    ..
-        lda     $01B0,x                         ; 80DB BD B0 01                 ...
+        lda     autoRotateClockwiseP1,x         ; 80DB BD B0 01                 ...
         clc                                     ; 80DE 18                       .
         adc     #$01                            ; 80DF 69 01                    i.
-        sta     $01B0,x                         ; 80E1 9D B0 01                 ...
+        sta     autoRotateClockwiseP1,x         ; 80E1 9D B0 01                 ...
         cmp     #$0F                            ; 80E4 C9 0F                    ..
         bcc     L80F1                           ; 80E6 90 09                    ..
         tya                                     ; 80E8 98                       .
@@ -310,32 +324,32 @@ L80D5:
         tay                                     ; 80EB A8                       .
 @ANotPressed:
         lda     #$00                            ; 80EC A9 00                    ..
-        sta     $01B0,x                         ; 80EE 9D B0 01                 ...
+        sta     autoRotateClockwiseP1,x         ; 80EE 9D B0 01                 ...
 L80F1:
         lda     generalCounter36                ; 80F1 A5 36                    .6
 @DownLeftRight:
         and     #$E0                            ; 80F3 29 E0                    ).
         cmp     #$20                            ; 80F5 C9 20                    . 
         bne     L8122                           ; 80F7 D0 29                    .)
-        lda     $01B2,x                         ; 80F9 BD B2 01                 ...
+        lda     dropRepeatP1,x                  ; 80F9 BD B2 01                 ...
         clc                                     ; 80FC 18                       .
         adc     #$01                            ; 80FD 69 01                    i.
-        sta     $01B2,x                         ; 80FF 9D B2 01                 ...
-        cmp     $01B4,x                         ; 8102 DD B4 01                 ...
+        sta     dropRepeatP1,x                  ; 80FF 9D B2 01                 ...
+        cmp     dropRatePossibleP1,x            ; 8102 DD B4 01                 ...
         bcc     L8120                           ; 8105 90 19                    ..
         tya                                     ; 8107 98                       .
         ora     #$20                            ; 8108 09 20                    . 
         sta     generalCounter36                ; 810A 85 36                    .6
-        lda     $01B4,x                         ; 810C BD B4 01                 ...
+        lda     dropRatePossibleP1,x            ; 810C BD B4 01                 ...
         cmp     #$02                            ; 810F C9 02                    ..
         bcc     L8116                           ; 8111 90 03                    ..
-        dec     $01B4,x                         ; 8113 DE B4 01                 ...
+        dec     dropRatePossibleP1,x            ; 8113 DE B4 01                 ...
 L8116:
         jsr     L9AEE                           ; 8116 20 EE 9A                  ..
         ldy     generalCounter36                ; 8119 A4 36                    .6
 L811B:
         lda     #$00                            ; 811B A9 00                    ..
-        sta     $01B2,x                         ; 811D 9D B2 01                 ...
+        sta     dropRepeatP1,x                  ; 811D 9D B2 01                 ...
 L8120:
         tya                                     ; 8120 98                       .
         rts                                     ; 8121 60                       `
@@ -343,7 +357,7 @@ L8120:
 ; ----------------------------------------------------------------------------
 L8122:
         lda     #$05                            ; 8122 A9 05                    ..
-        sta     $01B4,x                         ; 8124 9D B4 01                 ...
+        sta     dropRatePossibleP1,x            ; 8124 9D B4 01                 ...
         bne     L811B                           ; 8127 D0 F2                    ..
 L8129:
         ldy     L8198,x                         ; 8129 BC 98 81                 ...
@@ -570,19 +584,19 @@ L82C6:
         rts                                     ; 82C6 60                       `
 
 ; ----------------------------------------------------------------------------
-L82C7:
+branchOnActiveDemoOrGameOver:
         jsr     stageDropPointSprites           ; 82C7 20 9A 81                  ..
         ldy     gameState                       ; 82CA A4 29                    .)
-        beq     L82D7                           ; 82CC F0 09                    ..
+        beq     activeGamePlay                  ; 82CC F0 09                    ..
         cpy     #$FB                            ; 82CE C0 FB                    ..
-        beq     L82D7                           ; 82D0 F0 05                    ..
+        beq     activeGamePlay                  ; 82D0 F0 05                    ..
         cpy     #$F9                            ; 82D2 C0 F9                    ..
-        beq     L82F3                           ; 82D4 F0 1D                    ..
+        beq     handleGameOver                  ; 82D4 F0 1D                    ..
 L82D6:
         rts                                     ; 82D6 60                       `
 
 ; ----------------------------------------------------------------------------
-L82D7:
+activeGamePlay:
         lda     lineClearTimerP1,x              ; 82D7 BD CE 01                 ...
         bne     L82D6                           ; 82DA D0 FA                    ..
         ldy     playMode                        ; 82DC A4 2F                    ./
@@ -592,13 +606,13 @@ L82D7:
         bne     L82D6                           ; 82E6 D0 EE                    ..
 L82E8:
         lda     $4A,x                           ; 82E8 B5 4A                    .J
-        beq     L82F3                           ; 82EA F0 07                    ..
+        beq     handleGameOver                  ; 82EA F0 07                    ..
         lda     player1TetrominoCurrent,x       ; 82EC B5 64                    .d
         bne     L8320                           ; 82EE D0 30                    .0
         jmp     getNextTetromino                ; 82F0 4C 29 99                 L).
 
 ; ----------------------------------------------------------------------------
-L82F3:
+handleGameOver:
         lda     player1ControllerHeld,x         ; 82F3 B5 42                    .B
         and     #$03                            ; 82F5 29 03                    ).
         cmp     #$03                            ; 82F7 C9 03                    ..
@@ -629,7 +643,7 @@ L8315:
 
 ; ----------------------------------------------------------------------------
 L8320:
-        jsr     L8050                           ; 8320 20 50 80                  P.
+        jsr     testIfComputerPlayingThenMove   ; 8320 20 50 80                  P.
         sta     generalCounter3b                ; 8323 85 3B                    .;
         dec     player1FallTimer,x              ; 8325 D6 6A                    .j
         bne     L8330                           ; 8327 D0 07                    ..
@@ -648,7 +662,7 @@ L8330:
         jsr     checkPositionAndClearFlagsOnCarrySet; 8341 20 50 86              P.
         bcs     L8352                           ; 8344 B0 0C                    ..
         lda     #$09                            ; 8346 A9 09                    ..
-        sta     $01AA,x                         ; 8348 9D AA 01                 ...
+        sta     dasLeftPlayer1,x                ; 8348 9D AA 01                 ...
         inc     player1TetrominoX,x             ; 834B F6 62                    .b
         bvs     L8352                           ; 834D 70 03                    p.
         jsr     L862E                           ; 834F 20 2E 86                  ..
@@ -660,7 +674,7 @@ L8352:
         jsr     checkPositionAndClearFlagsOnCarrySet; 835A 20 50 86              P.
         bcs     L836B                           ; 835D B0 0C                    ..
         lda     #$09                            ; 835F A9 09                    ..
-        sta     $01AC,x                         ; 8361 9D AC 01                 ...
+        sta     dasRightPlayer1,x               ; 8361 9D AC 01                 ...
         dec     player1TetrominoX,x             ; 8364 D6 62                    .b
         bvs     L836B                           ; 8366 70 03                    p.
         jsr     L862E                           ; 8368 20 2E 86                  ..
@@ -754,7 +768,7 @@ L840B:
         lda     #$01                            ; 840D A9 01                    ..
         sta     player1FallTimer,x              ; 840F 95 6A                    .j
         lda     #$05                            ; 8411 A9 05                    ..
-        sta     $01B4,x                         ; 8413 9D B4 01                 ...
+        sta     dropRatePossibleP1,x            ; 8413 9D B4 01                 ...
 L8416:
         rts                                     ; 8416 60                       `
 
@@ -2819,10 +2833,10 @@ L9234:
         lda     generalCounter3a                ; 9244 A5 3A                    .:
         and     #$40                            ; 9246 29 40                    )@
         beq     L925C                           ; 9248 F0 12                    ..
-        lda     $01AA,x                         ; 924A BD AA 01                 ...
+        lda     dasLeftPlayer1,x                ; 924A BD AA 01                 ...
         clc                                     ; 924D 18                       .
         adc     #$01                            ; 924E 69 01                    i.
-        sta     $01AA,x                         ; 9250 9D AA 01                 ...
+        sta     dasLeftPlayer1,x                ; 9250 9D AA 01                 ...
         cmp     #$0A                            ; 9253 C9 0A                    ..
         bcc     L9261                           ; 9255 90 0A                    ..
 L9257:
@@ -2830,15 +2844,15 @@ L9257:
         jsr     L929C                           ; 9259 20 9C 92                  ..
 L925C:
         lda     #$00                            ; 925C A9 00                    ..
-        sta     $01AA,x                         ; 925E 9D AA 01                 ...
+        sta     dasLeftPlayer1,x                ; 925E 9D AA 01                 ...
 L9261:
         lda     generalCounter3a                ; 9261 A5 3A                    .:
         and     #$80                            ; 9263 29 80                    ).
         beq     L9279                           ; 9265 F0 12                    ..
-        lda     $01AC,x                         ; 9267 BD AC 01                 ...
+        lda     dasRightPlayer1,x               ; 9267 BD AC 01                 ...
         clc                                     ; 926A 18                       .
         adc     #$01                            ; 926B 69 01                    i.
-        sta     $01AC,x                         ; 926D 9D AC 01                 ...
+        sta     dasRightPlayer1,x               ; 926D 9D AC 01                 ...
         cmp     #$0A                            ; 9270 C9 0A                    ..
         bcc     L927E                           ; 9272 90 0A                    ..
 L9274:
@@ -2846,7 +2860,7 @@ L9274:
         jsr     L929C                           ; 9276 20 9C 92                  ..
 L9279:
         lda     #$00                            ; 9279 A9 00                    ..
-        sta     $01AC,x                         ; 927B 9D AC 01                 ...
+        sta     dasRightPlayer1,x               ; 927B 9D AC 01                 ...
 L927E:
         lda     player1ControllerNew,x          ; 927E B5 46                    .F
         and     #$03                            ; 9280 29 03                    ).
@@ -3741,7 +3755,7 @@ L9926:
 getNextTetromino:
         lda     #$14                            ; 9929 A9 14                    ..
         sta     player1FallTimer,x              ; 992B 95 6A                    .j
-        sta     $01B4,x                         ; 992D 9D B4 01                 ...
+        sta     dropRatePossibleP1,x            ; 992D 9D B4 01                 ...
 L9930:
         lda     player1TetrominoNext,x          ; 9930 B5 66                    .f
         sta     player1TetrominoCurrent,x       ; 9932 95 64                    .d
@@ -3889,7 +3903,7 @@ L9A0D:
 
 ; ----------------------------------------------------------------------------
 L9A17:
-        lda     $01B4,x                         ; 9A17 BD B4 01                 ...
+        lda     dropRatePossibleP1,x            ; 9A17 BD B4 01                 ...
         cmp     #$02                            ; 9A1A C9 02                    ..
         bcs     L9A46                           ; 9A1C B0 28                    .(
         lda     generalCounter38                ; 9A1E A5 38                    .8
@@ -4054,9 +4068,9 @@ L9B28:
         lda     L9B48,y                         ; 9B28 B9 48 9B                 .H.
 L9B2B:
         sta     player1FallTimer,x              ; 9B2B 95 6A                    .j
-        cmp     $01B4,x                         ; 9B2D DD B4 01                 ...
+        cmp     dropRatePossibleP1,x            ; 9B2D DD B4 01                 ...
         bcs     L9B35                           ; 9B30 B0 03                    ..
-        sta     $01B4,x                         ; 9B32 9D B4 01                 ...
+        sta     dropRatePossibleP1,x            ; 9B32 9D B4 01                 ...
 L9B35:
         rts                                     ; 9B35 60                       `
 
@@ -5317,21 +5331,22 @@ LA6BE:
 
 ; ----------------------------------------------------------------------------
 LA6DF:
-        .byte   $00,$00,$00,$10,$10,$10,$10,$0F ; A6DF 00 00 00 10 10 10 10 0F  ........
-        .byte   $31,$21,$11,$0F,$26,$16,$06,$0F ; A6E7 31 21 11 0F 26 16 06 0F  1!..&...
-        .byte   $37,$27,$17,$0F,$2A,$1A,$0A,$0F ; A6EF 37 27 17 0F 2A 1A 0A 0F  7'..*...
-        .byte   $12,$0F,$0F,$0F,$27,$0F,$0F,$0F ; A6F7 12 0F 0F 0F 27 0F 0F 0F  ....'...
-        .byte   $31,$21,$01,$0F,$30,$16,$00,$0F ; A6FF 31 21 01 0F 30 16 00 0F  1!..0...
-        .byte   $20,$10,$00,$0F,$27,$18,$08,$0F ; A707 20 10 00 0F 27 18 08 0F   ...'...
-        .byte   $31,$21,$01,$0F,$30,$16,$00,$0F ; A70F 31 21 01 0F 30 16 00 0F  1!..0...
-        .byte   $16,$0F,$00,$0F,$12,$24,$1B,$0F ; A717 16 0F 00 0F 12 24 1B 0F  .....$..
-        .byte   $0F,$0F,$0F,$0F,$37,$0F,$0F,$0F ; A71F 0F 0F 0F 0F 37 0F 0F 0F  ....7...
-        .byte   $37,$27,$06,$0F,$31,$06,$11,$0F ; A727 37 27 06 0F 31 06 11 0F  7'..1...
-        .byte   $17,$21,$26,$0F,$26,$16,$06,$0F ; A72F 17 21 26 0F 26 16 06 0F  .!&.&...
-        .byte   $35,$16,$12,$0F,$12,$24,$1B,$0F ; A737 35 16 12 0F 12 24 1B 0F  5....$..
-        .byte   $35,$1A,$37,$0F,$35,$18,$24,$0F ; A73F 35 1A 37 0F 35 18 24 0F  5.7.5.$.
-        .byte   $37,$39,$3B,$0F,$2A,$2B,$30,$0F ; A747 37 39 3B 0F 2A 2B 30 0F  79;.*+0.
-        .byte   $26,$21,$37,$0F,$35,$24,$13     ; A74F 26 21 37 0F 35 24 13     &!7.5$.
+        .byte   $00,$00,$00,$10,$10,$10,$10     ; A6DF 00 00 00 10 10 10 10     .......
+paletteTableOffset:
+        .byte   $0F,$31,$21,$11,$0F,$26,$16,$06 ; A6E6 0F 31 21 11 0F 26 16 06  .1!..&..
+        .byte   $0F,$37,$27,$17,$0F,$2A,$1A,$0A ; A6EE 0F 37 27 17 0F 2A 1A 0A  .7'..*..
+        .byte   $0F,$12,$0F,$0F,$0F,$27,$0F,$0F ; A6F6 0F 12 0F 0F 0F 27 0F 0F  .....'..
+        .byte   $0F,$31,$21,$01,$0F,$30,$16,$00 ; A6FE 0F 31 21 01 0F 30 16 00  .1!..0..
+        .byte   $0F,$20,$10,$00,$0F,$27,$18,$08 ; A706 0F 20 10 00 0F 27 18 08  . ...'..
+        .byte   $0F,$31,$21,$01,$0F,$30,$16,$00 ; A70E 0F 31 21 01 0F 30 16 00  .1!..0..
+        .byte   $0F,$16,$0F,$00,$0F,$12,$24,$1B ; A716 0F 16 0F 00 0F 12 24 1B  ......$.
+        .byte   $0F,$0F,$0F,$0F,$0F,$37,$0F,$0F ; A71E 0F 0F 0F 0F 0F 37 0F 0F  .....7..
+        .byte   $0F,$37,$27,$06,$0F,$31,$06,$11 ; A726 0F 37 27 06 0F 31 06 11  .7'..1..
+        .byte   $0F,$17,$21,$26,$0F,$26,$16,$06 ; A72E 0F 17 21 26 0F 26 16 06  ..!&.&..
+        .byte   $0F,$35,$16,$12,$0F,$12,$24,$1B ; A736 0F 35 16 12 0F 12 24 1B  .5....$.
+        .byte   $0F,$35,$1A,$37,$0F,$35,$18,$24 ; A73E 0F 35 1A 37 0F 35 18 24  .5.7.5.$
+        .byte   $0F,$37,$39,$3B,$0F,$2A,$2B,$30 ; A746 0F 37 39 3B 0F 2A 2B 30  .79;.*+0
+        .byte   $0F,$26,$21,$37,$0F,$35,$24,$13 ; A74E 0F 26 21 37 0F 35 24 13  .&!7.5$.
 ; ----------------------------------------------------------------------------
 LA756:
         lda     player1LevelOnes,x              ; A756 BD 2D 04                 .-.
@@ -8900,7 +8915,7 @@ LD375:
 LD397:
         lda     #$00                            ; D397 A9 00                    ..
 LD399:
-        sta     $FF                             ; D399 85 FF                    ..
+        sta     lastZeroPageAddr                ; D399 85 FF                    ..
         lda     $025B,x                         ; D39B BD 5B 02                 .[.
         sec                                     ; D39E 38                       8
         sbc     $0342,x                         ; D39F FD 42 03                 .B.
@@ -8984,9 +8999,9 @@ LD42B:
         sta     $039A,x                         ; D42B 9D 9A 03                 ...
         lda     $FE                             ; D42E A5 FE                    ..
         bne     LD438                           ; D430 D0 06                    ..
-        lda     $FF                             ; D432 A5 FF                    ..
+        lda     lastZeroPageAddr                ; D432 A5 FF                    ..
         ora     #$01                            ; D434 09 01                    ..
-        sta     $FF                             ; D436 85 FF                    ..
+        sta     lastZeroPageAddr                ; D436 85 FF                    ..
 LD438:
         pla                                     ; D438 68                       h
         sta     $022F,x                         ; D439 9D 2F 02                 ./.
@@ -9011,9 +9026,9 @@ LD445:
         bmi     LD46D                           ; D461 30 0A                    0.
         lda     $FE                             ; D463 A5 FE                    ..
         bne     LD46D                           ; D465 D0 06                    ..
-        lda     $FF                             ; D467 A5 FF                    ..
+        lda     lastZeroPageAddr                ; D467 A5 FF                    ..
         ora     #$01                            ; D469 09 01                    ..
-        sta     $FF                             ; D46B 85 FF                    ..
+        sta     lastZeroPageAddr                ; D46B 85 FF                    ..
 LD46D:
         lda     LDD36,y                         ; D46D B9 36 DD                 .6.
         sta     $022F,x                         ; D470 9D 2F 02                 ./.
@@ -9058,7 +9073,7 @@ LD4AE:
         bne     LD4C2                           ; D4B9 D0 07                    ..
         sta     $03EC                           ; D4BB 8D EC 03                 ...
         lda     #$02                            ; D4BE A9 02                    ..
-        sta     $FF                             ; D4C0 85 FF                    ..
+        sta     lastZeroPageAddr                ; D4C0 85 FF                    ..
 LD4C2:
         jsr     LD328                           ; D4C2 20 28 D3                  (.
         lda     $03DC,x                         ; D4C5 BD DC 03                 ...
@@ -9371,15 +9386,15 @@ LD6E9:
         cmp     $0245,x                         ; D70F DD 45 02                 .E.
         beq     LD71A                           ; D712 F0 06                    ..
         lda     #$10                            ; D714 A9 10                    ..
-        ora     $FF                             ; D716 05 FF                    ..
-        sta     $FF                             ; D718 85 FF                    ..
+        ora     lastZeroPageAddr                ; D716 05 FF                    ..
+        sta     lastZeroPageAddr                ; D718 85 FF                    ..
 LD71A:
         lda     $03ED                           ; D71A AD ED 03                 ...
         cmp     $0250,x                         ; D71D DD 50 02                 .P.
         beq     LD728                           ; D720 F0 06                    ..
         lda     #$20                            ; D722 A9 20                    . 
-        ora     $FF                             ; D724 05 FF                    ..
-        sta     $FF                             ; D726 85 FF                    ..
+        ora     lastZeroPageAddr                ; D724 05 FF                    ..
+        sta     lastZeroPageAddr                ; D726 85 FF                    ..
 LD728:
         lda     $03EC                           ; D728 AD EC 03                 ...
         sta     $0245,x                         ; D72B 9D 45 02                 .E.
@@ -9472,8 +9487,8 @@ LD7C6:
         lda     $FE                             ; D7CF A5 FE                    ..
         bne     LD7D9                           ; D7D1 D0 06                    ..
         lda     #$04                            ; D7D3 A9 04                    ..
-        ora     $FF                             ; D7D5 05 FF                    ..
-        sta     $FF                             ; D7D7 85 FF                    ..
+        ora     lastZeroPageAddr                ; D7D5 05 FF                    ..
+        sta     lastZeroPageAddr                ; D7D7 85 FF                    ..
 LD7D9:
         lda     $02D4,x                         ; D7D9 BD D4 02                 ...
 LD7DC:
@@ -9484,8 +9499,8 @@ LD7DC:
         lda     $FE                             ; D7E5 A5 FE                    ..
         bne     LD7EF                           ; D7E7 D0 06                    ..
         lda     #$04                            ; D7E9 A9 04                    ..
-        ora     $FF                             ; D7EB 05 FF                    ..
-        sta     $FF                             ; D7ED 85 FF                    ..
+        ora     lastZeroPageAddr                ; D7EB 05 FF                    ..
+        sta     lastZeroPageAddr                ; D7ED 85 FF                    ..
 LD7EF:
         pla                                     ; D7EF 68                       h
         clc                                     ; D7F0 18                       .
@@ -9529,8 +9544,8 @@ LD829:
         lda     $FE                             ; D829 A5 FE                    ..
         bne     LD838                           ; D82B D0 0B                    ..
         lda     #$02                            ; D82D A9 02                    ..
-        ora     $FF                             ; D82F 05 FF                    ..
-        sta     $FF                             ; D831 85 FF                    ..
+        ora     lastZeroPageAddr                ; D82F 05 FF                    ..
+        sta     lastZeroPageAddr                ; D831 85 FF                    ..
         lda     #$B0                            ; D833 A9 B0                    ..
 LD835:
         sta     $03EB                           ; D835 8D EB 03                 ...
@@ -9582,7 +9597,7 @@ LD86A:
         ldx     #$00                            ; D870 A2 00                    ..
         stx     $03EB                           ; D872 8E EB 03                 ...
         stx     $03F0                           ; D875 8E F0 03                 ...
-        stx     $FF                             ; D878 86 FF                    ..
+        stx     lastZeroPageAddr                ; D878 86 FF                    ..
         ldx     $03DC,y                         ; D87A BE DC 03                 ...
         beq     LD8DD                           ; D87D F0 5E                    .^
         dex                                     ; D87F CA                       .
@@ -9591,10 +9606,10 @@ LD86A:
         lda     $03F0                           ; D886 AD F0 03                 ...
         cmp     $FA                             ; D889 C5 FA                    ..
         bcc     LD8DD                           ; D88B 90 50                    .P
-        lda     $FF                             ; D88D A5 FF                    ..
+        lda     lastZeroPageAddr                ; D88D A5 FF                    ..
         and     #$35                            ; D88F 29 35                    )5
         bne     LD89C                           ; D891 D0 09                    ..
-        lda     $FF                             ; D893 A5 FF                    ..
+        lda     lastZeroPageAddr                ; D893 A5 FF                    ..
         and     #$02                            ; D895 29 02                    ).
         bne     LD8DD                           ; D897 D0 44                    .D
         pla                                     ; D899 68                       h
@@ -9603,7 +9618,7 @@ LD86A:
 
 ; ----------------------------------------------------------------------------
 LD89C:
-        lda     $FF                             ; D89C A5 FF                    ..
+        lda     lastZeroPageAddr                ; D89C A5 FF                    ..
         and     #$05                            ; D89E 29 05                    ).
         beq     LD8A9                           ; D8A0 F0 07                    ..
         lda     $03EB                           ; D8A2 AD EB 03                 ...
@@ -9613,7 +9628,7 @@ LD8A9:
         ldy     #$01                            ; D8A9 A0 01                    ..
         pla                                     ; D8AB 68                       h
         tax                                     ; D8AC AA                       .
-        lda     $FF                             ; D8AD A5 FF                    ..
+        lda     lastZeroPageAddr                ; D8AD A5 FF                    ..
         and     #$01                            ; D8AF 29 01                    ).
         beq     LD8C4                           ; D8B1 F0 11                    ..
         lda     LDD2A,x                         ; D8B3 BD 2A DD                 .*.
@@ -9624,14 +9639,14 @@ LD8A9:
         sta     ($F6),y                         ; D8C2 91 F6                    ..
 LD8C4:
         iny                                     ; D8C4 C8                       .
-        lda     $FF                             ; D8C5 A5 FF                    ..
+        lda     lastZeroPageAddr                ; D8C5 A5 FF                    ..
         and     #$11                            ; D8C7 29 11                    ).
         beq     LD8D0                           ; D8C9 F0 05                    ..
         lda     $03EC                           ; D8CB AD EC 03                 ...
         sta     ($F6),y                         ; D8CE 91 F6                    ..
 LD8D0:
         iny                                     ; D8D0 C8                       .
-        lda     $FF                             ; D8D1 A5 FF                    ..
+        lda     lastZeroPageAddr                ; D8D1 A5 FF                    ..
         and     #$21                            ; D8D3 29 21                    )!
         beq     LD8DC                           ; D8D5 F0 05                    ..
         lda     $03ED                           ; D8D7 AD ED 03                 ...

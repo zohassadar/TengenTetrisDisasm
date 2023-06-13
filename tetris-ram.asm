@@ -70,9 +70,24 @@ player1FallTimer:	.res 1	; $006a
 player2FallTimer:	.res 1	; $006b
 .res 10
 relatesToAddrTableAB25:	.res $2	; $0076
-.res 136
+.res 135
+lastZeroPageAddr:	.res 1	; $00FF
+
+.bss
 ppuStaging:	.res $46	; $0100
-.res 112
+.res 100
+dasLeftPlayer1:	.res 1	; $01aa
+dasLeftPlayer2:	.res 1	; $01ab
+dasRightPlayer1:	.res 1	; $01ac
+dasRightPlayer2:	.res 1	; $01ad
+autoRotateCounterP1:	.res 1	; $01ae
+autoRotateCounterP2:	.res 1	; $01af
+autoRotateClockwiseP1:	.res 1	; $01b0
+autoRotateClockwiseP2:	.res 1	; $01b1
+dropRepeatP1:	.res 1	; $01b2
+dropRepeatP2:	.res 1	; $01b3
+dropRatePossibleP1:	.res 1	; $01b4
+dropRatePossibleP2:	.res 1	; $01b5
 codeInputPlayer1:	.res 1	; $01b6
 codeInputPlayer2:	.res 1	; $01b7
 longBarCodeUsedP1:	.res 1	; $01b8
