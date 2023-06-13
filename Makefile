@@ -14,6 +14,7 @@ compare: tetris.nes
 
 disassembly:
 	da65 -i main.infofile
+	awk -f tetris-ram.awk main.infofile > tetris-ram.asm
 
 # Build tools when building the rom.
 # This has to happen before the rules are processed, since that's when scan_includes is run.
