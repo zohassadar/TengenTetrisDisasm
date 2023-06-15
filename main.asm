@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-15 10:13:13
+; Created:    2023-06-15 10:43:25
 ; Input file: clean.nes
 ; Page:       1
 
@@ -203,11 +203,11 @@ mainLoop:
         sta     ppuStagingAddress               ; 801F 85 48                    .H
 @skipResetPPUStagingAddress:
         jsr     pollController                  ; 8021 20 00 A4                  ..
-        jsr     L9F87                           ; 8024 20 87 9F                  ..
+        jsr     processMenuInput                ; 8024 20 87 9F                  ..
         jsr     pauseOrUnpause                  ; 8027 20 C5 B5                  ..
         jsr     checkLevelUp                    ; 802A 20 E5 8C                  ..
         jsr     somethingWithLeaderboard        ; 802D 20 E3 91                  ..
-        jsr     L9BFC                           ; 8030 20 FC 9B                  ..
+        jsr     loadComputerInputOrMoveScreen   ; 8030 20 FC 9B                  ..
         ldx     #$00                            ; 8033 A2 00                    ..
         jsr     stageLineClearAnimation         ; 8035 20 48 88                  H.
         ldx     #$01                            ; 8038 A2 01                    ..
@@ -4171,12 +4171,12 @@ statsPPUAddresses:
         .word   $20CB,$20D3,$2096,$2184         ; 9BF2 CB 20 D3 20 96 20 84 21  . . . .!
         .word   $21B8                           ; 9BFA B8 21                    .!
 ; ----------------------------------------------------------------------------
-L9BFC:
+loadComputerInputOrMoveScreen:
         ldx     #$00                            ; 9BFC A2 00                    ..
         lda     gameState                       ; 9BFE A5 29                    .)
-        beq     L9C4C                           ; 9C00 F0 4A                    .J
+        beq     compInputForGameplay            ; 9C00 F0 4A                    .J
         cmp     #$FB                            ; 9C02 C9 FB                    ..
-        beq     L9C58                           ; 9C04 F0 52                    .R
+        beq     compInputForDemo                ; 9C04 F0 52                    .R
         cmp     #$FA                            ; 9C06 C9 FA                    ..
         beq     moveScreenUpOrDown              ; 9C08 F0 01                    ..
 L9C0A:
@@ -4220,14 +4220,14 @@ moveScreenUpOrDown:
         jmp     demoStart                       ; 9C49 4C C6 95                 L..
 
 ; ----------------------------------------------------------------------------
-L9C4C:
+compInputForGameplay:
         lda     menuGameMode                    ; 9C4C AD F0 04                 ...
         cmp     #$03                            ; 9C4F C9 03                    ..
         bcc     L9C0A                           ; 9C51 90 B7                    ..
         inx                                     ; 9C53 E8                       .
         lda     $4A,x                           ; 9C54 B5 4A                    .J
         beq     L9C0A                           ; 9C56 F0 B2                    ..
-L9C58:
+compInputForDemo:
         ldy     #$00                            ; 9C58 A0 00                    ..
         lda     frameCounterLow                 ; 9C5A A5 32                    .2
         and     #$07                            ; 9C5C 29 07                    ).
@@ -4667,7 +4667,7 @@ initializeMusicSelectMenu:
         jsr     LA06F                           ; 9F80 20 6F A0                  o.
         lda     #$FF                            ; 9F83 A9 FF                    ..
         bne     L9F3C                           ; 9F85 D0 B5                    ..
-L9F87:
+processMenuInput:
         lda     gameState                       ; 9F87 A5 29                    .)
         bmi     L9F8C                           ; 9F89 30 01                    0.
 L9F8B:

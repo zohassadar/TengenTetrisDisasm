@@ -255,7 +255,10 @@ LABEL { ADDR $99fa; NAME "genNextPseudoRandom"; };
 LABEL { ADDR $9b36; NAME "possibleFallTimerTable"; };
 LABEL { ADDR $97C1; NAME "initializePlayfields"; };
 LABEL { ADDR $99eb; SIZE $2; NAME "coopTetrominoX"; };
+LABEL { ADDR $9bfc; NAME "loadComputerInputOrMoveScreen"; };
 LABEL { ADDR $9c3d; NAME "@checkForDemoStart"; };
+LABEL { ADDR $9c4c; NAME "compInputForGameplay"; };
+LABEL { ADDR $9c58; NAME "compInputForDemo"; };
 LABEL { ADDR $9f51; NAME "playModeTable"; COMMENT "1p, 2p, coop, vs comp, with comp"; };
 LABEL { ADDR $9c0b; NAME "moveScreenUpOrDown"; };
 LABEL { ADDR $9c2a; NAME "@bothUpsNotPressed"; };
@@ -266,6 +269,7 @@ LABEL { ADDR $9ebc; NAME "initializeGameSelectMenu"; };
 LABEL { ADDR $9f1b; NAME "initializeLevelSelectMenu"; };
 LABEL { ADDR $9f56; NAME "initializeHandicapMenu"; };
 LABEL { ADDR $9f74; NAME "initializeMusicSelectMenu"; };
+LABEL { ADDR $9f87; NAME "processMenuInput"; };
 
 LABEL { ADDR $A02C; NAME "@branchOnModeGameTypeMenu"; };
 LABEL { ADDR $A02F; NAME "@branchOnModeLevelMenu"; };
