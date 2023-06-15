@@ -178,10 +178,3 @@ look to be part of an address.
 
 
 The address table at DF71 when modified to all $FF kills sound
-
-
-
-********
-
-A779 - bytes added are part of an address
-A6D0 - bytes added are part of an address for palette   
