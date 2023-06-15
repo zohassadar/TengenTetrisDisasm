@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-13 16:21:41
+; Created:    2023-06-15 10:13:13
 ; Input file: clean.nes
 ; Page:       1
 
@@ -5320,10 +5320,10 @@ LA6BE:
         asl     a                               ; A6CD 0A                       .
         asl     a                               ; A6CE 0A                       .
         asl     a                               ; A6CF 0A                       .
-        adc     #$E6                            ; A6D0 69 E6                    i.
+        adc     #<paletteTableOffset                            ; A6D0 69 E6                    i.
         sta     ppuDataAddress1,x               ; A6D2 95 08                    ..
         lda     #$00                            ; A6D4 A9 00                    ..
-        adc     #$A6                            ; A6D6 69 A6                    i.
+        adc     #>paletteTableOffset                            ; A6D6 69 A6                    i.
         sta     ppuDataAddress1+1,x             ; A6D8 95 09                    ..
         lda     #$10                            ; A6DA A9 10                    ..
         sta     $24,x                           ; A6DC 95 24                    .$
@@ -5374,9 +5374,9 @@ LA768:
         tya                                     ; A775 98                       .
         asl     a                               ; A776 0A                       .
         adc     generalCounter36                ; A777 65 36                    e6
-        adc     #$88                            ; A779 69 88                    i.
+        adc     #<unknownData03                            ; A779 69 88                    i.
         sta     ppuDataAddress1,x               ; A77B 95 08                    ..
-        lda     #$A7                            ; A77D A9 A7                    ..
+        lda     #>unknownData03                            ; A77D A9 A7                    ..
         adc     #$00                            ; A77F 69 00                    i.
         sta     ppuDataAddress1+1,x             ; A781 95 09                    ..
         lda     #$03                            ; A783 A9 03                    ..

@@ -10,11 +10,12 @@ nesChrEncode := python3 tools/nes-util/nes_chr_encode.py
 build: tetris.nes
 
 compare: tetris.nes
-	@if diff clean.nes tetris.nes 2>/dev/null; then echo "match"; else echo "differs"; fi
+	sha1sum -c tetris.sha
 
 disassembly:
 	da65 -i main.infofile
 	awk -f tetris-ram.awk main.infofile > tetris-ram.asm
+	bash addrs.sh
 
 # Build tools when building the rom.
 # This has to happen before the rules are processed, since that's when scan_includes is run.
