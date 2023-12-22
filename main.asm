@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-06-16 15:19:18
+; Created:    2023-12-22 13:04:42
 ; Input file: clean.nes
 ; Page:       1
 
@@ -147,6 +147,7 @@ menuPlayer1Handicap:= $04F3
 menuPlayer2Handicap:= $04F4
 menuMusic       := $04F5
 ppuScrollYOffset:= $04F6
+initMagic       := $04F7
 oamStaging      := $0500
 player1Playfield:= $0600
 player2Playfield:= $0700
@@ -820,7 +821,7 @@ L8450:
         beq     L8450                           ; 845A F0 F4                    ..
         bne     L844E                           ; 845C D0 F0                    ..
 L845E:
-        jsr     doSomethingWithPPUFlagsAndRegisters; 845E 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; 845E 20 DB A3                  ..
         stx     generalCounter3a                ; 8461 86 3A                    .:
         ldx     generalCounter38                ; 8463 A6 38                    .8
         ldy     #$00                            ; 8465 A0 00                    ..
@@ -1654,7 +1655,7 @@ L89E9:
         lsr     a                               ; 89F4 4A                       J
         adc     generalCounter37                ; 89F5 65 37                    e7
         pha                                     ; 89F7 48                       H
-        jsr     doSomethingWithPPUFlagsAndRegisters; 89F8 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; 89F8 20 DB A3                  ..
         pla                                     ; 89FB 68                       h
         clc                                     ; 89FC 18                       .
         adc     #$1F                            ; 89FD 69 1F                    i.
@@ -1803,7 +1804,7 @@ L8AF7:
 L8B0E:
         lda     #$FF                            ; 8B0E A9 FF                    ..
         sta     (generalCounter3a),y            ; 8B10 91 3A                    .:
-        jsr     doSomethingWithPPUFlagsAndRegisters; 8B12 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; 8B12 20 DB A3                  ..
         sty     generalCounter39                ; 8B15 84 39                    .9
         jsr     L849D                           ; 8B17 20 9D 84                  ..
         lda     ppuStagingAddress               ; 8B1A A5 48                    .H
@@ -2457,7 +2458,7 @@ L8FB6:
         adc     #$10                            ; 8FC1 69 10                    i.
 L8FC3:
         tay                                     ; 8FC3 A8                       .
-        jsr     doSomethingWithPPUFlagsAndRegisters; 8FC4 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; 8FC4 20 DB A3                  ..
         lda     possiblePPUAddrTable+1,y        ; 8FC7 B9 18 90                 ...
         sta     $17,x                           ; 8FCA 95 17                    ..
         lda     possiblePPUAddrTable,y          ; 8FCC B9 17 90                 ...
@@ -2482,7 +2483,7 @@ L8FC3:
         lda     #$04                            ; 8FF2 A9 04                    ..
 L8FF4:
         tay                                     ; 8FF4 A8                       .
-        jsr     doSomethingWithPPUFlagsAndRegisters; 8FF5 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; 8FF5 20 DB A3                  ..
         lda     possiblePPUAddrTable+1+24,y     ; 8FF8 B9 30 90                 .0.
         sta     $17,x                           ; 8FFB 95 17                    ..
         lda     possiblePPUAddrTable+1+23,y     ; 8FFD B9 2F 90                 ./.
@@ -2702,7 +2703,7 @@ L9177:
         sta     generalCounter37                ; 9186 85 37                    .7
 L9188:
         stx     generalCounter38                ; 9188 86 38                    .8
-        jsr     doSomethingWithPPUFlagsAndRegisters; 918A 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; 918A 20 DB A3                  ..
         lda     generalCounter37                ; 918D A5 37                    .7
         sta     $17,x                           ; 918F 95 17                    ..
         lda     generalCounter36                ; 9191 A5 36                    .6
@@ -2928,7 +2929,7 @@ L92D9:
 L92E3:
         sta     leaderboardInitials,y           ; 92E3 99 C3 04                 ...
         stx     generalCounter38                ; 92E6 86 38                    .8
-        jsr     doSomethingWithPPUFlagsAndRegisters; 92E8 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; 92E8 20 DB A3                  ..
         lda     generalCounter36                ; 92EB A5 36                    .6
         asl     a                               ; 92ED 0A                       .
         asl     a                               ; 92EE 0A                       .
@@ -3081,7 +3082,7 @@ initializeLeaderboard:
         jsr     waitForNMIAndDisablePPURendering; 93F7 20 4A A4                  J.
         jsr     resetOAMStaging                 ; 93FA 20 C2 A3                  ..
         lda     #$08                            ; 93FD A9 08                    ..
-        jsr     sendBulkDataToPPU               ; 93FF 20 E9 B3                  ..
+        jsr     sendNametableToPPU              ; 93FF 20 E9 B3                  ..
         ldx     #$05                            ; 9402 A2 05                    ..
 L9404:
         lda     player1ScoreMirrorPossible,x    ; 9404 BD 30 04                 .0.
@@ -3366,7 +3367,7 @@ skipOverScoreReset:
         lda     #$06                            ; 9600 A9 06                    ..
         clc                                     ; 9602 18                       .
         adc     playMode                        ; 9603 65 2F                    e/
-        jsr     sendBulkDataToPPU               ; 9605 20 E9 B3                  ..
+        jsr     sendNametableToPPU              ; 9605 20 E9 B3                  ..
         lda     #$00                            ; 9608 A9 00                    ..
         ldx     #$4B                            ; 960A A2 4B                    .K
 L960C:
@@ -3826,7 +3827,7 @@ L9997:
         clc                                     ; 99A3 18                       .
         adc     #$21                            ; 99A4 69 21                    i!
         sta     generalCounter36                ; 99A6 85 36                    .6
-        jsr     doSomethingWithPPUFlagsAndRegisters; 99A8 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; 99A8 20 DB A3                  ..
         lda     ppuStagingAddress               ; 99AB A5 48                    .H
         sta     ppuDataAddress1,x               ; 99AD 95 08                    ..
         lda     ppuStagingAddress+1             ; 99AF A5 49                    .I
@@ -4097,7 +4098,7 @@ L9B64:
         txa                                     ; 9B6E 8A                       .
         asl     a                               ; 9B6F 0A                       .
         tay                                     ; 9B70 A8                       .
-        jsr     doSomethingWithPPUFlagsAndRegisters; 9B71 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; 9B71 20 DB A3                  ..
         lda     statsDataAddresses,y            ; 9B74 B9 DC 9B                 ...
         sta     ppuDataAddress1,x               ; 9B77 95 08                    ..
         sta     generalCounter36                ; 9B79 85 36                    .6
@@ -4532,7 +4533,7 @@ initializeTitleScreen:
         sta     player2TetrominoNext            ; 9E76 85 67                    .g
         sta     lineClearTimerP1                ; 9E78 8D CE 01                 ...
         sta     lineClearTimerP2                ; 9E7B 8D CF 01                 ...
-        jsr     sendBulkDataToPPU               ; 9E7E 20 E9 B3                  ..
+        jsr     sendNametableToPPU              ; 9E7E 20 E9 B3                  ..
         lda     #$FA                            ; 9E81 A9 FA                    ..
         sta     gameState                       ; 9E83 85 29                    .)
         lda     #$00                            ; 9E85 A9 00                    ..
@@ -4570,7 +4571,7 @@ initializeGameSelectMenu:
         jsr     waitForNMIAndDisablePPURendering; 9EBC 20 4A A4                  J.
         jsr     resetOAMStaging                 ; 9EBF 20 C2 A3                  ..
         lda     #$01                            ; 9EC2 A9 01                    ..
-        jsr     sendBulkDataToPPU               ; 9EC4 20 E9 B3                  ..
+        jsr     sendNametableToPPU              ; 9EC4 20 E9 B3                  ..
         lda     #$3E                            ; 9EC7 A9 3E                    .>
         ldy     #$00                            ; 9EC9 A0 00                    ..
         sty     player1TetrominoCurrent         ; 9ECB 84 64                    .d
@@ -4613,7 +4614,7 @@ L9EDE:
 initializeLevelSelectMenu:
         jsr     waitForNMIAndDisablePPURendering; 9F1B 20 4A A4                  J.
         lda     #$02                            ; 9F1E A9 02                    ..
-        jsr     sendBulkDataToPPU               ; 9F20 20 E9 B3                  ..
+        jsr     sendNametableToPPU              ; 9F20 20 E9 B3                  ..
         lda     #$3E                            ; 9F23 A9 3E                    .>
         ldy     #$01                            ; 9F25 A0 01                    ..
         jsr     LA06F                           ; 9F27 20 6F A0                  o.
@@ -4646,7 +4647,7 @@ playModeTable:
 initializeHandicapMenu:
         jsr     waitForNMIAndDisablePPURendering; 9F56 20 4A A4                  J.
         lda     #$03                            ; 9F59 A9 03                    ..
-        jsr     sendBulkDataToPPU               ; 9F5B 20 E9 B3                  ..
+        jsr     sendNametableToPPU              ; 9F5B 20 E9 B3                  ..
         lda     #$3E                            ; 9F5E A9 3E                    .>
         ldy     #$03                            ; 9F60 A0 03                    ..
         jsr     LA06F                           ; 9F62 20 6F A0                  o.
@@ -4661,7 +4662,7 @@ L9F70:
 initializeMusicSelectMenu:
         jsr     waitForNMIAndDisablePPURendering; 9F74 20 4A A4                  J.
         lda     #$04                            ; 9F77 A9 04                    ..
-        jsr     sendBulkDataToPPU               ; 9F79 20 E9 B3                  ..
+        jsr     sendNametableToPPU              ; 9F79 20 E9 B3                  ..
         lda     #$3E                            ; 9F7C A9 3E                    .>
         ldy     #$05                            ; 9F7E A0 05                    ..
         jsr     LA06F                           ; 9F80 20 6F A0                  o.
@@ -4819,7 +4820,7 @@ LA06A:
         lda     #$3E                            ; A06D A9 3E                    .>
 LA06F:
         pha                                     ; A06F 48                       H
-        jsr     doSomethingWithPPUFlagsAndRegisters; A070 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; A070 20 DB A3                  ..
         sty     generalCounter36                ; A073 84 36                    .6
         lda     menuGameMode,y                  ; A075 B9 F0 04                 ...
         clc                                     ; A078 18                       .
@@ -5089,28 +5090,28 @@ LA3C4:
         rts                                     ; A3DA 60                       `
 
 ; ----------------------------------------------------------------------------
-doSomethingWithPPUFlagsAndRegisters:
+enableNMIAndWaitForvBlank:
         ldx     ppuRenderFlagBefore             ; A3DB A6 25                    .%
         lda     $24,x                           ; A3DD B5 24                    .$
         beq     LA3F2                           ; A3DF F0 11                    ..
         lda     ppuControl                      ; A3E1 A5 00                    ..
-        bmi     LA3EA                           ; A3E3 30 05                    0.
+        bmi     @nmiEnabled                     ; A3E3 30 05                    0.
         ora     #$80                            ; A3E5 09 80                    ..
         sta     PPUCTRL                         ; A3E7 8D 00 20                 .. 
-LA3EA:
+@nmiEnabled:
         lda     #$00                            ; A3EA A9 00                    ..
         sta     ppuStagingAddress               ; A3EC 85 48                    .H
-LA3EE:
+@waitLoop:
         lda     $24,x                           ; A3EE B5 24                    .$
-        bne     LA3EE                           ; A3F0 D0 FC                    ..
+        bne     @waitLoop                       ; A3F0 D0 FC                    ..
 LA3F2:
         lda     ppuRenderFlagBefore             ; A3F2 A5 25                    .%
         clc                                     ; A3F4 18                       .
         adc     #$02                            ; A3F5 69 02                    i.
         cmp     #$0E                            ; A3F7 C9 0E                    ..
-        bcc     LA3FD                           ; A3F9 90 02                    ..
+        bcc     @dontReset                      ; A3F9 90 02                    ..
         lda     #$00                            ; A3FB A9 00                    ..
-LA3FD:
+@dontReset:
         sta     ppuRenderFlagBefore             ; A3FD 85 25                    .%
         rts                                     ; A3FF 60                       `
 
@@ -5310,7 +5311,7 @@ attrDataLeaderboard:
 ; ----------------------------------------------------------------------------
 LA6BE:
         tay                                     ; A6BE A8                       .
-        jsr     doSomethingWithPPUFlagsAndRegisters; A6BF 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; A6BF 20 DB A3                  ..
         lda     #$3F                            ; A6C2 A9 3F                    .?
         sta     $17,x                           ; A6C4 95 17                    ..
         lda     LA6DF,y                         ; A6C6 B9 DF A6                 ...
@@ -5365,7 +5366,7 @@ LA763:
         adc     #$11                            ; A766 69 11                    i.
 LA768:
         pha                                     ; A768 48                       H
-        jsr     doSomethingWithPPUFlagsAndRegisters; A769 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; A769 20 DB A3                  ..
         pla                                     ; A76C 68                       h
         sta     $16,x                           ; A76D 95 16                    ..
         lda     #$3F                            ; A76F A9 3F                    .?
@@ -5618,52 +5619,52 @@ reset:
         ldx     #$00                            ; A913 A2 00                    ..
         stx     PPUCTRL                         ; A915 8E 00 20                 .. 
         stx     PPUMASK                         ; A918 8E 01 20                 .. 
-LA91B:
+@vblankWait1:
         lda     PPUSTATUS                       ; A91B AD 02 20                 .. 
-        bpl     LA91B                           ; A91E 10 FB                    ..
-LA920:
+        bpl     @vblankWait1                    ; A91E 10 FB                    ..
+@vblankWait2:
         lda     PPUSTATUS                       ; A920 AD 02 20                 .. 
-        bpl     LA920                           ; A923 10 FB                    ..
+        bpl     @vblankWait2                    ; A923 10 FB                    ..
         dex                                     ; A925 CA                       .
         txs                                     ; A926 9A                       .
         inx                                     ; A927 E8                       .
-        lda     $04F7                           ; A928 AD F7 04                 ...
+        lda     initMagic                       ; A928 AD F7 04                 ...
         cmp     #$4C                            ; A92B C9 4C                    .L
-        bne     LA966                           ; A92D D0 37                    .7
-        lda     $04F8                           ; A92F AD F8 04                 ...
+        bne     resetHighScores                 ; A92D D0 37                    .7
+        lda     initMagic+1                     ; A92F AD F8 04                 ...
         cmp     #$4F                            ; A932 C9 4F                    .O
-        bne     LA966                           ; A934 D0 30                    .0
-        lda     $04F9                           ; A936 AD F9 04                 ...
+        bne     resetHighScores                 ; A934 D0 30                    .0
+        lda     initMagic+2                     ; A936 AD F9 04                 ...
         cmp     #$47                            ; A939 C9 47                    .G
-        bne     LA966                           ; A93B D0 29                    .)
-        lda     $04FA                           ; A93D AD FA 04                 ...
+        bne     resetHighScores                 ; A93B D0 29                    .)
+        lda     initMagic+3                     ; A93D AD FA 04                 ...
         cmp     #$47                            ; A940 C9 47                    .G
-        bne     LA966                           ; A942 D0 22                    ."
+        bne     resetHighScores                 ; A942 D0 22                    ."
         ldy     #$00                            ; A944 A0 00                    ..
-LA946:
+@validateHighScoreLoop:
         lda     player1ScoreHundredThousands,y  ; A946 B9 18 04                 ...
         cmp     #$30                            ; A949 C9 30                    .0
-        bcc     LA966                           ; A94B 90 19                    ..
+        bcc     resetHighScores                 ; A94B 90 19                    ..
         cmp     #$3A                            ; A94D C9 3A                    .:
-        bcs     LA966                           ; A94F B0 15                    ..
+        bcs     resetHighScores                 ; A94F B0 15                    ..
         iny                                     ; A951 C8                       .
         cpy     #$AB                            ; A952 C0 AB                    ..
-        bcc     LA946                           ; A954 90 F0                    ..
-LA956:
+        bcc     @validateHighScoreLoop          ; A954 90 F0                    ..
+@validateNamesLoop:
         lda     player1ScoreHundredThousands,y  ; A956 B9 18 04                 ...
         and     #$3F                            ; A959 29 3F                    )?
         cmp     #$1B                            ; A95B C9 1B                    ..
-        bcs     LA966                           ; A95D B0 07                    ..
+        bcs     resetHighScores                 ; A95D B0 07                    ..
         iny                                     ; A95F C8                       .
         cpy     #$D8                            ; A960 C0 D8                    ..
-        bcc     LA956                           ; A962 90 F2                    ..
-        bcs     LA9A1                           ; A964 B0 3B                    .;
-LA966:
+        bcc     @validateNamesLoop              ; A962 90 F2                    ..
+        bcs     zeroOutPages                    ; A964 B0 3B                    .;
+resetHighScores:
         txa                                     ; A966 8A                       .
-LA967:
+@resetHighScoreLoop:
         sta     player1ScoreHundredThousands,x  ; A967 9D 18 04                 ...
         inx                                     ; A96A E8                       .
-        bne     LA967                           ; A96B D0 FA                    ..
+        bne     @resetHighScoreLoop             ; A96B D0 FA                    ..
         ldy     #$00                            ; A96D A0 00                    ..
         lda     #$30                            ; A96F A9 30                    .0
 LA971:
@@ -5696,24 +5697,24 @@ LA994:
         dey                                     ; A99C 88                       .
         bpl     LA987                           ; A99D 10 E8                    ..
         ldx     #$00                            ; A99F A2 00                    ..
-LA9A1:
+zeroOutPages:
         txa                                     ; A9A1 8A                       .
-LA9A2:
+@zeroOutPageLoop:
         sta     ppuControl,x                    ; A9A2 95 00                    ..
         sta     ppuStaging,x                    ; A9A4 9D 00 01                 ...
         sta     oamStaging,x                    ; A9A7 9D 00 05                 ...
         sta     player1Playfield,x              ; A9AA 9D 00 06                 ...
         sta     player2Playfield,x              ; A9AD 9D 00 07                 ...
         inx                                     ; A9B0 E8                       .
-        bne     LA9A2                           ; A9B1 D0 EF                    ..
+        bne     @zeroOutPageLoop                ; A9B1 D0 EF                    ..
         lda     #$4C                            ; A9B3 A9 4C                    .L
-        sta     $04F7                           ; A9B5 8D F7 04                 ...
+        sta     initMagic                       ; A9B5 8D F7 04                 ...
         lda     #$4F                            ; A9B8 A9 4F                    .O
-        sta     $04F8                           ; A9BA 8D F8 04                 ...
+        sta     initMagic+1                     ; A9BA 8D F8 04                 ...
         lda     #$47                            ; A9BD A9 47                    .G
-        sta     $04F9                           ; A9BF 8D F9 04                 ...
+        sta     initMagic+2                     ; A9BF 8D F9 04                 ...
         lda     #$47                            ; A9C2 A9 47                    .G
-        sta     $04FA                           ; A9C4 8D FA 04                 ...
+        sta     initMagic+3                     ; A9C4 8D FA 04                 ...
         lda     #$5A                            ; A9C7 A9 5A                    .Z
         sta     rngSeed                         ; A9C9 85 34                    .4
         jmp     resetContinued                  ; A9CB 4C 03 80                 L..
@@ -6274,28 +6275,45 @@ LB0CB:
 
 ; ----------------------------------------------------------------------------
 LB0D8:
-        .byte   $B1,$38,$9D,$05,$05,$C8,$B1,$38 ; B0D8 B1 38 9D 05 05 C8 B1 38  .8.....8
-        .byte   $9D,$01,$05,$C8,$B1,$38,$9D,$0D ; B0E0 9D 01 05 C8 B1 38 9D 0D  .....8..
-        .byte   $05,$C8,$B1,$38,$9D,$09,$05,$A5 ; B0E8 05 C8 B1 38 9D 09 05 A5  ...8....
-        .byte   $36,$C9,$81,$A5,$37,$E9,$B1,$B0 ; B0F0 36 C9 81 A5 37 E9 B1 B0  6...7...
-        .byte   $D0,$A5,$32,$29,$03,$D0,$CA,$DE ; B0F8 D0 A5 32 29 03 D0 CA DE  ..2)....
-        .byte   $03,$05,$DE,$07,$05,$DE,$0B,$05 ; B100 03 05 DE 07 05 DE 0B 05  ........
-        .byte   $DE,$0F,$05,$D0,$BC,$AD,$B1,$C7 ; B108 DE 0F 05 D0 BC AD B1 C7  ........
-        .byte   $B1,$E1,$B1,$03,$B2,$25,$B2,$47 ; B110 B1 E1 B1 03 B2 25 B2 47  .....%.G
-        .byte   $B2,$69,$B2,$93,$B2,$BD,$B2,$AD ; B118 B2 69 B2 93 B2 BD B2 AD  .i......
-        .byte   $B1,$E1,$B1,$03,$B2,$47,$B2,$69 ; B120 B1 E1 B1 03 B2 47 B2 69  .....G.i
-        .byte   $B2,$93,$B2,$BD,$B2,$DF,$B2,$F1 ; B128 B2 93 B2 BD B2 DF B2 F1  ........
-        .byte   $B2,$03,$B3,$25,$B3,$47,$B3,$DF ; B130 B2 03 B3 25 B3 47 B3 DF  ...%.G..
-        .byte   $B2,$F1,$B2,$03,$B3,$25,$B3,$47 ; B138 B2 F1 B2 03 B3 25 B3 47  .....%.G
-        .byte   $B3,$DF,$B2,$F1,$B2,$03,$B3,$25 ; B140 B3 DF B2 F1 B2 03 B3 25  .......%
-        .byte   $B3,$47,$B3,$DF,$B2,$10,$C9,$14 ; B148 B3 47 B3 DF B2 10 C9 14  .G......
-        .byte   $C9,$18,$C9,$14,$C9,$10,$C9,$14 ; B150 C9 18 C9 14 C9 10 C9 14  ........
-        .byte   $C9,$18,$C9,$14,$C9,$10,$C9,$14 ; B158 C9 18 C9 14 C9 10 C9 14  ........
-        .byte   $C9,$18,$C9,$64,$C9,$0D,$B1,$94 ; B160 C9 18 C9 64 C9 0D B1 94  ...d....
-        .byte   $C9,$98,$C9,$9C,$C9,$98,$C9,$94 ; B168 C9 98 C9 9C C9 98 C9 94  ........
-        .byte   $C9,$98,$C9,$9C,$C9,$98,$C9,$94 ; B170 C9 98 C9 9C C9 98 C9 94  ........
-        .byte   $C9,$98,$C9,$9C,$C9,$C0,$C8,$2D ; B178 C9 98 C9 9C C9 C0 C8 2D  .......-
-        .byte   $B1                             ; B180 B1                       .
+        lda     (generalCounter38),y            ; B0D8 B1 38                    .8
+        sta     oamStaging+5,x                  ; B0DA 9D 05 05                 ...
+        iny                                     ; B0DD C8                       .
+        lda     (generalCounter38),y            ; B0DE B1 38                    .8
+        sta     oamStaging+1,x                  ; B0E0 9D 01 05                 ...
+        iny                                     ; B0E3 C8                       .
+        lda     (generalCounter38),y            ; B0E4 B1 38                    .8
+        sta     oamStaging+13,x                 ; B0E6 9D 0D 05                 ...
+        iny                                     ; B0E9 C8                       .
+        lda     (generalCounter38),y            ; B0EA B1 38                    .8
+        sta     oamStaging+9,x                  ; B0EC 9D 09 05                 ...
+        lda     generalCounter36                ; B0EF A5 36                    .6
+        cmp     #$81                            ; B0F1 C9 81                    ..
+        lda     generalCounter37                ; B0F3 A5 37                    .7
+        sbc     #$B1                            ; B0F5 E9 B1                    ..
+        bcs     LB0C9                           ; B0F7 B0 D0                    ..
+        lda     frameCounterLow                 ; B0F9 A5 32                    .2
+        and     #$03                            ; B0FB 29 03                    ).
+        bne     LB0C9                           ; B0FD D0 CA                    ..
+        dec     oamStaging+3,x                  ; B0FF DE 03 05                 ...
+        dec     oamStaging+7,x                  ; B102 DE 07 05                 ...
+        dec     oamStaging+11,x                 ; B105 DE 0B 05                 ...
+        dec     oamStaging+15,x                 ; B108 DE 0F 05                 ...
+        bne     LB0C9                           ; B10B D0 BC                    ..
+        .byte   $AD,$B1,$C7,$B1,$E1,$B1,$03,$B2 ; B10D AD B1 C7 B1 E1 B1 03 B2  ........
+        .byte   $25,$B2,$47,$B2,$69,$B2,$93,$B2 ; B115 25 B2 47 B2 69 B2 93 B2  %.G.i...
+        .byte   $BD,$B2,$AD,$B1,$E1,$B1,$03,$B2 ; B11D BD B2 AD B1 E1 B1 03 B2  ........
+        .byte   $47,$B2,$69,$B2,$93,$B2,$BD,$B2 ; B125 47 B2 69 B2 93 B2 BD B2  G.i.....
+        .byte   $DF,$B2,$F1,$B2,$03,$B3,$25,$B3 ; B12D DF B2 F1 B2 03 B3 25 B3  ......%.
+        .byte   $47,$B3,$DF,$B2,$F1,$B2,$03,$B3 ; B135 47 B3 DF B2 F1 B2 03 B3  G.......
+        .byte   $25,$B3,$47,$B3,$DF,$B2,$F1,$B2 ; B13D 25 B3 47 B3 DF B2 F1 B2  %.G.....
+        .byte   $03,$B3,$25,$B3,$47,$B3,$DF,$B2 ; B145 03 B3 25 B3 47 B3 DF B2  ..%.G...
+        .byte   $10,$C9,$14,$C9,$18,$C9,$14,$C9 ; B14D 10 C9 14 C9 18 C9 14 C9  ........
+        .byte   $10,$C9,$14,$C9,$18,$C9,$14,$C9 ; B155 10 C9 14 C9 18 C9 14 C9  ........
+        .byte   $10,$C9,$14,$C9,$18,$C9,$64,$C9 ; B15D 10 C9 14 C9 18 C9 64 C9  ......d.
+        .byte   $0D,$B1,$94,$C9,$98,$C9,$9C,$C9 ; B165 0D B1 94 C9 98 C9 9C C9  ........
+        .byte   $98,$C9,$94,$C9,$98,$C9,$9C,$C9 ; B16D 98 C9 94 C9 98 C9 9C C9  ........
+        .byte   $98,$C9,$94,$C9,$98,$C9,$9C,$C9 ; B175 98 C9 94 C9 98 C9 9C C9  ........
+        .byte   $C0,$C8,$2D,$B1                 ; B17D C0 C8 2D B1              ..-.
 LB181:
         .byte   $20,$C9,$20,$C9,$20,$C9,$08,$C9 ; B181 20 C9 20 C9 20 C9 08 C9   . . ...
         .byte   $0C,$C9,$28,$C9,$28,$C9,$28,$C9 ; B189 0C C9 28 C9 28 C9 28 C9  ..(.(.(.
@@ -6361,6 +6379,7 @@ LB197:
         .byte   $B8,$C9,$BC,$C9,$C0,$C9,$C4,$C9 ; B35F B8 C9 BC C9 C0 C9 C4 C9  ........
         .byte   $2D,$B1                         ; B367 2D B1                    -.
 ; ----------------------------------------------------------------------------
+.segment "PRG_chunk2": absolute
 drawCathedralSprites:
         ldx     #$00                            ; B369 A2 00                    ..
 cathedralCheckComplete:
@@ -6406,7 +6425,8 @@ cathedralSpriteTabel:
         .byte   $12,$00,$94,$02,$13,$00,$B4,$02 ; B3E0 12 00 94 02 13 00 B4 02  ........
         .byte   $00                             ; B3E8 00                       .
 ; ----------------------------------------------------------------------------
-sendBulkDataToPPU:
+; Nametable index in accumulator.  References nametableAddressTable
+sendNametableToPPU:
         pha                                     ; B3E9 48                       H
         asl     a                               ; B3EA 0A                       .
         tax                                     ; B3EB AA                       .
@@ -6419,27 +6439,28 @@ sendBulkDataToPPU:
         sta     PPUADDR                         ; B3FA 8D 06 20                 .. 
         ldy     #$00                            ; B3FD A0 00                    ..
         lda     nametableAddressTable+1,x       ; B3FF BD 7F B4                 ...
-        bne     LB410                           ; B402 D0 0C                    ..
-LB404:
+        bne     @notZeroedOut                   ; B402 D0 0C                    ..
+; May be unused.  If entered this will zero out entire nametable
+@zeroOutNTLoop:
         sta     PPUDATA                         ; B404 8D 07 20                 .. 
         iny                                     ; B407 C8                       .
-        bne     LB404                           ; B408 D0 FA                    ..
+        bne     @zeroOutNTLoop                  ; B408 D0 FA                    ..
         dec     generalCounter38                ; B40A C6 38                    .8
-        bne     LB404                           ; B40C D0 F6                    ..
-        beq     LB425                           ; B40E F0 15                    ..
-LB410:
+        bne     @zeroOutNTLoop                  ; B40C D0 F6                    ..
+        beq     @applyNTPatch                   ; B40E F0 15                    ..
+@notZeroedOut:
         sta     generalCounter37                ; B410 85 37                    .7
         lda     nametableAddressTable,x         ; B412 BD 7E B4                 .~.
         sta     generalCounter36                ; B415 85 36                    .6
-LB417:
+@copyNTLoop:
         lda     (generalCounter36),y            ; B417 B1 36                    .6
         sta     PPUDATA                         ; B419 8D 07 20                 .. 
         iny                                     ; B41C C8                       .
-        bne     LB417                           ; B41D D0 F8                    ..
+        bne     @copyNTLoop                     ; B41D D0 F8                    ..
         inc     generalCounter37                ; B41F E6 37                    .7
         dec     generalCounter38                ; B421 C6 38                    .8
-        bne     LB417                           ; B423 D0 F2                    ..
-LB425:
+        bne     @copyNTLoop                     ; B423 D0 F2                    ..
+@applyNTPatch:
         lda     ppuPatchTable2,x                ; B425 BD 90 B4                 ...
         sta     generalCounter36                ; B428 85 36                    .6
         lda     ppuPatchTable2+1,x              ; B42A BD 91 B4                 ...
@@ -6738,7 +6759,7 @@ LB61A:
         cpx     #$06                            ; B61E E0 06                    ..
         bne     LB618                           ; B620 D0 F6                    ..
 LB622:
-        jsr     doSomethingWithPPUFlagsAndRegisters; B622 20 DB A3               ..
+        jsr     enableNMIAndWaitForvBlank       ; B622 20 DB A3                  ..
         lda     generalCounter38                ; B625 A5 38                    .8
         sta     $16,x                           ; B627 95 16                    ..
         lda     generalCounter39                ; B629 A5 39                    .9
@@ -7583,6 +7604,7 @@ LC874:
         .byte   $1A,$B4,$B5,$AF,$A8,$B6,$B7,$A3 ; C8A4 1A B4 B5 AF A8 B6 B7 A3  ........
         .byte   $A4,$A5,$A6,$A7,$1A,$B8,$B9,$BA ; C8AC A4 A5 A6 A7 1A B8 B9 BA  ........
         .byte   $A8,$BB,$BC,$A3,$A4,$C4,$C5,$A7 ; C8B4 A8 BB BC A3 A4 C4 C5 A7  ........
+possibleUnusedData2:
         .byte   $05,$06,$07,$08,$09,$0A,$0B,$0C ; C8BC 05 06 07 08 09 0A 0B 0C  ........
         .byte   $0D,$0E,$0F,$10,$11,$12,$0B,$13 ; C8C4 0D 0E 0F 10 11 12 0B 13  ........
         .byte   $14,$15,$16,$17,$18,$19,$1A,$0C ; C8CC 14 15 16 17 18 19 1A 0C  ........
@@ -7965,20 +7987,20 @@ LD11F:
         dey                                     ; D127 88                       .
         bpl     LD11F                           ; D128 10 F5                    ..
         ldy     #$00                            ; D12A A0 00                    ..
-        lda     #$13                            ; D12C A9 13                    ..
+        lda     #<UnknownTable03                            ; D12C A9 13                    ..
         clc                                     ; D12E 18                       .
         adc     $EF                             ; D12F 65 EF                    e.
         sta     $F1                             ; D131 85 F1                    ..
-        lda     #$DF                            ; D133 A9 DF                    ..
+        lda     #>UnknownTable03                            ; D133 A9 DF                    ..
         adc     $F0                             ; D135 65 F0                    e.
         sta     $F2                             ; D137 85 F2                    ..
         lda     ($F1),y                         ; D139 B1 F1                    ..
         sta     $020C                           ; D13B 8D 0C 02                 ...
-        lda     #$42                            ; D13E A9 42                    .B
+        lda     #<UnknownTable02                            ; D13E A9 42                    .B
         clc                                     ; D140 18                       .
         adc     $EF                             ; D141 65 EF                    e.
         sta     $F1                             ; D143 85 F1                    ..
-        lda     #$DF                            ; D145 A9 DF                    ..
+        lda     #>UnknownTable02                            ; D145 A9 DF                    ..
         adc     $F0                             ; D147 65 F0                    e.
         sta     $F2                             ; D149 85 F2                    ..
         lda     ($F1),y                         ; D14B B1 F1                    ..
@@ -8014,11 +8036,11 @@ LD180:
 LD183:
         sta     $F5                             ; D183 85 F5                    ..
         ldy     #$00                            ; D185 A0 00                    ..
-        lda     #$13                            ; D187 A9 13                    ..
+        lda     #<UnknownTable03                            ; D187 A9 13                    ..
         clc                                     ; D189 18                       .
         adc     $F4                             ; D18A 65 F4                    e.
         sta     $F1                             ; D18C 85 F1                    ..
-        lda     #$DF                            ; D18E A9 DF                    ..
+        lda     #>UnknownTable03                            ; D18E A9 DF                    ..
         adc     $F5                             ; D190 65 F5                    e.
         sta     $F2                             ; D192 85 F2                    ..
         lda     ($F1),y                         ; D194 B1 F1                    ..
@@ -8158,11 +8180,11 @@ LD293:
         lda     $F0                             ; D2A6 A5 F0                    ..
         rol     a                               ; D2A8 2A                       *
         sta     $F2                             ; D2A9 85 F2                    ..
-        lda     #$CF                            ; D2AB A9 CF                    ..
+        lda     #<UnknownTable01                            ; D2AB A9 CF                    ..
         clc                                     ; D2AD 18                       .
         adc     $F1                             ; D2AE 65 F1                    e.
         sta     $F1                             ; D2B0 85 F1                    ..
-        lda     #$DF                            ; D2B2 A9 DF                    ..
+        lda     #>UnknownTable01                            ; D2B2 A9 DF                    ..
         adc     $F2                             ; D2B4 65 F2                    e.
         sta     $F2                             ; D2B6 85 F2                    ..
         lda     ($F1),y                         ; D2B8 B1 F1                    ..
@@ -8238,11 +8260,11 @@ LD306:
         rol     $FD                             ; D313 26 FD                    &.
         asl     $FC                             ; D315 06 FC                    ..
         rol     $FD                             ; D317 26 FD                    &.
-        lda     #$F7                            ; D319 A9 F7                    ..
+        lda     #>unknownTableForAudio                            ; D319 A9 F7                    ..
         clc                                     ; D31B 18                       .
         adc     $FC                             ; D31C 65 FC                    e.
         sta     $FC                             ; D31E 85 FC                    ..
-        lda     #$03                            ; D320 A9 03                    ..
+        lda     #<unknownTableForAudio                            ; D320 A9 03                    ..
         adc     $FD                             ; D322 65 FD                    e.
         sta     $FD                             ; D324 85 FD                    ..
         pla                                     ; D326 68                       h
@@ -9907,19 +9929,21 @@ LDED5:
 LDEFE:
         .byte   $FF,$FF,$FF,$FF,$00,$00,$FF,$FF ; DEFE FF FF FF FF 00 00 FF FF  ........
         .byte   $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; DF06 FF FF FF FF FF FF FF FF  ........
-        .byte   $FF,$FF,$FF,$FF,$FF,$07,$07,$07 ; DF0E FF FF FF FF FF 07 07 07  ........
-        .byte   $07,$07,$07,$07,$07,$07,$07,$07 ; DF16 07 07 07 07 07 07 07 07  ........
-        .byte   $07,$07,$07,$07,$08,$08,$08,$08 ; DF1E 07 07 07 07 08 08 08 08  ........
-        .byte   $08,$08,$08,$08,$08,$08,$08,$08 ; DF26 08 08 08 08 08 08 08 08  ........
-        .byte   $08,$08,$08,$08,$07,$07,$07,$07 ; DF2E 08 08 08 08 07 07 07 07  ........
-        .byte   $1D,$1D,$1D,$1D,$1D,$1D,$1D,$3E ; DF36 1D 1D 1D 1D 1D 1D 1D 3E  .......>
-        .byte   $3E,$3E,$3E,$3E,$00,$01,$02,$00 ; DF3E 3E 3E 3E 3E 00 01 02 00  >>>>....
-        .byte   $01,$02,$03,$00,$01,$02,$03,$00 ; DF46 01 02 03 00 01 02 03 00  ........
-        .byte   $01,$02,$03,$00,$01,$02,$03,$00 ; DF4E 01 02 03 00 01 02 03 00  ........
-        .byte   $01,$02,$03,$00,$01,$02,$03,$00 ; DF56 01 02 03 00 01 02 03 00  ........
-        .byte   $01,$02,$03,$00,$01,$02,$03,$03 ; DF5E 01 02 03 00 01 02 03 03  ........
-        .byte   $03,$01,$01,$00,$01,$01,$00,$03 ; DF66 03 01 01 00 01 01 00 03  ........
-        .byte   $03,$03,$03                     ; DF6E 03 03 03                 ...
+        .byte   $FF,$FF,$FF,$FF,$FF             ; DF0E FF FF FF FF FF           .....
+UnknownTable03:
+        .byte   $07,$07,$07,$07,$07,$07,$07,$07 ; DF13 07 07 07 07 07 07 07 07  ........
+        .byte   $07,$07,$07,$07,$07,$07,$07,$08 ; DF1B 07 07 07 07 07 07 07 08  ........
+        .byte   $08,$08,$08,$08,$08,$08,$08,$08 ; DF23 08 08 08 08 08 08 08 08  ........
+        .byte   $08,$08,$08,$08,$08,$08,$08,$07 ; DF2B 08 08 08 08 08 08 08 07  ........
+        .byte   $07,$07,$07,$1D,$1D,$1D,$1D,$1D ; DF33 07 07 07 1D 1D 1D 1D 1D  ........
+        .byte   $1D,$1D,$3E,$3E,$3E,$3E,$3E     ; DF3B 1D 1D 3E 3E 3E 3E 3E     ..>>>>>
+UnknownTable02:
+        .byte   $00,$01,$02,$00,$01,$02,$03,$00 ; DF42 00 01 02 00 01 02 03 00  ........
+        .byte   $01,$02,$03,$00,$01,$02,$03,$00 ; DF4A 01 02 03 00 01 02 03 00  ........
+        .byte   $01,$02,$03,$00,$01,$02,$03,$00 ; DF52 01 02 03 00 01 02 03 00  ........
+        .byte   $01,$02,$03,$00,$01,$02,$03,$00 ; DF5A 01 02 03 00 01 02 03 00  ........
+        .byte   $01,$02,$03,$03,$03,$01,$01,$00 ; DF62 01 02 03 03 03 01 01 00  ........
+        .byte   $01,$01,$00,$03,$03,$03,$03     ; DF6A 01 01 00 03 03 03 03     .......
 ; ----------------------------------------------------------------------------
         .addr   LE043                           ; DF71 43 E0                    C.
         .addr   LE364                           ; DF73 64 E3                    d.
@@ -9969,6 +9993,7 @@ LDEFE:
         .addr   LFE2D                           ; DFCB 2D FE                    -.
         .addr   LFE6E                           ; DFCD 6E FE                    n.
 ; ----------------------------------------------------------------------------
+UnknownTable01:
         .byte   $01,$00,$02,$00,$00             ; DFCF 01 00 02 00 00           .....
 LDFD4:
         .byte   $00                             ; DFD4 00                       .
@@ -10763,6 +10788,7 @@ LF6D3:
         .byte   $3A,$04,$3C,$04,$3D,$04,$3A,$04 ; F6EB 3A 04 3C 04 3D 04 3A 04  :.<.=.:.
         .byte   $3C,$04,$3D,$04,$3F,$02,$39,$02 ; F6F3 3C 04 3D 04 3F 02 39 02  <.=.?.9.
         .byte   $41,$82,$41,$04,$3A,$04,$3C,$04 ; F6FB 41 82 41 04 3A 04 3C 04  A.A.:.<.
+unknownTableForAudio:
         .byte   $3D,$04,$3F,$42,$3D,$04,$3C,$04 ; F703 3D 04 3F 42 3D 04 3C 04  =.?B=.<.
         .byte   $3A,$02,$39,$02,$3A,$02,$37,$04 ; F70B 3A 02 39 02 3A 02 37 04  :.9.:.7.
         .byte   $39,$04,$3A,$04,$3C,$04,$8F,$00 ; F713 39 04 3A 04 3C 04 8F 00  9.:.<...
@@ -11084,6 +11110,7 @@ cnromBank2or3:
 unknownData02:
         .byte   $11,$A9                         ; FFF8 11 A9                    ..
 ; ----------------------------------------------------------------------------
+.code
 
 .segment        "VECTORS": absolute
 

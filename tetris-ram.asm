@@ -154,7 +154,8 @@ menuPlayer1Handicap:	.res 1	; $04f3
 menuPlayer2Handicap:	.res 1	; $04f4
 menuMusic:	.res 1	; $04f5
 ppuScrollYOffset:	.res 1	; $04f6
-.res 9
+initMagic:	.res $4	; $04f7
+.res 5
 oamStaging:	.res $100	; $0500
 player1Playfield:	.res $DF	; $0600
 .res 33

@@ -151,6 +151,7 @@ LABEL { ADDR $04f3; NAME "menuPlayer1Handicap"; };
 LABEL { ADDR $04f4; NAME "menuPlayer2Handicap"; };
 LABEL { ADDR $04f5; NAME "menuMusic"; };
 LABEL { ADDR $04f6; NAME "ppuScrollYOffset"; };
+LABEL { ADDR $04f7; NAME "initMagic"; SIZE $4; };
 
 LABEL { ADDR $0500; NAME "oamStaging"; SIZE $100; };
 
@@ -332,7 +333,10 @@ LABEL { ADDR $a393; NAME "ppuPatchLeaderboard14"; };
 LABEL { ADDR $a399; NAME "ppuPatchLeaderboard15"; };
 LABEL { ADDR $a39f; NAME "unknownData01"; };
 LABEL { ADDR $a3c2; NAME "resetOAMStaging"; };
-LABEL { ADDR $a3db; NAME "doSomethingWithPPUFlagsAndRegisters"; };
+LABEL { ADDR $a3db; NAME "enableNMIAndWaitForvBlank"; };
+LABEL { ADDR $a3ea; NAME "@nmiEnabled"; };
+LABEL { ADDR $a3ee; NAME "@waitLoop"; };
+LABEL { ADDR $a3fd; NAME "@dontReset"; };
 LABEL { ADDR $a400; NAME "pollController"; };
 LABEL { ADDR $a44a; NAME "waitForNMIAndDisablePPURendering"; };
 LABEL { ADDR $a44e; NAME "@waitForNMI"; };
@@ -352,13 +356,25 @@ LABEL { ADDR $A8BD; NAME "renderFakeReturnXIsA"; };
 LABEL { ADDR $A8DE; NAME "renderFakeReturnXIsC"; }; 
 LABEL { ADDR $A903; NAME "renderJumpTable"; }; 
 LABEL { ADDR $a911; NAME "reset"; };
+LABEL { ADDR $a91b; NAME "@vblankWait1"; };
+LABEL { ADDR $a920; NAME "@vblankWait2"; };
+LABEL { ADDR $a946; NAME "@validateHighScoreLoop"; };
+LABEL { ADDR $a956; NAME "@validateNamesLoop"; };
+LABEL { ADDR $a966; NAME "resetHighScores"; };
+LABEL { ADDR $a967; NAME "@resetHighScoreLoop"; };
+LABEL { ADDR $a9A1; NAME "zeroOutPages"; };
+LABEL { ADDR $a9A2; NAME "@zeroOutPageLoop"; };
 LABEL { ADDR $AA6C; NAME "topoutSoundsTable"; };
 
 LABEL { ADDR $b369; NAME "drawCathedralSprites"; };
 LABEL { ADDR $b36b; NAME "cathedralCheckComplete"; };
 LABEL { ADDR $b371; NAME "drawCathedralSpriteTile"; };
 LABEL { ADDR $b3a0; NAME "cathedralSpriteTabel"; SIZE $48; };
-LABEL { ADDR $b3e9; NAME "sendBulkDataToPPU"; };
+LABEL { ADDR $b3e9; NAME "sendNametableToPPU"; COMMENT "Nametable index in accumulator.  References nametableAddressTable"; };
+LABEL { ADDR $B404; NAME "@zeroOutNTLoop"; COMMENT "May be unused.  If entered this will zero out entire nametable"; };
+LABEL { ADDR $B410; NAME "@notZeroedOut"; };
+LABEL { ADDR $B417; NAME "@copyNTLoop"; };
+LABEL { ADDR $B425; NAME "@applyNTPatch"; };
 LABEL { ADDR $B4A2; NAME "ppuPatchTable1"; COMMENT "columns, rows, ppu address (2 bytes), data address (2 bytes)"; };
 LABEL { ADDR $B4A8; NAME "ppuPatchTableSkipPatch"; COMMENT "0 columns skips the routine. 5 bytes are taken from code anyway"; };
 LABEL { ADDR $B4A9; NAME "checkCodeInput"; };
@@ -405,6 +421,7 @@ LABEL { ADDR $c7a8; NAME "dataBlockPastGameModeNameTable"; };
 LABEL { ADDR $c7f0; NAME "pauseTiles"; };
 LABEL { ADDR $c800; NAME "gameOverTiles"; };
 LABEL { ADDR $c818; NAME "statsTiles1"; };
+LABEL { ADDR $c8bc; NAME "possibleUnusedData2"; };
 LABEL { ADDR $ca00; NAME "titleScreenNametable"; SIZE $3c0; };
 LABEL { ADDR $cdc0; NAME "possibleUnusedData"; };
 LABEL { ADDR $cfb1; NAME "setMusicOrSoundEffect"; };
@@ -414,7 +431,11 @@ LABEL { ADDR $d846; NAME "setupMusicTrack"; };
 
 LABEL { ADDR $dd1e; NAME "apuRegistersLow"; };
 LABEL { ADDR $dd22; NAME "apuRegistersHigh"; };
+LABEL { ADDR $df13; NAME "UnknownTable03"; };
+LABEL { ADDR $df42; NAME "UnknownTable02"; };
+LABEL { ADDR $dfcf; NAME "UnknownTable01"; };
 
+LABEL { ADDR $F703; NAME "unknownTableForAudio"; };
 LABEL { ADDR $FFF6; NAME "cnromBank2or3"; SIZE $2; };
 LABEL { ADDR $FFF8; NAME "unknownData02"; SIZE $2; };
 
@@ -512,7 +533,11 @@ RANGE { START $aca0; END $ad24; TYPE CODE; };
 RANGE { START $ad25; END $b014; TYPE BYTETABLE; };
 
 RANGE { START $b015; END $b0d7; TYPE CODE; };
-RANGE { START $b0d8; END $b368; TYPE BYTETABLE; };
+
+RANGE { START $b0d8; END $b10C; TYPE CODE; };
+
+RANGE { START $b10D; END $b368; TYPE BYTETABLE; };
+
 RANGE { START $b369; END $b39f; TYPE CODE; };
 RANGE { START $b3a0; END $b3e8; TYPE BYTETABLE; };
 RANGE { START $b3e9; END $b47d; TYPE CODE; };
