@@ -12,13 +12,13 @@ get_label () {
 apply_high() {
     label=$(get_label $1)
     # echo high $label ${1::-2} $2
-    sed -i "/; $2/s/#\$${1::-2}/#>$label/" main.asm
+    sed -i "/; $2/s/\$${1::-2}/>$label/" main.asm
     }
 
 apply_low() {
     label=$(get_label $1)
     # echo low $label ${1:2} $2
-    sed -i "/; $2/s/#\$${1:2}/#<$label/" main.asm
+    sed -i "/; $2/s/\$${1:2}/<$label/" main.asm
     }
 
 apply_label() {
@@ -28,9 +28,22 @@ apply_label() {
 
 
 # label, lowloc, highloc
+apply_label 8A1F 89FD 8A01
+apply_label 93DC 9310 9314
 apply_label A788 A779 A77D
 apply_label A6E6 A6D0 A6D6
-apply_label F703 D320 D319
+apply_label CDC0 AB2D AB2D
+apply_label CDC0 AB30 AB30
+apply_label CDF1 AB33 AB33
+apply_label CDF1 AB36 AB36
+apply_label CE22 AB39 AB39
+apply_label CE22 AB3C AB3C
+apply_label CE53 AB3F AB3F
+apply_label CE53 AB42 AB42
+apply_label CE53 AB45 AB45
+apply_label CE84 AB48 AB48
+apply_label CE84 AB4B AB4B
+apply_label CE84 AB4E AB4E
 apply_label DFCF D2AB D2B2
 apply_label DF13 D12C D133
 apply_label DF13 D187 D18E
@@ -39,6 +52,7 @@ apply_label DF42 D13E D145
 apply_label DF42 D226 D22D
 apply_label DF71 D245 D24C
 apply_label DD32 D1FF D207
+apply_label F703 D320 D319
 
 
 extract_nt () {
