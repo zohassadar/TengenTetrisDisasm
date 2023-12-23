@@ -53,15 +53,15 @@ extract_nt gameModeNametable1P
 extract_nt gameModeNametable2P
 
 
-# move the start of prg_chunk2.  Come back and nudge this forward until sound breaks
-PRG_chunk2=LFD31
+# This was used to keep the tail in a steady spot while narrowing down where sound related labels were
+# PRG_chunk2=LFD31
 
-lineNo=$(awk "/^${PRG_chunk2}:/ {print FNR}" main.asm)
-address=$(grep -zoP "(?sm)^${PRG_chunk2}:.*?; \K[0-9A-F]{4}" main.asm | tr -d '\0')
-sed -i "$lineNo i .segment \"PRG_chunk2\": absolute" main.asm
-sed -i "/PRG_chunk2/s/\$..../\$${address}/" tetris.nes.cfg
+# lineNo=$(awk "/^${PRG_chunk2}:/ {print FNR}" main.asm)
+# address=$(grep -zoP "(?sm)^${PRG_chunk2}:.*?; \K[0-9A-F]{4}" main.asm | tr -d '\0')
+# sed -i "$lineNo i .segment \"PRG_chunk2\": absolute" main.asm
+# sed -i "/PRG_chunk2/s/\$..../\$${address}/" tetris.nes.cfg
 
 
-ending_anchor=$(awk '/^unknownData02:/ {print FNR}' main.asm)
-ending=$(($ending_anchor+3))
-sed -i "$ending i .code" main.asm
+# ending_anchor=$(awk '/^unknownData02:/ {print FNR}' main.asm)
+# ending=$(($ending_anchor+3))
+# sed -i "$ending i .code" main.asm
