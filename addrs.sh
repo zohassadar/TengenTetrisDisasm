@@ -9,35 +9,36 @@ get_label () {
     printf $(grep -nB1 "; $1" main.asm | head -1 | awk -F- '{print $2}' | sed s/://)
     }
 
-# Do not know what this is for yet
-label=$(get_label A788)
-sed -i "/; A779/s/#\$88/#<$label/" main.asm
-sed -i "/; A77D/s/#\$A7/#>$label/" main.asm
+apply_high() {
+    label=$(get_label $1)
+    # echo high $label ${1::-2} $2
+    sed -i "/; $2/s/#\$${1::-2}/#>$label/" main.asm
+    }
+
+apply_low() {
+    label=$(get_label $1)
+    # echo low $label ${1:2} $2
+    sed -i "/; $2/s/#\$${1:2}/#<$label/" main.asm
+    }
+
+apply_label() {
+    apply_low $1 $2
+    apply_high $1 $3
+    }
 
 
-# This is used to load palette info
-label=$(get_label A6E6)
-sed -i "/; A6D0/s/#\$E6/#<$label/" main.asm
-sed -i "/; A6D6/s/#\$A6/#>$label/" main.asm
-
-label=$(get_label F703)
-sed -i "/; D319/s/#\$F7/#>$label/" main.asm
-sed -i "/; D320/s/#\$03/#<$label/" main.asm
-
-label=$(get_label DFCF)
-sed -i "/; D2B2/s/#\$DF/#>$label/" main.asm
-sed -i "/; D2AB/s/#\$CF/#<$label/" main.asm
-
-label=$(get_label DF13)
-sed -i "/; D133/s/#\$DF/#>$label/" main.asm
-sed -i "/; D12C/s/#\$13/#<$label/" main.asm
-
-sed -i "/; D18E/s/#\$DF/#>$label/" main.asm
-sed -i "/; D187/s/#\$13/#<$label/" main.asm
-
-label=$(get_label DF42)
-sed -i "/; D145/s/#\$DF/#>$label/" main.asm
-sed -i "/; D13E/s/#\$42/#<$label/" main.asm
+# label, lowloc, highloc
+apply_label A788 A779 A77D
+apply_label A6E6 A6D0 A6D6
+apply_label F703 D320 D319
+apply_label DFCF D2AB D2B2
+apply_label DF13 D12C D133
+apply_label DF13 D187 D18E
+apply_label DF13 D211 D218
+apply_label DF42 D13E D145
+apply_label DF42 D226 D22D
+apply_label DF71 D245 D24C
+apply_label DD32 D1FF D207
 
 
 extract_nt () {
@@ -52,9 +53,13 @@ extract_nt gameModeNametable1P
 extract_nt gameModeNametable2P
 
 
+# move the start of prg_chunk2.  Come back and nudge this forward until sound breaks
+PRG_chunk2=LD306
 
-starting=$(awk '/^drawCathedralSprites:/ {print FNR}' main.asm)
-sed -i "$starting i .segment \"PRG_chunk2\": absolute" main.asm
+lineNo=$(awk "/^${PRG_chunk2}:/ {print FNR}" main.asm)
+address=$(grep -zoP "(?sm)^${PRG_chunk2}:.*?; \K[0-9A-F]{4}" main.asm | tr -d '\0')
+sed -i "$lineNo i .segment \"PRG_chunk2\": absolute" main.asm
+sed -i "/PRG_chunk2/s/\$..../\$${address}/" tetris.nes.cfg
 
 
 ending_anchor=$(awk '/^unknownData02:/ {print FNR}' main.asm)

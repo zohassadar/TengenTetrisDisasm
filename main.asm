@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-12-22 13:04:42
+; Created:    2023-12-22 18:26:18
 ; Input file: clean.nes
 ; Page:       1
 
@@ -6379,7 +6379,6 @@ LB197:
         .byte   $B8,$C9,$BC,$C9,$C0,$C9,$C4,$C9 ; B35F B8 C9 BC C9 C0 C9 C4 C9  ........
         .byte   $2D,$B1                         ; B367 2D B1                    -.
 ; ----------------------------------------------------------------------------
-.segment "PRG_chunk2": absolute
 drawCathedralSprites:
         ldx     #$00                            ; B369 A2 00                    ..
 cathedralCheckComplete:
@@ -8087,18 +8086,18 @@ LD1A6:
         sta     $02C9,x                         ; D1F6 9D C9 02                 ...
         sta     $02DF,x                         ; D1F9 9D DF 02                 ...
         sta     $02A8,x                         ; D1FC 9D A8 02                 ...
-        lda     #$32                            ; D1FF A9 32                    .2
+        lda     #<UnknownTable05                            ; D1FF A9 32                    .2
         sta     $02B3,x                         ; D201 9D B3 02                 ...
         sta     $02F5,x                         ; D204 9D F5 02                 ...
-        lda     #$DD                            ; D207 A9 DD                    ..
+        lda     #>UnknownTable05                            ; D207 A9 DD                    ..
         sta     $02BE,x                         ; D209 9D BE 02                 ...
         sta     $0300,x                         ; D20C 9D 00 03                 ...
         ldy     #$00                            ; D20F A0 00                    ..
-        lda     #$13                            ; D211 A9 13                    ..
+        lda     #<UnknownTable03                            ; D211 A9 13                    ..
         clc                                     ; D213 18                       .
         adc     $EF                             ; D214 65 EF                    e.
         sta     $F1                             ; D216 85 F1                    ..
-        lda     #$DF                            ; D218 A9 DF                    ..
+        lda     #>UnknownTable03                            ; D218 A9 DF                    ..
         adc     $F0                             ; D21A 65 F0                    e.
         sta     $F2                             ; D21C 85 F2                    ..
         lda     ($F1),y                         ; D21E B1 F1                    ..
@@ -8106,11 +8105,11 @@ LD1A6:
         sec                                     ; D221 38                       8
         rol     a                               ; D222 2A                       *
         sta     $0292,x                         ; D223 9D 92 02                 ...
-        lda     #$42                            ; D226 A9 42                    .B
+        lda     #<UnknownTable02                            ; D226 A9 42                    .B
         clc                                     ; D228 18                       .
         adc     $EF                             ; D229 65 EF                    e.
         sta     $F1                             ; D22B 85 F1                    ..
-        lda     #$DF                            ; D22D A9 DF                    ..
+        lda     #>UnknownTable02                            ; D22D A9 DF                    ..
         adc     $F0                             ; D22F 65 F0                    e.
         sta     $F2                             ; D231 85 F2                    ..
         lda     ($F1),y                         ; D233 B1 F1                    ..
@@ -8123,11 +8122,11 @@ LD1A6:
         lda     $F0                             ; D240 A5 F0                    ..
         rol     a                               ; D242 2A                       *
         sta     $F2                             ; D243 85 F2                    ..
-        lda     #$71                            ; D245 A9 71                    .q
+        lda     #<UnknownTable04                            ; D245 A9 71                    .q
         clc                                     ; D247 18                       .
         adc     $F1                             ; D248 65 F1                    e.
         sta     $F1                             ; D24A 85 F1                    ..
-        lda     #$DF                            ; D24C A9 DF                    ..
+        lda     #>UnknownTable04                            ; D24C A9 DF                    ..
         adc     $F2                             ; D24E 65 F2                    e.
         sta     $F2                             ; D250 85 F2                    ..
         lda     ($F1),y                         ; D252 B1 F1                    ..
@@ -8248,6 +8247,7 @@ LD302:
         rts                                     ; D305 60                       `
 
 ; ----------------------------------------------------------------------------
+.segment "PRG_chunk2": absolute
 LD306:
         pha                                     ; D306 48                       H
         tay                                     ; D307 A8                       .
@@ -9850,7 +9850,9 @@ LDD26:
 LDD2A:
         .byte   $01,$02,$04,$08                 ; DD2A 01 02 04 08              ....
 LDD2E:
-        .byte   $0B,$0C,$0D,$0E,$00,$00,$00,$00 ; DD2E 0B 0C 0D 0E 00 00 00 00  ........
+        .byte   $0B,$0C,$0D,$0E                 ; DD2E 0B 0C 0D 0E              ....
+UnknownTable05:
+        .byte   $00,$00,$00,$00                 ; DD32 00 00 00 00              ....
 LDD36:
         .byte   $00                             ; DD36 00                       .
 LDD37:
@@ -9945,6 +9947,7 @@ UnknownTable02:
         .byte   $01,$02,$03,$03,$03,$01,$01,$00 ; DF62 01 02 03 03 03 01 01 00  ........
         .byte   $01,$01,$00,$03,$03,$03,$03     ; DF6A 01 01 00 03 03 03 03     .......
 ; ----------------------------------------------------------------------------
+UnknownTable04:
         .addr   LE043                           ; DF71 43 E0                    C.
         .addr   LE364                           ; DF73 64 E3                    d.
         .addr   LE5CF                           ; DF75 CF E5                    ..

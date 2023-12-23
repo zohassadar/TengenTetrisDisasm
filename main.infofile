@@ -431,8 +431,10 @@ LABEL { ADDR $d846; NAME "setupMusicTrack"; };
 
 LABEL { ADDR $dd1e; NAME "apuRegistersLow"; };
 LABEL { ADDR $dd22; NAME "apuRegistersHigh"; };
+LABEL { ADDR $dd32; NAME "UnknownTable05"; };
 LABEL { ADDR $df13; NAME "UnknownTable03"; };
 LABEL { ADDR $df42; NAME "UnknownTable02"; };
+LABEL { ADDR $DF71; NAME "UnknownTable04"; };
 LABEL { ADDR $dfcf; NAME "UnknownTable01"; };
 
 LABEL { ADDR $F703; NAME "unknownTableForAudio"; };
