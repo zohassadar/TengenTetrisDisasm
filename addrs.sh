@@ -54,7 +54,7 @@ extract_nt gameModeNametable2P
 
 
 # move the start of prg_chunk2.  Come back and nudge this forward until sound breaks
-PRG_chunk2=LD306
+PRG_chunk2=LFD31
 
 lineNo=$(awk "/^${PRG_chunk2}:/ {print FNR}" main.asm)
 address=$(grep -zoP "(?sm)^${PRG_chunk2}:.*?; \K[0-9A-F]{4}" main.asm | tr -d '\0')
