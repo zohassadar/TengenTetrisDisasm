@@ -2,37 +2,36 @@
 
 # The purpose of this script is to replace constant values with label references
 
-
 set -e
 
 get_label () {
-    label_address=$1
-    printf $(grep -nB1 "; $label_address" main.asm | head -1 | awk -F- '{print $2}' | sed s/://)
+    label_addr=$1
+    printf $(grep -nB1 "; $label_addr" main.asm | head -1 | awk -F- '{print $2}' | sed s/://)
     }
 
 apply_high() {
-    label_address=$1
-    byte=$2
+    label_addr=$1
+    byte_addr=$2
     label=$3
     # echo high $3 ${1::-2} $2
-    echo "/; $byte/s/\$${label_address::-2}/>$label/;"
+    echo "/; $byte_addr/s/\$${label_addr::-2}/>$label/;"
     }
 
 apply_low() {
-    label_address=$1
-    byte=$2
+    label_addr=$1
+    byte_addr=$2
     label=$3
     # echo low $3 ${1:2} $2
-    echo "/; $byte/s/\$${label_address:2}/<$label/;"
+    echo "/; $byte_addr/s/\$${label_addr:2}/<$label/;"
     }
 
 apply_label() {
     label=$(get_label $1)
-    label_address=$1
+    label_addr=$1
     low_byte_addr=$2
     high_byte_addr=$3
-    apply_low $label_address $low_byte_addr $label
-    apply_high $label_address $high_byte_addr $label
+    apply_low $label_addr $low_byte_addr $label
+    apply_high $label_addr $high_byte_addr $label
     }
 
 
