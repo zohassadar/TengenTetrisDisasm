@@ -6,28 +6,38 @@
 set -e
 
 get_label () {
-    printf $(grep -nB1 "; $1" main.asm | head -1 | awk -F- '{print $2}' | sed s/://)
+    label_address=$1
+    printf $(grep -nB1 "; $label_address" main.asm | head -1 | awk -F- '{print $2}' | sed s/://)
     }
 
 apply_high() {
-    label=$(get_label $1)
-    # echo high $label ${1::-2} $2
-    sed -i "/; $2/s/\$${1::-2}/>$label/" main.asm
+    label_address=$1
+    byte=$2
+    label=$3
+    # echo high $3 ${1::-2} $2
+    echo "/; $byte/s/\$${label_address::-2}/>$label/;"
     }
 
 apply_low() {
-    label=$(get_label $1)
-    # echo low $label ${1:2} $2
-    sed -i "/; $2/s/\$${1:2}/<$label/" main.asm
+    label_address=$1
+    byte=$2
+    label=$3
+    # echo low $3 ${1:2} $2
+    echo "/; $byte/s/\$${label_address:2}/<$label/;"
     }
 
 apply_label() {
-    apply_low $1 $2
-    apply_high $1 $3
+    label=$(get_label $1)
+    label_address=$1
+    low_byte_addr=$2
+    high_byte_addr=$3
+    apply_low $label_address $low_byte_addr $label
+    apply_high $label_address $high_byte_addr $label
     }
 
 
 # label, lowloc, highloc
+sed -i "$(
 apply_label 8A1F 89FD 8A01
 apply_label 93DC 9310 9314
 apply_label A788 A779 A77D
@@ -156,6 +166,7 @@ apply_label DF42 D226 D22D
 apply_label DF71 D245 D24C
 apply_label DD32 D1FF D207
 apply_label F703 D320 D319
+)" main.asm
 
 
 extract_nt () {
