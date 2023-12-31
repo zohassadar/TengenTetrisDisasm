@@ -165,6 +165,10 @@ apply_label DF42 D226 D22D
 apply_label DF71 D245 D24C
 apply_label DD32 D1FF D207
 apply_label F703 D320 D319
+apply_label C8BC B079 B07D
+apply_label B14D B04A B050
+apply_label B181 B0AF B0B3
+apply_label B181 B0F1 B0F5
 )" main.asm
 
 

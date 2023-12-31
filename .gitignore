@@ -8,3 +8,5 @@ tools/cTools/scan_includes
 *.nes
 *.o
 *.pyc
+debug
+tetris.txt

@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2023-12-22 23:41:32
+; Created:    2023-12-30 21:30:28
 ; Input file: clean.nes
 ; Page:       1
 
@@ -2264,7 +2264,7 @@ L8DE4:
         ldy     generalCounter37                ; 8E24 A4 37                    .7
         lda     L8E86,x                         ; 8E26 BD 86 8E                 ...
         sta     $019A,y                         ; 8E29 99 9A 01                 ...
-        lda     L8E87,x                         ; 8E2C BD 87 8E                 ...
+        lda     L8E86+1,x                       ; 8E2C BD 87 8E                 ...
         sta     $01A2,y                         ; 8E2F 99 A2 01                 ...
         iny                                     ; 8E32 C8                       .
         sty     generalCounter37                ; 8E33 84 37                    .7
@@ -2300,13 +2300,22 @@ L8E6A:
 L8E78:
         .byte   $00,$02,$03,$00,$02,$03,$40,$02 ; 8E78 00 02 03 00 02 03 40 02  ......@.
         .byte   $43,$00,$42,$03,$40,$02         ; 8E80 43 00 42 03 40 02        C.B.@.
+; ----------------------------------------------------------------------------
 L8E86:
-        .byte   $4D                             ; 8E86 4D                       M
-L8E87:
-        .byte   $B1,$4D,$B1,$4D,$B1,$4D,$B1,$67 ; 8E87 B1 4D B1 4D B1 4D B1 67  .M.M.M.g
-        .byte   $B1,$67,$B1,$4D,$B1,$4D,$B1,$4D ; 8E8F B1 67 B1 4D B1 4D B1 4D  .g.M.M.M
-        .byte   $B1,$4D,$B1,$4D,$B1,$4D,$B1,$67 ; 8E97 B1 4D B1 4D B1 4D B1 67  .M.M.M.g
-        .byte   $B1,$67,$B1                     ; 8E9F B1 67 B1                 .g.
+        .addr   LB14D                           ; 8E86 4D B1                    M.
+        .addr   LB14D                           ; 8E88 4D B1                    M.
+        .addr   LB14D                           ; 8E8A 4D B1                    M.
+        .addr   LB14D                           ; 8E8C 4D B1                    M.
+        .addr   LB167                           ; 8E8E 67 B1                    g.
+        .addr   LB167                           ; 8E90 67 B1                    g.
+        .addr   LB14D                           ; 8E92 4D B1                    M.
+        .addr   LB14D                           ; 8E94 4D B1                    M.
+        .addr   LB14D                           ; 8E96 4D B1                    M.
+        .addr   LB14D                           ; 8E98 4D B1                    M.
+        .addr   LB14D                           ; 8E9A 4D B1                    M.
+        .addr   LB14D                           ; 8E9C 4D B1                    M.
+        .addr   LB167                           ; 8E9E 67 B1                    g.
+        .addr   LB167                           ; 8EA0 67 B1                    g.
 ; ----------------------------------------------------------------------------
 L8EA2:
         ldx     #$00                            ; 8EA2 A2 00                    ..
@@ -6381,10 +6390,10 @@ LB043:
         lda     (generalCounter36),y            ; B045 B1 36                    .6
         sta     generalCounter38                ; B047 85 38                    .8
         iny                                     ; B049 C8                       .
-        cmp     #$4D                            ; B04A C9 4D                    .M
+        cmp     #<LB14D                            ; B04A C9 4D                    .M
         lda     (generalCounter36),y            ; B04C B1 36                    .6
         sta     generalCounter39                ; B04E 85 39                    .9
-        sbc     #$B1                            ; B050 E9 B1                    ..
+        sbc     #>LB14D                            ; B050 E9 B1                    ..
         bcs     LB077                           ; B052 B0 23                    .#
         lda     player1FallTimer                ; B054 A5 6A                    .j
         cmp     #$70                            ; B056 C9 70                    .p
@@ -6407,9 +6416,9 @@ LB064:
         bpl     LB043                           ; B075 10 CC                    ..
 LB077:
         lda     generalCounter38                ; B077 A5 38                    .8
-        cmp     #$BC                            ; B079 C9 BC                    ..
+        cmp     #<possibleUnusedData2                            ; B079 C9 BC                    ..
         lda     generalCounter39                ; B07B A5 39                    .9
-        sbc     #$C8                            ; B07D E9 C8                    ..
+        sbc     #>possibleUnusedData2                            ; B07D E9 C8                    ..
         bcs     LB08D                           ; B07F B0 0C                    ..
         lda     generalCounter38                ; B081 A5 38                    .8
         sta     generalCounter36                ; B083 85 36                    .6
@@ -6434,9 +6443,9 @@ LB08D:
         lda     (generalCounter38),y            ; B0A8 B1 38                    .8
         sta     oamStaging+13,x                 ; B0AA 9D 0D 05                 ...
         lda     generalCounter36                ; B0AD A5 36                    .6
-        cmp     #$81                            ; B0AF C9 81                    ..
+        cmp     #<LB181                            ; B0AF C9 81                    ..
         lda     generalCounter37                ; B0B1 A5 37                    .7
-        sbc     #$B1                            ; B0B3 E9 B1                    ..
+        sbc     #>LB181                            ; B0B3 E9 B1                    ..
         bcs     LB0C9                           ; B0B5 B0 12                    ..
         lda     frameCounterLow                 ; B0B7 A5 32                    .2
         and     #$03                            ; B0B9 29 03                    ).
@@ -6468,9 +6477,9 @@ LB0D8:
         lda     (generalCounter38),y            ; B0EA B1 38                    .8
         sta     oamStaging+9,x                  ; B0EC 9D 09 05                 ...
         lda     generalCounter36                ; B0EF A5 36                    .6
-        cmp     #$81                            ; B0F1 C9 81                    ..
+        cmp     #<LB181                            ; B0F1 C9 81                    ..
         lda     generalCounter37                ; B0F3 A5 37                    .7
-        sbc     #$B1                            ; B0F5 E9 B1                    ..
+        sbc     #>LB181                            ; B0F5 E9 B1                    ..
         bcs     LB0C9                           ; B0F7 B0 D0                    ..
         lda     frameCounterLow                 ; B0F9 A5 32                    .2
         and     #$03                            ; B0FB 29 03                    ).
@@ -6480,85 +6489,328 @@ LB0D8:
         dec     oamStaging+11,x                 ; B105 DE 0B 05                 ...
         dec     oamStaging+15,x                 ; B108 DE 0F 05                 ...
         bne     LB0C9                           ; B10B D0 BC                    ..
-        .byte   $AD,$B1,$C7,$B1,$E1,$B1,$03,$B2 ; B10D AD B1 C7 B1 E1 B1 03 B2  ........
-        .byte   $25,$B2,$47,$B2,$69,$B2,$93,$B2 ; B115 25 B2 47 B2 69 B2 93 B2  %.G.i...
-        .byte   $BD,$B2,$AD,$B1,$E1,$B1,$03,$B2 ; B11D BD B2 AD B1 E1 B1 03 B2  ........
-        .byte   $47,$B2,$69,$B2,$93,$B2,$BD,$B2 ; B125 47 B2 69 B2 93 B2 BD B2  G.i.....
-        .byte   $DF,$B2,$F1,$B2,$03,$B3,$25,$B3 ; B12D DF B2 F1 B2 03 B3 25 B3  ......%.
-        .byte   $47,$B3,$DF,$B2,$F1,$B2,$03,$B3 ; B135 47 B3 DF B2 F1 B2 03 B3  G.......
-        .byte   $25,$B3,$47,$B3,$DF,$B2,$F1,$B2 ; B13D 25 B3 47 B3 DF B2 F1 B2  %.G.....
-        .byte   $03,$B3,$25,$B3,$47,$B3,$DF,$B2 ; B145 03 B3 25 B3 47 B3 DF B2  ..%.G...
-        .byte   $10,$C9,$14,$C9,$18,$C9,$14,$C9 ; B14D 10 C9 14 C9 18 C9 14 C9  ........
-        .byte   $10,$C9,$14,$C9,$18,$C9,$14,$C9 ; B155 10 C9 14 C9 18 C9 14 C9  ........
-        .byte   $10,$C9,$14,$C9,$18,$C9,$64,$C9 ; B15D 10 C9 14 C9 18 C9 64 C9  ......d.
-        .byte   $0D,$B1,$94,$C9,$98,$C9,$9C,$C9 ; B165 0D B1 94 C9 98 C9 9C C9  ........
-        .byte   $98,$C9,$94,$C9,$98,$C9,$9C,$C9 ; B16D 98 C9 94 C9 98 C9 9C C9  ........
-        .byte   $98,$C9,$94,$C9,$98,$C9,$9C,$C9 ; B175 98 C9 94 C9 98 C9 9C C9  ........
-        .byte   $C0,$C8,$2D,$B1                 ; B17D C0 C8 2D B1              ..-.
+LB10D:
+        .addr   LB1AD                           ; B10D AD B1                    ..
+        .addr   LB1C7                           ; B10F C7 B1                    ..
+        .addr   LB1E1                           ; B111 E1 B1                    ..
+        .addr   LB203                           ; B113 03 B2                    ..
+        .addr   LB225                           ; B115 25 B2                    %.
+        .addr   LB247                           ; B117 47 B2                    G.
+        .addr   LB269                           ; B119 69 B2                    i.
+        .addr   LB293                           ; B11B 93 B2                    ..
+        .addr   LB2BD                           ; B11D BD B2                    ..
+        .addr   LB1AD                           ; B11F AD B1                    ..
+        .addr   LB1E1                           ; B121 E1 B1                    ..
+        .addr   LB203                           ; B123 03 B2                    ..
+        .addr   LB247                           ; B125 47 B2                    G.
+        .addr   LB269                           ; B127 69 B2                    i.
+        .addr   LB293                           ; B129 93 B2                    ..
+        .addr   LB2BD                           ; B12B BD B2                    ..
+LB12D:
+        .addr   LB2DF                           ; B12D DF B2                    ..
+        .addr   LB2F1                           ; B12F F1 B2                    ..
+        .addr   LB303                           ; B131 03 B3                    ..
+        .addr   LB325                           ; B133 25 B3                    %.
+        .addr   LB347                           ; B135 47 B3                    G.
+        .addr   LB2DF                           ; B137 DF B2                    ..
+        .addr   LB2F1                           ; B139 F1 B2                    ..
+        .addr   LB303                           ; B13B 03 B3                    ..
+        .addr   LB325                           ; B13D 25 B3                    %.
+        .addr   LB347                           ; B13F 47 B3                    G.
+        .addr   LB2DF                           ; B141 DF B2                    ..
+        .addr   LB2F1                           ; B143 F1 B2                    ..
+        .addr   LB303                           ; B145 03 B3                    ..
+        .addr   LB325                           ; B147 25 B3                    %.
+        .addr   LB347                           ; B149 47 B3                    G.
+        .addr   LB2DF                           ; B14B DF B2                    ..
+LB14D:
+        .addr   LC910                           ; B14D 10 C9                    ..
+        .addr   LC914                           ; B14F 14 C9                    ..
+        .addr   LC918                           ; B151 18 C9                    ..
+        .addr   LC914                           ; B153 14 C9                    ..
+        .addr   LC910                           ; B155 10 C9                    ..
+        .addr   LC914                           ; B157 14 C9                    ..
+        .addr   LC918                           ; B159 18 C9                    ..
+        .addr   LC914                           ; B15B 14 C9                    ..
+        .addr   LC910                           ; B15D 10 C9                    ..
+        .addr   LC914                           ; B15F 14 C9                    ..
+        .addr   LC918                           ; B161 18 C9                    ..
+        .addr   LC964                           ; B163 64 C9                    d.
+        .addr   LB10D                           ; B165 0D B1                    ..
+LB167:
+        .addr   LC994                           ; B167 94 C9                    ..
+        .addr   LC998                           ; B169 98 C9                    ..
+        .addr   LC99C                           ; B16B 9C C9                    ..
+        .addr   LC998                           ; B16D 98 C9                    ..
+        .addr   LC994                           ; B16F 94 C9                    ..
+        .addr   LC998                           ; B171 98 C9                    ..
+        .addr   LC99C                           ; B173 9C C9                    ..
+        .addr   LC998                           ; B175 98 C9                    ..
+        .addr   LC994                           ; B177 94 C9                    ..
+        .addr   LC998                           ; B179 98 C9                    ..
+        .addr   LC99C                           ; B17B 9C C9                    ..
+        .addr   LC8C0                           ; B17D C0 C8                    ..
+        .addr   LB12D                           ; B17F 2D B1                    -.
 LB181:
-        .byte   $20,$C9,$20,$C9,$20,$C9,$08,$C9 ; B181 20 C9 20 C9 20 C9 08 C9   . . ...
-        .byte   $0C,$C9,$28,$C9,$28,$C9,$28,$C9 ; B189 0C C9 28 C9 28 C9 28 C9  ..(.(.(.
-        .byte   $20,$C9,$14,$C9,$4D,$B1         ; B191 20 C9 14 C9 4D B1         ...M.
+        .addr   LC920                           ; B181 20 C9                     .
+        .addr   LC920                           ; B183 20 C9                     .
+        .addr   LC920                           ; B185 20 C9                     .
+        .addr   LC908                           ; B187 08 C9                    ..
+        .addr   LC90C                           ; B189 0C C9                    ..
+        .addr   LC928                           ; B18B 28 C9                    (.
+        .addr   LC928                           ; B18D 28 C9                    (.
+        .addr   LC928                           ; B18F 28 C9                    (.
+        .addr   LC920                           ; B191 20 C9                     .
+        .addr   LC914                           ; B193 14 C9                    ..
+        .addr   LB14D                           ; B195 4D B1                    M.
 LB197:
-        .byte   $BC,$C8,$2C,$C9,$30,$C9,$34,$C9 ; B197 BC C8 2C C9 30 C9 34 C9  ..,.0.4.
-        .byte   $34,$C9,$34,$C9,$34,$C9,$BC,$C8 ; B19F 34 C9 34 C9 34 C9 BC C8  4.4.4...
-        .byte   $BC,$C8,$98,$C9,$67,$B1,$3C,$C9 ; B1A7 BC C8 98 C9 67 B1 3C C9  ....g.<.
-        .byte   $40,$C9,$40,$C9,$3C,$C9,$38,$C9 ; B1AF 40 C9 40 C9 3C C9 38 C9  @.@.<.8.
-        .byte   $38,$C9,$3C,$C9,$40,$C9,$40,$C9 ; B1B7 38 C9 3C C9 40 C9 40 C9  8.<.@.@.
-        .byte   $38,$C9,$38,$C9,$3C,$C9,$0D,$B1 ; B1BF 38 C9 38 C9 3C C9 0D B1  8.8.<...
-        .byte   $3C,$C9,$40,$C9,$40,$C9,$3C,$C9 ; B1C7 3C C9 40 C9 40 C9 3C C9  <.@.@.<.
-        .byte   $38,$C9,$38,$C9,$3C,$C9,$48,$C9 ; B1CF 38 C9 38 C9 3C C9 48 C9  8.8.<.H.
-        .byte   $48,$C9,$44,$C9,$44,$C9,$3C,$C9 ; B1D7 48 C9 44 C9 44 C9 3C C9  H.D.D.<.
-        .byte   $0D,$B1,$68,$C9,$68,$C9,$68,$C9 ; B1DF 0D B1 68 C9 68 C9 68 C9  ..h.h.h.
-        .byte   $6C,$C9,$60,$C9,$60,$C9,$60,$C9 ; B1E7 6C C9 60 C9 60 C9 60 C9  l.`.`.`.
-        .byte   $7C,$C9,$68,$C9,$68,$C9,$68,$C9 ; B1EF 7C C9 68 C9 68 C9 68 C9  |.h.h.h.
-        .byte   $6C,$C9,$60,$C9,$60,$C9,$60,$C9 ; B1F7 6C C9 60 C9 60 C9 60 C9  l.`.`.`.
-        .byte   $7C,$C9,$0D,$B1,$68,$C9,$68,$C9 ; B1FF 7C C9 0D B1 68 C9 68 C9  |...h.h.
-        .byte   $68,$C9,$6C,$C9,$68,$C9,$68,$C9 ; B207 68 C9 6C C9 68 C9 68 C9  h.l.h.h.
-        .byte   $68,$C9,$80,$C9,$60,$C9,$60,$C9 ; B20F 68 C9 80 C9 60 C9 60 C9  h...`.`.
-        .byte   $60,$C9,$7C,$C9,$60,$C9,$60,$C9 ; B217 60 C9 7C C9 60 C9 60 C9  `.|.`.`.
-        .byte   $60,$C9,$80,$C9,$0D,$B1,$78,$C9 ; B21F 60 C9 80 C9 0D B1 78 C9  `.....x.
-        .byte   $78,$C9,$70,$C9,$70,$C9,$74,$C9 ; B227 78 C9 70 C9 70 C9 74 C9  x.p.p.t.
-        .byte   $74,$C9,$70,$C9,$70,$C9,$78,$C9 ; B22F 74 C9 70 C9 70 C9 78 C9  t.p.p.x.
-        .byte   $78,$C9,$70,$C9,$70,$C9,$74,$C9 ; B237 78 C9 70 C9 70 C9 74 C9  x.p.p.t.
-        .byte   $74,$C9,$70,$C9,$70,$C9,$0D,$B1 ; B23F 74 C9 70 C9 70 C9 0D B1  t.p.p...
-        .byte   $60,$C9,$4C,$C9,$50,$C9,$50,$C9 ; B247 60 C9 4C C9 50 C9 50 C9  `.L.P.P.
-        .byte   $50,$C9,$54,$C9,$58,$C9,$A0,$C9 ; B24F 50 C9 54 C9 58 C9 A0 C9  P.T.X...
-        .byte   $A4,$C9,$A8,$C9,$50,$C9,$50,$C9 ; B257 A4 C9 A8 C9 50 C9 50 C9  ....P.P.
-        .byte   $50,$C9,$4C,$C9,$20,$C9,$20,$C9 ; B25F 50 C9 4C C9 20 C9 20 C9  P.L. . .
-        .byte   $0D,$B1,$64,$C9,$04,$C9,$F4,$C8 ; B267 0D B1 64 C9 04 C9 F4 C8  ..d.....
-        .byte   $5C,$C9,$24,$C9,$64,$C9,$F8,$C8 ; B26F 5C C9 24 C9 64 C9 F8 C8  \.$.d...
-        .byte   $FC,$C8,$00,$C9,$1C,$C9,$64,$C9 ; B277 FC C8 00 C9 1C C9 64 C9  ......d.
-        .byte   $04,$C9,$F4,$C8,$5C,$C9,$24,$C9 ; B27F 04 C9 F4 C8 5C C9 24 C9  ....\.$.
-        .byte   $64,$C9,$F8,$C8,$FC,$C8,$00,$C9 ; B287 64 C9 F8 C8 FC C8 00 C9  d.......
-        .byte   $1C,$C9,$0D,$B1,$E0,$C9,$C8,$C9 ; B28F 1C C9 0D B1 E0 C9 C8 C9  ........
-        .byte   $CC,$C9,$D0,$C9,$D0,$C9,$DC,$C9 ; B297 CC C9 D0 C9 D0 C9 DC C9  ........
-        .byte   $D8,$C9,$D4,$C9,$D0,$C9,$D0,$C9 ; B29F D8 C9 D4 C9 D0 C9 D0 C9  ........
-        .byte   $E0,$C9,$C8,$C9,$CC,$C9,$D0,$C9 ; B2A7 E0 C9 C8 C9 CC C9 D0 C9  ........
-        .byte   $D0,$C9,$DC,$C9,$D8,$C9,$D4,$C9 ; B2AF D0 C9 DC C9 D8 C9 D4 C9  ........
-        .byte   $D0,$C9,$D0,$C9,$0D,$B1,$E4,$C9 ; B2B7 D0 C9 D0 C9 0D B1 E4 C9  ........
-        .byte   $E8,$C9,$EC,$C9,$F0,$C9,$F4,$C9 ; B2BF E8 C9 EC C9 F0 C9 F4 C9  ........
-        .byte   $F8,$C9,$FC,$C9,$64,$C9,$E4,$C9 ; B2C7 F8 C9 FC C9 64 C9 E4 C9  ....d...
-        .byte   $E8,$C9,$EC,$C9,$F0,$C9,$F4,$C9 ; B2CF E8 C9 EC C9 F0 C9 F4 C9  ........
-        .byte   $F8,$C9,$FC,$C9,$64,$C9,$0D,$B1 ; B2D7 F8 C9 FC C9 64 C9 0D B1  ....d...
-        .byte   $84,$C9,$88,$C9,$8C,$C9,$90,$C9 ; B2DF 84 C9 88 C9 8C C9 90 C9  ........
-        .byte   $E4,$C8,$E8,$C8,$EC,$C8,$F0,$C8 ; B2E7 E4 C8 E8 C8 EC C8 F0 C8  ........
-        .byte   $2D,$B1,$BC,$C8,$BC,$C8,$C0,$C8 ; B2EF 2D B1 BC C8 BC C8 C0 C8  -.......
-        .byte   $C0,$C8,$BC,$C8,$BC,$C8,$C0,$C8 ; B2F7 C0 C8 BC C8 BC C8 C0 C8  ........
-        .byte   $C0,$C8,$2D,$B1,$D0,$C8,$D0,$C8 ; B2FF C0 C8 2D B1 D0 C8 D0 C8  ..-.....
-        .byte   $D4,$C8,$D4,$C8,$C8,$C8,$C8,$C8 ; B307 D4 C8 D4 C8 C8 C8 C8 C8  ........
-        .byte   $C4,$C8,$C4,$C8,$D0,$C8,$D0,$C8 ; B30F C4 C8 C4 C8 D0 C8 D0 C8  ........
-        .byte   $D4,$C8,$D4,$C8,$C8,$C8,$C8,$C8 ; B317 D4 C8 D4 C8 C8 C8 C8 C8  ........
-        .byte   $C4,$C8,$C4,$C8,$2D,$B1,$C4,$C8 ; B31F C4 C8 C4 C8 2D B1 C4 C8  ....-...
-        .byte   $C4,$C8,$C8,$C8,$C8,$C8,$CC,$C8 ; B327 C4 C8 C8 C8 C8 C8 CC C8  ........
-        .byte   $D0,$C8,$D0,$C8,$D4,$C8,$D4,$C8 ; B32F D0 C8 D0 C8 D4 C8 D4 C8  ........
-        .byte   $D8,$C8,$D8,$C8,$DC,$C8,$DC,$C8 ; B337 D8 C8 D8 C8 DC C8 DC C8  ........
-        .byte   $E0,$C8,$E0,$C8,$CC,$C8,$2D,$B1 ; B33F E0 C8 E0 C8 CC C8 2D B1  ......-.
-        .byte   $84,$C9,$AC,$C9,$B0,$C9,$B4,$C9 ; B347 84 C9 AC C9 B0 C9 B4 C9  ........
-        .byte   $B8,$C9,$BC,$C9,$C0,$C9,$C4,$C9 ; B34F B8 C9 BC C9 C0 C9 C4 C9  ........
-        .byte   $84,$C9,$AC,$C9,$B0,$C9,$B4,$C9 ; B357 84 C9 AC C9 B0 C9 B4 C9  ........
-        .byte   $B8,$C9,$BC,$C9,$C0,$C9,$C4,$C9 ; B35F B8 C9 BC C9 C0 C9 C4 C9  ........
-        .byte   $2D,$B1                         ; B367 2D B1                    -.
+        .addr   possibleUnusedData2             ; B197 BC C8                    ..
+        .addr   LC92C                           ; B199 2C C9                    ,.
+        .addr   LC930                           ; B19B 30 C9                    0.
+        .addr   LC934                           ; B19D 34 C9                    4.
+        .addr   LC934                           ; B19F 34 C9                    4.
+        .addr   LC934                           ; B1A1 34 C9                    4.
+        .addr   LC934                           ; B1A3 34 C9                    4.
+        .addr   possibleUnusedData2             ; B1A5 BC C8                    ..
+        .addr   possibleUnusedData2             ; B1A7 BC C8                    ..
+        .addr   LC998                           ; B1A9 98 C9                    ..
+        .addr   LB167                           ; B1AB 67 B1                    g.
+LB1AD:
+        .addr   LC93C                           ; B1AD 3C C9                    <.
+        .addr   LC940                           ; B1AF 40 C9                    @.
+        .addr   LC940                           ; B1B1 40 C9                    @.
+        .addr   LC93C                           ; B1B3 3C C9                    <.
+        .addr   LC938                           ; B1B5 38 C9                    8.
+        .addr   LC938                           ; B1B7 38 C9                    8.
+        .addr   LC93C                           ; B1B9 3C C9                    <.
+        .addr   LC940                           ; B1BB 40 C9                    @.
+        .addr   LC940                           ; B1BD 40 C9                    @.
+        .addr   LC938                           ; B1BF 38 C9                    8.
+        .addr   LC938                           ; B1C1 38 C9                    8.
+        .addr   LC93C                           ; B1C3 3C C9                    <.
+        .addr   LB10D                           ; B1C5 0D B1                    ..
+LB1C7:
+        .addr   LC93C                           ; B1C7 3C C9                    <.
+        .addr   LC940                           ; B1C9 40 C9                    @.
+        .addr   LC940                           ; B1CB 40 C9                    @.
+        .addr   LC93C                           ; B1CD 3C C9                    <.
+        .addr   LC938                           ; B1CF 38 C9                    8.
+        .addr   LC938                           ; B1D1 38 C9                    8.
+        .addr   LC93C                           ; B1D3 3C C9                    <.
+        .addr   LC948                           ; B1D5 48 C9                    H.
+        .addr   LC948                           ; B1D7 48 C9                    H.
+        .addr   LC944                           ; B1D9 44 C9                    D.
+        .addr   LC944                           ; B1DB 44 C9                    D.
+        .addr   LC93C                           ; B1DD 3C C9                    <.
+        .addr   LB10D                           ; B1DF 0D B1                    ..
+LB1E1:
+        .addr   LC968                           ; B1E1 68 C9                    h.
+        .addr   LC968                           ; B1E3 68 C9                    h.
+        .addr   LC968                           ; B1E5 68 C9                    h.
+        .addr   LC96C                           ; B1E7 6C C9                    l.
+        .addr   LC960                           ; B1E9 60 C9                    `.
+        .addr   LC960                           ; B1EB 60 C9                    `.
+        .addr   LC960                           ; B1ED 60 C9                    `.
+        .addr   LC97C                           ; B1EF 7C C9                    |.
+        .addr   LC968                           ; B1F1 68 C9                    h.
+        .addr   LC968                           ; B1F3 68 C9                    h.
+        .addr   LC968                           ; B1F5 68 C9                    h.
+        .addr   LC96C                           ; B1F7 6C C9                    l.
+        .addr   LC960                           ; B1F9 60 C9                    `.
+        .addr   LC960                           ; B1FB 60 C9                    `.
+        .addr   LC960                           ; B1FD 60 C9                    `.
+        .addr   LC97C                           ; B1FF 7C C9                    |.
+        .addr   LB10D                           ; B201 0D B1                    ..
+LB203:
+        .addr   LC968                           ; B203 68 C9                    h.
+        .addr   LC968                           ; B205 68 C9                    h.
+        .addr   LC968                           ; B207 68 C9                    h.
+        .addr   LC96C                           ; B209 6C C9                    l.
+        .addr   LC968                           ; B20B 68 C9                    h.
+        .addr   LC968                           ; B20D 68 C9                    h.
+        .addr   LC968                           ; B20F 68 C9                    h.
+        .addr   LC980                           ; B211 80 C9                    ..
+        .addr   LC960                           ; B213 60 C9                    `.
+        .addr   LC960                           ; B215 60 C9                    `.
+        .addr   LC960                           ; B217 60 C9                    `.
+        .addr   LC97C                           ; B219 7C C9                    |.
+        .addr   LC960                           ; B21B 60 C9                    `.
+        .addr   LC960                           ; B21D 60 C9                    `.
+        .addr   LC960                           ; B21F 60 C9                    `.
+        .addr   LC980                           ; B221 80 C9                    ..
+        .addr   LB10D                           ; B223 0D B1                    ..
+LB225:
+        .addr   LC978                           ; B225 78 C9                    x.
+        .addr   LC978                           ; B227 78 C9                    x.
+        .addr   LC970                           ; B229 70 C9                    p.
+        .addr   LC970                           ; B22B 70 C9                    p.
+        .addr   LC974                           ; B22D 74 C9                    t.
+        .addr   LC974                           ; B22F 74 C9                    t.
+        .addr   LC970                           ; B231 70 C9                    p.
+        .addr   LC970                           ; B233 70 C9                    p.
+        .addr   LC978                           ; B235 78 C9                    x.
+        .addr   LC978                           ; B237 78 C9                    x.
+        .addr   LC970                           ; B239 70 C9                    p.
+        .addr   LC970                           ; B23B 70 C9                    p.
+        .addr   LC974                           ; B23D 74 C9                    t.
+        .addr   LC974                           ; B23F 74 C9                    t.
+        .addr   LC970                           ; B241 70 C9                    p.
+        .addr   LC970                           ; B243 70 C9                    p.
+        .addr   LB10D                           ; B245 0D B1                    ..
+LB247:
+        .addr   LC960                           ; B247 60 C9                    `.
+        .addr   LC94C                           ; B249 4C C9                    L.
+        .addr   LC950                           ; B24B 50 C9                    P.
+        .addr   LC950                           ; B24D 50 C9                    P.
+        .addr   LC950                           ; B24F 50 C9                    P.
+        .addr   LC954                           ; B251 54 C9                    T.
+        .addr   LC958                           ; B253 58 C9                    X.
+        .addr   LC9A0                           ; B255 A0 C9                    ..
+        .addr   LC9A4                           ; B257 A4 C9                    ..
+        .addr   LC9A8                           ; B259 A8 C9                    ..
+        .addr   LC950                           ; B25B 50 C9                    P.
+        .addr   LC950                           ; B25D 50 C9                    P.
+        .addr   LC950                           ; B25F 50 C9                    P.
+        .addr   LC94C                           ; B261 4C C9                    L.
+        .addr   LC920                           ; B263 20 C9                     .
+        .addr   LC920                           ; B265 20 C9                     .
+        .addr   LB10D                           ; B267 0D B1                    ..
+LB269:
+        .addr   LC964                           ; B269 64 C9                    d.
+        .addr   LC904                           ; B26B 04 C9                    ..
+        .addr   LC8F4                           ; B26D F4 C8                    ..
+        .addr   LC95C                           ; B26F 5C C9                    \.
+        .addr   LC924                           ; B271 24 C9                    $.
+        .addr   LC964                           ; B273 64 C9                    d.
+        .addr   LC8F8                           ; B275 F8 C8                    ..
+        .addr   LC8FC                           ; B277 FC C8                    ..
+        .addr   LC900                           ; B279 00 C9                    ..
+        .addr   LC91C                           ; B27B 1C C9                    ..
+        .addr   LC964                           ; B27D 64 C9                    d.
+        .addr   LC904                           ; B27F 04 C9                    ..
+        .addr   LC8F4                           ; B281 F4 C8                    ..
+        .addr   LC95C                           ; B283 5C C9                    \.
+        .addr   LC924                           ; B285 24 C9                    $.
+        .addr   LC964                           ; B287 64 C9                    d.
+        .addr   LC8F8                           ; B289 F8 C8                    ..
+        .addr   LC8FC                           ; B28B FC C8                    ..
+        .addr   LC900                           ; B28D 00 C9                    ..
+        .addr   LC91C                           ; B28F 1C C9                    ..
+        .addr   LB10D                           ; B291 0D B1                    ..
+LB293:
+        .addr   LC9E0                           ; B293 E0 C9                    ..
+        .addr   LC9C8                           ; B295 C8 C9                    ..
+        .addr   LC9CC                           ; B297 CC C9                    ..
+        .addr   LC9D0                           ; B299 D0 C9                    ..
+        .addr   LC9D0                           ; B29B D0 C9                    ..
+        .addr   LC9DC                           ; B29D DC C9                    ..
+        .addr   LC9D8                           ; B29F D8 C9                    ..
+        .addr   LC9D4                           ; B2A1 D4 C9                    ..
+        .addr   LC9D0                           ; B2A3 D0 C9                    ..
+        .addr   LC9D0                           ; B2A5 D0 C9                    ..
+        .addr   LC9E0                           ; B2A7 E0 C9                    ..
+        .addr   LC9C8                           ; B2A9 C8 C9                    ..
+        .addr   LC9CC                           ; B2AB CC C9                    ..
+        .addr   LC9D0                           ; B2AD D0 C9                    ..
+        .addr   LC9D0                           ; B2AF D0 C9                    ..
+        .addr   LC9DC                           ; B2B1 DC C9                    ..
+        .addr   LC9D8                           ; B2B3 D8 C9                    ..
+        .addr   LC9D4                           ; B2B5 D4 C9                    ..
+        .addr   LC9D0                           ; B2B7 D0 C9                    ..
+        .addr   LC9D0                           ; B2B9 D0 C9                    ..
+        .addr   LB10D                           ; B2BB 0D B1                    ..
+LB2BD:
+        .addr   LC9E4                           ; B2BD E4 C9                    ..
+        .addr   LC9E8                           ; B2BF E8 C9                    ..
+        .addr   LC9EC                           ; B2C1 EC C9                    ..
+        .addr   LC9F0                           ; B2C3 F0 C9                    ..
+        .addr   LC9F4                           ; B2C5 F4 C9                    ..
+        .addr   LC9F8                           ; B2C7 F8 C9                    ..
+        .addr   LC9FC                           ; B2C9 FC C9                    ..
+        .addr   LC964                           ; B2CB 64 C9                    d.
+        .addr   LC9E4                           ; B2CD E4 C9                    ..
+        .addr   LC9E8                           ; B2CF E8 C9                    ..
+        .addr   LC9EC                           ; B2D1 EC C9                    ..
+        .addr   LC9F0                           ; B2D3 F0 C9                    ..
+        .addr   LC9F4                           ; B2D5 F4 C9                    ..
+        .addr   LC9F8                           ; B2D7 F8 C9                    ..
+        .addr   LC9FC                           ; B2D9 FC C9                    ..
+        .addr   LC964                           ; B2DB 64 C9                    d.
+        .addr   LB10D                           ; B2DD 0D B1                    ..
+LB2DF:
+        .addr   LC984                           ; B2DF 84 C9                    ..
+        .addr   LC988                           ; B2E1 88 C9                    ..
+        .addr   LC98C                           ; B2E3 8C C9                    ..
+        .addr   LC990                           ; B2E5 90 C9                    ..
+        .addr   LC8E4                           ; B2E7 E4 C8                    ..
+        .addr   LC8E8                           ; B2E9 E8 C8                    ..
+        .addr   LC8EC                           ; B2EB EC C8                    ..
+        .addr   LC8F0                           ; B2ED F0 C8                    ..
+        .addr   LB12D                           ; B2EF 2D B1                    -.
+LB2F1:
+        .addr   possibleUnusedData2             ; B2F1 BC C8                    ..
+        .addr   possibleUnusedData2             ; B2F3 BC C8                    ..
+        .addr   LC8C0                           ; B2F5 C0 C8                    ..
+        .addr   LC8C0                           ; B2F7 C0 C8                    ..
+        .addr   possibleUnusedData2             ; B2F9 BC C8                    ..
+        .addr   possibleUnusedData2             ; B2FB BC C8                    ..
+        .addr   LC8C0                           ; B2FD C0 C8                    ..
+        .addr   LC8C0                           ; B2FF C0 C8                    ..
+        .addr   LB12D                           ; B301 2D B1                    -.
+LB303:
+        .addr   LC8D0                           ; B303 D0 C8                    ..
+        .addr   LC8D0                           ; B305 D0 C8                    ..
+        .addr   LC8D4                           ; B307 D4 C8                    ..
+        .addr   LC8D4                           ; B309 D4 C8                    ..
+        .addr   LC8C8                           ; B30B C8 C8                    ..
+        .addr   LC8C8                           ; B30D C8 C8                    ..
+        .addr   LC8C4                           ; B30F C4 C8                    ..
+        .addr   LC8C4                           ; B311 C4 C8                    ..
+        .addr   LC8D0                           ; B313 D0 C8                    ..
+        .addr   LC8D0                           ; B315 D0 C8                    ..
+        .addr   LC8D4                           ; B317 D4 C8                    ..
+        .addr   LC8D4                           ; B319 D4 C8                    ..
+        .addr   LC8C8                           ; B31B C8 C8                    ..
+        .addr   LC8C8                           ; B31D C8 C8                    ..
+        .addr   LC8C4                           ; B31F C4 C8                    ..
+        .addr   LC8C4                           ; B321 C4 C8                    ..
+        .addr   LB12D                           ; B323 2D B1                    -.
+LB325:
+        .addr   LC8C4                           ; B325 C4 C8                    ..
+        .addr   LC8C4                           ; B327 C4 C8                    ..
+        .addr   LC8C8                           ; B329 C8 C8                    ..
+        .addr   LC8C8                           ; B32B C8 C8                    ..
+        .addr   LC8CC                           ; B32D CC C8                    ..
+        .addr   LC8D0                           ; B32F D0 C8                    ..
+        .addr   LC8D0                           ; B331 D0 C8                    ..
+        .addr   LC8D4                           ; B333 D4 C8                    ..
+        .addr   LC8D4                           ; B335 D4 C8                    ..
+        .addr   LC8D8                           ; B337 D8 C8                    ..
+        .addr   LC8D8                           ; B339 D8 C8                    ..
+        .addr   LC8DC                           ; B33B DC C8                    ..
+        .addr   LC8DC                           ; B33D DC C8                    ..
+        .addr   LC8E0                           ; B33F E0 C8                    ..
+        .addr   LC8E0                           ; B341 E0 C8                    ..
+        .addr   LC8CC                           ; B343 CC C8                    ..
+        .addr   LB12D                           ; B345 2D B1                    -.
+LB347:
+        .addr   LC984                           ; B347 84 C9                    ..
+        .addr   LC9AC                           ; B349 AC C9                    ..
+        .addr   LC9B0                           ; B34B B0 C9                    ..
+        .addr   LC9B4                           ; B34D B4 C9                    ..
+        .addr   LC9B8                           ; B34F B8 C9                    ..
+        .addr   LC9BC                           ; B351 BC C9                    ..
+        .addr   LC9C0                           ; B353 C0 C9                    ..
+        .addr   LC9C4                           ; B355 C4 C9                    ..
+        .addr   LC984                           ; B357 84 C9                    ..
+        .addr   LC9AC                           ; B359 AC C9                    ..
+        .addr   LC9B0                           ; B35B B0 C9                    ..
+        .addr   LC9B4                           ; B35D B4 C9                    ..
+        .addr   LC9B8                           ; B35F B8 C9                    ..
+        .addr   LC9BC                           ; B361 BC C9                    ..
+        .addr   LC9C0                           ; B363 C0 C9                    ..
+        .addr   LC9C4                           ; B365 C4 C9                    ..
+        .addr   LB12D                           ; B367 2D B1                    -.
 ; ----------------------------------------------------------------------------
 drawCathedralSprites:
         ldx     #$00                            ; B369 A2 00                    ..
@@ -7785,46 +8037,166 @@ LC874:
         .byte   $A4,$A5,$A6,$A7,$1A,$B8,$B9,$BA ; C8AC A4 A5 A6 A7 1A B8 B9 BA  ........
         .byte   $A8,$BB,$BC,$A3,$A4,$C4,$C5,$A7 ; C8B4 A8 BB BC A3 A4 C4 C5 A7  ........
 possibleUnusedData2:
-        .byte   $05,$06,$07,$08,$09,$0A,$0B,$0C ; C8BC 05 06 07 08 09 0A 0B 0C  ........
-        .byte   $0D,$0E,$0F,$10,$11,$12,$0B,$13 ; C8C4 0D 0E 0F 10 11 12 0B 13  ........
-        .byte   $14,$15,$16,$17,$18,$19,$1A,$0C ; C8CC 14 15 16 17 18 19 1A 0C  ........
-        .byte   $0D,$0E,$1B,$1C,$1D,$1E,$1F,$20 ; C8D4 0D 0E 1B 1C 1D 1E 1F 20  ....... 
-        .byte   $1D,$1E,$21,$20,$1D,$1E,$22,$23 ; C8DC 1D 1E 21 20 1D 1E 22 23  ..! .."#
-        .byte   $24,$25,$26,$27,$28,$29,$26,$27 ; C8E4 24 25 26 27 28 29 26 27  $%&'()&'
-        .byte   $2A,$0A,$26,$27,$2B,$0A,$2C,$27 ; C8EC 2A 0A 26 27 2B 0A 2C 27  *.&'+.,'
-        .byte   $2D,$2E,$2F,$30,$31,$32,$33,$34 ; C8F4 2D 2E 2F 30 31 32 33 34  -./01234
-        .byte   $35,$36,$37,$38,$39,$3A,$3B,$3C ; C8FC 35 36 37 38 39 3A 3B 3C  56789:;<
-        .byte   $3D,$3E,$3F,$40,$41,$42,$43,$44 ; C904 3D 3E 3F 40 41 42 43 44  =>?@ABCD
-        .byte   $45,$46,$43,$44,$47,$48,$49,$4A ; C90C 45 46 43 44 47 48 49 4A  EFCDGHIJ
-        .byte   $4B,$4C,$4D,$4E,$4F,$50,$51,$52 ; C914 4B 4C 4D 4E 4F 50 51 52  KLMNOPQR
-        .byte   $3D,$32,$53,$34,$54,$55,$43,$44 ; C91C 3D 32 53 34 54 55 43 44  =2S4TUCD
-        .byte   $3D,$32,$3F,$56,$57,$58,$59,$5A ; C924 3D 32 3F 56 57 58 59 5A  =2?VWXYZ
-        .byte   $05,$06,$5B,$5C,$5D,$5E,$5F,$60 ; C92C 05 06 5B 5C 5D 5E 5F 60  ..[\]^_`
-        .byte   $61,$62,$63,$64,$65,$66,$67,$68 ; C934 61 62 63 64 65 66 67 68  abcdefgh
-        .byte   $69,$6A,$6B,$6C,$66,$6D,$6E,$6F ; C93C 69 6A 6B 6C 66 6D 6E 6F  ijklfmno
-        .byte   $70,$71,$72,$73,$65,$66,$74,$75 ; C944 70 71 72 73 65 66 74 75  pqrseftu
-        .byte   $66,$76,$66,$77,$66,$66,$66,$78 ; C94C 66 76 66 77 66 66 66 78  fvfwfffx
-        .byte   $79,$7A,$66,$7B,$7C,$7D,$66,$66 ; C954 79 7A 66 7B 7C 7D 66 66  yzf{|}ff
-        .byte   $7E,$7F,$80,$81,$82,$83,$84,$85 ; C95C 7E 7F 80 81 82 83 84 85  ~.......
-        .byte   $7E,$3A,$86,$87,$88,$89,$8A,$8B ; C964 7E 3A 86 87 88 89 8A 8B  ~:......
-        .byte   $8C,$8D,$8E,$8F,$90,$91,$92,$93 ; C96C 8C 8D 8E 8F 90 91 92 93  ........
-        .byte   $90,$91,$92,$94,$90,$91,$95,$93 ; C974 90 91 92 94 90 91 95 93  ........
-        .byte   $8C,$8D,$96,$97,$98,$99,$9A,$9B ; C97C 8C 8D 96 97 98 99 9A 9B  ........
-        .byte   $9C,$0A,$9D,$27,$9E,$0A,$26,$27 ; C984 9C 0A 9D 27 9E 0A 26 27  ...'..&'
-        .byte   $9F,$0A,$26,$27,$A0,$0A,$A1,$A2 ; C98C 9F 0A 26 27 A0 0A A1 A2  ..&'....
-        .byte   $A3,$66,$A4,$A5,$A6,$A7,$A8,$A9 ; C994 A3 66 A4 A5 A6 A7 A8 A9  .f......
-        .byte   $AA,$66,$AB,$AC,$AD,$AE,$AF,$66 ; C99C AA 66 AB AC AD AE AF 66  .f.....f
-        .byte   $B0,$B1,$B2,$B3,$B4,$B5,$B6,$B7 ; C9A4 B0 B1 B2 B3 B4 B5 B6 B7  ........
-        .byte   $9C,$06,$B8,$08,$B9,$BA,$BB,$BC ; C9AC 9C 06 B8 08 B9 BA BB BC  ........
-        .byte   $BD,$BE,$BF,$C0,$C1,$C2,$C3,$C4 ; C9B4 BD BE BF C0 C1 C2 C3 C4  ........
-        .byte   $C5,$C6,$C7,$C8,$C9,$CA,$CB,$CC ; C9BC C5 C6 C7 C8 C9 CA CB CC  ........
-        .byte   $CD,$CE,$CF,$D0,$D1,$D2,$D3,$66 ; C9C4 CD CE CF D0 D1 D2 D3 66  .......f
-        .byte   $D4,$D5,$D6,$D7,$D4,$D8,$D9,$DA ; C9CC D4 D5 D6 D7 D4 D8 D9 DA  ........
-        .byte   $D4,$DB,$DC,$DD,$D1,$D2,$DE,$DF ; C9D4 D4 DB DC DD D1 D2 DE DF  ........
-        .byte   $D1,$E0,$E1,$E2,$D1,$E0,$E3,$E4 ; C9DC D1 E0 E1 E2 D1 E0 E3 E4  ........
-        .byte   $E5,$E6,$E7,$E8,$E9,$66,$EA,$EB ; C9E4 E5 E6 E7 E8 E9 66 EA EB  .....f..
-        .byte   $EC,$66,$ED,$EE,$EF,$F0,$F1,$F2 ; C9EC EC 66 ED EE EF F0 F1 F2  .f......
-        .byte   $66,$F3,$F4,$F5,$66,$F6,$F7,$F8 ; C9F4 66 F3 F4 F5 66 F6 F7 F8  f...f...
+        .byte   $05,$06,$07,$08                 ; C8BC 05 06 07 08              ....
+LC8C0:
+        .byte   $09,$0A,$0B,$0C                 ; C8C0 09 0A 0B 0C              ....
+LC8C4:
+        .byte   $0D,$0E,$0F,$10                 ; C8C4 0D 0E 0F 10              ....
+LC8C8:
+        .byte   $11,$12,$0B,$13                 ; C8C8 11 12 0B 13              ....
+LC8CC:
+        .byte   $14,$15,$16,$17                 ; C8CC 14 15 16 17              ....
+LC8D0:
+        .byte   $18,$19,$1A,$0C                 ; C8D0 18 19 1A 0C              ....
+LC8D4:
+        .byte   $0D,$0E,$1B,$1C                 ; C8D4 0D 0E 1B 1C              ....
+LC8D8:
+        .byte   $1D,$1E,$1F,$20                 ; C8D8 1D 1E 1F 20              ... 
+LC8DC:
+        .byte   $1D,$1E,$21,$20                 ; C8DC 1D 1E 21 20              ..! 
+LC8E0:
+        .byte   $1D,$1E,$22,$23                 ; C8E0 1D 1E 22 23              .."#
+LC8E4:
+        .byte   $24,$25,$26,$27                 ; C8E4 24 25 26 27              $%&'
+LC8E8:
+        .byte   $28,$29,$26,$27                 ; C8E8 28 29 26 27              ()&'
+LC8EC:
+        .byte   $2A,$0A,$26,$27                 ; C8EC 2A 0A 26 27              *.&'
+LC8F0:
+        .byte   $2B,$0A,$2C,$27                 ; C8F0 2B 0A 2C 27              +.,'
+LC8F4:
+        .byte   $2D,$2E,$2F,$30                 ; C8F4 2D 2E 2F 30              -./0
+LC8F8:
+        .byte   $31,$32,$33,$34                 ; C8F8 31 32 33 34              1234
+LC8FC:
+        .byte   $35,$36,$37,$38                 ; C8FC 35 36 37 38              5678
+LC900:
+        .byte   $39,$3A,$3B,$3C                 ; C900 39 3A 3B 3C              9:;<
+LC904:
+        .byte   $3D,$3E,$3F,$40                 ; C904 3D 3E 3F 40              =>?@
+LC908:
+        .byte   $41,$42,$43,$44                 ; C908 41 42 43 44              ABCD
+LC90C:
+        .byte   $45,$46,$43,$44                 ; C90C 45 46 43 44              EFCD
+LC910:
+        .byte   $47,$48,$49,$4A                 ; C910 47 48 49 4A              GHIJ
+LC914:
+        .byte   $4B,$4C,$4D,$4E                 ; C914 4B 4C 4D 4E              KLMN
+LC918:
+        .byte   $4F,$50,$51,$52                 ; C918 4F 50 51 52              OPQR
+LC91C:
+        .byte   $3D,$32,$53,$34                 ; C91C 3D 32 53 34              =2S4
+LC920:
+        .byte   $54,$55,$43,$44                 ; C920 54 55 43 44              TUCD
+LC924:
+        .byte   $3D,$32,$3F,$56                 ; C924 3D 32 3F 56              =2?V
+LC928:
+        .byte   $57,$58,$59,$5A                 ; C928 57 58 59 5A              WXYZ
+LC92C:
+        .byte   $05,$06,$5B,$5C                 ; C92C 05 06 5B 5C              ..[\
+LC930:
+        .byte   $5D,$5E,$5F,$60                 ; C930 5D 5E 5F 60              ]^_`
+LC934:
+        .byte   $61,$62,$63,$64                 ; C934 61 62 63 64              abcd
+LC938:
+        .byte   $65,$66,$67,$68                 ; C938 65 66 67 68              efgh
+LC93C:
+        .byte   $69,$6A,$6B,$6C                 ; C93C 69 6A 6B 6C              ijkl
+LC940:
+        .byte   $66,$6D,$6E,$6F                 ; C940 66 6D 6E 6F              fmno
+LC944:
+        .byte   $70,$71,$72,$73                 ; C944 70 71 72 73              pqrs
+LC948:
+        .byte   $65,$66,$74,$75                 ; C948 65 66 74 75              eftu
+LC94C:
+        .byte   $66,$76,$66,$77                 ; C94C 66 76 66 77              fvfw
+LC950:
+        .byte   $66,$66,$66,$78                 ; C950 66 66 66 78              fffx
+LC954:
+        .byte   $79,$7A,$66,$7B                 ; C954 79 7A 66 7B              yzf{
+LC958:
+        .byte   $7C,$7D,$66,$66                 ; C958 7C 7D 66 66              |}ff
+LC95C:
+        .byte   $7E,$7F,$80,$81                 ; C95C 7E 7F 80 81              ~...
+LC960:
+        .byte   $82,$83,$84,$85                 ; C960 82 83 84 85              ....
+LC964:
+        .byte   $7E,$3A,$86,$87                 ; C964 7E 3A 86 87              ~:..
+LC968:
+        .byte   $88,$89,$8A,$8B                 ; C968 88 89 8A 8B              ....
+LC96C:
+        .byte   $8C,$8D,$8E,$8F                 ; C96C 8C 8D 8E 8F              ....
+LC970:
+        .byte   $90,$91,$92,$93                 ; C970 90 91 92 93              ....
+LC974:
+        .byte   $90,$91,$92,$94                 ; C974 90 91 92 94              ....
+LC978:
+        .byte   $90,$91,$95,$93                 ; C978 90 91 95 93              ....
+LC97C:
+        .byte   $8C,$8D,$96,$97                 ; C97C 8C 8D 96 97              ....
+LC980:
+        .byte   $98,$99,$9A,$9B                 ; C980 98 99 9A 9B              ....
+LC984:
+        .byte   $9C,$0A,$9D,$27                 ; C984 9C 0A 9D 27              ...'
+LC988:
+        .byte   $9E,$0A,$26,$27                 ; C988 9E 0A 26 27              ..&'
+LC98C:
+        .byte   $9F,$0A,$26,$27                 ; C98C 9F 0A 26 27              ..&'
+LC990:
+        .byte   $A0,$0A,$A1,$A2                 ; C990 A0 0A A1 A2              ....
+LC994:
+        .byte   $A3,$66,$A4,$A5                 ; C994 A3 66 A4 A5              .f..
+LC998:
+        .byte   $A6,$A7,$A8,$A9                 ; C998 A6 A7 A8 A9              ....
+LC99C:
+        .byte   $AA,$66,$AB,$AC                 ; C99C AA 66 AB AC              .f..
+LC9A0:
+        .byte   $AD,$AE,$AF,$66                 ; C9A0 AD AE AF 66              ...f
+LC9A4:
+        .byte   $B0,$B1,$B2,$B3                 ; C9A4 B0 B1 B2 B3              ....
+LC9A8:
+        .byte   $B4,$B5,$B6,$B7                 ; C9A8 B4 B5 B6 B7              ....
+LC9AC:
+        .byte   $9C,$06,$B8,$08                 ; C9AC 9C 06 B8 08              ....
+LC9B0:
+        .byte   $B9,$BA,$BB,$BC                 ; C9B0 B9 BA BB BC              ....
+LC9B4:
+        .byte   $BD,$BE,$BF,$C0                 ; C9B4 BD BE BF C0              ....
+LC9B8:
+        .byte   $C1,$C2,$C3,$C4                 ; C9B8 C1 C2 C3 C4              ....
+LC9BC:
+        .byte   $C5,$C6,$C7,$C8                 ; C9BC C5 C6 C7 C8              ....
+LC9C0:
+        .byte   $C9,$CA,$CB,$CC                 ; C9C0 C9 CA CB CC              ....
+LC9C4:
+        .byte   $CD,$CE,$CF,$D0                 ; C9C4 CD CE CF D0              ....
+LC9C8:
+        .byte   $D1,$D2,$D3,$66                 ; C9C8 D1 D2 D3 66              ...f
+LC9CC:
+        .byte   $D4,$D5,$D6,$D7                 ; C9CC D4 D5 D6 D7              ....
+LC9D0:
+        .byte   $D4,$D8,$D9,$DA                 ; C9D0 D4 D8 D9 DA              ....
+LC9D4:
+        .byte   $D4,$DB,$DC,$DD                 ; C9D4 D4 DB DC DD              ....
+LC9D8:
+        .byte   $D1,$D2,$DE,$DF                 ; C9D8 D1 D2 DE DF              ....
+LC9DC:
+        .byte   $D1,$E0,$E1,$E2                 ; C9DC D1 E0 E1 E2              ....
+LC9E0:
+        .byte   $D1,$E0,$E3,$E4                 ; C9E0 D1 E0 E3 E4              ....
+LC9E4:
+        .byte   $E5,$E6,$E7,$E8                 ; C9E4 E5 E6 E7 E8              ....
+LC9E8:
+        .byte   $E9,$66,$EA,$EB                 ; C9E8 E9 66 EA EB              .f..
+LC9EC:
+        .byte   $EC,$66,$ED,$EE                 ; C9EC EC 66 ED EE              .f..
+LC9F0:
+        .byte   $EF,$F0,$F1,$F2                 ; C9F0 EF F0 F1 F2              ....
+LC9F4:
+        .byte   $66,$F3,$F4,$F5                 ; C9F4 66 F3 F4 F5              f...
+LC9F8:
+        .byte   $66,$F6,$F7,$F8                 ; C9F8 66 F6 F7 F8              f...
+LC9FC:
         .byte   $F9,$FA,$FB,$FC                 ; C9FC F9 FA FB FC              ....
 titleScreenNametable:
 .include "nametables/titleScreenNametable.asm"
