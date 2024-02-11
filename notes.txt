@@ -178,3 +178,15 @@ look to be part of an address.
 
 
 The address table at DF71 when modified to all $FF kills sound
+
+
+********
+
+drawCathedralSprites has a table of sprite information, but is obfuscated.
+possibly result of porting from arcade version?
+
+; in:  $02,$03,$CF,$01
+; out: $6F,$02,$03,$78 (y,t,a,x)
+
+; 0xCF << 3 & 0xFF = 0x78
+; ((( 0x01 << 8  | 0xCF ) >> 2 ) & 0xF8) - 1 = 0x6F
