@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2024-02-12 09:29:27
+; Created:    2024-02-12 10:20:55
 ; Input file: clean.nes
 ; Page:       1
 
@@ -5338,40 +5338,60 @@ LA6BE:
         jsr     enableNMIAndWaitForvBlank       ; A6BF 20 DB A3                  ..
         lda     #$3F                            ; A6C2 A9 3F                    .?
         sta     renderSlot0Addr+1,x             ; A6C4 95 17                    ..
-        lda     LA6DF,y                         ; A6C6 B9 DF A6                 ...
+        lda     paletteAddrOffsets,y            ; A6C6 B9 DF A6                 ...
         sta     renderSlot0Addr,x               ; A6C9 95 16                    ..
         tya                                     ; A6CB 98                       .
         asl     a                               ; A6CC 0A                       .
         asl     a                               ; A6CD 0A                       .
         asl     a                               ; A6CE 0A                       .
         asl     a                               ; A6CF 0A                       .
-        adc     #<paletteTableOffset                            ; A6D0 69 E6                    i.
+        adc     #<bgPalette0                            ; A6D0 69 E6                    i.
         sta     renderSlot0Data,x               ; A6D2 95 08                    ..
         lda     #$00                            ; A6D4 A9 00                    ..
-        adc     #>paletteTableOffset                            ; A6D6 69 A6                    i.
+        adc     #>bgPalette0                            ; A6D6 69 A6                    i.
         sta     renderSlot0Data+1,x             ; A6D8 95 09                    ..
         lda     #$10                            ; A6DA A9 10                    ..
         sta     ppuRenderSlot0Length,x          ; A6DC 95 24                    .$
         rts                                     ; A6DE 60                       `
 
 ; ----------------------------------------------------------------------------
-LA6DF:
+paletteAddrOffsets:
         .byte   $00,$00,$00,$10,$10,$10,$10     ; A6DF 00 00 00 10 10 10 10     .......
-paletteTableOffset:
-        .byte   $0F,$31,$21,$11,$0F,$26,$16,$06 ; A6E6 0F 31 21 11 0F 26 16 06  .1!..&..
-        .byte   $0F,$37,$27,$17,$0F,$2A,$1A,$0A ; A6EE 0F 37 27 17 0F 2A 1A 0A  .7'..*..
-        .byte   $0F,$12,$0F,$0F,$0F,$27,$0F,$0F ; A6F6 0F 12 0F 0F 0F 27 0F 0F  .....'..
-        .byte   $0F,$31,$21,$01,$0F,$30,$16,$00 ; A6FE 0F 31 21 01 0F 30 16 00  .1!..0..
-        .byte   $0F,$20,$10,$00,$0F,$27,$18,$08 ; A706 0F 20 10 00 0F 27 18 08  . ...'..
-        .byte   $0F,$31,$21,$01,$0F,$30,$16,$00 ; A70E 0F 31 21 01 0F 30 16 00  .1!..0..
-        .byte   $0F,$16,$0F,$00,$0F,$12,$24,$1B ; A716 0F 16 0F 00 0F 12 24 1B  ......$.
-        .byte   $0F,$0F,$0F,$0F,$0F,$37,$0F,$0F ; A71E 0F 0F 0F 0F 0F 37 0F 0F  .....7..
-        .byte   $0F,$37,$27,$06,$0F,$31,$06,$11 ; A726 0F 37 27 06 0F 31 06 11  .7'..1..
-        .byte   $0F,$17,$21,$26,$0F,$26,$16,$06 ; A72E 0F 17 21 26 0F 26 16 06  ..!&.&..
-        .byte   $0F,$35,$16,$12,$0F,$12,$24,$1B ; A736 0F 35 16 12 0F 12 24 1B  .5....$.
-        .byte   $0F,$35,$1A,$37,$0F,$35,$18,$24 ; A73E 0F 35 1A 37 0F 35 18 24  .5.7.5.$
-        .byte   $0F,$37,$39,$3B,$0F,$2A,$2B,$30 ; A746 0F 37 39 3B 0F 2A 2B 30  .79;.*+0
-        .byte   $0F,$26,$21,$37,$0F,$35,$24,$13 ; A74E 0F 26 21 37 0F 35 24 13  .&!7.5$.
+bgPalette0:
+        .byte   $0F,$31,$21,$11                 ; A6E6 0F 31 21 11              .1!.
+        .byte   $0F,$26,$16,$06                 ; A6EA 0F 26 16 06              .&..
+        .byte   $0F,$37,$27,$17                 ; A6EE 0F 37 27 17              .7'.
+        .byte   $0F,$2A,$1A,$0A                 ; A6F2 0F 2A 1A 0A              .*..
+bgPalette1:
+        .byte   $0F,$12,$0F,$0F                 ; A6F6 0F 12 0F 0F              ....
+        .byte   $0F,$27,$0F,$0F                 ; A6FA 0F 27 0F 0F              .'..
+        .byte   $0F,$31,$21,$01                 ; A6FE 0F 31 21 01              .1!.
+        .byte   $0F,$30,$16,$00                 ; A702 0F 30 16 00              .0..
+bgPalette2:
+        .byte   $0F,$20,$10,$00                 ; A706 0F 20 10 00              . ..
+        .byte   $0F,$27,$18,$08                 ; A70A 0F 27 18 08              .'..
+        .byte   $0F,$31,$21,$01                 ; A70E 0F 31 21 01              .1!.
+        .byte   $0F,$30,$16,$00                 ; A712 0F 30 16 00              .0..
+spritePalette0:
+        .byte   $0F,$16,$0F,$00                 ; A716 0F 16 0F 00              ....
+        .byte   $0F,$12,$24,$1B                 ; A71A 0F 12 24 1B              ..$.
+        .byte   $0F,$0F,$0F,$0F                 ; A71E 0F 0F 0F 0F              ....
+        .byte   $0F,$37,$0F,$0F                 ; A722 0F 37 0F 0F              .7..
+spritePalette1:
+        .byte   $0F,$37,$27,$06                 ; A726 0F 37 27 06              .7'.
+        .byte   $0F,$31,$06,$11                 ; A72A 0F 31 06 11              .1..
+        .byte   $0F,$17,$21,$26                 ; A72E 0F 17 21 26              ..!&
+        .byte   $0F,$26,$16,$06                 ; A732 0F 26 16 06              .&..
+spritePalette2:
+        .byte   $0F,$35,$16,$12                 ; A736 0F 35 16 12              .5..
+        .byte   $0F,$12,$24,$1B                 ; A73A 0F 12 24 1B              ..$.
+        .byte   $0F,$35,$1A,$37                 ; A73E 0F 35 1A 37              .5.7
+        .byte   $0F,$35,$18,$24                 ; A742 0F 35 18 24              .5.$
+spritePalette3:
+        .byte   $0F,$37,$39,$3B                 ; A746 0F 37 39 3B              .79;
+        .byte   $0F,$2A,$2B,$30                 ; A74A 0F 2A 2B 30              .*+0
+        .byte   $0F,$26,$21,$37                 ; A74E 0F 26 21 37              .&!7
+        .byte   $0F,$35,$24,$13                 ; A752 0F 35 24 13              .5$.
 ; ----------------------------------------------------------------------------
 LA756:
         lda     player1LevelOnes,x              ; A756 BD 2D 04                 .-.
