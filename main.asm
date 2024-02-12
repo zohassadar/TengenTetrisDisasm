@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2024-02-11 08:10:17
+; Created:    2024-02-12 09:29:27
 ; Input file: clean.nes
 ; Page:       1
 
@@ -12,18 +12,32 @@ ppuMask         := $0001
 ppuScrollX      := $0002
 ppuScrollY      := $0003
 currentCHRBank  := $0004                        ; Only $04 relevant.  will be 0 or 4
-ppuDataAddress1 := $0008
-ppuDataAddress2 := $000A
-ppuDataAddress3 := $000C
-ppuDataAddress4 := $000E
-ppuDataAddress5 := $0010
-ppuDataAddress6 := $0012
-ppuDataAddress7 := $0014
-ppuRenderFlagBefore:= $0025
-ppuRenderFlagAfter:= $0027
+renderSlot0Data := $0008
+renderSlot2Data := $000A
+renderSlot4Data := $000C
+renderSlot6Data := $000E
+renderSlot8Data := $0010
+renderSlotAData := $0012
+renderSlotCData := $0014
+renderSlot0Addr := $0016
+renderSlot2Addr := $0018
+renderSlot4Addr := $001A
+renderSlot6Addr := $001C
+renderSlot8Addr := $001E
+renderSlotAAddr := $0020
+renderSlotCAddr := $0022
+ppuRenderSlot0Length:= $0024
+currentPPUSlot  := $0025
+ppuRenderSlot2Length:= $0026
+nextPPUSlot     := $0027
+ppuRenderSlot4Length:= $0028
 gameState       := $0029
+ppuRenderSlot6Length:= $002A
 frameCounterLowLastFrame:= $002B
+ppuRenderSlot8Length:= $002C
+ppuRenderSlotALength:= $002E
 playMode        := $002F                        ; FF: Coop, 00: 1p, 01: 2p
+ppuRenderSlotCLength:= $0030
 frameCounterLow := $0032
 frameCounterHigh:= $0033
 rngSeed         := $0034
@@ -197,8 +211,8 @@ mainLoop:
         cmp     frameCounterLowLastFrame        ; 8011 C5 2B                    .+
         beq     mainLoop                        ; 8013 F0 F5                    ..
         sta     frameCounterLowLastFrame        ; 8015 85 2B                    .+
-        lda     ppuRenderFlagBefore             ; 8017 A5 25                    .%
-        cmp     ppuRenderFlagAfter              ; 8019 C5 27                    .'
+        lda     currentPPUSlot                  ; 8017 A5 25                    .%
+        cmp     nextPPUSlot                     ; 8019 C5 27                    .'
         bne     @skipResetPPUStagingAddress     ; 801B D0 04                    ..
         lda     #$00                            ; 801D A9 00                    ..
         sta     ppuStagingAddress               ; 801F 85 48                    .H
@@ -836,22 +850,22 @@ L8467:
         tay                                     ; 8472 A8                       .
         ldx     generalCounter3a                ; 8473 A6 3A                    .:
         lda     ppuStagingAddress               ; 8475 A5 48                    .H
-        sta     ppuDataAddress1,x               ; 8477 95 08                    ..
+        sta     renderSlot0Data,x               ; 8477 95 08                    ..
         lda     ppuStagingAddress+1             ; 8479 A5 49                    .I
-        sta     ppuDataAddress1+1,x             ; 847B 95 09                    ..
+        sta     renderSlot0Data+1,x             ; 847B 95 09                    ..
         lda     generalCounter38                ; 847D A5 38                    .8
         and     #$07                            ; 847F 29 07                    ).
         clc                                     ; 8481 18                       .
         adc     $ED                             ; 8482 65 ED                    e.
-        sta     $16,x                           ; 8484 95 16                    ..
+        sta     renderSlot0Addr,x               ; 8484 95 16                    ..
         lda     $EE                             ; 8486 A5 EE                    ..
         adc     #$00                            ; 8488 69 00                    i.
-        sta     $17,x                           ; 848A 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; 848A 95 17                    ..
         lda     generalCounter39                ; 848C A5 39                    .9
         sec                                     ; 848E 38                       8
         sbc     generalCounter38                ; 848F E5 38                    .8
         adc     #$00                            ; 8491 69 00                    i.
-        sta     $24,x                           ; 8493 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; 8493 95 24                    .$
         clc                                     ; 8495 18                       .
         adc     ppuStagingAddress               ; 8496 65 48                    eH
         sta     ppuStagingAddress               ; 8498 85 48                    .H
@@ -1659,29 +1673,29 @@ L89E9:
         pla                                     ; 89FB 68                       h
         clc                                     ; 89FC 18                       .
         adc     #<lineClearTable                            ; 89FD 69 1F                    i.
-        sta     ppuDataAddress1,x               ; 89FF 95 08                    ..
+        sta     renderSlot0Data,x               ; 89FF 95 08                    ..
         lda     #>lineClearTable                            ; 8A01 A9 8A                    ..
         adc     #$00                            ; 8A03 69 00                    i.
-        sta     ppuDataAddress1+1,x             ; 8A05 95 09                    ..
+        sta     renderSlot0Data+1,x             ; 8A05 95 09                    ..
         lda     #$08                            ; 8A07 A9 08                    ..
-        sta     $17,x                           ; 8A09 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; 8A09 95 17                    ..
         lda     oamStaging,y                    ; 8A0B B9 00 05                 ...
         sec                                     ; 8A0E 38                       8
         adc     ppuScrollYOffset                ; 8A0F 6D F6 04                 m..
         asl     a                               ; 8A12 0A                       .
-        rol     $17,x                           ; 8A13 36 17                    6.
+        rol     renderSlot0Addr+1,x             ; 8A13 36 17                    6.
         asl     a                               ; 8A15 0A                       .
-        rol     $17,x                           ; 8A16 36 17                    6.
-        sta     $16,x                           ; 8A18 95 16                    ..
+        rol     renderSlot0Addr+1,x             ; 8A16 36 17                    6.
+        sta     renderSlot0Addr,x               ; 8A18 95 16                    ..
         lda     oamStaging+3,y                  ; 8A1A B9 03 05                 ...
         lsr     a                               ; 8A1D 4A                       J
         lsr     a                               ; 8A1E 4A                       J
 lineClearTable:
         lsr     a                               ; 8A1F 4A                       J
-        ora     $16,x                           ; 8A20 15 16                    ..
-        sta     $16,x                           ; 8A22 95 16                    ..
+        ora     renderSlot0Addr,x               ; 8A20 15 16                    ..
+        sta     renderSlot0Addr,x               ; 8A22 95 16                    ..
         lda     #$01                            ; 8A24 A9 01                    ..
-        sta     $24,x                           ; 8A26 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; 8A26 95 24                    .$
         ldx     generalCounter36                ; 8A28 A6 36                    .6
         rts                                     ; 8A2A 60                       `
 
@@ -1809,15 +1823,15 @@ L8B0E:
         sty     generalCounter39                ; 8B15 84 39                    .9
         jsr     L849D                           ; 8B17 20 9D 84                  ..
         lda     ppuStagingAddress               ; 8B1A A5 48                    .H
-        sta     ppuDataAddress1,x               ; 8B1C 95 08                    ..
+        sta     renderSlot0Data,x               ; 8B1C 95 08                    ..
         lda     ppuStagingAddress+1             ; 8B1E A5 49                    .I
-        sta     ppuDataAddress1+1,x             ; 8B20 95 09                    ..
+        sta     renderSlot0Data+1,x             ; 8B20 95 09                    ..
         lda     $ED                             ; 8B22 A5 ED                    ..
-        sta     $16,x                           ; 8B24 95 16                    ..
+        sta     renderSlot0Addr,x               ; 8B24 95 16                    ..
         lda     $EE                             ; 8B26 A5 EE                    ..
-        sta     $17,x                           ; 8B28 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; 8B28 95 17                    ..
         lda     generalCounter36                ; 8B2A A5 36                    .6
-        sta     $24,x                           ; 8B2C 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; 8B2C 95 24                    .$
         clc                                     ; 8B2E 18                       .
         adc     ppuStagingAddress               ; 8B2F 65 48                    eH
         sta     ppuStagingAddress               ; 8B31 85 48                    .H
@@ -2347,8 +2361,8 @@ L8EC6:
         lda     generalCounter3a                ; 8ECC A5 3A                    .:
         beq     L8ED8                           ; 8ECE F0 08                    ..
 L8ED0:
-        lda     ppuRenderFlagBefore             ; 8ED0 A5 25                    .%
-        cmp     ppuRenderFlagAfter              ; 8ED2 C5 27                    .'
+        lda     currentPPUSlot                  ; 8ED0 A5 25                    .%
+        cmp     nextPPUSlot                     ; 8ED2 C5 27                    .'
         bne     L8ED0                           ; 8ED4 D0 FA                    ..
         beq     L8EA2                           ; 8ED6 F0 CA                    ..
 L8ED8:
@@ -2470,18 +2484,18 @@ L8FC3:
         tay                                     ; 8FC3 A8                       .
         jsr     enableNMIAndWaitForvBlank       ; 8FC4 20 DB A3                  ..
         lda     possiblePPUAddrTable+1,y        ; 8FC7 B9 18 90                 ...
-        sta     $17,x                           ; 8FCA 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; 8FCA 95 17                    ..
         lda     possiblePPUAddrTable,y          ; 8FCC B9 17 90                 ...
-        sta     $16,x                           ; 8FCF 95 16                    ..
+        sta     renderSlot0Addr,x               ; 8FCF 95 16                    ..
         lda     generalCounter3c                ; 8FD1 A5 3C                    .<
         clc                                     ; 8FD3 18                       .
         adc     #$90                            ; 8FD4 69 90                    i.
-        sta     ppuDataAddress1,x               ; 8FD6 95 08                    ..
+        sta     renderSlot0Data,x               ; 8FD6 95 08                    ..
         lda     #$01                            ; 8FD8 A9 01                    ..
         adc     #$00                            ; 8FDA 69 00                    i.
-        sta     ppuDataAddress1+1,x             ; 8FDC 95 09                    ..
+        sta     renderSlot0Data+1,x             ; 8FDC 95 09                    ..
         lda     #$04                            ; 8FDE A9 04                    ..
-        sta     $24,x                           ; 8FE0 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; 8FE0 95 24                    .$
         ldx     generalCounter3d                ; 8FE2 A6 3D                    .=
         lda     $0180,x                         ; 8FE4 BD 80 01                 ...
         cmp     $6C,x                           ; 8FE7 D5 6C                    .l
@@ -2495,19 +2509,19 @@ L8FF4:
         tay                                     ; 8FF4 A8                       .
         jsr     enableNMIAndWaitForvBlank       ; 8FF5 20 DB A3                  ..
         lda     possiblePPUAddrTable+1+24,y     ; 8FF8 B9 30 90                 .0.
-        sta     $17,x                           ; 8FFB 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; 8FFB 95 17                    ..
         lda     possiblePPUAddrTable+1+23,y     ; 8FFD B9 2F 90                 ./.
-        sta     $16,x                           ; 9000 95 16                    ..
+        sta     renderSlot0Addr,x               ; 9000 95 16                    ..
         lda     generalCounter3b                ; 9002 A5 3B                    .;
         asl     a                               ; 9004 0A                       .
         asl     a                               ; 9005 0A                       .
         adc     #$88                            ; 9006 69 88                    i.
-        sta     ppuDataAddress1,x               ; 9008 95 08                    ..
+        sta     renderSlot0Data,x               ; 9008 95 08                    ..
         lda     #$01                            ; 900A A9 01                    ..
         adc     #$00                            ; 900C 69 00                    i.
-        sta     ppuDataAddress1+1,x             ; 900E 95 09                    ..
+        sta     renderSlot0Data+1,x             ; 900E 95 09                    ..
         lda     #$04                            ; 9010 A9 04                    ..
-        sta     $24,x                           ; 9012 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; 9012 95 24                    .$
 L9014:
         jmp     L8EBD                           ; 9014 4C BD 8E                 L..
 
@@ -2715,9 +2729,9 @@ L9188:
         stx     generalCounter38                ; 9188 86 38                    .8
         jsr     enableNMIAndWaitForvBlank       ; 918A 20 DB A3                  ..
         lda     generalCounter37                ; 918D A5 37                    .7
-        sta     $17,x                           ; 918F 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; 918F 95 17                    ..
         lda     generalCounter36                ; 9191 A5 36                    .6
-        sta     $16,x                           ; 9193 95 16                    ..
+        sta     renderSlot0Addr,x               ; 9193 95 16                    ..
         clc                                     ; 9195 18                       .
         adc     #$80                            ; 9196 69 80                    i.
         sta     generalCounter36                ; 9198 85 36                    .6
@@ -2725,9 +2739,9 @@ L9188:
         inc     generalCounter37                ; 919C E6 37                    .7
 L919E:
         lda     ppuStagingAddress+1             ; 919E A5 49                    .I
-        sta     ppuDataAddress1+1,x             ; 91A0 95 09                    ..
+        sta     renderSlot0Data+1,x             ; 91A0 95 09                    ..
         lda     ppuStagingAddress               ; 91A2 A5 48                    .H
-        sta     ppuDataAddress1,x               ; 91A4 95 08                    ..
+        sta     renderSlot0Data,x               ; 91A4 95 08                    ..
         ldy     generalCounter38                ; 91A6 A4 38                    .8
         lda     $6C,y                           ; 91A8 B9 6C 00                 .l.
         ldy     #$00                            ; 91AB A0 00                    ..
@@ -2750,7 +2764,7 @@ L91C0:
         iny                                     ; 91C5 C8                       .
         sta     (ppuStagingAddress),y           ; 91C6 91 48                    .H
         lda     #$02                            ; 91C8 A9 02                    ..
-        sta     $24,x                           ; 91CA 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; 91CA 95 24                    .$
         clc                                     ; 91CC 18                       .
         adc     ppuStagingAddress               ; 91CD 65 48                    eH
         sta     ppuStagingAddress               ; 91CF 85 48                    .H
@@ -2945,31 +2959,31 @@ L92E3:
         asl     a                               ; 92EE 0A                       .
         asl     a                               ; 92EF 0A                       .
         asl     a                               ; 92F0 0A                       .
-        rol     $17,x                           ; 92F1 36 17                    6.
+        rol     renderSlot0Addr+1,x             ; 92F1 36 17                    6.
         asl     a                               ; 92F3 0A                       .
-        rol     $17,x                           ; 92F4 36 17                    6.
+        rol     renderSlot0Addr+1,x             ; 92F4 36 17                    6.
         clc                                     ; 92F6 18                       .
         adc     #$8B                            ; 92F7 69 8B                    i.
         bcc     L92FD                           ; 92F9 90 02                    ..
-        inc     $17,x                           ; 92FB F6 17                    ..
+        inc     renderSlot0Addr+1,x             ; 92FB F6 17                    ..
 L92FD:
         clc                                     ; 92FD 18                       .
         adc     generalCounter37                ; 92FE 65 37                    e7
-        sta     $16,x                           ; 9300 95 16                    ..
-        lda     $17,x                           ; 9302 B5 17                    ..
+        sta     renderSlot0Addr,x               ; 9300 95 16                    ..
+        lda     renderSlot0Addr+1,x             ; 9302 B5 17                    ..
         and     #$03                            ; 9304 29 03                    ).
         adc     #$21                            ; 9306 69 21                    i!
-        sta     $17,x                           ; 9308 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; 9308 95 17                    ..
         lda     leaderboardInitials,y           ; 930A B9 C3 04                 ...
         and     #$3F                            ; 930D 29 3F                    )?
         clc                                     ; 930F 18                       .
         adc     #<L93DC                            ; 9310 69 DC                    i.
-        sta     ppuDataAddress1,x               ; 9312 95 08                    ..
+        sta     renderSlot0Data,x               ; 9312 95 08                    ..
         lda     #>L93DC                            ; 9314 A9 93                    ..
         adc     #$00                            ; 9316 69 00                    i.
-        sta     ppuDataAddress1+1,x             ; 9318 95 09                    ..
+        sta     renderSlot0Data+1,x             ; 9318 95 09                    ..
         lda     #$01                            ; 931A A9 01                    ..
-        sta     $24,x                           ; 931C 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; 931C 95 24                    .$
         ldx     generalCounter38                ; 931E A6 38                    .8
 L9320:
         dey                                     ; 9320 88                       .
@@ -3839,25 +3853,25 @@ L9997:
         sta     generalCounter36                ; 99A6 85 36                    .6
         jsr     enableNMIAndWaitForvBlank       ; 99A8 20 DB A3                  ..
         lda     ppuStagingAddress               ; 99AB A5 48                    .H
-        sta     ppuDataAddress1,x               ; 99AD 95 08                    ..
+        sta     renderSlot0Data,x               ; 99AD 95 08                    ..
         lda     ppuStagingAddress+1             ; 99AF A5 49                    .I
-        sta     ppuDataAddress1+1,x             ; 99B1 95 09                    ..
+        sta     renderSlot0Data+1,x             ; 99B1 95 09                    ..
         lda     generalCounter36                ; 99B3 A5 36                    .6
         sta     (ppuStagingAddress),y           ; 99B5 91 48                    .H
         inc     ppuStagingAddress               ; 99B7 E6 48                    .H
         lda     #$23                            ; 99B9 A9 23                    .#
-        sta     $17,x                           ; 99BB 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; 99BB 95 17                    ..
         ldy     player1TetrominoCurrent         ; 99BD A4 64                    .d
         lda     pieceStatistics,y               ; 99BF B9 52 00                 .R.
         and     #$F8                            ; 99C2 29 F8                    ).
         asl     a                               ; 99C4 0A                       .
         bcc     L99CB                           ; 99C5 90 04                    ..
-        dec     $17,x                           ; 99C7 D6 17                    ..
-        dec     $17,x                           ; 99C9 D6 17                    ..
+        dec     renderSlot0Addr+1,x             ; 99C7 D6 17                    ..
+        dec     renderSlot0Addr+1,x             ; 99C9 D6 17                    ..
 L99CB:
         asl     a                               ; 99CB 0A                       .
         bcc     L99D0                           ; 99CC 90 02                    ..
-        dec     $17,x                           ; 99CE D6 17                    ..
+        dec     renderSlot0Addr+1,x             ; 99CE D6 17                    ..
 L99D0:
         sta     generalCounter36                ; 99D0 85 36                    .6
         lda     player1TetrominoCurrent         ; 99D2 A5 64                    .d
@@ -3865,12 +3879,12 @@ L99D0:
         adc     #$34                            ; 99D5 69 34                    i4
         sec                                     ; 99D7 38                       8
         sbc     generalCounter36                ; 99D8 E5 36                    .6
-        sta     $16,x                           ; 99DA 95 16                    ..
-        lda     $17,x                           ; 99DC B5 17                    ..
+        sta     renderSlot0Addr,x               ; 99DA 95 16                    ..
+        lda     renderSlot0Addr+1,x             ; 99DC B5 17                    ..
         sbc     #$00                            ; 99DE E9 00                    ..
-        sta     $17,x                           ; 99E0 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; 99E0 95 17                    ..
         lda     #$01                            ; 99E2 A9 01                    ..
-        sta     $24,x                           ; 99E4 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; 99E4 95 24                    .$
         ldx     player1TetrominoCurrent         ; 99E6 A6 64                    .d
         inc     pieceStatistics,x               ; 99E8 F6 52                    .R
 L99EA:
@@ -4110,10 +4124,10 @@ L9B64:
         tay                                     ; 9B70 A8                       .
         jsr     enableNMIAndWaitForvBlank       ; 9B71 20 DB A3                  ..
         lda     statsDataAddresses,y            ; 9B74 B9 DC 9B                 ...
-        sta     ppuDataAddress1,x               ; 9B77 95 08                    ..
+        sta     renderSlot0Data,x               ; 9B77 95 08                    ..
         sta     generalCounter36                ; 9B79 85 36                    .6
         lda     statsDataAddresses+1,y          ; 9B7B B9 DD 9B                 ...
-        sta     ppuDataAddress1+1,x             ; 9B7E 95 09                    ..
+        sta     renderSlot0Data+1,x             ; 9B7E 95 09                    ..
         sta     generalCounter37                ; 9B80 85 37                    .7
         bit     playMode                        ; 9B82 24 2F                    $/
         bpl     L9B96                           ; 9B84 10 10                    ..
@@ -4127,9 +4141,9 @@ L9B64:
         ldy     #$0E                            ; 9B94 A0 0E                    ..
 L9B96:
         lda     statsPPUAddresses,y             ; 9B96 B9 EA 9B                 ...
-        sta     $16,x                           ; 9B99 95 16                    ..
+        sta     renderSlot0Addr,x               ; 9B99 95 16                    ..
         lda     statsPPUAddresses+1,y           ; 9B9B B9 EB 9B                 ...
-        sta     $17,x                           ; 9B9E 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; 9B9E 95 17                    ..
         sty     generalCounter3a                ; 9BA0 84 3A                    .:
         ldy     generalCounter38                ; 9BA2 A4 38                    .8
         lda     L9BD5,y                         ; 9BA4 B9 D5 9B                 ...
@@ -4139,7 +4153,7 @@ L9BAB:
         lda     (generalCounter36),y            ; 9BAB B1 36                    .6
         cmp     #$30                            ; 9BAD C9 30                    .0
         bne     L9BCB                           ; 9BAF D0 1A                    ..
-        inc     ppuDataAddress1,x               ; 9BB1 F6 08                    ..
+        inc     renderSlot0Data,x               ; 9BB1 F6 08                    ..
         lda     generalCounter3a                ; 9BB3 A5 3A                    .:
         cmp     #$0E                            ; 9BB5 C9 0E                    ..
         beq     L9BC2                           ; 9BB7 F0 09                    ..
@@ -4148,7 +4162,7 @@ L9BAB:
         lsr     a                               ; 9BBD 4A                       J
         bcs     L9BC2                           ; 9BBE B0 02                    ..
 L9BC0:
-        inc     $16,x                           ; 9BC0 F6 16                    ..
+        inc     renderSlot0Addr,x               ; 9BC0 F6 16                    ..
 L9BC2:
         dec     generalCounter39                ; 9BC2 C6 39                    .9
         iny                                     ; 9BC4 C8                       .
@@ -4157,7 +4171,7 @@ L9BC2:
         bcs     L9BAB                           ; 9BC9 B0 E0                    ..
 L9BCB:
         lda     generalCounter39                ; 9BCB A5 39                    .9
-        sta     $24,x                           ; 9BCD 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; 9BCD 95 24                    .$
         ldx     generalCounter38                ; 9BCF A6 38                    .8
 L9BD1:
         dex                                     ; 9BD1 CA                       .
@@ -4838,9 +4852,9 @@ LA06F:
         asl     a                               ; A07C 0A                       .
         tay                                     ; A07D A8                       .
         lda     ppuAddressTable1,y              ; A07E B9 AB A0                 ...
-        sta     $16,x                           ; A081 95 16                    ..
+        sta     renderSlot0Addr,x               ; A081 95 16                    ..
         lda     ppuAddressTable1+1,y            ; A083 B9 AC A0                 ...
-        sta     $17,x                           ; A086 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; A086 95 17                    ..
         pla                                     ; A088 68                       h
         beq     LA090                           ; A089 F0 05                    ..
         ldy     generalCounter36                ; A08B A4 36                    .6
@@ -4849,12 +4863,12 @@ LA090:
         ldy     #$00                            ; A090 A0 00                    ..
         sta     (ppuStagingAddress),y           ; A092 91 48                    .H
         lda     ppuStagingAddress               ; A094 A5 48                    .H
-        sta     ppuDataAddress1,x               ; A096 95 08                    ..
+        sta     renderSlot0Data,x               ; A096 95 08                    ..
         lda     ppuStagingAddress+1             ; A098 A5 49                    .I
-        sta     ppuDataAddress1+1,x             ; A09A 95 09                    ..
+        sta     renderSlot0Data+1,x             ; A09A 95 09                    ..
         inc     ppuStagingAddress               ; A09C E6 48                    .H
         lda     #$01                            ; A09E A9 01                    ..
-        sta     $24,x                           ; A0A0 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; A0A0 95 24                    .$
         ldy     generalCounter36                ; A0A2 A4 36                    .6
         rts                                     ; A0A4 60                       `
 
@@ -5101,8 +5115,8 @@ LA3C4:
 
 ; ----------------------------------------------------------------------------
 enableNMIAndWaitForvBlank:
-        ldx     ppuRenderFlagBefore             ; A3DB A6 25                    .%
-        lda     $24,x                           ; A3DD B5 24                    .$
+        ldx     currentPPUSlot                  ; A3DB A6 25                    .%
+        lda     ppuRenderSlot0Length,x          ; A3DD B5 24                    .$
         beq     LA3F2                           ; A3DF F0 11                    ..
         lda     ppuControl                      ; A3E1 A5 00                    ..
         bmi     @nmiEnabled                     ; A3E3 30 05                    0.
@@ -5112,17 +5126,17 @@ enableNMIAndWaitForvBlank:
         lda     #$00                            ; A3EA A9 00                    ..
         sta     ppuStagingAddress               ; A3EC 85 48                    .H
 @waitLoop:
-        lda     $24,x                           ; A3EE B5 24                    .$
+        lda     ppuRenderSlot0Length,x          ; A3EE B5 24                    .$
         bne     @waitLoop                       ; A3F0 D0 FC                    ..
 LA3F2:
-        lda     ppuRenderFlagBefore             ; A3F2 A5 25                    .%
+        lda     currentPPUSlot                  ; A3F2 A5 25                    .%
         clc                                     ; A3F4 18                       .
         adc     #$02                            ; A3F5 69 02                    i.
         cmp     #$0E                            ; A3F7 C9 0E                    ..
         bcc     @dontReset                      ; A3F9 90 02                    ..
         lda     #$00                            ; A3FB A9 00                    ..
 @dontReset:
-        sta     ppuRenderFlagBefore             ; A3FD 85 25                    .%
+        sta     currentPPUSlot                  ; A3FD 85 25                    .%
         rts                                     ; A3FF 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -5172,10 +5186,10 @@ waitForNMIAndDisablePPURendering:
         lda     ppuControl                      ; A44A A5 00                    ..
         bpl     @nmiDisabled                    ; A44C 10 0A                    ..
 @waitForNMI:
-        ldx     ppuRenderFlagBefore             ; A44E A6 25                    .%
-        cpx     ppuRenderFlagAfter              ; A450 E4 27                    .'
+        ldx     currentPPUSlot                  ; A44E A6 25                    .%
+        cpx     nextPPUSlot                     ; A450 E4 27                    .'
         bne     @waitForNMI                     ; A452 D0 FA                    ..
-        lda     $24,x                           ; A454 B5 24                    .$
+        lda     ppuRenderSlot0Length,x          ; A454 B5 24                    .$
         bne     @waitForNMI                     ; A456 D0 F6                    ..
 @nmiDisabled:
         lda     #$00                            ; A458 A9 00                    ..
@@ -5323,21 +5337,21 @@ LA6BE:
         tay                                     ; A6BE A8                       .
         jsr     enableNMIAndWaitForvBlank       ; A6BF 20 DB A3                  ..
         lda     #$3F                            ; A6C2 A9 3F                    .?
-        sta     $17,x                           ; A6C4 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; A6C4 95 17                    ..
         lda     LA6DF,y                         ; A6C6 B9 DF A6                 ...
-        sta     $16,x                           ; A6C9 95 16                    ..
+        sta     renderSlot0Addr,x               ; A6C9 95 16                    ..
         tya                                     ; A6CB 98                       .
         asl     a                               ; A6CC 0A                       .
         asl     a                               ; A6CD 0A                       .
         asl     a                               ; A6CE 0A                       .
         asl     a                               ; A6CF 0A                       .
         adc     #<paletteTableOffset                            ; A6D0 69 E6                    i.
-        sta     ppuDataAddress1,x               ; A6D2 95 08                    ..
+        sta     renderSlot0Data,x               ; A6D2 95 08                    ..
         lda     #$00                            ; A6D4 A9 00                    ..
         adc     #>paletteTableOffset                            ; A6D6 69 A6                    i.
-        sta     ppuDataAddress1+1,x             ; A6D8 95 09                    ..
+        sta     renderSlot0Data+1,x             ; A6D8 95 09                    ..
         lda     #$10                            ; A6DA A9 10                    ..
-        sta     $24,x                           ; A6DC 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; A6DC 95 24                    .$
         rts                                     ; A6DE 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -5378,20 +5392,20 @@ LA768:
         pha                                     ; A768 48                       H
         jsr     enableNMIAndWaitForvBlank       ; A769 20 DB A3                  ..
         pla                                     ; A76C 68                       h
-        sta     $16,x                           ; A76D 95 16                    ..
+        sta     renderSlot0Addr,x               ; A76D 95 16                    ..
         lda     #$3F                            ; A76F A9 3F                    .?
-        sta     $17,x                           ; A771 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; A771 95 17                    ..
         sty     generalCounter36                ; A773 84 36                    .6
         tya                                     ; A775 98                       .
         asl     a                               ; A776 0A                       .
         adc     generalCounter36                ; A777 65 36                    e6
         adc     #<unknownData03                            ; A779 69 88                    i.
-        sta     ppuDataAddress1,x               ; A77B 95 08                    ..
+        sta     renderSlot0Data,x               ; A77B 95 08                    ..
         lda     #>unknownData03                            ; A77D A9 A7                    ..
         adc     #$00                            ; A77F 69 00                    i.
-        sta     ppuDataAddress1+1,x             ; A781 95 09                    ..
+        sta     renderSlot0Data+1,x             ; A781 95 09                    ..
         lda     #$03                            ; A783 A9 03                    ..
-        sta     $24,x                           ; A785 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; A785 95 24                    .$
         rts                                     ; A787 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -5417,7 +5431,7 @@ nmi:
         and     #$FB                            ; A7C0 29 FB                    ).
         sta     PPUCTRL                         ; A7C2 8D 00 20                 .. 
         jsr     renderJumpRoutine               ; A7C5 20 0E A8                  ..
-        stx     ppuRenderFlagAfter              ; A7C8 86 27                    .'
+        stx     nextPPUSlot                     ; A7C8 86 27                    .'
         inc     frameCounterLow                 ; A7CA E6 32                    .2
         bne     LA7D0                           ; A7CC D0 02                    ..
         inc     frameCounterHigh                ; A7CE E6 33                    .3
@@ -5455,17 +5469,17 @@ LA7D0:
 
 ; ----------------------------------------------------------------------------
 renderJumpRoutine:
-        ldx     ppuRenderFlagAfter              ; A80E A6 27                    .'
+        ldx     nextPPUSlot                     ; A80E A6 27                    .'
         lda     renderJumpTable+1,x             ; A810 BD 04 A9                 ...
         pha                                     ; A813 48                       H
         lda     renderJumpTable,x               ; A814 BD 03 A9                 ...
         pha                                     ; A817 48                       H
-renderFakeReturnXIs0:
+renderSlot0RoutineMinus1:
         rts                                     ; A818 60                       `
 
 ; ----------------------------------------------------------------------------
 LA819:
-        ldx     $24                             ; A819 A6 24                    .$
+        ldx     ppuRenderSlot0Length            ; A819 A6 24                    .$
         bne     LA820                           ; A81B D0 03                    ..
         ldx     #$00                            ; A81D A2 00                    ..
         rts                                     ; A81F 60                       `
@@ -5474,19 +5488,19 @@ LA819:
 LA820:
         ldy     #$00                            ; A820 A0 00                    ..
         bit     PPUSTATUS                       ; A822 2C 02 20                 ,. 
-        lda     $17                             ; A825 A5 17                    ..
+        lda     renderSlot0Addr+1               ; A825 A5 17                    ..
         sta     PPUADDR                         ; A827 8D 06 20                 .. 
-        lda     $16                             ; A82A A5 16                    ..
+        lda     renderSlot0Addr                 ; A82A A5 16                    ..
         sta     PPUADDR                         ; A82C 8D 06 20                 .. 
 LA82F:
-        lda     (ppuDataAddress1),y             ; A82F B1 08                    ..
+        lda     (renderSlot0Data),y             ; A82F B1 08                    ..
         sta     PPUDATA                         ; A831 8D 07 20                 .. 
         iny                                     ; A834 C8                       .
         dex                                     ; A835 CA                       .
         bne     LA82F                           ; A836 D0 F7                    ..
-renderFakeReturnXIs2:= * + 1
-        stx     $24                             ; A838 86 24                    .$
-        ldx     $26                             ; A83A A6 26                    .&
+renderSlot2RoutineMinus1:= * + 1
+        stx     ppuRenderSlot0Length            ; A838 86 24                    .$
+        ldx     ppuRenderSlot2Length            ; A83A A6 26                    .&
         bne     LA841                           ; A83C D0 03                    ..
         ldx     #$02                            ; A83E A2 02                    ..
         rts                                     ; A840 60                       `
@@ -5495,19 +5509,19 @@ renderFakeReturnXIs2:= * + 1
 LA841:
         ldy     #$00                            ; A841 A0 00                    ..
         bit     PPUSTATUS                       ; A843 2C 02 20                 ,. 
-        lda     $19                             ; A846 A5 19                    ..
+        lda     renderSlot2Addr+1               ; A846 A5 19                    ..
         sta     PPUADDR                         ; A848 8D 06 20                 .. 
-        lda     $18                             ; A84B A5 18                    ..
+        lda     renderSlot2Addr                 ; A84B A5 18                    ..
         sta     PPUADDR                         ; A84D 8D 06 20                 .. 
 LA850:
-        lda     (ppuDataAddress2),y             ; A850 B1 0A                    ..
+        lda     (renderSlot2Data),y             ; A850 B1 0A                    ..
         sta     PPUDATA                         ; A852 8D 07 20                 .. 
         iny                                     ; A855 C8                       .
         dex                                     ; A856 CA                       .
         bne     LA850                           ; A857 D0 F7                    ..
-renderFakeReturnXIs4:= * + 1
-        stx     $26                             ; A859 86 26                    .&
-        ldx     $28                             ; A85B A6 28                    .(
+renderSlot4RoutineMinus1:= * + 1
+        stx     ppuRenderSlot2Length            ; A859 86 26                    .&
+        ldx     ppuRenderSlot4Length            ; A85B A6 28                    .(
         bne     LA862                           ; A85D D0 03                    ..
         ldx     #$04                            ; A85F A2 04                    ..
         rts                                     ; A861 60                       `
@@ -5516,19 +5530,19 @@ renderFakeReturnXIs4:= * + 1
 LA862:
         ldy     #$00                            ; A862 A0 00                    ..
         bit     PPUSTATUS                       ; A864 2C 02 20                 ,. 
-        lda     $1B                             ; A867 A5 1B                    ..
+        lda     renderSlot4Addr+1               ; A867 A5 1B                    ..
         sta     PPUADDR                         ; A869 8D 06 20                 .. 
-        lda     $1A                             ; A86C A5 1A                    ..
+        lda     renderSlot4Addr                 ; A86C A5 1A                    ..
         sta     PPUADDR                         ; A86E 8D 06 20                 .. 
 LA871:
-        lda     (ppuDataAddress3),y             ; A871 B1 0C                    ..
+        lda     (renderSlot4Data),y             ; A871 B1 0C                    ..
         sta     PPUDATA                         ; A873 8D 07 20                 .. 
         iny                                     ; A876 C8                       .
         dex                                     ; A877 CA                       .
         bne     LA871                           ; A878 D0 F7                    ..
-renderFakeReturnXIs6:= * + 1
-        stx     $28                             ; A87A 86 28                    .(
-        ldx     $2A                             ; A87C A6 2A                    .*
+renderSlot6RoutineMinus1:= * + 1
+        stx     ppuRenderSlot4Length            ; A87A 86 28                    .(
+        ldx     ppuRenderSlot6Length            ; A87C A6 2A                    .*
         bne     LA883                           ; A87E D0 03                    ..
         ldx     #$06                            ; A880 A2 06                    ..
         rts                                     ; A882 60                       `
@@ -5537,19 +5551,19 @@ renderFakeReturnXIs6:= * + 1
 LA883:
         ldy     #$00                            ; A883 A0 00                    ..
         bit     PPUSTATUS                       ; A885 2C 02 20                 ,. 
-        lda     $1D                             ; A888 A5 1D                    ..
+        lda     renderSlot6Addr+1               ; A888 A5 1D                    ..
         sta     PPUADDR                         ; A88A 8D 06 20                 .. 
-        lda     $1C                             ; A88D A5 1C                    ..
+        lda     renderSlot6Addr                 ; A88D A5 1C                    ..
         sta     PPUADDR                         ; A88F 8D 06 20                 .. 
 LA892:
-        lda     (ppuDataAddress4),y             ; A892 B1 0E                    ..
+        lda     (renderSlot6Data),y             ; A892 B1 0E                    ..
         sta     PPUDATA                         ; A894 8D 07 20                 .. 
         iny                                     ; A897 C8                       .
         dex                                     ; A898 CA                       .
         bne     LA892                           ; A899 D0 F7                    ..
-renderFakeReturnXIs8:= * + 1
-        stx     $2A                             ; A89B 86 2A                    .*
-        ldx     $2C                             ; A89D A6 2C                    .,
+renderSlot8RoutineMinus1:= * + 1
+        stx     ppuRenderSlot6Length            ; A89B 86 2A                    .*
+        ldx     ppuRenderSlot8Length            ; A89D A6 2C                    .,
         bne     LA8A4                           ; A89F D0 03                    ..
         ldx     #$08                            ; A8A1 A2 08                    ..
         rts                                     ; A8A3 60                       `
@@ -5558,19 +5572,19 @@ renderFakeReturnXIs8:= * + 1
 LA8A4:
         ldy     #$00                            ; A8A4 A0 00                    ..
         bit     PPUSTATUS                       ; A8A6 2C 02 20                 ,. 
-        lda     $1F                             ; A8A9 A5 1F                    ..
+        lda     renderSlot8Addr+1               ; A8A9 A5 1F                    ..
         sta     PPUADDR                         ; A8AB 8D 06 20                 .. 
-        lda     $1E                             ; A8AE A5 1E                    ..
+        lda     renderSlot8Addr                 ; A8AE A5 1E                    ..
         sta     PPUADDR                         ; A8B0 8D 06 20                 .. 
 LA8B3:
-        lda     (ppuDataAddress5),y             ; A8B3 B1 10                    ..
+        lda     (renderSlot8Data),y             ; A8B3 B1 10                    ..
         sta     PPUDATA                         ; A8B5 8D 07 20                 .. 
         iny                                     ; A8B8 C8                       .
         dex                                     ; A8B9 CA                       .
         bne     LA8B3                           ; A8BA D0 F7                    ..
-renderFakeReturnXIsA:= * + 1
-        stx     $2C                             ; A8BC 86 2C                    .,
-        ldx     $2E                             ; A8BE A6 2E                    ..
+renderSlotARoutineMinus1:= * + 1
+        stx     ppuRenderSlot8Length            ; A8BC 86 2C                    .,
+        ldx     ppuRenderSlotALength            ; A8BE A6 2E                    ..
         bne     LA8C5                           ; A8C0 D0 03                    ..
         ldx     #$0A                            ; A8C2 A2 0A                    ..
         rts                                     ; A8C4 60                       `
@@ -5579,19 +5593,19 @@ renderFakeReturnXIsA:= * + 1
 LA8C5:
         ldy     #$00                            ; A8C5 A0 00                    ..
         bit     PPUSTATUS                       ; A8C7 2C 02 20                 ,. 
-        lda     $21                             ; A8CA A5 21                    .!
+        lda     renderSlotAAddr+1               ; A8CA A5 21                    .!
         sta     PPUADDR                         ; A8CC 8D 06 20                 .. 
-        lda     $20                             ; A8CF A5 20                    . 
+        lda     renderSlotAAddr                 ; A8CF A5 20                    . 
         sta     PPUADDR                         ; A8D1 8D 06 20                 .. 
 LA8D4:
-        lda     (ppuDataAddress6),y             ; A8D4 B1 12                    ..
+        lda     (renderSlotAData),y             ; A8D4 B1 12                    ..
         sta     PPUDATA                         ; A8D6 8D 07 20                 .. 
         iny                                     ; A8D9 C8                       .
         dex                                     ; A8DA CA                       .
         bne     LA8D4                           ; A8DB D0 F7                    ..
-renderFakeReturnXIsC:= * + 1
-        stx     $2E                             ; A8DD 86 2E                    ..
-        ldx     $30                             ; A8DF A6 30                    .0
+renderSlotCRoutineMinus1:= * + 1
+        stx     ppuRenderSlotALength            ; A8DD 86 2E                    ..
+        ldx     ppuRenderSlotCLength            ; A8DF A6 30                    .0
         bne     LA8E6                           ; A8E1 D0 03                    ..
         ldx     #$0C                            ; A8E3 A2 0C                    ..
         rts                                     ; A8E5 60                       `
@@ -5600,28 +5614,28 @@ renderFakeReturnXIsC:= * + 1
 LA8E6:
         ldy     #$00                            ; A8E6 A0 00                    ..
         bit     PPUSTATUS                       ; A8E8 2C 02 20                 ,. 
-        lda     $23                             ; A8EB A5 23                    .#
+        lda     renderSlotCAddr+1               ; A8EB A5 23                    .#
         sta     PPUADDR                         ; A8ED 8D 06 20                 .. 
-        lda     $22                             ; A8F0 A5 22                    ."
+        lda     renderSlotCAddr                 ; A8F0 A5 22                    ."
         sta     PPUADDR                         ; A8F2 8D 06 20                 .. 
 LA8F5:
-        lda     (ppuDataAddress7),y             ; A8F5 B1 14                    ..
+        lda     (renderSlotCData),y             ; A8F5 B1 14                    ..
         sta     PPUDATA                         ; A8F7 8D 07 20                 .. 
         iny                                     ; A8FA C8                       .
         dex                                     ; A8FB CA                       .
         bne     LA8F5                           ; A8FC D0 F7                    ..
-        stx     $30                             ; A8FE 86 30                    .0
+        stx     ppuRenderSlotCLength            ; A8FE 86 30                    .0
         jmp     LA819                           ; A900 4C 19 A8                 L..
 
 ; ----------------------------------------------------------------------------
 renderJumpTable:
-        .addr   renderFakeReturnXIs0            ; A903 18 A8                    ..
-        .addr   renderFakeReturnXIs2            ; A905 39 A8                    9.
-        .addr   renderFakeReturnXIs4            ; A907 5A A8                    Z.
-        .addr   renderFakeReturnXIs6            ; A909 7B A8                    {.
-        .addr   renderFakeReturnXIs8            ; A90B 9C A8                    ..
-        .addr   renderFakeReturnXIsA            ; A90D BD A8                    ..
-        .addr   renderFakeReturnXIsC            ; A90F DE A8                    ..
+        .addr   renderSlot0RoutineMinus1        ; A903 18 A8                    ..
+        .addr   renderSlot2RoutineMinus1        ; A905 39 A8                    9.
+        .addr   renderSlot4RoutineMinus1        ; A907 5A A8                    Z.
+        .addr   renderSlot6RoutineMinus1        ; A909 7B A8                    {.
+        .addr   renderSlot8RoutineMinus1        ; A90B 9C A8                    ..
+        .addr   renderSlotARoutineMinus1        ; A90D BD A8                    ..
+        .addr   renderSlotCRoutineMinus1        ; A90F DE A8                    ..
 ; ----------------------------------------------------------------------------
 reset:
         sei                                     ; A911 78                       x
@@ -7193,16 +7207,16 @@ LB61A:
 LB622:
         jsr     enableNMIAndWaitForvBlank       ; B622 20 DB A3                  ..
         lda     generalCounter38                ; B625 A5 38                    .8
-        sta     $16,x                           ; B627 95 16                    ..
+        sta     renderSlot0Addr,x               ; B627 95 16                    ..
         lda     generalCounter39                ; B629 A5 39                    .9
-        sta     $17,x                           ; B62B 95 17                    ..
+        sta     renderSlot0Addr+1,x             ; B62B 95 17                    ..
         lda     generalCounter3a                ; B62D A5 3A                    .:
-        sta     ppuDataAddress1,x               ; B62F 95 08                    ..
+        sta     renderSlot0Data,x               ; B62F 95 08                    ..
         lda     generalCounter3b                ; B631 A5 3B                    .;
-        sta     ppuDataAddress1+1,x             ; B633 95 09                    ..
+        sta     renderSlot0Data+1,x             ; B633 95 09                    ..
         lda     generalCounter36                ; B635 A5 36                    .6
         and     #$7F                            ; B637 29 7F                    ).
-        sta     $24,x                           ; B639 95 24                    .$
+        sta     ppuRenderSlot0Length,x          ; B639 95 24                    .$
         dec     generalCounter37                ; B63B C6 37                    .7
         beq     LB611                           ; B63D F0 D2                    ..
         lda     generalCounter38                ; B63F A5 38                    .8

@@ -4,24 +4,34 @@ ppuMask:	.res 1	; $0001
 ppuScrollX:	.res 1	; $0002
 ppuScrollY:	.res 1	; $0003
 currentCHRBank:	.res $4	; $0004
-ppuDataAddress1:	.res $2	; $0008
-ppuDataAddress2:	.res $2	; $000A
-ppuDataAddress3:	.res $2	; $000C
-ppuDataAddress4:	.res $2	; $000E
-ppuDataAddress5:	.res $2	; $0010
-ppuDataAddress6:	.res $2	; $0012
-ppuDataAddress7:	.res $2	; $0014
-.res 15
-ppuRenderFlagBefore:	.res 1	; $0025
-.res 1
-ppuRenderFlagAfter:	.res 1	; $0027
-.res 1
+renderSlot0Data:	.res $2	; $0008
+renderSlot2Data:	.res $2	; $000A
+renderSlot4Data:	.res $2	; $000C
+renderSlot6Data:	.res $2	; $000E
+renderSlot8Data:	.res $2	; $0010
+renderSlotAData:	.res $2	; $0012
+renderSlotCData:	.res $2	; $0014
+renderSlot0Addr:	.res $2	; $0016
+renderSlot2Addr:	.res $2	; $0018
+renderSlot4Addr:	.res $2	; $001A
+renderSlot6Addr:	.res $2	; $001C
+renderSlot8Addr:	.res $2	; $001E
+renderSlotAAddr:	.res $2	; $0020
+renderSlotCAddr:	.res $2	; $0022
+ppuRenderSlot0Length:	.res 1	; $0024
+currentPPUSlot:	.res 1	; $0025
+ppuRenderSlot2Length:	.res 1	; $0026
+nextPPUSlot:	.res 1	; $0027
+ppuRenderSlot4Length:	.res 1	; $0028
 gameState:	.res 1	; $0029
-.res 1
+ppuRenderSlot6Length:	.res 1	; $002A
 frameCounterLowLastFrame:	.res 1	; $002b
-.res 3
+ppuRenderSlot8Length:	.res 1	; $002C
+.res 1
+ppuRenderSlotALength:	.res 1	; $002E
 playMode:	.res 1	; $002f
-.res 2
+ppuRenderSlotCLength:	.res 1	; $0030
+.res 1
 frameCounterLow:	.res 1	; $0032
 frameCounterHigh:	.res 1	; $0033
 rngSeed:	.res $2	; $0034
