@@ -1,5 +1,5 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2024-02-12 10:20:55
+; Created:    2024-02-19 07:38:41
 ; Input file: clean.nes
 ; Page:       1
 
@@ -5448,6 +5448,7 @@ nmi:
         lda     #$05                            ; A7B9 A9 05                    ..
         sta     OAMDMA                          ; A7BB 8D 14 40                 ..@
         lda     ppuControl                      ; A7BE A5 00                    ..
+@enableHorizontalPPURendering:
         and     #$FB                            ; A7C0 29 FB                    ).
         sta     PPUCTRL                         ; A7C2 8D 00 20                 .. 
         jsr     renderJumpRoutine               ; A7C5 20 0E A8                  ..
@@ -7204,9 +7205,9 @@ pauseOrUnpause:
 updateGameBackground:
         asl     a                               ; B603 0A                       .
         tay                                     ; B604 A8                       .
-        lda     LB65D,y                         ; B605 B9 5D B6                 .].
+        lda     gameBackgroundPatches,y         ; B605 B9 5D B6                 .].
         sta     generalCounter3c                ; B608 85 3C                    .<
-        lda     LB65D+1,y                       ; B60A B9 5E B6                 .^.
+        lda     gameBackgroundPatches+1,y       ; B60A B9 5E B6                 .^.
         sta     generalCounter3d                ; B60D 85 3D                    .=
         ldy     #$00                            ; B60F A0 00                    ..
 LB611:
@@ -7255,7 +7256,7 @@ LB622:
         bcc     LB622                           ; B657 90 C9                    ..
         inc     generalCounter3b                ; B659 E6 3B                    .;
         bne     LB622                           ; B65B D0 C5                    ..
-LB65D:
+gameBackgroundPatches:
         .addr   pauseColsRows1                  ; B65D 79 B6                    y.
         .addr   unpauseColsRows1                ; B65F 86 B6                    ..
         .addr   gameOverCoopColsRows1           ; B661 99 B6                    ..
@@ -8724,11 +8725,11 @@ LD1A6:
         lda     $F0                             ; D240 A5 F0                    ..
         rol     a                               ; D242 2A                       *
         sta     $F2                             ; D243 85 F2                    ..
-        lda     #<UnknownTable04                            ; D245 A9 71                    .q
+        lda     #<relatedToMusicTable01                            ; D245 A9 71                    .q
         clc                                     ; D247 18                       .
         adc     $F1                             ; D248 65 F1                    e.
         sta     $F1                             ; D24A 85 F1                    ..
-        lda     #>UnknownTable04                            ; D24C A9 DF                    ..
+        lda     #>relatedToMusicTable01                            ; D24C A9 DF                    ..
         adc     $F2                             ; D24E 65 F2                    e.
         sta     $F2                             ; D250 85 F2                    ..
         lda     ($F1),y                         ; D252 B1 F1                    ..
@@ -10548,7 +10549,7 @@ UnknownTable02:
         .byte   $01,$02,$03,$03,$03,$01,$01,$00 ; DF62 01 02 03 03 03 01 01 00  ........
         .byte   $01,$01,$00,$03,$03,$03,$03     ; DF6A 01 01 00 03 03 03 03     .......
 ; ----------------------------------------------------------------------------
-UnknownTable04:
+relatedToMusicTable01:
         .addr   LE043                           ; DF71 43 E0                    C.
         .addr   LE364                           ; DF73 64 E3                    d.
         .addr   LE5CF                           ; DF75 CF E5                    ..

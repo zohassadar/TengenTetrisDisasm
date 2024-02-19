@@ -1,58 +1,10 @@
-0 0000
-1 0001
-2 0010
-3 0011
-4 0100
-5 0101
-6 0110
-7 0111
-8 1000
-9 1001
-A 1010
-B 1011
-C 1100
-D 1101
-E 1110
-F 1111
-
-
-B8A8 - menu nametable??
-c028 - game nametable??
-
-
-*****************
-
-
-8A2B - table with single/double/triple/tetris for line clears
-
-0a 0b - bytes with table address related to line clears
-18 19 - bytes with ppu address related to line clears
-
-
-*****************
-
-0c 0d - bytes with address related to data related to drawing row
-1a 1b - bytes with ppu address related to drawing row
-
-****************************
-
-
-1c 1d - bytes with ppu address related to drawing nametable or attr
-0e 0f - bytes with address related to data related to nametable or attr
-
-
-*****
-
 mesen tracelog exclude loop:
 
 (pc < $800a || pc > $8015) && (pc < $99ee || pc > $9a15 )
 
-
 ****
 
-
 L855C/L855F - tables with low/high bytes of top left corner of player1, player2 & coop
-
 
 *****
 
@@ -68,9 +20,9 @@ L855C/L855F - tables with low/high bytes of top left corner of player1, player2 
 $52 (pieceStatistics) gets a zero stored in it but doesn't seem to be read
 
 ****
+
 L9997 - line clear stat columns
 999B - maximum height of column
-
 
 ****
 
@@ -80,7 +32,7 @@ L8565 - plant pieces in playfield
 
 
 
-playfield is stored with 1 tile per nibble.  nibble aligns with tile index.  0 is clear.  
+playfield is stored with 1 tile per nibble.  nibble aligns with tile index.  0 is clear.
 walls are built with F0 on left, 0F on right
 Floor is built with FF
 
@@ -97,21 +49,6 @@ left, down, right, up, left, down, right, b, a
 
 ****
 
-LB0D8 big chunk of possible code?
-
-LD93D another jump table?
-
-LD93E also looks like there be code
-
-
-DA3B probably block of code that's not referenced (yet)
-DB13 same
-DB40 same
-
-AD25 big table of unreferenced data?
-
-****
-
 L836B - @rightNotPressed
 doSomethingWithInputDuringGameplay - is maybe get filtered input?  it leaves buttons in A
 
@@ -122,22 +59,6 @@ L8650 - checkPosition after shifting/rotating and then do something else
 L8C15 - probably the checkPosition
 
 L8CA7 - negative3 thru 3
-
-
-a189 - address table?
-
-
-
-L9E61 - initialize title?
-
-LA3DB - enable NMI?
-LA465 - also enable NMI?
-
-LA44A - disable NMI?
-
-
-
-A7BE in NMI makes sure PPU writing is horizontal
 
 **********
 
@@ -163,24 +84,9 @@ tilesForT:
 
 *********
 
-
 LB65D - game background modification address table
 
 ******
-
-LAB2D - relates to fireworks sprites.  Dunno yet what the other groups are for
-
-
-The instances of:
-`lda     #\$DF`
-look to be part of an address.  
-
-
-
-The address table at DF71 when modified to all $FF kills sound
-
-
-********
 
 drawCathedralSprites has a table of sprite information, but is obfuscated.
 possibly result of porting from arcade version?
