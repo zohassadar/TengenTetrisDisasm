@@ -50,4 +50,4 @@ if __name__ == "__main__":
     for i in range(args.count):
         offset = 0x1000 * i + args.start
         open(f'{args.input}_chr{i}.bin', 'wb').write(rom[offset: offset+0x1000])
-        
+

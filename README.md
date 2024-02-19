@@ -20,9 +20,9 @@ Todo:
 
 ## Disassemble
 
-Requires a backup of the original game with the filename `clean.nes` in the project root directory.  
+Requires a backup of the original game with the filename `clean.nes` in the project root directory.
 
-main.asm is dynamically generated using main.infofile.  This means comments outside of labels and constants for specific values can't be added yet (unless someone knows a trick and wants to tell me).  To update, add label information to main.infofile and run `make disassembly`.  This will update main.asm with the new labels.  
+main.asm is dynamically generated using main.infofile.  This means comments outside of labels and constants for specific values can't be added yet (unless someone knows a trick and wants to tell me).  To update, add label information to main.infofile and run `make disassembly`.  This will update main.asm with the new labels.
 
 ## Build
 
