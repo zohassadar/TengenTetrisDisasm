@@ -63,7 +63,7 @@ pieceStatsJ:	.res 1	; $0056
 pieceStatsL:	.res 1	; $0057
 pieceStatsS:	.res 1	; $0058
 pieceStatsZ:	.res 1	; $0059
-savedRNGSeedForSomething:	.res $2	; $005A
+savedRNGSeed:	.res $2	; $005A
 player1RNGSeed:	.res $2	; $005C
 player2RNGSeed:	.res $2	; $005E
 player1TetrominoY:	.res 1	; $0060

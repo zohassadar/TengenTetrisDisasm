@@ -67,7 +67,7 @@ pieceStatsJ     := $0056
 pieceStatsL     := $0057
 pieceStatsS     := $0058
 pieceStatsZ     := $0059
-savedRNGSeedForSomething:= $005A
+savedRNGSeed    := $005A
 player1RNGSeed  := $005C
 player2RNGSeed  := $005E
 player1TetrominoY:= $0060
@@ -153,7 +153,7 @@ highScoreOnes   := $0441
 leaderboardScores:= $0442
 leaderboardLines:= $0496
 leaderboardInitials:= $04C3
-menuGameMode    := $04F0
+menuGameMode    := $04F0                        ; 1p, 2p, Coop, Vs, With
 menuPlayer1StartLevel:= $04F1
 menuPlayer2StartLevel:= $04F2
 menuPlayer1Handicap:= $04F3
@@ -649,9 +649,9 @@ L8312:
         txa                                     ; 8312 8A                       .
         bne     L82D6                           ; 8313 D0 C1                    ..
 L8315:
-        lda     savedRNGSeedForSomething        ; 8315 A5 5A                    .Z
+        lda     savedRNGSeed                    ; 8315 A5 5A                    .Z
         sta     rngSeed                         ; 8317 85 34                    .4
-        lda     savedRNGSeedForSomething+1      ; 8319 A5 5B                    .[
+        lda     savedRNGSeed+1                  ; 8319 A5 5B                    .[
         sta     rngSeed+1                       ; 831B 85 35                    .5
         jmp     initializeGameMode              ; 831D 4C E3 95                 L..
 
@@ -937,7 +937,7 @@ L84ED:
         bpl     L84FE                           ; 84FA 10 02                    ..
         ldx     #$02                            ; 84FC A2 02                    ..
 L84FE:
-        lda     playfieldIdPossible,x           ; 84FE BD 62 85                 .b.
+        lda     playfieldPages,x                ; 84FE BD 62 85                 .b.
         sta     generalCounter37                ; 8501 85 37                    .7
         lda     L8559,x                         ; 8503 BD 59 85                 .Y.
         sta     $EE                             ; 8506 85 EE                    ..
@@ -1007,7 +1007,7 @@ L855C:
         .byte   $02,$14,$0A                     ; 855C 02 14 0A                 ...
 L855F:
         .byte   $21,$21,$21                     ; 855F 21 21 21                 !!!
-playfieldIdPossible:
+playfieldPages:
         .byte   $06,$07,$06                     ; 8562 06 07 06                 ...
 ; ----------------------------------------------------------------------------
 L8565:
@@ -1018,7 +1018,7 @@ L8565:
         bpl     L8571                           ; 856D 10 02                    ..
         ldx     #$00                            ; 856F A2 00                    ..
 L8571:
-        lda     playfieldIdPossible,x           ; 8571 BD 62 85                 .b.
+        lda     playfieldPages,x                ; 8571 BD 62 85                 .b.
         sta     generalCounter37                ; 8574 85 37                    .7
         ldx     #$00                            ; 8576 A2 00                    ..
         ldy     #$00                            ; 8578 A0 00                    ..
@@ -1313,7 +1313,7 @@ L8773:
         bpl     L8789                           ; 8785 10 02                    ..
         ldx     #$00                            ; 8787 A2 00                    ..
 L8789:
-        lda     playfieldIdPossible,x           ; 8789 BD 62 85                 .b.
+        lda     playfieldPages,x                ; 8789 BD 62 85                 .b.
         ldx     generalCounter36                ; 878C A6 36                    .6
         sta     generalCounter37                ; 878E 85 37                    .7
         lda     #$00                            ; 8790 A9 00                    ..
@@ -1496,7 +1496,7 @@ L88C8:
         bpl     L88CE                           ; 88CA 10 02                    ..
         ldx     #$00                            ; 88CC A2 00                    ..
 L88CE:
-        lda     playfieldIdPossible,x           ; 88CE BD 62 85                 .b.
+        lda     playfieldPages,x                ; 88CE BD 62 85                 .b.
         ldx     generalCounter3a                ; 88D1 A6 3A                    .:
         sta     generalCounter3b                ; 88D3 85 3B                    .;
         sta     generalCounter3d                ; 88D5 85 3D                    .=
@@ -3461,18 +3461,18 @@ L9697:
         lda     rngSeed                         ; 9697 A5 34                    .4
         sta     player1RNGSeed                  ; 9699 85 5C                    .\
         sta     player2RNGSeed                  ; 969B 85 5E                    .^
-        sta     savedRNGSeedForSomething        ; 969D 85 5A                    .Z
+        sta     savedRNGSeed                    ; 969D 85 5A                    .Z
         lda     rngSeed+1                       ; 969F A5 35                    .5
         sta     player1RNGSeed+1                ; 96A1 85 5D                    .]
         sta     player2RNGSeed+1                ; 96A3 85 5F                    ._
-        sta     savedRNGSeedForSomething+1      ; 96A5 85 5B                    .[
-        jsr     initializePlayfields            ; 96A7 20 C1 97                  ..
+        sta     savedRNGSeed+1                  ; 96A5 85 5B                    .[
+        jsr     initPlayer1orCoopPlayfield      ; 96A7 20 C1 97                  ..
         lda     gameState                       ; 96AA A5 29                    .)
         bne     L96B7                           ; 96AC D0 09                    ..
         lda     playMode                        ; 96AE A5 2F                    ./
         cmp     #$01                            ; 96B0 C9 01                    ..
         bne     L96B7                           ; 96B2 D0 03                    ..
-        jsr     L9804                           ; 96B4 20 04 98                  ..
+        jsr     initPlayer2Playfield            ; 96B4 20 04 98                  ..
 L96B7:
         ldx     #$00                            ; 96B7 A2 00                    ..
         stx     player1ControllerNew            ; 96B9 86 46                    .F
@@ -3558,9 +3558,9 @@ L9744:
         .byte   $A7,$A5,$37,$48,$18,$69,$05,$20 ; 97B4 A7 A5 37 48 18 69 05 20  ..7H.i. 
         .byte   $03,$B6,$68,$D0,$43             ; 97BC 03 B6 68 D0 43           ..h.C
 ; ----------------------------------------------------------------------------
-initializePlayfields:
+initPlayer1orCoopPlayfield:
         ldx     #$00                            ; 97C1 A2 00                    ..
-L97C3:
+@drawRow:
         lda     #$FF                            ; 97C3 A9 FF                    ..
         sta     player1Playfield,x              ; 97C5 9D 00 06                 ...
         sta     player1Playfield+7,x            ; 97C8 9D 07 06                 ...
@@ -3570,33 +3570,34 @@ L97C3:
         sta     player1Playfield+4,x            ; 97D3 9D 04 06                 ...
         sta     player1Playfield+5,x            ; 97D6 9D 05 06                 ...
         ldy     playMode                        ; 97D9 A4 2F                    ./
-        bpl     L97E2                           ; 97DB 10 05                    ..
+        bpl     @drawWalls                      ; 97DB 10 05                    ..
         sta     player1Playfield+1,x            ; 97DD 9D 01 06                 ...
-        bmi     L97E9                           ; 97E0 30 07                    0.
-L97E2:
+        bmi     @drawCoopRightWall              ; 97E0 30 07                    0.
+; draw $00 for walls instead of $F0/$0F to add 1 column on either side for coop mode
+@drawWalls:
         lda     #$F0                            ; 97E2 A9 F0                    ..
         sta     player1Playfield+1,x            ; 97E4 9D 01 06                 ...
         lda     #$0F                            ; 97E7 A9 0F                    ..
-L97E9:
+@drawCoopRightWall:
         sta     player1Playfield+6,x            ; 97E9 9D 06 06                 ...
         txa                                     ; 97EC 8A                       .
         clc                                     ; 97ED 18                       .
         adc     #$08                            ; 97EE 69 08                    i.
         tax                                     ; 97F0 AA                       .
         cpx     #$D0                            ; 97F1 E0 D0                    ..
-        bne     L97C3                           ; 97F3 D0 CE                    ..
+        bne     @drawRow                        ; 97F3 D0 CE                    ..
         lda     #$FF                            ; 97F5 A9 FF                    ..
         ldy     #$10                            ; 97F7 A0 10                    ..
-L97F9:
+@drawFloor:
         sta     player1Playfield,x              ; 97F9 9D 00 06                 ...
         inx                                     ; 97FC E8                       .
         dey                                     ; 97FD 88                       .
-        bne     L97F9                           ; 97FE D0 F9                    ..
+        bne     @drawFloor                      ; 97FE D0 F9                    ..
         ldx     #$00                            ; 9800 A2 00                    ..
-        beq     L983C                           ; 9802 F0 38                    .8
-L9804:
+        beq     endPlayfieldInit                ; 9802 F0 38                    .8
+initPlayer2Playfield:
         ldx     #$00                            ; 9804 A2 00                    ..
-L9806:
+@drawRow:
         lda     #$FF                            ; 9806 A9 FF                    ..
         sta     player2Playfield,x              ; 9808 9D 00 07                 ...
         sta     player2Playfield+7,x            ; 980B 9D 07 07                 ...
@@ -3614,22 +3615,22 @@ L9806:
         adc     #$08                            ; 9828 69 08                    i.
         tax                                     ; 982A AA                       .
         cpx     #$D0                            ; 982B E0 D0                    ..
-        bne     L9806                           ; 982D D0 D7                    ..
+        bne     @drawRow                        ; 982D D0 D7                    ..
         lda     #$FF                            ; 982F A9 FF                    ..
         ldy     #$10                            ; 9831 A0 10                    ..
-L9833:
+@drawFloor:
         sta     player2Playfield,x              ; 9833 9D 00 07                 ...
         inx                                     ; 9836 E8                       .
         dey                                     ; 9837 88                       .
-        bne     L9833                           ; 9838 D0 F9                    ..
+        bne     @drawFloor                      ; 9838 D0 F9                    ..
         ldx     #$01                            ; 983A A2 01                    ..
-L983C:
+endPlayfieldInit:
         lda     menuGameMode                    ; 983C AD F0 04                 ...
         cmp     #$03                            ; 983F C9 03                    ..
         lda     menuPlayer1Handicap             ; 9841 AD F3 04                 ...
-        bcs     L9849                           ; 9844 B0 03                    ..
+        bcs     @computerIsPlaying              ; 9844 B0 03                    ..
         lda     menuPlayer1Handicap,x           ; 9846 BD F3 04                 ...
-L9849:
+@computerIsPlaying:
         bne     initHandicapGarbage             ; 9849 D0 01                    ..
         rts                                     ; 984B 60                       `
 
@@ -3639,13 +3640,13 @@ initHandicapGarbage:
         stx     generalCounter38                ; 984D 86 38                    .8
         lda     L98A6,y                         ; 984F B9 A6 98                 ...
         tay                                     ; 9852 A8                       .
-        lda     playfieldIdPossible,x           ; 9853 BD 62 85                 .b.
+        lda     playfieldPages,x                ; 9853 BD 62 85                 .b.
         sta     generalCounter3b                ; 9856 85 3B                    .;
         lda     #$00                            ; 9858 A9 00                    ..
         sta     generalCounter3a                ; 985A 85 3A                    .:
-        lda     savedRNGSeedForSomething        ; 985C A5 5A                    .Z
+        lda     savedRNGSeed                    ; 985C A5 5A                    .Z
         sta     rngSeed                         ; 985E 85 34                    .4
-        lda     savedRNGSeedForSomething+1      ; 9860 A5 5B                    .[
+        lda     savedRNGSeed+1                  ; 9860 A5 5B                    .[
         sta     rngSeed+1                       ; 9862 85 35                    .5
 L9864:
         lda     #$00                            ; 9864 A9 00                    ..
@@ -3687,6 +3688,8 @@ L98A6           := * + 2
         jmp     L8ADB                           ; 98A4 4C DB 8A                 L..
 
 ; ----------------------------------------------------------------------------
+; this table is referenced via 98A6.  Possible offset values are 1-4, 0 not used
+garbageHeightData:
         .byte   $B8,$A0,$88,$70                 ; 98A7 B8 A0 88 70              ...p
 L98AB:
         .byte   $F0,$0F                         ; 98AB F0 0F                    ..
@@ -4299,7 +4302,7 @@ L9C8D:
         bpl     L9C9F                           ; 9C9B 10 02                    ..
         ldx     #$02                            ; 9C9D A2 02                    ..
 L9C9F:
-        lda     playfieldIdPossible,x           ; 9C9F BD 62 85                 .b.
+        lda     playfieldPages,x                ; 9C9F BD 62 85                 .b.
         sta     generalCounter39                ; 9CA2 85 39                    .9
         ldx     #$00                            ; 9CA4 A2 00                    ..
         ldy     #$28                            ; 9CA6 A0 28                    .(
