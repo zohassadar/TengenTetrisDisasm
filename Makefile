@@ -17,6 +17,7 @@ disassembly:
 	sed -i 2d main.asm		# remove date from output
 	awk -f tetris-ram.awk main.infofile > tetris-ram.asm
 	bash addrs.sh
+	make compare
 
 # Build tools when building the rom.
 # This has to happen before the rules are processed, since that's when scan_includes is run.
