@@ -1,5 +1,4 @@
 ; da65 V2.19 - Git c097401f8
-; Created:    2024-02-19 07:38:41
 ; Input file: clean.nes
 ; Page:       1
 
@@ -190,7 +189,7 @@ NOISE_HI        := $400F
 DMC_FREQ        := $4010
 DMC_RAW         := $4011
 DMC_START       := $4012                        ; start << 6 + $C000
-DMC_LEN         := $4013                        ; len << 4 + 1 
+DMC_LEN         := $4013                        ; len << 4 + 1
 OAMDMA          := $4014
 SND_CHN         := $4015
 player1controllerPort:= $4016
