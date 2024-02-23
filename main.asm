@@ -192,8 +192,8 @@ DMC_START       := $4012                        ; start << 6 + $C000
 DMC_LEN         := $4013                        ; len << 4 + 1
 OAMDMA          := $4014
 SND_CHN         := $4015
-player1controllerPort:= $4016
-player2controllerPort:= $4017
+JOY1            := $4016
+JOY2            := $4017
 ; ----------------------------------------------------------------------------
 unusedJumpToReset:
         jmp     reset                           ; 8000 4C 11 A9                 L..
@@ -5147,9 +5147,9 @@ LA3F2:
 ; ----------------------------------------------------------------------------
 pollController:
         lda     #$03                            ; A400 A9 03                    ..
-        sta     player1controllerPort           ; A402 8D 16 40                 ..@
+        sta     JOY1                            ; A402 8D 16 40                 ..@
         and     #$FE                            ; A405 29 FE                    ).
-        sta     player1controllerPort           ; A407 8D 16 40                 ..@
+        sta     JOY1                            ; A407 8D 16 40                 ..@
         lda     player1ControllerHeld           ; A40A A5 42                    .B
         sta     player1ControllerLastFrame      ; A40C 85 3E                    .>
         lda     player2ControllerHeld           ; A40E A5 43                    .C
@@ -5160,12 +5160,12 @@ pollController:
         sta     player2ExpansionLastFrame       ; A418 85 41                    .A
         ldx     #$08                            ; A41A A2 08                    ..
 LA41C:
-        lda     player1controllerPort           ; A41C AD 16 40                 ..@
+        lda     JOY1                            ; A41C AD 16 40                 ..@
         lsr     a                               ; A41F 4A                       J
         ror     player1ControllerHeld           ; A420 66 42                    fB
         lsr     a                               ; A422 4A                       J
         ror     player1ExpansionHeld            ; A423 66 44                    fD
-        lda     player2controllerPort           ; A425 AD 17 40                 ..@
+        lda     JOY2                            ; A425 AD 17 40                 ..@
         lsr     a                               ; A428 4A                       J
         ror     player2ControllerHeld           ; A429 66 43                    fC
         lsr     a                               ; A42B 4A                       J

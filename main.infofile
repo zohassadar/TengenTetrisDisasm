@@ -202,9 +202,8 @@ LABEL { ADDR $4012; NAME "DMC_START"; COMMENT "start << 6 + $C000"; };
 LABEL { ADDR $4013; NAME "DMC_LEN"; COMMENT "len << 4 + 1"; };
 LABEL { ADDR $4014; NAME "OAMDMA"; };
 LABEL { ADDR $4015; NAME "SND_CHN"; };
-
-LABEL { ADDR $4016; NAME "player1controllerPort"; };
-LABEL { ADDR $4017; NAME "player2controllerPort"; };
+LABEL { ADDR $4016; NAME "JOY1"; };
+LABEL { ADDR $4017; NAME "JOY2"; };
 
 LABEL { ADDR $8000; NAME "unusedJumpToReset"; };
 LABEL { ADDR $8003; NAME "resetContinued"; };
