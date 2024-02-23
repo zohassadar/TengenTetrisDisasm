@@ -2482,9 +2482,9 @@ L8FB6:
 L8FC3:
         tay                                     ; 8FC3 A8                       .
         jsr     enableNMIAndWaitForvBlank       ; 8FC4 20 DB A3                  ..
-        lda     possiblePPUAddrTable+1,y        ; 8FC7 B9 18 90                 ...
+        lda     lineClearStatsPPUTable+1,y      ; 8FC7 B9 18 90                 ...
         sta     renderSlot0Addr+1,x             ; 8FCA 95 17                    ..
-        lda     possiblePPUAddrTable,y          ; 8FCC B9 17 90                 ...
+        lda     lineClearStatsPPUTable,y        ; 8FCC B9 17 90                 ...
         sta     renderSlot0Addr,x               ; 8FCF 95 16                    ..
         lda     generalCounter3c                ; 8FD1 A5 3C                    .<
         clc                                     ; 8FD3 18                       .
@@ -2507,9 +2507,9 @@ L8FC3:
 L8FF4:
         tay                                     ; 8FF4 A8                       .
         jsr     enableNMIAndWaitForvBlank       ; 8FF5 20 DB A3                  ..
-        lda     possiblePPUAddrTable+1+24,y     ; 8FF8 B9 30 90                 .0.
+        lda     lineClearTotalsPPUTable+1,y     ; 8FF8 B9 30 90                 .0.
         sta     renderSlot0Addr+1,x             ; 8FFB 95 17                    ..
-        lda     possiblePPUAddrTable+1+23,y     ; 8FFD B9 2F 90                 ./.
+        lda     lineClearTotalsPPUTable,y       ; 8FFD B9 2F 90                 ./.
         sta     renderSlot0Addr,x               ; 9000 95 16                    ..
         lda     generalCounter3b                ; 9002 A5 3B                    .;
         asl     a                               ; 9004 0A                       .
@@ -2525,10 +2525,13 @@ L9014:
         jmp     L8EBD                           ; 9014 4C BD 8E                 L..
 
 ; ----------------------------------------------------------------------------
-possiblePPUAddrTable:
+; player1 Singles, Doubles, Triples, Tetrises, then player2 then coop
+lineClearStatsPPUTable:
         .word   $2187,$2199,$2207,$2219         ; 9017 87 21 99 21 07 22 19 22  .!.!."."
         .word   $2287,$2299,$2307,$2319         ; 901F 87 22 99 22 07 23 19 23  .".".#.#
         .word   $2190,$2210,$2290,$2310         ; 9027 90 21 10 22 90 22 10 23  .!.".".#
+; player1 player2 coop
+lineClearTotalsPPUTable:
         .word   $2367,$2379,$2370               ; 902F 67 23 79 23 70 23        g#y#p#
 ; ----------------------------------------------------------------------------
 L9035:
