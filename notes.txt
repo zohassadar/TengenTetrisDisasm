@@ -96,3 +96,25 @@ possibly result of porting from arcade version?
 
 ; 0xCF << 3 & 0xFF = 0x78
 ; ((( 0x01 << 8  | 0xCF ) >> 2 ) & 0xF8) - 1 = 0x6F
+
+****
+
+01D2 (relatedToLevelUpAnimations)
+
+Looks to be reset to 0 once per line cleared, incremented during score calculation (9597) (?) and used to flag a reset of player1FallTimer (8D10) if 9597 doesn't happen
+
+single leveling up:
+
+87D0   STA $01D2 = $01                        A:00 X:00 Y:C8 S:FB P:nv--dIZC V:67  H:181 Fr:14198
+9597   INC $01D2 = $01                        A:31 X:00 Y:00 S:FB P:nv--dIzc V:11  H:34  Fr:14227
+8D10   LDA $01D2 = $01                        A:04 X:00 Y:02 S:FD P:nv--dIzC V:7   H:303 Fr:14283
+
+
+tetris with no level up:
+
+87D0   STA $01D2 = $00                        A:00 X:00 Y:B0 S:FB P:nv--dIZC V:66  H:326 Fr:20365
+87D0   STA $01D2 = $00                        A:00 X:00 Y:B8 S:FB P:nv--dIZC V:69  H:194 Fr:20365
+87D0   STA $01D2 = $00                        A:00 X:00 Y:C0 S:FB P:nv--dIZC V:72  H:122 Fr:20365
+87D0   STA $01D2 = $00                        A:00 X:00 Y:C8 S:FB P:nv--dIZC V:75  H:110 Fr:20365
+
+****

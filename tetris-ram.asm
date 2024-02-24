@@ -121,7 +121,8 @@ pointsDisplayTimerP2:	.res 1	; $01C9
 .res 4
 lineClearTimerP1:	.res 1	; $01CE
 lineClearTimerP2:	.res 1	; $01CF
-.res 3
+.res 2
+relatedToLevelUpAnimations:	.res 1	; $01D2
 stack:	.res $1D	; $01D3
 .res 552
 player1ScoreHundredThousands:	.res 1	; $0418

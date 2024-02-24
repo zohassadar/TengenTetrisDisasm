@@ -118,6 +118,7 @@ pointsDisplayTimerP1:= $01C8
 pointsDisplayTimerP2:= $01C9
 lineClearTimerP1:= $01CE
 lineClearTimerP2:= $01CF
+relatedToLevelUpAnimations:= $01D2              ; see notes
 stack           := $01D3
 player1ScoreHundredThousands:= $0418
 player1ScoreTenThousands:= $0419
@@ -1354,7 +1355,7 @@ L87C4:
         sta     $01D0,x                         ; 87C8 9D D0 01                 ...
         inc     $01CC,x                         ; 87CB FE CC 01                 ...
         lda     #$00                            ; 87CE A9 00                    ..
-        sta     $01D2                           ; 87D0 8D D2 01                 ...
+        sta     relatedToLevelUpAnimations      ; 87D0 8D D2 01                 ...
         jsr     L87FB                           ; 87D3 20 FB 87                  ..
 L87D6:
         tya                                     ; 87D6 98                       .
@@ -2102,34 +2103,35 @@ L8CD7:
 checkLevelUp:
         lda     gameState                       ; 8CE5 A5 29                    .)
         cmp     #$03                            ; 8CE7 C9 03                    ..
-        bne     L8D0D                           ; 8CE9 D0 22                    ."
+        bne     @ret                            ; 8CE9 D0 22                    ."
         lda     player1FallTimer                ; 8CEB A5 6A                    .j
         cmp     #$04                            ; 8CED C9 04                    ..
-        beq     L8D0E                           ; 8CEF F0 1D                    ..
+        beq     @p1FallTimerEqualTo4            ; 8CEF F0 1D                    ..
         cmp     #$0D                            ; 8CF1 C9 0D                    ..
-        bcc     L8D00                           ; 8CF3 90 0B                    ..
-        bne     L8CFA                           ; 8CF5 D0 03                    ..
+        bcc     @p1FallTimerLessThan13          ; 8CF3 90 0B                    ..
+        bne     @p1FallTimerGreaterThan13       ; 8CF5 D0 03                    ..
         jsr     L8D6B                           ; 8CF7 20 6B 8D                  k.
-L8CFA:
+@p1FallTimerGreaterThan13:
         jsr     L8EA2                           ; 8CFA 20 A2 8E                  ..
         jsr     L9035                           ; 8CFD 20 35 90                  5.
-L8D00:
+; increment fall timer when framecounter % 16 == 0
+@p1FallTimerLessThan13:
         lda     frameCounterLow                 ; 8D00 A5 32                    .2
         and     #$0F                            ; 8D02 29 0F                    ).
-        bne     L8D0D                           ; 8D04 D0 07                    ..
+        bne     @ret                            ; 8D04 D0 07                    ..
         inc     player1FallTimer                ; 8D06 E6 6A                    .j
-        bne     L8D0D                           ; 8D08 D0 03                    ..
-        jsr     L90B0                           ; 8D0A 20 B0 90                  ..
-L8D0D:
+        bne     @ret                            ; 8D08 D0 03                    ..
+        jsr     finishLevelUpAnimation          ; 8D0A 20 B0 90                  ..
+@ret:
         rts                                     ; 8D0D 60                       `
 
 ; ----------------------------------------------------------------------------
-L8D0E:
+@p1FallTimerEqualTo4:
         inc     player1FallTimer                ; 8D0E E6 6A                    .j
-        lda     $01D2                           ; 8D10 AD D2 01                 ...
+        lda     relatedToLevelUpAnimations      ; 8D10 AD D2 01                 ...
         bne     L8D19                           ; 8D13 D0 04                    ..
-        .byte   $A9,$0B,$85,$6A                 ; 8D15 A9 0B 85 6A              ...j
-; ----------------------------------------------------------------------------
+        lda     #$0B                            ; 8D15 A9 0B                    ..
+        sta     player1FallTimer                ; 8D17 85 6A                    .j
 L8D19:
         lda     #$0B                            ; 8D19 A9 0B                    ..
         ldy     playMode                        ; 8D1B A4 2F                    ./
@@ -2607,17 +2609,17 @@ possibleAddressTable:
         .addr   LB197                           ; 90AC 97 B1                    ..
         .addr   LB197                           ; 90AE 97 B1                    ..
 ; ----------------------------------------------------------------------------
-L90B0:
+finishLevelUpAnimation:
         lda     #$F7                            ; 90B0 A9 F7                    ..
         ldx     #$40                            ; 90B2 A2 40                    .@
-L90B4:
+@clearPortionOfSpriteTable:
         sta     oamStaging,x                    ; 90B4 9D 00 05                 ...
         inx                                     ; 90B7 E8                       .
         inx                                     ; 90B8 E8                       .
         inx                                     ; 90B9 E8                       .
         inx                                     ; 90BA E8                       .
         cpx     #$C0                            ; 90BB E0 C0                    ..
-        bne     L90B4                           ; 90BD D0 F5                    ..
+        bne     @clearPortionOfSpriteTable      ; 90BD D0 F5                    ..
         ldx     #$07                            ; 90BF A2 07                    ..
         lda     #$00                            ; 90C1 A9 00                    ..
         sta     gameState                       ; 90C3 85 29                    .)
@@ -3331,7 +3333,7 @@ L957A:
         lda     generalCounter37                ; 9590 A5 37                    .7
         sta     player1LevelOnes,y              ; 9592 99 2D 04                 .-.
         inc     $50,x                           ; 9595 F6 50                    .P
-        inc     $01D2                           ; 9597 EE D2 01                 ...
+        inc     relatedToLevelUpAnimations      ; 9597 EE D2 01                 ...
         lda     #$00                            ; 959A A9 00                    ..
         sta     longBarCodeUsedP1,x             ; 959C 9D B8 01                 ...
         bit     playMode                        ; 959F 24 2F                    $/
