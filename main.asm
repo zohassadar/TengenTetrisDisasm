@@ -85,6 +85,7 @@ player2FallTimer:= $006B
 relatesToAddrTableAB25:= $0076
 lastZeroPageAddr:= $00FF
 ppuStaging      := $0100
+lineClearStatsPPUStaging:= $0190
 dasLeftPlayer1  := $01AA
 dasLeftPlayer2  := $01AB
 dasRightPlayer1 := $01AC
@@ -834,7 +835,7 @@ L8450:
         beq     L8450                           ; 845A F0 F4                    ..
         bne     L844E                           ; 845C D0 F0                    ..
 L845E:
-        jsr     enableNMIAndWaitForvBlank       ; 845E 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; 845E 20 DB A3                  ..
         stx     generalCounter3a                ; 8461 86 3A                    .:
         ldx     generalCounter38                ; 8463 A6 38                    .8
         ldy     #$00                            ; 8465 A0 00                    ..
@@ -1668,7 +1669,7 @@ L89E9:
         lsr     a                               ; 89F4 4A                       J
         adc     generalCounter37                ; 89F5 65 37                    e7
         pha                                     ; 89F7 48                       H
-        jsr     enableNMIAndWaitForvBlank       ; 89F8 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; 89F8 20 DB A3                  ..
         pla                                     ; 89FB 68                       h
         clc                                     ; 89FC 18                       .
         adc     #<lineClearTable                            ; 89FD 69 1F                    i.
@@ -1818,7 +1819,7 @@ L8AF7:
 L8B0E:
         lda     #$FF                            ; 8B0E A9 FF                    ..
         sta     (generalCounter3a),y            ; 8B10 91 3A                    .:
-        jsr     enableNMIAndWaitForvBlank       ; 8B12 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; 8B12 20 DB A3                  ..
         sty     generalCounter39                ; 8B15 84 39                    .9
         jsr     L849D                           ; 8B17 20 9D 84                  ..
         lda     ppuStagingAddress               ; 8B1A A5 48                    .H
@@ -2378,11 +2379,11 @@ L8ED9:
         bne     L8EFA                           ; 8EE6 D0 12                    ..
         ldy     generalCounter3c                ; 8EE8 A4 3C                    .<
         lda     #$00                            ; 8EEA A9 00                    ..
-        sta     $0190,y                         ; 8EEC 99 90 01                 ...
-        sta     $0191,y                         ; 8EEF 99 91 01                 ...
-        sta     $0192,y                         ; 8EF2 99 92 01                 ...
+        sta     lineClearStatsPPUStaging,y      ; 8EEC 99 90 01                 ...
+        sta     lineClearStatsPPUStaging+1,y    ; 8EEF 99 91 01                 ...
+        sta     lineClearStatsPPUStaging+2,y    ; 8EF2 99 92 01                 ...
         lda     #$30                            ; 8EF5 A9 30                    .0
-        sta     $0193,y                         ; 8EF7 99 93 01                 ...
+        sta     lineClearStatsPPUStaging+3,y    ; 8EF7 99 93 01                 ...
 L8EFA:
         dec     $0198,x                         ; 8EFA DE 98 01                 ...
         bne     L8F0B                           ; 8EFD D0 0C                    ..
@@ -2407,31 +2408,31 @@ L8F23:
         lda     #$01                            ; 8F23 A9 01                    ..
         sta     generalCounter3a                ; 8F25 85 3A                    .:
         ldx     generalCounter3c                ; 8F27 A6 3C                    .<
-        lda     $0193,x                         ; 8F29 BD 93 01                 ...
+        lda     lineClearStatsPPUStaging+3,x    ; 8F29 BD 93 01                 ...
         clc                                     ; 8F2C 18                       .
         adc     #$02                            ; 8F2D 69 02                    i.
-        sta     $0193,x                         ; 8F2F 9D 93 01                 ...
+        sta     lineClearStatsPPUStaging+3,x    ; 8F2F 9D 93 01                 ...
         cmp     #$3A                            ; 8F32 C9 3A                    .:
         bcc     L8F65                           ; 8F34 90 2F                    ./
         lda     #$30                            ; 8F36 A9 30                    .0
-        sta     $0193,x                         ; 8F38 9D 93 01                 ...
-        ora     $0192,x                         ; 8F3B 1D 92 01                 ...
+        sta     lineClearStatsPPUStaging+3,x    ; 8F38 9D 93 01                 ...
+        ora     lineClearStatsPPUStaging+2,x    ; 8F3B 1D 92 01                 ...
         adc     #$00                            ; 8F3E 69 00                    i.
-        sta     $0192,x                         ; 8F40 9D 92 01                 ...
+        sta     lineClearStatsPPUStaging+2,x    ; 8F40 9D 92 01                 ...
         cmp     #$3A                            ; 8F43 C9 3A                    .:
         bcc     L8F65                           ; 8F45 90 1E                    ..
         lda     #$30                            ; 8F47 A9 30                    .0
-        sta     $0192,x                         ; 8F49 9D 92 01                 ...
-        ora     $0191,x                         ; 8F4C 1D 91 01                 ...
+        sta     lineClearStatsPPUStaging+2,x    ; 8F49 9D 92 01                 ...
+        ora     lineClearStatsPPUStaging+1,x    ; 8F4C 1D 91 01                 ...
         adc     #$00                            ; 8F4F 69 00                    i.
-        sta     $0191,x                         ; 8F51 9D 91 01                 ...
+        sta     lineClearStatsPPUStaging+1,x    ; 8F51 9D 91 01                 ...
         cmp     #$3A                            ; 8F54 C9 3A                    .:
         bcc     L8F65                           ; 8F56 90 0D                    ..
         lda     #$30                            ; 8F58 A9 30                    .0
-        sta     $0191,x                         ; 8F5A 9D 91 01                 ...
-        ora     $0190,x                         ; 8F5D 1D 90 01                 ...
+        sta     lineClearStatsPPUStaging+1,x    ; 8F5A 9D 91 01                 ...
+        ora     lineClearStatsPPUStaging,x      ; 8F5D 1D 90 01                 ...
         adc     #$00                            ; 8F60 69 00                    i.
-        sta     $0190,x                         ; 8F62 9D 90 01                 ...
+        sta     lineClearStatsPPUStaging,x      ; 8F62 9D 90 01                 ...
 L8F65:
         lda     $018B,x                         ; 8F65 BD 8B 01                 ...
         clc                                     ; 8F68 18                       .
@@ -2481,7 +2482,7 @@ L8FB6:
         adc     #$10                            ; 8FC1 69 10                    i.
 L8FC3:
         tay                                     ; 8FC3 A8                       .
-        jsr     enableNMIAndWaitForvBlank       ; 8FC4 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; 8FC4 20 DB A3                  ..
         lda     lineClearStatsPPUTable+1,y      ; 8FC7 B9 18 90                 ...
         sta     renderSlot0Addr+1,x             ; 8FCA 95 17                    ..
         lda     lineClearStatsPPUTable,y        ; 8FCC B9 17 90                 ...
@@ -2506,7 +2507,7 @@ L8FC3:
         lda     #$04                            ; 8FF2 A9 04                    ..
 L8FF4:
         tay                                     ; 8FF4 A8                       .
-        jsr     enableNMIAndWaitForvBlank       ; 8FF5 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; 8FF5 20 DB A3                  ..
         lda     lineClearTotalsPPUTable+1,y     ; 8FF8 B9 30 90                 .0.
         sta     renderSlot0Addr+1,x             ; 8FFB 95 17                    ..
         lda     lineClearTotalsPPUTable,y       ; 8FFD B9 2F 90                 ./.
@@ -2729,7 +2730,7 @@ L9177:
         sta     generalCounter37                ; 9186 85 37                    .7
 L9188:
         stx     generalCounter38                ; 9188 86 38                    .8
-        jsr     enableNMIAndWaitForvBlank       ; 918A 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; 918A 20 DB A3                  ..
         lda     generalCounter37                ; 918D A5 37                    .7
         sta     renderSlot0Addr+1,x             ; 918F 95 17                    ..
         lda     generalCounter36                ; 9191 A5 36                    .6
@@ -2955,7 +2956,7 @@ L92D9:
 L92E3:
         sta     leaderboardInitials,y           ; 92E3 99 C3 04                 ...
         stx     generalCounter38                ; 92E6 86 38                    .8
-        jsr     enableNMIAndWaitForvBlank       ; 92E8 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; 92E8 20 DB A3                  ..
         lda     generalCounter36                ; 92EB A5 36                    .6
         asl     a                               ; 92ED 0A                       .
         asl     a                               ; 92EE 0A                       .
@@ -3856,7 +3857,7 @@ L9997:
         clc                                     ; 99A3 18                       .
         adc     #$21                            ; 99A4 69 21                    i!
         sta     generalCounter36                ; 99A6 85 36                    .6
-        jsr     enableNMIAndWaitForvBlank       ; 99A8 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; 99A8 20 DB A3                  ..
         lda     ppuStagingAddress               ; 99AB A5 48                    .H
         sta     renderSlot0Data,x               ; 99AD 95 08                    ..
         lda     ppuStagingAddress+1             ; 99AF A5 49                    .I
@@ -4127,7 +4128,7 @@ L9B64:
         txa                                     ; 9B6E 8A                       .
         asl     a                               ; 9B6F 0A                       .
         tay                                     ; 9B70 A8                       .
-        jsr     enableNMIAndWaitForvBlank       ; 9B71 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; 9B71 20 DB A3                  ..
         lda     statsDataAddresses,y            ; 9B74 B9 DC 9B                 ...
         sta     renderSlot0Data,x               ; 9B77 95 08                    ..
         sta     generalCounter36                ; 9B79 85 36                    .6
@@ -4849,7 +4850,7 @@ LA06A:
         lda     #$3E                            ; A06D A9 3E                    .>
 LA06F:
         pha                                     ; A06F 48                       H
-        jsr     enableNMIAndWaitForvBlank       ; A070 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; A070 20 DB A3                  ..
         sty     generalCounter36                ; A073 84 36                    .6
         lda     menuGameMode,y                  ; A075 B9 F0 04                 ...
         clc                                     ; A078 18                       .
@@ -5119,10 +5120,10 @@ LA3C4:
         rts                                     ; A3DA 60                       `
 
 ; ----------------------------------------------------------------------------
-enableNMIAndWaitForvBlank:
+enableNMIAndWaitForRendering:
         ldx     currentPPUSlot                  ; A3DB A6 25                    .%
         lda     ppuRenderSlot0Length,x          ; A3DD B5 24                    .$
-        beq     LA3F2                           ; A3DF F0 11                    ..
+        beq     @renderSlotEmpty                ; A3DF F0 11                    ..
         lda     ppuControl                      ; A3E1 A5 00                    ..
         bmi     @nmiEnabled                     ; A3E3 30 05                    0.
         ora     #$80                            ; A3E5 09 80                    ..
@@ -5130,10 +5131,10 @@ enableNMIAndWaitForvBlank:
 @nmiEnabled:
         lda     #$00                            ; A3EA A9 00                    ..
         sta     ppuStagingAddress               ; A3EC 85 48                    .H
-@waitLoop:
+@waitForRender:
         lda     ppuRenderSlot0Length,x          ; A3EE B5 24                    .$
-        bne     @waitLoop                       ; A3F0 D0 FC                    ..
-LA3F2:
+        bne     @waitForRender                  ; A3F0 D0 FC                    ..
+@renderSlotEmpty:
         lda     currentPPUSlot                  ; A3F2 A5 25                    .%
         clc                                     ; A3F4 18                       .
         adc     #$02                            ; A3F5 69 02                    i.
@@ -5340,7 +5341,7 @@ attrDataLeaderboard:
 ; ----------------------------------------------------------------------------
 LA6BE:
         tay                                     ; A6BE A8                       .
-        jsr     enableNMIAndWaitForvBlank       ; A6BF 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; A6BF 20 DB A3                  ..
         lda     #$3F                            ; A6C2 A9 3F                    .?
         sta     renderSlot0Addr+1,x             ; A6C4 95 17                    ..
         lda     paletteAddrOffsets,y            ; A6C6 B9 DF A6                 ...
@@ -5415,7 +5416,7 @@ LA763:
         adc     #$11                            ; A766 69 11                    i.
 LA768:
         pha                                     ; A768 48                       H
-        jsr     enableNMIAndWaitForvBlank       ; A769 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; A769 20 DB A3                  ..
         pla                                     ; A76C 68                       h
         sta     renderSlot0Addr,x               ; A76D 95 16                    ..
         lda     #$3F                            ; A76F A9 3F                    .?
@@ -7231,7 +7232,7 @@ LB61A:
         cpx     #$06                            ; B61E E0 06                    ..
         bne     LB618                           ; B620 D0 F6                    ..
 LB622:
-        jsr     enableNMIAndWaitForvBlank       ; B622 20 DB A3                  ..
+        jsr     enableNMIAndWaitForRendering    ; B622 20 DB A3                  ..
         lda     generalCounter38                ; B625 A5 38                    .8
         sta     renderSlot0Addr,x               ; B627 95 16                    ..
         lda     generalCounter39                ; B629 A5 39                    .9

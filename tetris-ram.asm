@@ -85,7 +85,9 @@ lastZeroPageAddr:	.res 1	; $00FF
 
 .bss
 ppuStaging:	.res $46	; $0100
-.res 100
+.res 74
+lineClearStatsPPUStaging:	.res $4	; $0190
+.res 22
 dasLeftPlayer1:	.res 1	; $01AA
 dasLeftPlayer2:	.res 1	; $01AB
 dasRightPlayer1:	.res 1	; $01AC
