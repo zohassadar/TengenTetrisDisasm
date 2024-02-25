@@ -1,75 +1,148 @@
 From:  https://gamehacking.org/game/31147
 
 OOA-AKZ 6 Lines Taken Away Instead of 1
+0x8a84 91
 OZKP-EPEN Always Get Straight Pieces (1 of 2)
+0x9940 a9 f0
 PAKP-OOOY Always Get Straight Pieces (2 of 2)
+0x9941 01 f9
 PAT-ATA Block / Piece Modifier (Player 1)
+0x8066 01
 PAT-AYA Block / Piece Modifier (Player 2)
+0x8067 01
 PLSP-ZTAL Choose Levels 0 thru 7 for Levels 10 thru 17 on the Level Select Menu
+0x9652 31 30
 TLVZ-TKZO Dawn Mode
+0xa466 3e 1a
 AEXE-LNZZ Drop Pieces To Clear Line (1 of 2)
+0x87ab 00 2a
 AEXE-YYTZ Drop Pieces To Clear Line (2 of 2)
+0x87af 00 26
 ZIVZ-TKZO Dusk Mode
+0xa466 5a 1a
 IAUL-PIPA Enter Konami Code To Spawn 'J' Tetrimino
+0xb531 05 01
 GAUL-PIPA Enter Konami Code To Spawn 'L' Tetrimino
+0xb531 04 01
 LAUL-PIPA Enter Konami Code To Spawn 'O' Tetrimino
+0xb531 03 01
 TAUL-PIPA Enter Konami Code To Spawn 'S' Tetrimino
+0xb531 06 01
 ZAUL-PIPA Enter Konami Code To Spawn 'T' Tetrimino
+0xb531 02 01
 YAUL-PIPA Enter Konami Code To Spawn 'Z' Tetrimino
+0xb531 07 01
 OPXU-LSSU Enter Konami Code To Spawn Infinite 'J' Tetrimino (1 of 2)
+0xb52b 99 bd
 IAUL-PIPA Enter Konami Code To Spawn Infinite 'J' Tetrimino (2 of 2)
+0xb531 05 01
 OPXU-LSSU Enter Konami Code To Spawn Infinite 'L' Tetrimino (1 of 2)
+0xb52b 99 bd
 GAUL-PIPA Enter Konami Code To Spawn Infinite 'L' Tetrimino (2 of 2)
+0xb531 04 01
 OPXU-LSSU Enter Konami Code To Spawn Infinite 'O' Tetrimino (1 of 2)
+0xb52b 99 bd
 LAUL-PIPA Enter Konami Code To Spawn Infinite 'O' Tetrimino (2 of 2)
+0xb531 03 01
 OPXU-LSSU Enter Konami Code To Spawn Infinite 'S' Tetrimino (1 of 2)
+0xb52b 99 bd
 TAUL-PIPA Enter Konami Code To Spawn Infinite 'S' Tetrimino (2 of 2)
+0xb531 06 01
 OPXU-LSSU Enter Konami Code To Spawn Infinite 'T' Tetrimino (1 of 2)
+0xb52b 99 bd
 ZAUL-PIPA Enter Konami Code To Spawn Infinite 'T' Tetrimino (2 of 2)
+0xb531 02 01
 OPXU-LSSU Enter Konami Code To Spawn Infinite 'Z' Tetrimino (1 of 2)
+0xb52b 99 bd
 YAUL-PIPA Enter Konami Code To Spawn Infinite 'Z' Tetrimino (2 of 2)
+0xb531 07 01
 UIVZ-TKZO Game Boy Mode
+0xa466 db 1a
 POT-OEA Get 999 Points When Block Hits The Ground (Messed Up)
+0x98e8 11
 LLVZ-TKZO Gold Mode
+0xa466 3b 1a
 UYVZ-TKZO Greyscale 2 Mode
+0xa466 fb 1a
 LIVZ-TKZO Greyscale Mode
+0xa466 5b 1a
 AEG-OOX Higher Score When Blocks Hit The Ground
+0x9ac9 08
 OPXU-LSSU Infinite Konami Code (Enter in-game to spawn a red long Tetrimino)
+0xb52b 99 bd
 ALZ-EGG Level Modifier (1 of 2)
+0x842c 30
 ALZ-EIG Level Modifier (2 of 2)
+0x842d 30
 PLZ-EGG Level Modifier For Playing Level 10 And Higher (Up To Level 17) (1 of 2)
+0x842c 31
 ALZ-EIG Level Modifier For Playing Level 10 And Higher (Up To Level 17) (2 of 2)
+0x842d 30
 PLP-EAK Max Score at 999,999 For Player 1 (1 of 6)
+0x8418 39
 PLP-EPK Max Score at 999,999 For Player 1 (2 of 6)
+0x8419 39
 PLP-EZK Max Score at 999,999 For Player 1 (3 of 6)
+0x841a 39
 PLP-ELK Max Score at 999,999 For Player 1 (4 of 6)
+0x841b 39
 PLP-EGK Max Score at 999,999 For Player 1 (5 of 6)
+0x841c 39
 PLP-EIK Max Score at 999,999 For Player 1 (6 of 6)
+0x841d 39
 PLP-ETK Max Score at 999,999 For Player 2 (1 of 6)
+0x841e 39
 PLP-EYK Max Score at 999,999 For Player 2 (2 of 6)
+0x841f 39
 PLZ-AAK Max Score at 999,999 For Player 2 (3 of 6)
+0x8420 39
 PLZ-APK Max Score at 999,999 For Player 2 (4 of 6)
+0x8421 39
 PLZ-AZK Max Score at 999,999 For Player 2 (5 of 6)
+0x8422 39
 PLZ-ALK Max Score at 999,999 For Player 2 (6 of 6)
+0x8423 39
 XYVZ-TKZO Night Mode
+0xa466 fa 1a
 POL-ATP Pause the game and Press A to get a Line Piece (1 of 2)
+0x81b6 11
 AEL-EAP Pause the game and Press A to get a Line Piece (2 of 2)
+0x81b8 00
 AEL-ATO Pause the game and Press A to Increase your Level
+0x81b6 08
 LOL-ATO Pause the game and Press A to remove a Block and get a Line Piece (1 of 2)
+0x81b6 1b
 AEL-EZP Pause the game and Press A to remove a Block and get a Line Piece (2 of 2)
+0x81ba 00
 ISSL-ZGLS Pause the game and Press Up for ?? Piece (1 of 2)
+0xb4d2 5d 53
 ZAUL-PIPA Pause the game and Press Up for ?? Piece (2 of 2)
+0xb531 02 01
 ISSL-ZGLS Pause the game and Press Up for Line Piece
+0xb4d2 5d 53
 IESL-ZGLS Pause the game and Press Up to Increase your Level
+0xb4d2 0d 53
 ENSL-PGEI Pause the game and Press Up to remove a Block and get a Line Piece (1 of 3)
+0xb4d1 f0 d0
 ESSU-PGEY Pause the game and Press Up to remove a Block and get a Line Piece (2 of 3)
+0xb4d9 d0 f0
 SLVL-LSVN Pause the game and Press Up to remove a Block and get a Line Piece (3 of 3)
+0xb563 bd fe
 VIVZ-TKZO Pickle Mode
+0xa466 de 1a
 SXUA-YLVY Pieces Don't Fall
+0x83b7 a5 f6
 GAA-EPP Press Down To Stop Blocks From Falling
+0x8109 04
 LYVZ-TKZO Sepia Mode
+0xa466 7b 1a
 YAVZ-TKZO Silver Mode
+0xa466 0f 1a
 OZXP-KLGX Speed Stays The Same (1 of 2)
+0x9b24 a9 24
 PZXP-SUYZ Speed Stays The Same (2 of 2)
+0x9b25 21 2f
 ALVZ-TKZP Sprites Only
+0xa466 30 1a
 ZTVZ-TKZO Sunset Mode
+0xa466 6a 1a
