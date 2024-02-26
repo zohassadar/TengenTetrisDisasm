@@ -10566,22 +10566,22 @@ UnknownTable02:
         .byte   $01,$01,$00,$03,$03,$03,$03     ; DF6A 01 01 00 03 03 03 03     .......
 ; ----------------------------------------------------------------------------
 relatedToMusicTable01:
-        .addr   LE043                           ; DF71 43 E0                    C.
+        .addr   musicTrackLoginska1             ; DF71 43 E0                    C.
         .addr   LE364                           ; DF73 64 E3                    d.
         .addr   LE5CF                           ; DF75 CF E5                    ..
         .addr   LE834                           ; DF77 34 E8                    4.
-        .addr   LEC01                           ; DF79 01 EC                    ..
+        .addr   musicTrackBradinsky1            ; DF79 01 EC                    ..
         .addr   LEE26                           ; DF7B 26 EE                    &.
         .addr   LF045                           ; DF7D 45 F0                    E.
-        .addr   LF530                           ; DF7F 30 F5                    0.
+        .addr   musicTrackKarinka1              ; DF7F 30 F5                    0.
         .addr   LF5CD                           ; DF81 CD F5                    ..
         .addr   LF60A                           ; DF83 0A F6                    ..
         .addr   LF67F                           ; DF85 7F F6                    ..
-        .addr   LF6D3                           ; DF87 D3 F6                    ..
+        .addr   musicTrackTroika1               ; DF87 D3 F6                    ..
         .addr   LF78E                           ; DF89 8E F7                    ..
         .addr   LF7E9                           ; DF8B E9 F7                    ..
         .addr   LF8D6                           ; DF8D D6 F8                    ..
-        .addr   LF2E1                           ; DF8F E1 F2                    ..
+        .addr   musicTrackTitle1                ; DF8F E1 F2                    ..
         .addr   LF37F                           ; DF91 7F F3                    ..
         .addr   LF439                           ; DF93 39 F4                    9.
         .addr   LF4FD                           ; DF95 FD F4                    ..
@@ -10601,7 +10601,7 @@ relatedToMusicTable01:
         .addr   LF9BE                           ; DFB1 BE F9                    ..
         .addr   LFA92                           ; DFB3 92 FA                    ..
         .addr   LFB60                           ; DFB5 60 FB                    `.
-        .addr   LFBBF                           ; DFB7 BF FB                    ..
+        .addr   soundEffectLineClear            ; DFB7 BF FB                    ..
         .addr   LFBE6                           ; DFB9 E6 FB                    ..
         .addr   LFC2D                           ; DFBB 2D FC                    -.
         .addr   LFC86                           ; DFBD 86 FC                    ..
@@ -10641,7 +10641,7 @@ LE032:
         .byte   $00,$01,$68,$03,$F0,$06,$F8,$00 ; E032 00 01 68 03 F0 06 F8 00  ..h.....
         .byte   $00,$01,$68,$03,$E0,$06,$F8,$00 ; E03A 00 01 68 03 E0 06 F8 00  ..h.....
         .byte   $00                             ; E042 00                       .
-LE043:
+musicTrackLoginska1:
         .byte   $82,$05,$80,$20                 ; E043 82 05 80 20              ... 
 LE047:
         .byte   $8E,$02,$43,$13,$44,$14,$00,$04 ; E047 8E 02 43 13 44 14 00 04  ..C.D...
@@ -11043,7 +11043,7 @@ LE838:
         .addr   LE838                           ; EBFD 38 E8                    8.
 ; ----------------------------------------------------------------------------
         .byte   $00,$00                         ; EBFF 00 00                    ..
-LEC01:
+musicTrackBradinsky1:
         .byte   $80,$2C,$82,$03                 ; EC01 80 2C 82 03              .,..
 LEC05:
         .byte   $8E,$02,$00,$04,$3C,$04,$00,$04 ; EC05 8E 02 00 04 3C 04 00 04  ....<...
@@ -11299,7 +11299,7 @@ LF2B9:
 LF2D7:
         .byte   $80,$20,$00,$04,$00,$01,$00,$02 ; F2D7 80 20 00 04 00 01 00 02  . ......
         .byte   $00,$00                         ; F2DF 00 00                    ..
-LF2E1:
+musicTrackTitle1:
         .byte   $82,$07,$80,$29,$48,$14,$48,$13 ; F2E1 82 07 80 29 48 14 48 13  ...)H.H.
         .byte   $48,$04,$46,$06,$48,$07,$46,$04 ; F2E9 48 04 46 06 48 07 46 04  H.F.H.F.
         .byte   $43,$14,$44,$14,$44,$13,$44,$04 ; F2F1 43 14 44 14 44 13 44 04  C.D.D.D.
@@ -11379,7 +11379,7 @@ LF4FD:
         .byte   $14,$00,$43,$55,$14,$00,$04,$82 ; F51D 14 00 43 55 14 00 04 82  ..CU....
         .byte   $05,$57,$14,$00,$04,$57,$14,$00 ; F525 05 57 14 00 04 57 14 00  .W...W..
         .byte   $04,$00,$00                     ; F52D 04 00 00                 ...
-LF530:
+musicTrackKarinka1:
         .byte   $82,$05,$80,$27,$3F,$03,$3D,$02 ; F530 82 05 80 27 3F 03 3D 02  ...'?.=.
 LF538:
         .byte   $3A,$04,$3D,$04,$3B,$04,$3A,$09 ; F538 3A 04 3D 04 3B 04 3A 09  :.=.;.:.
@@ -11456,7 +11456,7 @@ LF688:
         .addr   LF688                           ; F6CF 88 F6                    ..
 ; ----------------------------------------------------------------------------
         .byte   $00,$00                         ; F6D1 00 00                    ..
-LF6D3:
+musicTrackTroika1:
         .byte   $82,$05,$80,$27,$8E,$02,$00,$01 ; F6D3 82 05 80 27 8E 02 00 01  ...'....
         .byte   $8F,$00                         ; F6DB 8F 00                    ..
 LF6DD:
@@ -11646,7 +11646,7 @@ LFB60:
         .byte   $04,$55,$09,$55,$09,$4B,$04,$55 ; FBA8 04 55 09 55 09 4B 04 55  .U.U.K.U
         .byte   $04,$8F,$00,$4B,$04,$55,$04,$4B ; FBB0 04 8F 00 4B 04 55 04 4B  ...K.U.K
         .byte   $04,$55,$04,$55,$04,$00,$00     ; FBB8 04 55 04 55 04 00 00     .U.U...
-LFBBF:
+soundEffectLineClear:
         .byte   $94,$00,$82,$01,$83,$FF,$80,$40 ; FBBF 94 00 82 01 83 FF 80 40  .......@
         .byte   $92,$00,$87                     ; FBC7 92 00 87                 ...
 ; ----------------------------------------------------------------------------
