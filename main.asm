@@ -232,7 +232,7 @@ mainLoop:
         jsr     branchOnActiveDemoOrGameOver    ; 803F 20 C7 82                  ..
         ldx     #$01                            ; 8042 A2 01                    ..
         jsr     branchOnActiveDemoOrGameOver    ; 8044 20 C7 82                  ..
-        jsr     L8B37                           ; 8047 20 37 8B                  7.
+        jsr     stageCurrentAndNextSprites      ; 8047 20 37 8B                  7.
         jsr     L9B62                           ; 804A 20 62 9B                  b.
         jmp     mainLoop                        ; 804D 4C 0A 80                 L..
 
@@ -608,18 +608,18 @@ branchOnActiveDemoOrGameOver:
         beq     activeGamePlay                  ; 82D0 F0 05                    ..
         cpy     #$F9                            ; 82D2 C0 F9                    ..
         beq     handleGameOver                  ; 82D4 F0 1D                    ..
-L82D6:
+gameOverReturn:
         rts                                     ; 82D6 60                       `
 
 ; ----------------------------------------------------------------------------
 activeGamePlay:
         lda     lineClearTimerP1,x              ; 82D7 BD CE 01                 ...
-        bne     L82D6                           ; 82DA D0 FA                    ..
+        bne     gameOverReturn                  ; 82DA D0 FA                    ..
         ldy     playMode                        ; 82DC A4 2F                    ./
         bpl     L82E8                           ; 82DE 10 08                    ..
         lda     lineClearTimerP1                ; 82E0 AD CE 01                 ...
         ora     lineClearTimerP2                ; 82E3 0D CF 01                 ...
-        bne     L82D6                           ; 82E6 D0 EE                    ..
+        bne     gameOverReturn                  ; 82E6 D0 EE                    ..
 L82E8:
         lda     $4A,x                           ; 82E8 B5 4A                    .J
         beq     handleGameOver                  ; 82EA F0 07                    ..
@@ -628,29 +628,30 @@ L82E8:
         jmp     getNextTetromino                ; 82F0 4C 29 99                 L).
 
 ; ----------------------------------------------------------------------------
+; A+B held to restart game.  https://tcrf.net/Talk:Tetris_(NES,_Tengen)
 handleGameOver:
         lda     player1ControllerHeld,x         ; 82F3 B5 42                    .B
         and     #$03                            ; 82F5 29 03                    ).
         cmp     #$03                            ; 82F7 C9 03                    ..
-        bne     L82D6                           ; 82F9 D0 DB                    ..
+        bne     gameOverReturn                  ; 82F9 D0 DB                    ..
         cpy     #$FB                            ; 82FB C0 FB                    ..
-        beq     L82D6                           ; 82FD F0 D7                    ..
+        beq     gameOverReturn                  ; 82FD F0 D7                    ..
         lda     playMode                        ; 82FF A5 2F                    ./
-        beq     L8312                           ; 8301 F0 0F                    ..
-        bmi     L8315                           ; 8303 30 10                    0.
+        beq     @playmodeIs0                    ; 8301 F0 0F                    ..
+        bmi     restoreOriginalRNGSeed          ; 8303 30 10                    0.
         lda     menuGameMode                    ; 8305 AD F0 04                 ...
         cmp     #$03                            ; 8308 C9 03                    ..
-        bne     L830F                           ; 830A D0 03                    ..
+        bne     @notWithComputer                ; 830A D0 03                    ..
         txa                                     ; 830C 8A                       .
-        bne     L82D6                           ; 830D D0 C7                    ..
-L830F:
+        bne     gameOverReturn                  ; 830D D0 C7                    ..
+@notWithComputer:
         jmp     L9744                           ; 830F 4C 44 97                 LD.
 
 ; ----------------------------------------------------------------------------
-L8312:
+@playmodeIs0:
         txa                                     ; 8312 8A                       .
-        bne     L82D6                           ; 8313 D0 C1                    ..
-L8315:
+        bne     gameOverReturn                  ; 8313 D0 C1                    ..
+restoreOriginalRNGSeed:
         lda     savedRNGSeed                    ; 8315 A5 5A                    .Z
         sta     rngSeed                         ; 8317 85 34                    .4
         lda     savedRNGSeed+1                  ; 8319 A5 5B                    .[
@@ -669,7 +670,7 @@ L8320:
 L8330:
         lda     generalCounter3b                ; 8330 A5 3B                    .;
         and     #$E3                            ; 8332 29 E3                    ).
-        beq     L82D6                           ; 8334 F0 A0                    ..
+        beq     gameOverReturn                  ; 8334 F0 A0                    ..
         jsr     L84D8                           ; 8336 20 D8 84                  ..
         lda     generalCounter3b                ; 8339 A5 3B                    .;
         and     #$40                            ; 833B 29 40                    )@
@@ -1090,7 +1091,7 @@ L85D9:
         tya                                     ; 85DD 98                       .
         pha                                     ; 85DE 48                       H
         ldy     generalCounter39                ; 85DF A4 39                    .9
-        lda     orientationForSandTilesOffset,y ; 85E1 B9 F3 86                 ...
+        lda     orientationTiles,y              ; 85E1 B9 F3 86                 ...
         sta     $B2,x                           ; 85E4 95 B2                    ..
         iny                                     ; 85E6 C8                       .
         sty     generalCounter39                ; 85E7 84 39                    .9
@@ -1241,9 +1242,9 @@ L869B:
         tay                                     ; 86A2 A8                       .
         asl     a                               ; 86A3 0A                       .
         sta     generalCounter39                ; 86A4 85 39                    .9
-        lda     orientationTableOffset,y        ; 86A6 B9 C3 86                 ...
+        lda     orientationTable,y              ; 86A6 B9 C3 86                 ...
         sta     generalCounter36                ; 86A9 85 36                    .6
-        lda     orientationTableOffset+1,y      ; 86AB B9 C4 86                 ...
+        lda     orientationTable+1,y            ; 86AB B9 C4 86                 ...
         sta     generalCounter37                ; 86AE 85 37                    .7
         lda     player1TetrominoY,x             ; 86B0 B5 60                    .`
         sec                                     ; 86B2 38                       8
@@ -1261,7 +1262,8 @@ L869B:
 
 ; ----------------------------------------------------------------------------
 ; this is the offset point for orientations (id * 8)
-orientationTableOffset:
+    ; The first 8 bytes are still referenced and act as an indicator to hide pieces
+orientationTable:
         .byte   $00,$00,$00,$00,$00,$00,$00,$00 ; 86C3 00 00 00 00 00 00 00 00  ........
 orientationForI:
         .byte   $F0,$00,$44,$44,$F0,$00,$44,$44 ; 86CB F0 00 44 44 F0 00 44 44  ..DD..DD
@@ -1273,8 +1275,10 @@ orientationForJ:
         .byte   $E2,$00,$C8,$80,$8E,$00,$44,$C0 ; 86E3 E2 00 C8 80 8E 00 44 C0  ......D.
 orientationForL:
         .byte   $E8,$00,$88,$C0,$2E,$00,$C4,$40 ; 86EB E8 00 88 C0 2E 00 C4 40  .......@
-; this shows up as the offset point for the tiles (id * 16)
-orientationForSandTilesOffset:
+; 
+    ; this shows up as the offset point for the tiles (id * 16)
+    ; these 8 bytes are also orientationForS, but not referenced directly
+orientationTiles:
         .byte   $6C,$00,$8C,$40,$6C,$00,$8C,$40 ; 86F3 6C 00 8C 40 6C 00 8C 40  l..@l..@
 orientationForZ:
         .byte   $C6,$00,$4C,$80,$C6,$00,$4C,$80 ; 86FB C6 00 4C 80 C6 00 4C 80  ..L...L.
@@ -1838,7 +1842,9 @@ L8B0E:
         sta     ppuStagingAddress               ; 8B31 85 48                    .H
         ldy     generalCounter39                ; 8B33 A4 39                    .9
         bne     L8AF7                           ; 8B35 D0 C0                    ..
-L8B37:
+; 
+    ; generalCounter3d contains offset into oamStaging
+stageCurrentAndNextSprites:
         lda     gameState                       ; 8B37 A5 29                    .)
         cmp     #$F9                            ; 8B39 C9 F9                    ..
         beq     L8B45                           ; 8B3B F0 08                    ..
@@ -1862,9 +1868,9 @@ L8B55:
         tay                                     ; 8B56 A8                       .
         asl     a                               ; 8B57 0A                       .
         sta     generalCounter3b                ; 8B58 85 3B                    .;
-        lda     orientationTableOffset,y        ; 8B5A B9 C3 86                 ...
+        lda     orientationTable,y              ; 8B5A B9 C3 86                 ...
         sta     generalCounter36                ; 8B5D 85 36                    .6
-        lda     orientationTableOffset+1,y      ; 8B5F B9 C4 86                 ...
+        lda     orientationTable+1,y            ; 8B5F B9 C4 86                 ...
         sta     generalCounter37                ; 8B62 85 37                    .7
         ora     generalCounter36                ; 8B64 05 36                    .6
         bne     L8B84                           ; 8B66 D0 1C                    ..
@@ -1892,7 +1898,7 @@ L8B84:
         ldy     player1TetrominoX,x             ; 8B88 B4 62                    .b
         cpx     #$02                            ; 8B8A E0 02                    ..
         bcc     L8B93                           ; 8B8C 90 05                    ..
-        ldy     L8C11,x                         ; 8B8E BC 11 8C                 ...
+        ldy     nextPieceXOffsets,x             ; 8B8E BC 11 8C                 ...
         lda     #$01                            ; 8B91 A9 01                    ..
 L8B93:
         bit     playMode                        ; 8B93 24 2F                    $/
@@ -1900,7 +1906,7 @@ L8B93:
         pha                                     ; 8B97 48                       H
         tya                                     ; 8B98 98                       .
         clc                                     ; 8B99 18                       .
-        adc     L8C0F,x                         ; 8B9A 7D 0F 8C                 }..
+        adc     currentPieceXOffsets,x          ; 8B9A 7D 0F 8C                 }..
         tay                                     ; 8B9D A8                       .
         pla                                     ; 8B9E 68                       h
         ldx     #$04                            ; 8B9F A2 04                    ..
@@ -1924,7 +1930,7 @@ L8BB7:
         asl     generalCounter36                ; 8BB7 06 36                    .6
         bcc     L8BDF                           ; 8BB9 90 24                    .$
         ldy     generalCounter3b                ; 8BBB A4 3B                    .;
-        lda     orientationForSandTilesOffset,y ; 8BBD B9 F3 86                 ...
+        lda     orientationTiles,y              ; 8BBD B9 F3 86                 ...
         iny                                     ; 8BC0 C8                       .
         sty     generalCounter3b                ; 8BC1 84 3B                    .;
         ldy     generalCounter3d                ; 8BC3 A4 3D                    .=
@@ -1970,9 +1976,11 @@ L8BDF:
 ; ----------------------------------------------------------------------------
 L8C0A:
         .byte   $F8,$88,$F8,$88,$40             ; 8C0A F8 88 F8 88 40           ....@
-L8C0F:
+; 40 appears to be for coop
+currentPieceXOffsets:
         .byte   $00,$00                         ; 8C0F 00 00                    ..
-L8C11:
+; 3 = 1p, 9 = coop, F7 = 2p
+nextPieceXOffsets:
         .byte   $F7,$09,$03,$09                 ; 8C11 F7 09 03 09              ....
 ; ----------------------------------------------------------------------------
 checkPosition:
@@ -2013,9 +2021,9 @@ checkPosition:
         ora     player1TetrominoOrientation,y   ; 8C50 19 68 00                 .h.
         asl     a                               ; 8C53 0A                       .
         tay                                     ; 8C54 A8                       .
-        lda     orientationTableOffset,x        ; 8C55 BD C3 86                 ...
+        lda     orientationTable,x              ; 8C55 BD C3 86                 ...
         sta     generalCounter38                ; 8C58 85 38                    .8
-        lda     orientationTableOffset+1,x      ; 8C5A BD C4 86                 ...
+        lda     orientationTable+1,x            ; 8C5A BD C4 86                 ...
         sta     generalCounter39                ; 8C5D 85 39                    .9
         ldx     generalCounter36                ; 8C5F A6 36                    .6
         lda     L8CA7,x                         ; 8C61 BD A7 8C                 ...
@@ -2046,10 +2054,10 @@ L8C81:
         lda     generalCounter39                ; 8C8A A5 39                    .9
         and     L8CAE,x                         ; 8C8C 3D AE 8C                 =..
         sta     generalCounter39                ; 8C8F 85 39                    .9
-        lda     orientationTableOffset,y        ; 8C91 B9 C3 86                 ...
+        lda     orientationTable,y              ; 8C91 B9 C3 86                 ...
         and     generalCounter38                ; 8C94 25 38                    %8
         bne     L8CA3                           ; 8C96 D0 0B                    ..
-        lda     orientationTableOffset+1,y      ; 8C98 B9 C4 86                 ...
+        lda     orientationTable+1,y            ; 8C98 B9 C4 86                 ...
         and     generalCounter39                ; 8C9B 25 39                    %9
         bne     L8CA3                           ; 8C9D D0 04                    ..
 L8C9F:

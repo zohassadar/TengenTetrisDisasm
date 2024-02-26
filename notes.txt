@@ -118,3 +118,5 @@ tetris with no level up:
 87D0   STA $01D2 = $00                        A:00 X:00 Y:C8 S:FB P:nv--dIZC V:75  H:110 Fr:20365
 
 ****
+in main loop:
+        jsr     L9B62     ; score staging?

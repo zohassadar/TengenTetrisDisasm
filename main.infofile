@@ -228,17 +228,24 @@ LABEL { ADDR $80EC; NAME "@ANotPressed"; };
 LABEL { ADDR $80F3; NAME "@DownLeftRight"; };
 LABEL { ADDR $819A; NAME "stageDropPointSprites"; };
 LABEL { ADDR $82C7; NAME "branchOnActiveDemoOrGameOver"; };
+LABEL { ADDR $82D6; NAME "gameOverReturn"; };
 LABEL { ADDR $82D7; NAME "activeGamePlay"; };
-LABEL { ADDR $82F3; NAME "handleGameOver"; };
+LABEL { ADDR $82F3; NAME "handleGameOver"; COMMENT "A+B held to restart game.  https://tcrf.net/Talk:Tetris_(NES,_Tengen)"; };
+LABEL { ADDR $830F; NAME "@notWithComputer"; };
+LABEL { ADDR $8312; NAME "@playmodeIs0"; };
+LABEL { ADDR $8315; NAME "restoreOriginalRNGSeed"; };
 LABEL { ADDR $8562; NAME "playfieldPages"; };
 LABEL { ADDR $8650; NAME "checkPositionAndClearFlagsOnCarrySet"; };
-LABEL { ADDR $86C3; SIZE $8; NAME "orientationTableOffset"; COMMENT "this is the offset point for orientations (id * 8)"; };
+LABEL { ADDR $86C3; SIZE $8; NAME "orientationTable"; COMMENT "this is the offset point for orientations (id * 8)
+    ; The first 8 bytes are still referenced and act as an indicator to hide pieces"; };
 LABEL { ADDR $86CB; SIZE $8; NAME "orientationForI"; };
 LABEL { ADDR $86D3; SIZE $8; NAME "orientationForT"; };
 LABEL { ADDR $86DB; SIZE $8; NAME "orientationForO"; };
 LABEL { ADDR $86E3; SIZE $8; NAME "orientationForJ"; };
 LABEL { ADDR $86EB; SIZE $8; NAME "orientationForL"; };
-LABEL { ADDR $86F3; SIZE $8; NAME "orientationForSandTilesOffset"; COMMENT "this shows up as the offset point for the tiles (id * 16)"; };
+LABEL { ADDR $86F3; SIZE $8; NAME "orientationTiles"; COMMENT "
+    ; this shows up as the offset point for the tiles (id * 16)
+    ; these 8 bytes are also orientationForS, but not referenced directly"; };
 LABEL { ADDR $86FB; SIZE $8; NAME "orientationForZ"; };
 LABEL { ADDR $8703; SIZE $10; NAME "tilesForI"; };
 LABEL { ADDR $8713; SIZE $10; NAME "tilesForT"; };
@@ -253,6 +260,10 @@ LABEL { ADDR $8A2B; NAME "lineClearSingle"; SIZE $C; };
 LABEL { ADDR $8A37; NAME "lineClearDouble"; SIZE $C; };
 LABEL { ADDR $8A43; NAME "lineClearTriple"; SIZE $C; };
 LABEL { ADDR $8A4F; NAME "lineClearTetris"; SIZE $C; };
+LABEL { ADDR $8B37; NAME "stageCurrentAndNextSprites"; COMMENT "
+    ; generalCounter3d contains offset into oamStaging"; };
+LABEL { ADDR $8C0F; NAME "currentPieceXOffsets"; COMMENT "40 appears to be for coop"; };
+LABEL { ADDR $8C11; NAME "nextPieceXOffsets"; COMMENT "3 = 1p, 9 = coop, F7 = 2p"; };
 LABEL { ADDR $8C15; NAME "checkPosition"; };
 LABEL { ADDR $8CB5; NAME "showLevelBonus"; };
 LABEL { ADDR $8CE5; NAME "checkLevelUp"; };
