@@ -129,6 +129,7 @@ audioStagingSlot3:= $03EC                       ; SQ1_LO, SQ2_LO, TRI_LO or NOIS
 audioStagingSlot4:= $03ED                       ; SQ1_HI, SQ2_HI, TRI_HI or NOISE_HI
 audioStagingSlot2:= $03EE                       ; SQ1_SWEEP, SQ2_SWEEP, unused or unused
 soundChannelsEnabled:= $03EF                    ; ---D NT21 Enable DMC (D), noise (N), triangle (T), and pulse channels (2/1)
+apuRegisterType := $03F3                        ; 0 pulse, 1 triangle, 2 noise
 player1ScoreHundredThousands:= $0418
 player1ScoreTenThousands:= $0419
 player1ScoreThousands:= $041A
@@ -5504,7 +5505,7 @@ LA7D0:
         sta     PPUCTRL                         ; A7FD 8D 00 20                 .. 
         lda     ppuMask                         ; A800 A5 01                    ..
         sta     PPUMASK                         ; A802 8D 01 20                 .. 
-        jsr     LCFCA                           ; A805 20 CA CF                  ..
+        jsr     updateAudio                     ; A805 20 CA CF                  ..
         pla                                     ; A808 68                       h
         tay                                     ; A809 A8                       .
         pla                                     ; A80A 68                       h
@@ -8379,7 +8380,7 @@ LCFC6:
         rts                                     ; CFC9 60                       `
 
 ; ----------------------------------------------------------------------------
-LCFCA:
+updateAudio:
         inc     $F3                             ; CFCA E6 F3                    ..
         ldx     $0208                           ; CFCC AE 08 02                 ...
         cpx     $0209                           ; CFCF EC 09 02                 ...
@@ -8391,38 +8392,39 @@ LCFCA:
 LCFDB:
         stx     $0208                           ; CFDB 8E 08 02                 ...
         ldy     $0200,x                         ; CFDE BC 00 02                 ...
-        jsr     LCFF7                           ; CFE1 20 F7 CF                  ..
+        jsr     audioJump                       ; CFE1 20 F7 CF                  ..
 LCFE4:
         ldx     #$00                            ; CFE4 A2 00                    ..
-        jsr     setupMusicTrack                 ; CFE6 20 46 D8                  F.
+        jsr     setApuRegisters                 ; CFE6 20 46 D8                  F.
         inx                                     ; CFE9 E8                       .
-        jsr     setupMusicTrack                 ; CFEA 20 46 D8                  F.
+        jsr     setApuRegisters                 ; CFEA 20 46 D8                  F.
         inx                                     ; CFED E8                       .
-        jsr     setupMusicTrack                 ; CFEE 20 46 D8                  F.
+        jsr     setApuRegisters                 ; CFEE 20 46 D8                  F.
         inx                                     ; CFF1 E8                       .
-        jsr     setupMusicTrack                 ; CFF2 20 46 D8                  F.
+        jsr     setApuRegisters                 ; CFF2 20 46 D8                  F.
         inx                                     ; CFF5 E8                       .
         rts                                     ; CFF6 60                       `
 
 ; ----------------------------------------------------------------------------
-LCFF7:
+; uses RTS trick so all addresses are offset by 1
+audioJump:
         cpy     #$1A                            ; CFF7 C0 1A                    ..
-        bcs     LD00F                           ; CFF9 B0 14                    ..
+        bcs     @ret                            ; CFF9 B0 14                    ..
         lda     LDE9C,y                         ; CFFB B9 9C DE                 ...
         cmp     #$0F                            ; CFFE C9 0F                    ..
-        bcs     LD00F                           ; D000 B0 0D                    ..
+        bcs     @ret                            ; D000 B0 0D                    ..
         asl     a                               ; D002 0A                       .
         tax                                     ; D003 AA                       .
-        lda     possibleJumpTable+1,x           ; D004 BD 11 D0                 ...
+        lda     audioJumpTable+1,x              ; D004 BD 11 D0                 ...
         pha                                     ; D007 48                       H
-        lda     possibleJumpTable,x             ; D008 BD 10 D0                 ...
+        lda     audioJumpTable,x                ; D008 BD 10 D0                 ...
         pha                                     ; D00B 48                       H
         lda     LDEB6,y                         ; D00C B9 B6 DE                 ...
-LD00F:
+@ret:
         rts                                     ; D00F 60                       `
 
 ; ----------------------------------------------------------------------------
-possibleJumpTable:
+audioJumpTable:
         .addr   LD02D                           ; D010 2D D0                    -.
         .addr   LD032                           ; D012 32 D0                    2.
         .addr   LD033                           ; D014 33 D0                    3.
@@ -9033,7 +9035,7 @@ LD400:
 LD409:
         clc                                     ; D409 18                       .
         adc     $034D,x                         ; D40A 7D 4D 03                 }M.
-        ldy     $03F3                           ; D40D AC F3 03                 ...
+        ldy     apuRegisterType                 ; D40D AC F3 03                 ...
         cpy     #$01                            ; D410 C0 01                    ..
         bne     LD417                           ; D412 D0 03                    ..
         clc                                     ; D414 18                       .
@@ -9616,30 +9618,30 @@ LD845:
         rts                                     ; D845 60                       `
 
 ; ----------------------------------------------------------------------------
-setupMusicTrack:
+setApuRegisters:
         lda     apuRegistersLow,x               ; D846 BD 1E DD                 ...
         sta     apuRegister                     ; D849 85 F6                    ..
         lda     apuRegistersHigh,x              ; D84B BD 22 DD                 .".
         sta     apuRegister+1                   ; D84E 85 F7                    ..
-        lda     LDD26,x                         ; D850 BD 26 DD                 .&.
-        sta     $03F3                           ; D853 8D F3 03                 ...
-        bne     LD85B                           ; D856 D0 03                    ..
+        lda     apuRegisterTypes,x              ; D850 BD 26 DD                 .&.
+        sta     apuRegisterType                 ; D853 8D F3 03                 ...
+        bne     @checkIfTriangle                ; D856 D0 03                    ..
         jmp     LD86A                           ; D858 4C 6A D8                 Lj.
 
 ; ----------------------------------------------------------------------------
-LD85B:
+@checkIfTriangle:
         cmp     #$01                            ; D85B C9 01                    ..
-        bne     LD862                           ; D85D D0 03                    ..
+        bne     @checkIfNoise                   ; D85D D0 03                    ..
         jmp     LD86A                           ; D85F 4C 6A D8                 Lj.
 
 ; ----------------------------------------------------------------------------
-LD862:
+@checkIfNoise:
         cmp     #$02                            ; D862 C9 02                    ..
-        bne     LD869                           ; D864 D0 03                    ..
+        bne     @ret                            ; D864 D0 03                    ..
         jmp     LD86A                           ; D866 4C 6A D8                 Lj.
 
 ; ----------------------------------------------------------------------------
-LD869:
+@ret:
         rts                                     ; D869 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -10051,7 +10053,7 @@ LDAC9:
         rts                                     ; DAC9 60                       `
 
 ; ----------------------------------------------------------------------------
-        ldy     $03F3                           ; DACA AC F3 03                 ...
+        ldy     apuRegisterType                 ; DACA AC F3 03                 ...
         cpy     #$00                            ; DACD C0 00                    ..
         bne     LDADF                           ; DACF D0 0E                    ..
         and     #$C0                            ; DAD1 29 C0                    ).
@@ -10066,7 +10068,7 @@ LDAE0:
         rts                                     ; DAE0 60                       `
 
 ; ----------------------------------------------------------------------------
-        ldy     $03F3                           ; DAE1 AC F3 03                 ...
+        ldy     apuRegisterType                 ; DAE1 AC F3 03                 ...
         cpy     #$00                            ; DAE4 C0 00                    ..
         bne     LDAEB                           ; DAE6 D0 03                    ..
         sta     $0379,x                         ; DAE8 9D 79 03                 .y.
@@ -10076,7 +10078,7 @@ LDAEC:
         rts                                     ; DAEC 60                       `
 
 ; ----------------------------------------------------------------------------
-        ldy     $03F3                           ; DAED AC F3 03                 ...
+        ldy     apuRegisterType                 ; DAED AC F3 03                 ...
         cpy     #$01                            ; DAF0 C0 01                    ..
         beq     LDB07                           ; DAF2 F0 13                    ..
         cmp     #$00                            ; DAF4 C9 00                    ..
@@ -10101,7 +10103,7 @@ LDB12:
         rts                                     ; DB12 60                       `
 
 ; ----------------------------------------------------------------------------
-        ldy     $03F3                           ; DB13 AC F3 03                 ...
+        ldy     apuRegisterType                 ; DB13 AC F3 03                 ...
         cpy     #$01                            ; DB16 C0 01                    ..
         beq     LDB26                           ; DB18 F0 0C                    ..
         cmp     #$00                            ; DB1A C9 00                    ..
@@ -10162,36 +10164,36 @@ LDB44:
         tay                                     ; DB69 A8                       .
         lda     $03C6,x                         ; DB6A BD C6 03                 ...
         cpy     #$04                            ; DB6D C0 04                    ..
-        beq     LDB8E                           ; DB6F F0 1D                    ..
+        beq     @leftShift4x                    ; DB6F F0 1D                    ..
         cpy     #$02                            ; DB71 C0 02                    ..
-        beq     LDB90                           ; DB73 F0 1B                    ..
+        beq     @leftShift2x                    ; DB73 F0 1B                    ..
         cpy     #$06                            ; DB75 C0 06                    ..
-        beq     LDB8C                           ; DB77 F0 13                    ..
+        beq     @leftShift6x                    ; DB77 F0 13                    ..
         cpy     #$07                            ; DB79 C0 07                    ..
-        beq     LDB8B                           ; DB7B F0 0E                    ..
+        beq     @leftShift7x                    ; DB7B F0 0E                    ..
         cpy     #$05                            ; DB7D C0 05                    ..
-        beq     LDB8D                           ; DB7F F0 0C                    ..
+        beq     @leftShift5x                    ; DB7F F0 0C                    ..
         cpy     #$03                            ; DB81 C0 03                    ..
-        beq     LDB8F                           ; DB83 F0 0A                    ..
+        beq     @leftShift3x                    ; DB83 F0 0A                    ..
         cpy     #$01                            ; DB85 C0 01                    ..
-        beq     LDB91                           ; DB87 F0 08                    ..
+        beq     @leftShift1x                    ; DB87 F0 08                    ..
         sec                                     ; DB89 38                       8
         rts                                     ; DB8A 60                       `
 
 ; ----------------------------------------------------------------------------
-LDB8B:
+@leftShift7x:
         lsr     a                               ; DB8B 4A                       J
-LDB8C:
+@leftShift6x:
         lsr     a                               ; DB8C 4A                       J
-LDB8D:
+@leftShift5x:
         lsr     a                               ; DB8D 4A                       J
-LDB8E:
+@leftShift4x:
         lsr     a                               ; DB8E 4A                       J
-LDB8F:
+@leftShift3x:
         lsr     a                               ; DB8F 4A                       J
-LDB90:
+@leftShift2x:
         lsr     a                               ; DB90 4A                       J
-LDB91:
+@leftShift1x:
         lsr     a                               ; DB91 4A                       J
         jmp     LDB44                           ; DB92 4C 44 DB                 LD.
 
@@ -10475,7 +10477,8 @@ apuRegistersLow:
         .byte   $00,$04,$08,$0C                 ; DD1E 00 04 08 0C              ....
 apuRegistersHigh:
         .byte   $40,$40,$40,$40                 ; DD22 40 40 40 40              @@@@
-LDD26:
+; pulse, pulse, triangle, noise
+apuRegisterTypes:
         .byte   $00,$00,$01,$02                 ; DD26 00 00 01 02              ....
 ; see soundChannelFlags
 ; pulse 1, pulse 2, triangle, noise (DMC unused?) 

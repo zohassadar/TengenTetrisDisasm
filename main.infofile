@@ -134,6 +134,7 @@ LABEL { ADDR $03EC; NAME "audioStagingSlot3"; COMMENT "SQ1_LO, SQ2_LO, TRI_LO or
 LABEL { ADDR $03ED; NAME "audioStagingSlot4"; COMMENT "SQ1_HI, SQ2_HI, TRI_HI or NOISE_HI"; };
 LABEL { ADDR $03EE; NAME "audioStagingSlot2"; COMMENT "SQ1_SWEEP, SQ2_SWEEP, unused or unused"; };
 LABEL { ADDR $03EF; NAME "soundChannelsEnabled"; COMMENT "---D NT21 Enable DMC (D), noise (N), triangle (T), and pulse channels (2/1)"; };
+LABEL { ADDR $03F3; NAME "apuRegisterType"; COMMENT "0 pulse, 1 triangle, 2 noise"; };
 
 LABEL { ADDR $0418; NAME "player1ScoreHundredThousands"; };
 LABEL { ADDR $0419; NAME "player1ScoreTenThousands"; };
@@ -613,18 +614,32 @@ LABEL { ADDR $CEE6; NAME "relatedToFireworksData06"; };
 LABEL { ADDR $CF17; NAME "relatedToFireworksData07"; };
 LABEL { ADDR $CF48; NAME "relatedToFireworksData08"; };
 LABEL { ADDR $CFB1; NAME "setMusicOrSoundEffect"; };
+LABEL { ADDR $CFCA; NAME "updateAudio"; };
+LABEL { ADDR $CFF7; NAME "audioJump"; COMMENT "uses RTS trick so all addresses are offset by 1"; };
 
-LABEL { ADDR $D010; NAME "possibleJumpTable"; SIZE $18; };
-LABEL { ADDR $D846; NAME "setupMusicTrack"; };
+LABEL { ADDR $D00F; NAME "@ret"; };
+LABEL { ADDR $D010; NAME "audioJumpTable"; SIZE $18; };
+LABEL { ADDR $D846; NAME "setApuRegisters"; };
+LABEL { ADDR $D85B; NAME "@checkIfTriangle"; };
+LABEL { ADDR $D862; NAME "@checkIfNoise"; };
+LABEL { ADDR $D869; NAME "@ret"; };
 LABEL { ADDR $D89C; NAME "writeAudioSlot1"; COMMENT "SQ1_VOL, SQ2_VOL, TRI_LINEAR or NOISE_VOL"; };
 LABEL { ADDR $D8A9; NAME "writeAudioSlot2"; COMMENT "SQ1_SWEEP, SQ2_SWEEP, unused or unused"; };
 LABEL { ADDR $D8C4; NAME "writeAudioSlot3"; COMMENT "SQ1_LO, SQ2_LO, TRI_LO or NOISE_LO"; };
 LABEL { ADDR $D8D0; NAME "writeAudioSlot4"; COMMENT "SQ1_HI, SQ2_HI, TRI_HI or NOISE_HI"; };
 LABEL { ADDR $D8DC; NAME "@ret"; };
+LABEL { ADDR $DB8B; NAME "@leftShift7x"; };
+LABEL { ADDR $DB8C; NAME "@leftShift6x"; };
+LABEL { ADDR $DB8D; NAME "@leftShift5x"; };
+LABEL { ADDR $DB8E; NAME "@leftShift4x"; };
+LABEL { ADDR $DB8F; NAME "@leftShift3x"; };
+LABEL { ADDR $DB90; NAME "@leftShift2x"; };
+LABEL { ADDR $DB91; NAME "@leftShift1x"; };
 LABEL { ADDR $DD1E; NAME "apuRegistersLow"; };
 LABEL { ADDR $DD22; NAME "apuRegistersHigh"; };
 LABEL { ADDR $DD2A; NAME "soundChannelFlags"; COMMENT "see soundChannelFlags
 ; pulse 1, pulse 2, triangle, noise (DMC unused?) "; };
+LABEL { ADDR $DD26; NAME "apuRegisterTypes"; COMMENT "pulse, pulse, triangle, noise"; };
 LABEL { ADDR $DD32; NAME "UnknownTable05"; };
 LABEL { ADDR $DF13; NAME "UnknownTable03"; };
 LABEL { ADDR $DF42; NAME "UnknownTable02"; };

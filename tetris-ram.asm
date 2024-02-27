@@ -132,7 +132,9 @@ audioStagingSlot3:	.res 1	; $03EC
 audioStagingSlot4:	.res 1	; $03ED
 audioStagingSlot2:	.res 1	; $03EE
 soundChannelsEnabled:	.res 1	; $03EF
-.res 40
+.res 3
+apuRegisterType:	.res 1	; $03F3
+.res 36
 player1ScoreHundredThousands:	.res 1	; $0418
 player1ScoreTenThousands:	.res 1	; $0419
 player1ScoreThousands:	.res 1	; $041A
