@@ -80,7 +80,8 @@ player1FallTimer:	.res 1	; $006A
 player2FallTimer:	.res 1	; $006B
 .res 10
 relatesToAddrTableAB25:	.res $2	; $0076
-.res 126
+.res 124
+audioDataAddr:	.res $2	; $00F4
 apuRegister:	.res $2	; $00F6
 .res 7
 audioFlags:	.res 1	; $00FF
@@ -126,7 +127,11 @@ lineClearTimerP2:	.res 1	; $01CF
 .res 2
 relatedToLevelUpAnimations:	.res 1	; $01D2
 stack:	.res $1D	; $01D3
-.res 507
+.res 41
+audioStagingAddrLo:	.res $0A	; $0219
+.res 1
+audioStagingAddrHi:	.res $0A	; $0224
+.res 445
 audioStagingSlot1:	.res 1	; $03EB
 audioStagingSlot3:	.res 1	; $03EC
 audioStagingSlot4:	.res 1	; $03ED

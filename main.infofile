@@ -87,6 +87,7 @@ LABEL { ADDR $0069; NAME "player2TetrominoOrientation"; };
 LABEL { ADDR $006A; NAME "player1FallTimer"; };
 LABEL { ADDR $006B; NAME "player2FallTimer"; };
 LABEL { ADDR $0076; NAME "relatesToAddrTableAB25"; SIZE $2; };
+LABEL { ADDR $00F4; NAME "audioDataAddr"; SIZE $2; };
 LABEL { ADDR $00F6; NAME "apuRegister"; SIZE $2; };
 LABEL { ADDR $00FF; NAME "audioFlags"; COMMENT "
 ; https://www.nesdev.org/wiki/APU
@@ -128,6 +129,9 @@ LABEL { ADDR $01CE; NAME "lineClearTimerP1"; };
 LABEL { ADDR $01CF; NAME "lineClearTimerP2"; };
 LABEL { ADDR $01D2; NAME "relatedToLevelUpAnimations"; COMMENT "see notes"; };
 LABEL { ADDR $01D3; NAME "stack"; SIZE $1D; };
+
+LABEL { ADDR $0219; NAME "audioStagingAddrLo"; SIZE $0A; COMMENT "not 100% this is length 10"; };
+LABEL { ADDR $0224; NAME "audioStagingAddrHi"; SIZE $0A; COMMENT "not 100% this is length 10"; };
 
 LABEL { ADDR $03EB; NAME "audioStagingSlot1"; COMMENT "SQ1_VOL, SQ2_VOL, TRI_LINEAR or NOISE_VOL"; };
 LABEL { ADDR $03EC; NAME "audioStagingSlot3"; COMMENT "SQ1_LO, SQ2_LO, TRI_LO or NOISE_LO"; };

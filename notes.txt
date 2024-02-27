@@ -118,5 +118,17 @@ tetris with no level up:
 87D0   STA $01D2 = $00                        A:00 X:00 Y:C8 S:FB P:nv--dIZC V:75  H:110 Fr:20365
 
 ****
+
 in main loop:
         jsr     L9B62     ; score staging?
+
+****
+
+Attempt to understand datapath for main title song:
+
+View when first byte of the 4 blobs of data that make up the title song are read:
+Address == $F2E1 || Address == $F37F || Address == $F439 || Address == $F4FD
+
+View when addresses referencing the 4 blobs are read:
+Address >= $DF8F && Address <= $DF96
+

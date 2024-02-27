@@ -83,6 +83,7 @@ player2TetrominoOrientation:= $0069
 player1FallTimer:= $006A
 player2FallTimer:= $006B
 relatesToAddrTableAB25:= $0076
+audioDataAddr   := $00F4
 apuRegister     := $00F6
 audioFlags      := $00FF                        ; 
 ; https://www.nesdev.org/wiki/APU
@@ -124,6 +125,8 @@ lineClearTimerP1:= $01CE
 lineClearTimerP2:= $01CF
 relatedToLevelUpAnimations:= $01D2              ; see notes
 stack           := $01D3
+audioStagingAddrLo:= $0219                      ; not 100% this is length 10
+audioStagingAddrHi:= $0224                      ; not 100% this is length 10
 audioStagingSlot1:= $03EB                       ; SQ1_VOL, SQ2_VOL, TRI_LINEAR or NOISE_VOL
 audioStagingSlot3:= $03EC                       ; SQ1_LO, SQ2_LO, TRI_LO or NOISE_LO
 audioStagingSlot4:= $03ED                       ; SQ1_HI, SQ2_HI, TRI_HI or NOISE_HI
@@ -8655,21 +8658,21 @@ LD11F:
 LD174:
         lda     LDFD4,x                         ; D174 BD D4 DF                 ...
 LD177:
-        sta     $F4                             ; D177 85 F4                    ..
+        sta     audioDataAddr                   ; D177 85 F4                    ..
         bcs     LD180                           ; D179 B0 05                    ..
         lda     LDED5,x                         ; D17B BD D5 DE                 ...
         bcc     LD183                           ; D17E 90 03                    ..
 LD180:
         lda     LDFD5,x                         ; D180 BD D5 DF                 ...
 LD183:
-        sta     $F5                             ; D183 85 F5                    ..
+        sta     audioDataAddr+1                 ; D183 85 F5                    ..
         ldy     #$00                            ; D185 A0 00                    ..
         lda     #<UnknownTable03                            ; D187 A9 13                    ..
         clc                                     ; D189 18                       .
-        adc     $F4                             ; D18A 65 F4                    e.
+        adc     audioDataAddr                   ; D18A 65 F4                    e.
         sta     $F1                             ; D18C 85 F1                    ..
         lda     #>UnknownTable03                            ; D18E A9 DF                    ..
-        adc     $F5                             ; D190 65 F5                    e.
+        adc     audioDataAddr+1                 ; D190 65 F5                    e.
         sta     $F2                             ; D192 85 F2                    ..
         lda     ($F1),y                         ; D194 B1 F1                    ..
         bpl     LD19A                           ; D196 10 02                    ..
@@ -8759,10 +8762,10 @@ LD1A6:
         adc     $F2                             ; D24E 65 F2                    e.
         sta     $F2                             ; D250 85 F2                    ..
         lda     ($F1),y                         ; D252 B1 F1                    ..
-        sta     $0219,x                         ; D254 9D 19 02                 ...
+        sta     audioStagingAddrLo,x            ; D254 9D 19 02                 ...
         iny                                     ; D257 C8                       .
         lda     ($F1),y                         ; D258 B1 F1                    ..
-        sta     $0224,x                         ; D25A 9D 24 02                 .$.
+        sta     audioStagingAddrHi,x            ; D25A 9D 24 02                 .$.
         ldy     $020C                           ; D25D AC 0C 02                 ...
         php                                     ; D260 08                       .
         sei                                     ; D261 78                       x
@@ -8956,10 +8959,10 @@ LD375:
         sta     $03F0                           ; D375 8D F0 03                 ...
         and     #$01                            ; D378 29 01                    ).
         sta     $03F1                           ; D37A 8D F1 03                 ...
-        lda     $0219,x                         ; D37D BD 19 02                 ...
-        sta     $F4                             ; D380 85 F4                    ..
-        lda     $0224,x                         ; D382 BD 24 02                 .$.
-        sta     $F5                             ; D385 85 F5                    ..
+        lda     audioStagingAddrLo,x            ; D37D BD 19 02                 ...
+        sta     audioDataAddr                   ; D380 85 F4                    ..
+        lda     audioStagingAddrHi,x            ; D382 BD 24 02                 .$.
+        sta     audioDataAddr+1                 ; D385 85 F5                    ..
         lda     $0287,x                         ; D387 BD 87 02                 ...
         cmp     #$FF                            ; D38A C9 FF                    ..
         bne     LD397                           ; D38C D0 09                    ..
@@ -9004,22 +9007,22 @@ LD3D2           := * + 2
 
 ; ----------------------------------------------------------------------------
 LD3D3:
-        lda     $0219,x                         ; D3D3 BD 19 02                 ...
+        lda     audioStagingAddrLo,x            ; D3D3 BD 19 02                 ...
         clc                                     ; D3D6 18                       .
         adc     #$02                            ; D3D7 69 02                    i.
-        sta     $0219,x                         ; D3D9 9D 19 02                 ...
+        sta     audioStagingAddrLo,x            ; D3D9 9D 19 02                 ...
         bcc     LD3E1                           ; D3DC 90 03                    ..
-        inc     $0224,x                         ; D3DE FE 24 02                 .$.
+        inc     audioStagingAddrHi,x            ; D3DE FE 24 02                 .$.
 LD3E1:
         ldy     #$00                            ; D3E1 A0 00                    ..
-        lda     ($F4),y                         ; D3E3 B1 F4                    ..
+        lda     (audioDataAddr),y               ; D3E3 B1 F4                    ..
         bpl     LD400                           ; D3E5 10 19                    ..
         jsr     LD8EE                           ; D3E7 20 EE D8                  ..
         bcc     LD3F8                           ; D3EA 90 0C                    ..
-        lda     $0224,x                         ; D3EC BD 24 02                 .$.
-        sta     $F5                             ; D3EF 85 F5                    ..
-        lda     $0219,x                         ; D3F1 BD 19 02                 ...
-        sta     $F4                             ; D3F4 85 F4                    ..
+        lda     audioStagingAddrHi,x            ; D3EC BD 24 02                 .$.
+        sta     audioDataAddr+1                 ; D3EF 85 F5                    ..
+        lda     audioStagingAddrLo,x            ; D3F1 BD 19 02                 ...
+        sta     audioDataAddr                   ; D3F4 85 F4                    ..
         bcs     LD3D3                           ; D3F6 B0 DB                    ..
 LD3F8:
         lda     #$00                            ; D3F8 A9 00                    ..
@@ -9094,7 +9097,7 @@ LD479:
         ldy     #$01                            ; D479 A0 01                    ..
         lda     #$00                            ; D47B A9 00                    ..
         sta     $F8                             ; D47D 85 F8                    ..
-        lda     ($F4),y                         ; D47F B1 F4                    ..
+        lda     (audioDataAddr),y               ; D47F B1 F4                    ..
         beq     LD486                           ; D481 F0 03                    ..
         jmp     LD4E1                           ; D483 4C E1 D4                 L..
 
@@ -9112,12 +9115,12 @@ LD486:
         sta     $FB                             ; D499 85 FB                    ..
         iny                                     ; D49B C8                       .
         lda     ($FC),y                         ; D49C B1 FC                    ..
-        sta     $0219,x                         ; D49E 9D 19 02                 ...
-        sta     $F4                             ; D4A1 85 F4                    ..
+        sta     audioStagingAddrLo,x            ; D49E 9D 19 02                 ...
+        sta     audioDataAddr                   ; D4A1 85 F4                    ..
         iny                                     ; D4A3 C8                       .
         lda     ($FC),y                         ; D4A4 B1 FC                    ..
-        sta     $0224,x                         ; D4A6 9D 24 02                 .$.
-        sta     $F5                             ; D4A9 85 F5                    ..
+        sta     audioStagingAddrHi,x            ; D4A6 9D 24 02                 .$.
+        sta     audioDataAddr+1                 ; D4A9 85 F5                    ..
         jmp     LD3D3                           ; D4AB 4C D3 D3                 L..
 
 ; ----------------------------------------------------------------------------
@@ -9251,7 +9254,7 @@ LD587:
         pla                                     ; D5A3 68                       h
         adc     $0266,x                         ; D5A4 7D 66 02                 }f.
         sta     $0266,x                         ; D5A7 9D 66 02                 .f.
-        lda     ($F4),y                         ; D5AA B1 F4                    ..
+        lda     (audioDataAddr),y               ; D5AA B1 F4                    ..
         sta     $F8                             ; D5AC 85 F8                    ..
         and     #$80                            ; D5AE 29 80                    ).
         sta     $0287,x                         ; D5B0 9D 87 02                 ...
@@ -9269,15 +9272,15 @@ LD5B3:
         sta     $032C,x                         ; D5C7 9D 2C 03                 .,.
         sta     $0337,x                         ; D5CA 9D 37 03                 .7.
         lda     $02F5,x                         ; D5CD BD F5 02                 ...
-        sta     $F4                             ; D5D0 85 F4                    ..
+        sta     audioDataAddr                   ; D5D0 85 F4                    ..
         lda     $0300,x                         ; D5D2 BD 00 03                 ...
-        sta     $F5                             ; D5D5 85 F5                    ..
-        lda     ($F4),y                         ; D5D7 B1 F4                    ..
+        sta     audioDataAddr+1                 ; D5D5 85 F5                    ..
+        lda     (audioDataAddr),y               ; D5D7 B1 F4                    ..
         sta     $0316,x                         ; D5D9 9D 16 03                 ...
         iny                                     ; D5DC C8                       .
-        ora     ($F4),y                         ; D5DD 11 F4                    ..
+        ora     (audioDataAddr),y               ; D5DD 11 F4                    ..
         iny                                     ; D5DF C8                       .
-        ora     ($F4),y                         ; D5E0 11 F4                    ..
+        ora     (audioDataAddr),y               ; D5E0 11 F4                    ..
         beq     LD5E8                           ; D5E2 F0 04                    ..
         inc     $0316,x                         ; D5E4 FE 16 03                 ...
         tya                                     ; D5E7 98                       .
@@ -9288,13 +9291,13 @@ LD5E8:
         sta     $02D4,x                         ; D5EE 9D D4 02                 ...
         sta     $02DF,x                         ; D5F1 9D DF 02                 ...
         lda     $02B3,x                         ; D5F4 BD B3 02                 ...
-        sta     $F4                             ; D5F7 85 F4                    ..
+        sta     audioDataAddr                   ; D5F7 85 F4                    ..
         lda     $02BE,x                         ; D5F9 BD BE 02                 ...
-        sta     $F5                             ; D5FC 85 F5                    ..
-        lda     ($F4),y                         ; D5FE B1 F4                    ..
+        sta     audioDataAddr+1                 ; D5FC 85 F5                    ..
+        lda     (audioDataAddr),y               ; D5FE B1 F4                    ..
         sta     $02EA,x                         ; D600 9D EA 02                 ...
         iny                                     ; D603 C8                       .
-        ora     ($F4),y                         ; D604 11 F4                    ..
+        ora     (audioDataAddr),y               ; D604 11 F4                    ..
         beq     LD60C                           ; D606 F0 04                    ..
         inc     $02EA,x                         ; D608 FE EA 02                 ...
         tya                                     ; D60B 98                       .
@@ -9319,9 +9322,9 @@ LD61F:
         ror     $038F,x                         ; D62C 7E 8F 03                 ~..
 LD62F:
         lda     $02F5,x                         ; D62F BD F5 02                 ...
-        sta     $F4                             ; D632 85 F4                    ..
+        sta     audioDataAddr                   ; D632 85 F4                    ..
         lda     $0300,x                         ; D634 BD 00 03                 ...
-        sta     $F5                             ; D637 85 F5                    ..
+        sta     audioDataAddr+1                 ; D637 85 F5                    ..
         ldy     $030B,x                         ; D639 BC 0B 03                 ...
         bne     LD643                           ; D63C D0 05                    ..
         tya                                     ; D63E 98                       .
@@ -9334,7 +9337,7 @@ LD643:
         bne     LD69E                           ; D646 D0 56                    .V
 LD648:
         iny                                     ; D648 C8                       .
-        lda     ($F4),y                         ; D649 B1 F4                    ..
+        lda     (audioDataAddr),y               ; D649 B1 F4                    ..
         sta     $0316,x                         ; D64B 9D 16 03                 ...
         iny                                     ; D64E C8                       .
         cmp     #$FF                            ; D64F C9 FF                    ..
@@ -9346,24 +9349,24 @@ LD648:
         iny                                     ; D65D C8                       .
         bne     LD648                           ; D65E D0 E8                    ..
 LD660:
-        lda     ($F4),y                         ; D660 B1 F4                    ..
+        lda     (audioDataAddr),y               ; D660 B1 F4                    ..
         sta     $0337,x                         ; D662 9D 37 03                 .7.
 LD665:
         iny                                     ; D665 C8                       .
         sec                                     ; D666 38                       8
-        lda     $F4                             ; D667 A5 F4                    ..
-        sbc     ($F4),y                         ; D669 F1 F4                    ..
-        sta     $F4                             ; D66B 85 F4                    ..
+        lda     audioDataAddr                   ; D667 A5 F4                    ..
+        sbc     (audioDataAddr),y               ; D669 F1 F4                    ..
+        sta     audioDataAddr                   ; D66B 85 F4                    ..
         sta     $02F5,x                         ; D66D 9D F5 02                 ...
         bcs     LD648                           ; D670 B0 D6                    ..
-        dec     $F5                             ; D672 C6 F5                    ..
+        dec     audioDataAddr+1                 ; D672 C6 F5                    ..
         dec     $0300,x                         ; D674 DE 00 03                 ...
         bcc     LD648                           ; D677 90 CF                    ..
 LD679:
-        ora     ($F4),y                         ; D679 11 F4                    ..
+        ora     (audioDataAddr),y               ; D679 11 F4                    ..
         iny                                     ; D67B C8                       .
         cpy     #$F9                            ; D67C C0 F9                    ..
-        ora     ($F4),y                         ; D67E 11 F4                    ..
+        ora     (audioDataAddr),y               ; D67E 11 F4                    ..
         bne     LD689                           ; D680 D0 07                    ..
         sta     $030B,x                         ; D682 9D 0B 03                 ...
         tay                                     ; D685 A8                       .
@@ -9387,12 +9390,12 @@ LD69E:
         lda     $032C,x                         ; D6A3 BD 2C 03                 .,.
         sta     $F9                             ; D6A6 85 F9                    ..
         dey                                     ; D6A8 88                       .
-        lda     ($F4),y                         ; D6A9 B1 F4                    ..
+        lda     (audioDataAddr),y               ; D6A9 B1 F4                    ..
         clc                                     ; D6AB 18                       .
         adc     $0321,x                         ; D6AC 7D 21 03                 }!.
         sta     $0321,x                         ; D6AF 9D 21 03                 .!.
         iny                                     ; D6B2 C8                       .
-        lda     ($F4),y                         ; D6B3 B1 F4                    ..
+        lda     (audioDataAddr),y               ; D6B3 B1 F4                    ..
         adc     $032C,x                         ; D6B5 7D 2C 03                 },.
         sta     $032C,x                         ; D6B8 9D 2C 03                 .,.
         tay                                     ; D6BB A8                       .
@@ -9467,9 +9470,9 @@ LD743:
         sta     audioStagingSlot2               ; D746 8D EE 03                 ...
 LD749:
         lda     $02B3,x                         ; D749 BD B3 02                 ...
-        sta     $F4                             ; D74C 85 F4                    ..
+        sta     audioDataAddr                   ; D74C 85 F4                    ..
         lda     $02BE,x                         ; D74E BD BE 02                 ...
-        sta     $F5                             ; D751 85 F5                    ..
+        sta     audioDataAddr+1                 ; D751 85 F5                    ..
         lda     $02C9,x                         ; D753 BD C9 02                 ...
         bne     LD75B                           ; D756 D0 03                    ..
         jmp     LD7DC                           ; D758 4C DC D7                 L..
@@ -9481,7 +9484,7 @@ LD75B:
         bne     LD7B3                           ; D75F D0 52                    .R
 LD761:
         iny                                     ; D761 C8                       .
-        lda     ($F4),y                         ; D762 B1 F4                    ..
+        lda     (audioDataAddr),y               ; D762 B1 F4                    ..
         sta     $02EA,x                         ; D764 9D EA 02                 ...
         iny                                     ; D767 C8                       .
         cmp     #$FF                            ; D768 C9 FF                    ..
@@ -9493,22 +9496,22 @@ LD761:
         iny                                     ; D776 C8                       .
         bne     LD761                           ; D777 D0 E8                    ..
 LD779:
-        lda     ($F4),y                         ; D779 B1 F4                    ..
+        lda     (audioDataAddr),y               ; D779 B1 F4                    ..
         sta     $02DF,x                         ; D77B 9D DF 02                 ...
 LD77E:
         iny                                     ; D77E C8                       .
         sec                                     ; D77F 38                       8
-        lda     $F4                             ; D780 A5 F4                    ..
-        sbc     ($F4),y                         ; D782 F1 F4                    ..
-        sta     $F4                             ; D784 85 F4                    ..
+        lda     audioDataAddr                   ; D780 A5 F4                    ..
+        sbc     (audioDataAddr),y               ; D782 F1 F4                    ..
+        sta     audioDataAddr                   ; D784 85 F4                    ..
         sta     $02B3,x                         ; D786 9D B3 02                 ...
         bcs     LD761                           ; D789 B0 D6                    ..
-        dec     $F5                             ; D78B C6 F5                    ..
+        dec     audioDataAddr+1                 ; D78B C6 F5                    ..
         dec     $02BE,x                         ; D78D DE BE 02                 ...
         bcc     LD761                           ; D790 90 CF                    ..
 LD792:
         cpy     #$F9                            ; D792 C0 F9                    ..
-        ora     ($F4),y                         ; D794 11 F4                    ..
+        ora     (audioDataAddr),y               ; D794 11 F4                    ..
         bne     LD79E                           ; D796 D0 06                    ..
         sta     $02C9,x                         ; D798 9D C9 02                 ...
         jmp     LD7DC                           ; D79B 4C DC D7                 L..
@@ -9528,7 +9531,7 @@ LD7B0:
 LD7B3:
         lda     $02D4,x                         ; D7B3 BD D4 02                 ...
         sta     $F8                             ; D7B6 85 F8                    ..
-        lda     ($F4),y                         ; D7B8 B1 F4                    ..
+        lda     (audioDataAddr),y               ; D7B8 B1 F4                    ..
         clc                                     ; D7BA 18                       .
         adc     $02D4,x                         ; D7BB 7D D4 02                 }..
         bvc     LD7C6                           ; D7BE 50 06                    P.
@@ -9745,21 +9748,21 @@ LD8F9:
         lda     LD93D,x                         ; D902 BD 3D D9                 .=.
         pha                                     ; D905 48                       H
         ldx     $F8                             ; D906 A6 F8                    ..
-        lda     ($F4),y                         ; D908 B1 F4                    ..
+        lda     (audioDataAddr),y               ; D908 B1 F4                    ..
         sec                                     ; D90A 38                       8
         rts                                     ; D90B 60                       `
 
 ; ----------------------------------------------------------------------------
 LD90C:
-        lda     $0219,x                         ; D90C BD 19 02                 ...
+        lda     audioStagingAddrLo,x            ; D90C BD 19 02                 ...
         clc                                     ; D90F 18                       .
         adc     #$01                            ; D910 69 01                    i.
-        sta     $0219,x                         ; D912 9D 19 02                 ...
+        sta     audioStagingAddrLo,x            ; D912 9D 19 02                 ...
         bcc     LD91A                           ; D915 90 03                    ..
-        inc     $0224,x                         ; D917 FE 24 02                 .$.
+        inc     audioStagingAddrHi,x            ; D917 FE 24 02                 .$.
 LD91A:
         iny                                     ; D91A C8                       .
-        lda     ($F4),y                         ; D91B B1 F4                    ..
+        lda     (audioDataAddr),y               ; D91B B1 F4                    ..
         rts                                     ; D91D 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -9870,13 +9873,13 @@ LD9D0:
         lda     #$00                            ; D9D3 A9 00                    ..
         beq     LD99F                           ; D9D5 F0 C8                    ..
 LD9D7:
-        lda     $0219,x                         ; D9D7 BD 19 02                 ...
+        lda     audioStagingAddrLo,x            ; D9D7 BD 19 02                 ...
         cmp     #$02                            ; D9DA C9 02                    ..
         bcs     LD9E1                           ; D9DC B0 03                    ..
-        dec     $0224,x                         ; D9DE DE 24 02                 .$.
+        dec     audioStagingAddrHi,x            ; D9DE DE 24 02                 .$.
 LD9E1:
-        dec     $0219,x                         ; D9E1 DE 19 02                 ...
-        dec     $0219,x                         ; D9E4 DE 19 02                 ...
+        dec     audioStagingAddrLo,x            ; D9E1 DE 19 02                 ...
+        dec     audioStagingAddrLo,x            ; D9E4 DE 19 02                 ...
         clc                                     ; D9E7 18                       .
 LD9E8:
         rts                                     ; D9E8 60                       `
@@ -9974,15 +9977,15 @@ LDA3E:
         pla                                     ; DA51 68                       h
         sta     $03A5,x                         ; DA52 9D A5 03                 ...
         iny                                     ; DA55 C8                       .
-        lda     $0219,x                         ; DA56 BD 19 02                 ...
+        lda     audioStagingAddrLo,x            ; DA56 BD 19 02                 ...
         sta     ($FC),y                         ; DA59 91 FC                    ..
         iny                                     ; DA5B C8                       .
-        lda     $0224,x                         ; DA5C BD 24 02                 .$.
+        lda     audioStagingAddrHi,x            ; DA5C BD 24 02                 .$.
         sta     ($FC),y                         ; DA5F 91 FC                    ..
         lda     $F8                             ; DA61 A5 F8                    ..
-        sta     $0219,x                         ; DA63 9D 19 02                 ...
+        sta     audioStagingAddrLo,x            ; DA63 9D 19 02                 ...
         lda     $F9                             ; DA66 A5 F9                    ..
-        sta     $0224,x                         ; DA68 9D 24 02                 .$.
+        sta     audioStagingAddrHi,x            ; DA68 9D 24 02                 .$.
 LDA6B:
         sec                                     ; DA6B 38                       8
 LDA6C:
@@ -9998,10 +10001,10 @@ LDA6C:
         pla                                     ; DA79 68                       h
         sta     $03B0,x                         ; DA7A 9D B0 03                 ...
         iny                                     ; DA7D C8                       .
-        lda     $0219,x                         ; DA7E BD 19 02                 ...
+        lda     audioStagingAddrLo,x            ; DA7E BD 19 02                 ...
         sta     ($FC),y                         ; DA81 91 FC                    ..
         iny                                     ; DA83 C8                       .
-        lda     $0224,x                         ; DA84 BD 24 02                 .$.
+        lda     audioStagingAddrHi,x            ; DA84 BD 24 02                 .$.
         sta     ($FC),y                         ; DA87 91 FC                    ..
         iny                                     ; DA89 C8                       .
         lda     $03BB,x                         ; DA8A BD BB 03                 ...
@@ -10026,10 +10029,10 @@ LDA97:
         beq     LDAB3                           ; DAA3 F0 0E                    ..
         iny                                     ; DAA5 C8                       .
         lda     ($FC),y                         ; DAA6 B1 FC                    ..
-        sta     $0219,x                         ; DAA8 9D 19 02                 ...
+        sta     audioStagingAddrLo,x            ; DAA8 9D 19 02                 ...
         iny                                     ; DAAB C8                       .
         lda     ($FC),y                         ; DAAC B1 FC                    ..
-        sta     $0224,x                         ; DAAE 9D 24 02                 .$.
+        sta     audioStagingAddrHi,x            ; DAAE 9D 24 02                 .$.
 LDAB1:
         sec                                     ; DAB1 38                       8
         rts                                     ; DAB2 60                       `
@@ -10253,9 +10256,9 @@ LDBD1:
         bne     LDBD1                           ; DBDC D0 F3                    ..
 LDBDE:
         jsr     LD90C                           ; DBDE 20 0C D9                  ..
-        sta     $0224,x                         ; DBE1 9D 24 02                 .$.
+        sta     audioStagingAddrHi,x            ; DBE1 9D 24 02                 .$.
         lda     $F8                             ; DBE4 A5 F8                    ..
-        sta     $0219,x                         ; DBE6 9D 19 02                 ...
+        sta     audioStagingAddrLo,x            ; DBE6 9D 19 02                 ...
         sec                                     ; DBE9 38                       8
         rts                                     ; DBEA 60                       `
 
@@ -10277,9 +10280,9 @@ LDBFA:
         bne     LDBFA                           ; DC05 D0 F3                    ..
 LDC07:
         jsr     LD90C                           ; DC07 20 0C D9                  ..
-        sta     $0224,x                         ; DC0A 9D 24 02                 .$.
+        sta     audioStagingAddrHi,x            ; DC0A 9D 24 02                 .$.
         lda     $F8                             ; DC0D A5 F8                    ..
-        sta     $0219,x                         ; DC0F 9D 19 02                 ...
+        sta     audioStagingAddrLo,x            ; DC0F 9D 19 02                 ...
         inc     $03C6,x                         ; DC12 FE C6 03                 ...
         lda     $03C6,x                         ; DC15 BD C6 03                 ...
         jmp     LDB44                           ; DC18 4C 44 DB                 LD.
@@ -10394,9 +10397,9 @@ LDCAB:
         jsr     LD90C                           ; DCAB 20 0C D9                  ..
         sta     $F8                             ; DCAE 85 F8                    ..
         jsr     LD90C                           ; DCB0 20 0C D9                  ..
-        sta     $0224,x                         ; DCB3 9D 24 02                 .$.
+        sta     audioStagingAddrHi,x            ; DCB3 9D 24 02                 .$.
         lda     $F8                             ; DCB6 A5 F8                    ..
-        sta     $0219,x                         ; DCB8 9D 19 02                 ...
+        sta     audioStagingAddrLo,x            ; DCB8 9D 19 02                 ...
         sec                                     ; DCBB 38                       8
         rts                                     ; DCBC 60                       `
 
@@ -10466,9 +10469,9 @@ LDD0E:
 ; ----------------------------------------------------------------------------
         sta     $F8                             ; DD0F 85 F8                    ..
         jsr     LD90C                           ; DD11 20 0C D9                  ..
-        sta     $0224,x                         ; DD14 9D 24 02                 .$.
+        sta     audioStagingAddrHi,x            ; DD14 9D 24 02                 .$.
         lda     $F8                             ; DD17 A5 F8                    ..
-        sta     $0219,x                         ; DD19 9D 19 02                 ...
+        sta     audioStagingAddrLo,x            ; DD19 9D 19 02                 ...
         sec                                     ; DD1C 38                       8
         rts                                     ; DD1D 60                       `
 
