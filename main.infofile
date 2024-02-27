@@ -87,7 +87,11 @@ LABEL { ADDR $0069; NAME "player2TetrominoOrientation"; };
 LABEL { ADDR $006A; NAME "player1FallTimer"; };
 LABEL { ADDR $006B; NAME "player2FallTimer"; };
 LABEL { ADDR $0076; NAME "relatesToAddrTableAB25"; SIZE $2; };
-LABEL { ADDR $00FF; NAME "lastZeroPageAddr"; };
+LABEL { ADDR $00F6; NAME "apuRegister"; SIZE $2; };
+LABEL { ADDR $00FF; NAME "audioFlags"; COMMENT "
+; https://www.nesdev.org/wiki/APU
+; AND'ed with $05, $01, $11, $21 and checks zero flag for audio registers starting at 
+; $4000, $4004, $4008 and $400C respectively"; };
 LABEL { ADDR $0100; NAME "ppuStaging"; SIZE $46; };
 LABEL { ADDR $0190; NAME "lineClearStatsPPUStaging"; SIZE $4; };
 LABEL { ADDR $01AA; NAME "dasLeftPlayer1"; };
@@ -122,9 +126,15 @@ LABEL { ADDR $01C8; NAME "pointsDisplayTimerP1"; };
 LABEL { ADDR $01C9; NAME "pointsDisplayTimerP2"; };
 LABEL { ADDR $01CE; NAME "lineClearTimerP1"; };
 LABEL { ADDR $01CF; NAME "lineClearTimerP2"; };
-
 LABEL { ADDR $01D2; NAME "relatedToLevelUpAnimations"; COMMENT "see notes"; };
 LABEL { ADDR $01D3; NAME "stack"; SIZE $1D; };
+
+LABEL { ADDR $03EB; NAME "audioStagingSlot1"; COMMENT "SQ1_VOL, SQ2_VOL, TRI_LINEAR or NOISE_VOL"; };
+LABEL { ADDR $03EC; NAME "audioStagingSlot3"; COMMENT "SQ1_LO, SQ2_LO, TRI_LO or NOISE_LO"; };
+LABEL { ADDR $03ED; NAME "audioStagingSlot4"; COMMENT "SQ1_HI, SQ2_HI, TRI_HI or NOISE_HI"; };
+LABEL { ADDR $03EE; NAME "audioStagingSlot2"; COMMENT "SQ1_SWEEP, SQ2_SWEEP, unused or unused"; };
+LABEL { ADDR $03EF; NAME "soundChannelsEnabled"; COMMENT "---D NT21 Enable DMC (D), noise (N), triangle (T), and pulse channels (2/1)"; };
+
 LABEL { ADDR $0418; NAME "player1ScoreHundredThousands"; };
 LABEL { ADDR $0419; NAME "player1ScoreTenThousands"; };
 LABEL { ADDR $041A; NAME "player1ScoreThousands"; };
@@ -237,15 +247,15 @@ LABEL { ADDR $8315; NAME "restoreOriginalRNGSeed"; };
 LABEL { ADDR $8562; NAME "playfieldPages"; };
 LABEL { ADDR $8650; NAME "checkPositionAndClearFlagsOnCarrySet"; };
 LABEL { ADDR $86C3; SIZE $8; NAME "orientationTable"; COMMENT "this is the offset point for orientations (id * 8)
-    ; The first 8 bytes are still referenced and act as an indicator to hide pieces"; };
+; The first 8 bytes are still referenced and act as an indicator to hide pieces"; };
 LABEL { ADDR $86CB; SIZE $8; NAME "orientationForI"; };
 LABEL { ADDR $86D3; SIZE $8; NAME "orientationForT"; };
 LABEL { ADDR $86DB; SIZE $8; NAME "orientationForO"; };
 LABEL { ADDR $86E3; SIZE $8; NAME "orientationForJ"; };
 LABEL { ADDR $86EB; SIZE $8; NAME "orientationForL"; };
 LABEL { ADDR $86F3; SIZE $8; NAME "orientationTiles"; COMMENT "
-    ; this shows up as the offset point for the tiles (id * 16)
-    ; these 8 bytes are also orientationForS, but not referenced directly"; };
+; this shows up as the offset point for the tiles (id * 16)
+; these 8 bytes are also orientationForS, but not referenced directly"; };
 LABEL { ADDR $86FB; SIZE $8; NAME "orientationForZ"; };
 LABEL { ADDR $8703; SIZE $10; NAME "tilesForI"; };
 LABEL { ADDR $8713; SIZE $10; NAME "tilesForT"; };
@@ -260,8 +270,7 @@ LABEL { ADDR $8A2B; NAME "lineClearSingle"; SIZE $C; };
 LABEL { ADDR $8A37; NAME "lineClearDouble"; SIZE $C; };
 LABEL { ADDR $8A43; NAME "lineClearTriple"; SIZE $C; };
 LABEL { ADDR $8A4F; NAME "lineClearTetris"; SIZE $C; };
-LABEL { ADDR $8B37; NAME "stageCurrentAndNextSprites"; COMMENT "
-    ; generalCounter3d contains offset into oamStaging"; };
+LABEL { ADDR $8B37; NAME "stageCurrentAndNextSprites"; COMMENT "generalCounter3d contains offset into oamStaging"; };
 LABEL { ADDR $8C0F; NAME "currentPieceXOffsets"; COMMENT "40 appears to be for coop"; };
 LABEL { ADDR $8C11; NAME "nextPieceXOffsets"; COMMENT "3 = 1p, 9 = coop, F7 = 2p"; };
 LABEL { ADDR $8C15; NAME "checkPosition"; };
@@ -607,9 +616,15 @@ LABEL { ADDR $CFB1; NAME "setMusicOrSoundEffect"; };
 
 LABEL { ADDR $D010; NAME "possibleJumpTable"; SIZE $18; };
 LABEL { ADDR $D846; NAME "setupMusicTrack"; };
-
+LABEL { ADDR $D89C; NAME "writeAudioSlot1"; COMMENT "SQ1_VOL, SQ2_VOL, TRI_LINEAR or NOISE_VOL"; };
+LABEL { ADDR $D8A9; NAME "writeAudioSlot2"; COMMENT "SQ1_SWEEP, SQ2_SWEEP, unused or unused"; };
+LABEL { ADDR $D8C4; NAME "writeAudioSlot3"; COMMENT "SQ1_LO, SQ2_LO, TRI_LO or NOISE_LO"; };
+LABEL { ADDR $D8D0; NAME "writeAudioSlot4"; COMMENT "SQ1_HI, SQ2_HI, TRI_HI or NOISE_HI"; };
+LABEL { ADDR $D8DC; NAME "@ret"; };
 LABEL { ADDR $DD1E; NAME "apuRegistersLow"; };
 LABEL { ADDR $DD22; NAME "apuRegistersHigh"; };
+LABEL { ADDR $DD2A; NAME "soundChannelFlags"; COMMENT "see soundChannelFlags
+; pulse 1, pulse 2, triangle, noise (DMC unused?) "; };
 LABEL { ADDR $DD32; NAME "UnknownTable05"; };
 LABEL { ADDR $DF13; NAME "UnknownTable03"; };
 LABEL { ADDR $DF42; NAME "UnknownTable02"; };

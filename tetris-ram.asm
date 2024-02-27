@@ -80,8 +80,10 @@ player1FallTimer:	.res 1	; $006A
 player2FallTimer:	.res 1	; $006B
 .res 10
 relatesToAddrTableAB25:	.res $2	; $0076
-.res 135
-lastZeroPageAddr:	.res 1	; $00FF
+.res 126
+apuRegister:	.res $2	; $00F6
+.res 7
+audioFlags:	.res 1	; $00FF
 
 .bss
 ppuStaging:	.res $46	; $0100
@@ -124,7 +126,13 @@ lineClearTimerP2:	.res 1	; $01CF
 .res 2
 relatedToLevelUpAnimations:	.res 1	; $01D2
 stack:	.res $1D	; $01D3
-.res 552
+.res 507
+audioStagingSlot1:	.res 1	; $03EB
+audioStagingSlot3:	.res 1	; $03EC
+audioStagingSlot4:	.res 1	; $03ED
+audioStagingSlot2:	.res 1	; $03EE
+soundChannelsEnabled:	.res 1	; $03EF
+.res 40
 player1ScoreHundredThousands:	.res 1	; $0418
 player1ScoreTenThousands:	.res 1	; $0419
 player1ScoreThousands:	.res 1	; $041A

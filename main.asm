@@ -83,7 +83,11 @@ player2TetrominoOrientation:= $0069
 player1FallTimer:= $006A
 player2FallTimer:= $006B
 relatesToAddrTableAB25:= $0076
-lastZeroPageAddr:= $00FF
+apuRegister     := $00F6
+audioFlags      := $00FF                        ; 
+; https://www.nesdev.org/wiki/APU
+; AND'ed with $05, $01, $11, $21 and checks zero flag for audio registers starting at 
+; $4000, $4004, $4008 and $400C respectively
 ppuStaging      := $0100
 lineClearStatsPPUStaging:= $0190
 dasLeftPlayer1  := $01AA
@@ -120,6 +124,11 @@ lineClearTimerP1:= $01CE
 lineClearTimerP2:= $01CF
 relatedToLevelUpAnimations:= $01D2              ; see notes
 stack           := $01D3
+audioStagingSlot1:= $03EB                       ; SQ1_VOL, SQ2_VOL, TRI_LINEAR or NOISE_VOL
+audioStagingSlot3:= $03EC                       ; SQ1_LO, SQ2_LO, TRI_LO or NOISE_LO
+audioStagingSlot4:= $03ED                       ; SQ1_HI, SQ2_HI, TRI_HI or NOISE_HI
+audioStagingSlot2:= $03EE                       ; SQ1_SWEEP, SQ2_SWEEP, unused or unused
+soundChannelsEnabled:= $03EF                    ; ---D NT21 Enable DMC (D), noise (N), triangle (T), and pulse channels (2/1)
 player1ScoreHundredThousands:= $0418
 player1ScoreTenThousands:= $0419
 player1ScoreThousands:= $041A
@@ -1262,7 +1271,7 @@ L869B:
 
 ; ----------------------------------------------------------------------------
 ; this is the offset point for orientations (id * 8)
-    ; The first 8 bytes are still referenced and act as an indicator to hide pieces
+; The first 8 bytes are still referenced and act as an indicator to hide pieces
 orientationTable:
         .byte   $00,$00,$00,$00,$00,$00,$00,$00 ; 86C3 00 00 00 00 00 00 00 00  ........
 orientationForI:
@@ -1276,8 +1285,8 @@ orientationForJ:
 orientationForL:
         .byte   $E8,$00,$88,$C0,$2E,$00,$C4,$40 ; 86EB E8 00 88 C0 2E 00 C4 40  .......@
 ; 
-    ; this shows up as the offset point for the tiles (id * 16)
-    ; these 8 bytes are also orientationForS, but not referenced directly
+; this shows up as the offset point for the tiles (id * 16)
+; these 8 bytes are also orientationForS, but not referenced directly
 orientationTiles:
         .byte   $6C,$00,$8C,$40,$6C,$00,$8C,$40 ; 86F3 6C 00 8C 40 6C 00 8C 40  l..@l..@
 orientationForZ:
@@ -1842,8 +1851,7 @@ L8B0E:
         sta     ppuStagingAddress               ; 8B31 85 48                    .H
         ldy     generalCounter39                ; 8B33 A4 39                    .9
         bne     L8AF7                           ; 8B35 D0 C0                    ..
-; 
-    ; generalCounter3d contains offset into oamStaging
+; generalCounter3d contains offset into oamStaging
 stageCurrentAndNextSprites:
         lda     gameState                       ; 8B37 A5 29                    .)
         cmp     #$F9                            ; 8B39 C9 F9                    ..
@@ -8347,7 +8355,7 @@ LCF95:
         sta     $029D,x                         ; CFA4 9D 9D 02                 ...
         dex                                     ; CFA7 CA                       .
         bpl     LCF95                           ; CFA8 10 EB                    ..
-        sta     $03EF                           ; CFAA 8D EF 03                 ...
+        sta     soundChannelsEnabled            ; CFAA 8D EF 03                 ...
         sta     SND_CHN                         ; CFAD 8D 15 40                 ..@
         rts                                     ; CFB0 60                       `
 
@@ -8960,7 +8968,7 @@ LD375:
 LD397:
         lda     #$00                            ; D397 A9 00                    ..
 LD399:
-        sta     lastZeroPageAddr                ; D399 85 FF                    ..
+        sta     audioFlags                      ; D399 85 FF                    ..
         lda     $025B,x                         ; D39B BD 5B 02                 .[.
         sec                                     ; D39E 38                       8
         sbc     $0342,x                         ; D39F FD 42 03                 .B.
@@ -9045,9 +9053,9 @@ LD42B:
         sta     $039A,x                         ; D42B 9D 9A 03                 ...
         lda     $FE                             ; D42E A5 FE                    ..
         bne     LD438                           ; D430 D0 06                    ..
-        lda     lastZeroPageAddr                ; D432 A5 FF                    ..
+        lda     audioFlags                      ; D432 A5 FF                    ..
         ora     #$01                            ; D434 09 01                    ..
-        sta     lastZeroPageAddr                ; D436 85 FF                    ..
+        sta     audioFlags                      ; D436 85 FF                    ..
 LD438:
         pla                                     ; D438 68                       h
         sta     $022F,x                         ; D439 9D 2F 02                 ./.
@@ -9072,9 +9080,9 @@ LD445:
         bmi     LD46D                           ; D461 30 0A                    0.
         lda     $FE                             ; D463 A5 FE                    ..
         bne     LD46D                           ; D465 D0 06                    ..
-        lda     lastZeroPageAddr                ; D467 A5 FF                    ..
+        lda     audioFlags                      ; D467 A5 FF                    ..
         ora     #$01                            ; D469 09 01                    ..
-        sta     lastZeroPageAddr                ; D46B 85 FF                    ..
+        sta     audioFlags                      ; D46B 85 FF                    ..
 LD46D:
         lda     LDD36,y                         ; D46D B9 36 DD                 .6.
         sta     $022F,x                         ; D470 9D 2F 02                 ./.
@@ -9117,9 +9125,9 @@ LD4AE:
         sta     $0287,x                         ; D4B4 9D 87 02                 ...
         lda     $FE                             ; D4B7 A5 FE                    ..
         bne     LD4C2                           ; D4B9 D0 07                    ..
-        sta     $03EC                           ; D4BB 8D EC 03                 ...
+        sta     audioStagingSlot3               ; D4BB 8D EC 03                 ...
         lda     #$02                            ; D4BE A9 02                    ..
-        sta     lastZeroPageAddr                ; D4C0 85 FF                    ..
+        sta     audioFlags                      ; D4C0 85 FF                    ..
 LD4C2:
         jsr     LD328                           ; D4C2 20 28 D3                  (.
         lda     $03DC,x                         ; D4C5 BD DC 03                 ...
@@ -9422,39 +9430,39 @@ LD6E9:
         clc                                     ; D6F8 18                       .
         lda     $F8                             ; D6F9 A5 F8                    ..
         adc     $038F,x                         ; D6FB 7D 8F 03                 }..
-        sta     $03EC                           ; D6FE 8D EC 03                 ...
+        sta     audioStagingSlot3               ; D6FE 8D EC 03                 ...
         tya                                     ; D701 98                       .
         adc     $039A,x                         ; D702 7D 9A 03                 }..
-        sta     $03ED                           ; D705 8D ED 03                 ...
+        sta     audioStagingSlot4               ; D705 8D ED 03                 ...
         lda     $FE                             ; D708 A5 FE                    ..
         bne     LD728                           ; D70A D0 1C                    ..
-        lda     $03EC                           ; D70C AD EC 03                 ...
+        lda     audioStagingSlot3               ; D70C AD EC 03                 ...
         cmp     $0245,x                         ; D70F DD 45 02                 .E.
         beq     LD71A                           ; D712 F0 06                    ..
         lda     #$10                            ; D714 A9 10                    ..
-        ora     lastZeroPageAddr                ; D716 05 FF                    ..
-        sta     lastZeroPageAddr                ; D718 85 FF                    ..
+        ora     audioFlags                      ; D716 05 FF                    ..
+        sta     audioFlags                      ; D718 85 FF                    ..
 LD71A:
-        lda     $03ED                           ; D71A AD ED 03                 ...
+        lda     audioStagingSlot4               ; D71A AD ED 03                 ...
         cmp     $0250,x                         ; D71D DD 50 02                 .P.
         beq     LD728                           ; D720 F0 06                    ..
         lda     #$20                            ; D722 A9 20                    . 
-        ora     lastZeroPageAddr                ; D724 05 FF                    ..
-        sta     lastZeroPageAddr                ; D726 85 FF                    ..
+        ora     audioFlags                      ; D724 05 FF                    ..
+        sta     audioFlags                      ; D726 85 FF                    ..
 LD728:
-        lda     $03EC                           ; D728 AD EC 03                 ...
+        lda     audioStagingSlot3               ; D728 AD EC 03                 ...
         sta     $0245,x                         ; D72B 9D 45 02                 .E.
-        lda     $03ED                           ; D72E AD ED 03                 ...
+        lda     audioStagingSlot4               ; D72E AD ED 03                 ...
         sta     $0250,x                         ; D731 9D 50 02                 .P.
         lda     $036E,x                         ; D734 BD 6E 03                 .n.
         and     #$20                            ; D737 29 20                    ) 
         bne     LD743                           ; D739 D0 08                    ..
-        lda     $03ED                           ; D73B AD ED 03                 ...
+        lda     audioStagingSlot4               ; D73B AD ED 03                 ...
         ora     #$08                            ; D73E 09 08                    ..
-        sta     $03ED                           ; D740 8D ED 03                 ...
+        sta     audioStagingSlot4               ; D740 8D ED 03                 ...
 LD743:
         lda     $0379,x                         ; D743 BD 79 03                 .y.
-        sta     $03EE                           ; D746 8D EE 03                 ...
+        sta     audioStagingSlot2               ; D746 8D EE 03                 ...
 LD749:
         lda     $02B3,x                         ; D749 BD B3 02                 ...
         sta     $F4                             ; D74C 85 F4                    ..
@@ -9533,8 +9541,8 @@ LD7C6:
         lda     $FE                             ; D7CF A5 FE                    ..
         bne     LD7D9                           ; D7D1 D0 06                    ..
         lda     #$04                            ; D7D3 A9 04                    ..
-        ora     lastZeroPageAddr                ; D7D5 05 FF                    ..
-        sta     lastZeroPageAddr                ; D7D7 85 FF                    ..
+        ora     audioFlags                      ; D7D5 05 FF                    ..
+        sta     audioFlags                      ; D7D7 85 FF                    ..
 LD7D9:
         lda     $02D4,x                         ; D7D9 BD D4 02                 ...
 LD7DC:
@@ -9545,8 +9553,8 @@ LD7DC:
         lda     $FE                             ; D7E5 A5 FE                    ..
         bne     LD7EF                           ; D7E7 D0 06                    ..
         lda     #$04                            ; D7E9 A9 04                    ..
-        ora     lastZeroPageAddr                ; D7EB 05 FF                    ..
-        sta     lastZeroPageAddr                ; D7ED 85 FF                    ..
+        ora     audioFlags                      ; D7EB 05 FF                    ..
+        sta     audioFlags                      ; D7ED 85 FF                    ..
 LD7EF:
         pla                                     ; D7EF 68                       h
         clc                                     ; D7F0 18                       .
@@ -9590,11 +9598,11 @@ LD829:
         lda     $FE                             ; D829 A5 FE                    ..
         bne     LD838                           ; D82B D0 0B                    ..
         lda     #$02                            ; D82D A9 02                    ..
-        ora     lastZeroPageAddr                ; D82F 05 FF                    ..
-        sta     lastZeroPageAddr                ; D831 85 FF                    ..
+        ora     audioFlags                      ; D82F 05 FF                    ..
+        sta     audioFlags                      ; D831 85 FF                    ..
         lda     #$B0                            ; D833 A9 B0                    ..
 LD835:
-        sta     $03EB                           ; D835 8D EB 03                 ...
+        sta     audioStagingSlot1               ; D835 8D EB 03                 ...
 LD838:
         lda     $03DC,x                         ; D838 BD DC 03                 ...
         beq     LD845                           ; D83B F0 08                    ..
@@ -9610,9 +9618,9 @@ LD845:
 ; ----------------------------------------------------------------------------
 setupMusicTrack:
         lda     apuRegistersLow,x               ; D846 BD 1E DD                 ...
-        sta     $F6                             ; D849 85 F6                    ..
+        sta     apuRegister                     ; D849 85 F6                    ..
         lda     apuRegistersHigh,x              ; D84B BD 22 DD                 .".
-        sta     $F7                             ; D84E 85 F7                    ..
+        sta     apuRegister+1                   ; D84E 85 F7                    ..
         lda     LDD26,x                         ; D850 BD 26 DD                 .&.
         sta     $03F3                           ; D853 8D F3 03                 ...
         bne     LD85B                           ; D856 D0 03                    ..
@@ -9641,9 +9649,9 @@ LD86A:
         lda     LDD2E,x                         ; D86C BD 2E DD                 ...
         tay                                     ; D86F A8                       .
         ldx     #$00                            ; D870 A2 00                    ..
-        stx     $03EB                           ; D872 8E EB 03                 ...
+        stx     audioStagingSlot1               ; D872 8E EB 03                 ...
         stx     $03F0                           ; D875 8E F0 03                 ...
-        stx     lastZeroPageAddr                ; D878 86 FF                    ..
+        stx     audioFlags                      ; D878 86 FF                    ..
         ldx     $03DC,y                         ; D87A BE DC 03                 ...
         beq     LD8DD                           ; D87D F0 5E                    .^
         dex                                     ; D87F CA                       .
@@ -9652,10 +9660,10 @@ LD86A:
         lda     $03F0                           ; D886 AD F0 03                 ...
         cmp     $FA                             ; D889 C5 FA                    ..
         bcc     LD8DD                           ; D88B 90 50                    .P
-        lda     lastZeroPageAddr                ; D88D A5 FF                    ..
+        lda     audioFlags                      ; D88D A5 FF                    ..
         and     #$35                            ; D88F 29 35                    )5
-        bne     LD89C                           ; D891 D0 09                    ..
-        lda     lastZeroPageAddr                ; D893 A5 FF                    ..
+        bne     writeAudioSlot1                 ; D891 D0 09                    ..
+        lda     audioFlags                      ; D893 A5 FF                    ..
         and     #$02                            ; D895 29 02                    ).
         bne     LD8DD                           ; D897 D0 44                    .D
         pla                                     ; D899 68                       h
@@ -9663,51 +9671,55 @@ LD86A:
         rts                                     ; D89B 60                       `
 
 ; ----------------------------------------------------------------------------
-LD89C:
-        lda     lastZeroPageAddr                ; D89C A5 FF                    ..
+; SQ1_VOL, SQ2_VOL, TRI_LINEAR or NOISE_VOL
+writeAudioSlot1:
+        lda     audioFlags                      ; D89C A5 FF                    ..
         and     #$05                            ; D89E 29 05                    ).
-        beq     LD8A9                           ; D8A0 F0 07                    ..
-        lda     $03EB                           ; D8A2 AD EB 03                 ...
+        beq     writeAudioSlot2                 ; D8A0 F0 07                    ..
+        lda     audioStagingSlot1               ; D8A2 AD EB 03                 ...
         ldy     #$00                            ; D8A5 A0 00                    ..
-        sta     ($F6),y                         ; D8A7 91 F6                    ..
-LD8A9:
+        sta     (apuRegister),y                 ; D8A7 91 F6                    ..
+; SQ1_SWEEP, SQ2_SWEEP, unused or unused
+writeAudioSlot2:
         ldy     #$01                            ; D8A9 A0 01                    ..
         pla                                     ; D8AB 68                       h
         tax                                     ; D8AC AA                       .
-        lda     lastZeroPageAddr                ; D8AD A5 FF                    ..
+        lda     audioFlags                      ; D8AD A5 FF                    ..
         and     #$01                            ; D8AF 29 01                    ).
-        beq     LD8C4                           ; D8B1 F0 11                    ..
-        lda     LDD2A,x                         ; D8B3 BD 2A DD                 .*.
-        ora     $03EF                           ; D8B6 0D EF 03                 ...
-        sta     $03EF                           ; D8B9 8D EF 03                 ...
+        beq     writeAudioSlot3                 ; D8B1 F0 11                    ..
+        lda     soundChannelFlags,x             ; D8B3 BD 2A DD                 .*.
+        ora     soundChannelsEnabled            ; D8B6 0D EF 03                 ...
+        sta     soundChannelsEnabled            ; D8B9 8D EF 03                 ...
         sta     SND_CHN                         ; D8BC 8D 15 40                 ..@
-        lda     $03EE                           ; D8BF AD EE 03                 ...
-        sta     ($F6),y                         ; D8C2 91 F6                    ..
-LD8C4:
+        lda     audioStagingSlot2               ; D8BF AD EE 03                 ...
+        sta     (apuRegister),y                 ; D8C2 91 F6                    ..
+; SQ1_LO, SQ2_LO, TRI_LO or NOISE_LO
+writeAudioSlot3:
         iny                                     ; D8C4 C8                       .
-        lda     lastZeroPageAddr                ; D8C5 A5 FF                    ..
+        lda     audioFlags                      ; D8C5 A5 FF                    ..
         and     #$11                            ; D8C7 29 11                    ).
-        beq     LD8D0                           ; D8C9 F0 05                    ..
-        lda     $03EC                           ; D8CB AD EC 03                 ...
-        sta     ($F6),y                         ; D8CE 91 F6                    ..
-LD8D0:
+        beq     writeAudioSlot4                 ; D8C9 F0 05                    ..
+        lda     audioStagingSlot3               ; D8CB AD EC 03                 ...
+        sta     (apuRegister),y                 ; D8CE 91 F6                    ..
+; SQ1_HI, SQ2_HI, TRI_HI or NOISE_HI
+writeAudioSlot4:
         iny                                     ; D8D0 C8                       .
-        lda     lastZeroPageAddr                ; D8D1 A5 FF                    ..
+        lda     audioFlags                      ; D8D1 A5 FF                    ..
         and     #$21                            ; D8D3 29 21                    )!
-        beq     LD8DC                           ; D8D5 F0 05                    ..
-        lda     $03ED                           ; D8D7 AD ED 03                 ...
-        sta     ($F6),y                         ; D8DA 91 F6                    ..
-LD8DC:
+        beq     @ret                            ; D8D5 F0 05                    ..
+        lda     audioStagingSlot4               ; D8D7 AD ED 03                 ...
+        sta     (apuRegister),y                 ; D8DA 91 F6                    ..
+@ret:
         rts                                     ; D8DC 60                       `
 
 ; ----------------------------------------------------------------------------
 LD8DD:
         pla                                     ; D8DD 68                       h
         tax                                     ; D8DE AA                       .
-        lda     LDD2A,x                         ; D8DF BD 2A DD                 .*.
+        lda     soundChannelFlags,x             ; D8DF BD 2A DD                 .*.
         eor     #$FF                            ; D8E2 49 FF                    I.
-        and     $03EF                           ; D8E4 2D EF 03                 -..
-        sta     $03EF                           ; D8E7 8D EF 03                 ...
+        and     soundChannelsEnabled            ; D8E4 2D EF 03                 -..
+        sta     soundChannelsEnabled            ; D8E7 8D EF 03                 ...
         sta     SND_CHN                         ; D8EA 8D 15 40                 ..@
         rts                                     ; D8ED 60                       `
 
@@ -10465,7 +10477,9 @@ apuRegistersHigh:
         .byte   $40,$40,$40,$40                 ; DD22 40 40 40 40              @@@@
 LDD26:
         .byte   $00,$00,$01,$02                 ; DD26 00 00 01 02              ....
-LDD2A:
+; see soundChannelFlags
+; pulse 1, pulse 2, triangle, noise (DMC unused?) 
+soundChannelFlags:
         .byte   $01,$02,$04,$08                 ; DD2A 01 02 04 08              ....
 LDD2E:
         .byte   $0B,$0C,$0D,$0E                 ; DD2E 0B 0C 0D 0E              ....
