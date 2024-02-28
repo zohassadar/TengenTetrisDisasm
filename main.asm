@@ -3664,7 +3664,7 @@ endPlayfieldInit:
 initHandicapGarbage:
         tay                                     ; 984C A8                       .
         stx     generalCounter38                ; 984D 86 38                    .8
-        lda     L98A6,y                         ; 984F B9 A6 98                 ...
+        lda     garbageHeightData-1,y                         ; 984F B9 A6 98                 ...
         tay                                     ; 9852 A8                       .
         lda     playfieldPages,x                ; 9853 BD 62 85                 .b.
         sta     generalCounter3b                ; 9856 85 3B                    .;
@@ -3710,7 +3710,6 @@ L989E:
         cpy     #$D0                            ; 989E C0 D0                    ..
         bne     L9864                           ; 98A0 D0 C2                    ..
         ldx     generalCounter38                ; 98A2 A6 38                    .8
-L98A6           := * + 2
         jmp     L8ADB                           ; 98A4 4C DB 8A                 L..
 
 ; ----------------------------------------------------------------------------
@@ -6308,9 +6307,9 @@ LACF3:
         inx                                     ; AD00 E8                       .
         bne     LACF3                           ; AD01 D0 F0                    ..
 LAD03:
-        lda     LAD23,y                         ; AD03 B9 23 AD                 .#.
+        lda     unknownAddressTable-2,y                         ; AD03 B9 23 AD                 .#.
         sta     generalCounter36                ; AD06 85 36                    .6
-        lda     LAD24,y                         ; AD08 B9 24 AD                 .$.
+        lda     unknownAddressTable-1,y                         ; AD08 B9 24 AD                 .$.
         sta     generalCounter37                ; AD0B 85 37                    .7
         ldx     #$4C                            ; AD0D A2 4C                    .L
         ldy     #$00                            ; AD0F A0 00                    ..
@@ -6325,12 +6324,11 @@ LAD11:
         inx                                     ; AD1E E8                       .
         iny                                     ; AD1F C8                       .
         cpy     #$2D                            ; AD20 C0 2D                    .-
-LAD23           := * + 1
         bcc     LAD11                           ; AD22 90 ED                    ..
-LAD24:
         rts                                     ; AD24 60                       `
 
 ; ----------------------------------------------------------------------------
+unknownAddressTable:
         .addr   LAD45                           ; AD25 45 AD                    E.
         .addr   LAD72                           ; AD27 72 AD                    r.
         .addr   LAD9F                           ; AD29 9F AD                    ..

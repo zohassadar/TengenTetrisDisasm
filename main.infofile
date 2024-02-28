@@ -555,6 +555,8 @@ LABEL { ADDR $AC96; NAME "relatedToGfxTable3_13"; };
 LABEL { ADDR $AC99; NAME "relatedToGfxTable3_14"; };
 LABEL { ADDR $AC9C; NAME "relatedToGfxTable3_15"; };
 
+LABEL { ADDR $AD25; NAME "unknownAddressTable"; };
+
 LABEL { ADDR $B369; NAME "drawCathedralSprites"; };
 LABEL { ADDR $B36B; NAME "cathedralCheckComplete"; };
 LABEL { ADDR $B371; NAME "drawCathedralSpriteTile"; };
