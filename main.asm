@@ -4374,22 +4374,22 @@ L9CC1:
         ldx     #$02                            ; 9CE6 A2 02                    ..
 L9CE8:
         ldy     generalCounter36                ; 9CE8 A4 36                    .6
-        jsr     L9D3A                           ; 9CEA 20 3A 9D                  :.
+        jsr     possibleComputerChoosingMove    ; 9CEA 20 3A 9D                  :.
         lda     generalCounter36                ; 9CED A5 36                    .6
         clc                                     ; 9CEF 18                       .
         adc     #$04                            ; 9CF0 69 04                    i.
         tay                                     ; 9CF2 A8                       .
-        jsr     L9D3A                           ; 9CF3 20 3A 9D                  :.
+        jsr     possibleComputerChoosingMove    ; 9CF3 20 3A 9D                  :.
         lda     generalCounter36                ; 9CF6 A5 36                    .6
         clc                                     ; 9CF8 18                       .
         adc     #$08                            ; 9CF9 69 08                    i.
         tay                                     ; 9CFB A8                       .
-        jsr     L9D3A                           ; 9CFC 20 3A 9D                  :.
+        jsr     possibleComputerChoosingMove    ; 9CFC 20 3A 9D                  :.
         lda     generalCounter36                ; 9CFF A5 36                    .6
         clc                                     ; 9D01 18                       .
         adc     #$0C                            ; 9D02 69 0C                    i.
         tay                                     ; 9D04 A8                       .
-        jsr     L9D3A                           ; 9D05 20 3A 9D                  :.
+        jsr     possibleComputerChoosingMove    ; 9D05 20 3A 9D                  :.
         inx                                     ; 9D08 E8                       .
         cpx     #$0E                            ; 9D09 E0 0E                    ..
         bcc     L9CE8                           ; 9D0B 90 DB                    ..
@@ -4418,9 +4418,10 @@ L9D36:
         rts                                     ; 9D39 60                       `
 
 ; ----------------------------------------------------------------------------
-L9D3A:
+; when first 3 bytes are replaced with rts nop nop, computer moves pieces to the left only
+possibleComputerChoosingMove:
         stx     $07F0                           ; 9D3A 8E F0 07                 ...
-        lda     ppuAddressTable1+47,y           ; 9D3D B9 DA A0                 ...
+        lda     computerMoveSelectTableOffsetBy18+1,y; 9D3D B9 DA A0            ...
         cmp     #$80                            ; 9D40 C9 80                    ..
         beq     L9D76                           ; 9D42 F0 32                    .2
         inc     $07F0                           ; 9D44 EE F0 07                 ...
@@ -4428,7 +4429,7 @@ L9D3A:
         adc     $07E0,x                         ; 9D48 7D E0 07                 }..
         cmp     $07E1,x                         ; 9D4B DD E1 07                 ...
         bne     L9DA3                           ; 9D4E D0 53                    .S
-        lda     ppuAddressTable1+47+1,y         ; 9D50 B9 DB A0                 ...
+        lda     computerMoveSelectTableOffsetBy18+1+1,y; 9D50 B9 DB A0          ...
         cmp     #$80                            ; 9D53 C9 80                    ..
         beq     L9D76                           ; 9D55 F0 1F                    ..
         inc     $07F0                           ; 9D57 EE F0 07                 ...
@@ -4436,7 +4437,7 @@ L9D3A:
         adc     $07E0,x                         ; 9D5B 7D E0 07                 }..
         cmp     $07E2,x                         ; 9D5E DD E2 07                 ...
         bne     L9DA3                           ; 9D61 D0 40                    .@
-        lda     ppuAddressTable1+47+1+1,y       ; 9D63 B9 DC A0                 ...
+        lda     computerMoveSelectTableOffsetBy18+1+1+1,y; 9D63 B9 DC A0        ...
         cmp     #$80                            ; 9D66 C9 80                    ..
         beq     L9D76                           ; 9D68 F0 0C                    ..
         inc     $07F0                           ; 9D6A EE F0 07                 ...
@@ -4454,7 +4455,7 @@ L9D76:
         sec                                     ; 9D87 38                       8
         sbc     $07F0                           ; 9D88 ED F0 07                 ...
         clc                                     ; 9D8B 18                       .
-        adc     ppuAddressTable1+46,y           ; 9D8C 79 D9 A0                 y..
+        adc     computerMoveSelectTableOffsetBy18,y; 9D8C 79 D9 A0              y..
         cmp     $07FC                           ; 9D8F CD FC 07                 ...
         bcc     L9DA2                           ; 9D92 90 0E                    ..
         sta     $07FC                           ; 9D94 8D FC 07                 ...
@@ -4472,7 +4473,7 @@ L9DA3:
         stx     $07F0                           ; 9DA3 8E F0 07                 ...
         lda     $07E0,x                         ; 9DA6 BD E0 07                 ...
         sta     generalCounter37                ; 9DA9 85 37                    .7
-        lda     ppuAddressTable1+47,y           ; 9DAB B9 DA A0                 ...
+        lda     computerMoveSelectTableOffsetBy18+1,y; 9DAB B9 DA A0            ...
         cmp     #$80                            ; 9DAE C9 80                    ..
         beq     L9DFF                           ; 9DB0 F0 4D                    .M
         cpx     #$0C                            ; 9DB2 E0 0C                    ..
@@ -4486,7 +4487,7 @@ L9DA3:
         adc     generalCounter37                ; 9DC3 65 37                    e7
         sta     generalCounter37                ; 9DC5 85 37                    .7
 L9DC7:
-        lda     ppuAddressTable1+47+1,y         ; 9DC7 B9 DB A0                 ...
+        lda     computerMoveSelectTableOffsetBy18+1+1,y; 9DC7 B9 DB A0          ...
         cmp     #$80                            ; 9DCA C9 80                    ..
         beq     L9DFF                           ; 9DCC F0 31                    .1
         cpx     #$0C                            ; 9DCE E0 0C                    ..
@@ -4500,7 +4501,7 @@ L9DC7:
         adc     generalCounter37                ; 9DDF 65 37                    e7
         sta     generalCounter37                ; 9DE1 85 37                    .7
 L9DE3:
-        lda     ppuAddressTable1+47+1+1,y       ; 9DE3 B9 DC A0                 ...
+        lda     computerMoveSelectTableOffsetBy18+1+1+1,y; 9DE3 B9 DC A0        ...
         cmp     #$80                            ; 9DE6 C9 80                    ..
         beq     L9DFF                           ; 9DE8 F0 15                    ..
         cpx     #$0C                            ; 9DEA E0 0C                    ..
@@ -4526,7 +4527,7 @@ L9DFF:
         cmp     #$20                            ; 9E15 C9 20                    . 
         bcc     L9E30                           ; 9E17 90 17                    ..
         clc                                     ; 9E19 18                       .
-        adc     ppuAddressTable1+46,y           ; 9E1A 79 D9 A0                 y..
+        adc     computerMoveSelectTableOffsetBy18,y; 9E1A 79 D9 A0              y..
         cmp     $07FD                           ; 9E1D CD FD 07                 ...
         bcc     L9E30                           ; 9E20 90 0E                    ..
         sta     $07FD                           ; 9E22 8D FD 07                 ...
@@ -4860,11 +4861,11 @@ LA055:
         adc     menuGameMode,y                  ; A056 79 F0 04                 y..
         cmp     #$FF                            ; A059 C9 FF                    ..
         bne     LA063                           ; A05B D0 06                    ..
-        lda     LA0E3,y                         ; A05D B9 E3 A0                 ...
+        lda     computerMoveSelectTable,y       ; A05D B9 E3 A0                 ...
         sec                                     ; A060 38                       8
         sbc     #$01                            ; A061 E9 01                    ..
 LA063:
-        cmp     LA0E3,y                         ; A063 D9 E3 A0                 ...
+        cmp     computerMoveSelectTable,y       ; A063 D9 E3 A0                 ...
         bcc     LA06A                           ; A066 90 02                    ..
         lda     #$00                            ; A068 A9 00                    ..
 LA06A:
@@ -4876,17 +4877,17 @@ LA06F:
         sty     generalCounter36                ; A073 84 36                    .6
         lda     menuGameMode,y                  ; A075 B9 F0 04                 ...
         clc                                     ; A078 18                       .
-        adc     LA0DD,y                         ; A079 79 DD A0                 y..
+        adc     arrowPpuAddrOffsets,y           ; A079 79 DD A0                 y..
         asl     a                               ; A07C 0A                       .
         tay                                     ; A07D A8                       .
-        lda     ppuAddressTable1,y              ; A07E B9 AB A0                 ...
+        lda     gameSelectArrowPpuAddrs,y       ; A07E B9 AB A0                 ...
         sta     renderSlot0Addr,x               ; A081 95 16                    ..
-        lda     ppuAddressTable1+1,y            ; A083 B9 AC A0                 ...
+        lda     gameSelectArrowPpuAddrs+1,y     ; A083 B9 AC A0                 ...
         sta     renderSlot0Addr+1,x             ; A086 95 17                    ..
         pla                                     ; A088 68                       h
         beq     LA090                           ; A089 F0 05                    ..
         ldy     generalCounter36                ; A08B A4 36                    .6
-        lda     LA0A5,y                         ; A08D B9 A5 A0                 ...
+        lda     menuArrowTables,y               ; A08D B9 A5 A0                 ...
 LA090:
         ldy     #$00                            ; A090 A0 00                    ..
         sta     (ppuStagingAddress),y           ; A092 91 48                    .H
@@ -4901,21 +4902,30 @@ LA090:
         rts                                     ; A0A4 60                       `
 
 ; ----------------------------------------------------------------------------
-LA0A5:
+; $3E = right arrow.  $3F = left arrow
+menuArrowTables:
         .byte   $3E,$3E,$3F,$3E,$3F,$3E         ; A0A5 3E 3E 3F 3E 3F 3E        >>?>?>
 ; ----------------------------------------------------------------------------
-ppuAddressTable1:
+gameSelectArrowPpuAddrs:
         .word   $220A,$222A,$224A,$226A         ; A0AB 0A 22 2A 22 4A 22 6A 22  ."*"J"j"
-        .word   $228A,$218D,$21AD,$21CD         ; A0B3 8A 22 8D 21 AD 21 CD 21  .".!.!.!
-        .word   $21ED,$220D,$222D,$224D         ; A0BB ED 21 0D 22 2D 22 4D 22  .!."-"M"
-        .word   $226D,$228D,$22AD,$2191         ; A0C3 6D 22 8D 22 AD 22 91 21  m".".".!
-        .word   $21B1,$21D1,$21F1,$2211         ; A0CB B1 21 D1 21 F1 21 11 22  .!.!.!."
-        .word   $2231,$2251,$2271,$2291         ; A0D3 31 22 51 22 71 22 91 22  1"Q"q"."
-        .word   $22B1                           ; A0DB B1 22                    ."
+        .word   $228A                           ; A0B3 8A 22                    ."
+p1levelSelectArrowPpuAddrs:
+        .word   $218D,$21AD,$21CD,$21ED         ; A0B5 8D 21 AD 21 CD 21 ED 21  .!.!.!.!
+        .word   $220D,$222D,$224D,$226D         ; A0BD 0D 22 2D 22 4D 22 6D 22  ."-"M"m"
+        .word   $228D,$22AD                     ; A0C5 8D 22 AD 22              ."."
+p2levelSelectArrowPpuAddrs:
+        .word   $2191,$21B1,$21D1,$21F1         ; A0C9 91 21 B1 21 D1 21 F1 21  .!.!.!.!
+        .word   $2211,$2231,$2251,$2271         ; A0D1 11 22 31 22 51 22 71 22  ."1"Q"q"
+; This overlaps with p2levelSelectArrowPpuAddrs
+; it appears that the offset is at least 18 when referenced
+; not 100% certain this table is related to computer moves
+computerMoveSelectTableOffsetBy18:
+        .word   $2291,$22B1                     ; A0D9 91 22 B1 22              ."."
 ; ----------------------------------------------------------------------------
-LA0DD:
+; used to select which of the above tables
+arrowPpuAddrOffsets:
         .byte   $00,$05,$0F,$05,$0F,$05         ; A0DD 00 05 0F 05 0F 05        ......
-LA0E3:
+computerMoveSelectTable:
         .byte   $05,$0A,$0A,$05,$05,$05,$00,$00 ; A0E3 05 0A 0A 05 05 05 00 00  ........
         .byte   $00,$00,$F8,$80,$80,$80,$FE,$00 ; A0EB 00 00 F8 80 80 80 FE 00  ........
         .byte   $00,$00,$F6,$80,$80,$80,$09,$08 ; A0F3 00 00 F6 80 80 80 09 08  ........

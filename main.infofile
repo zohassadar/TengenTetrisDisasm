@@ -321,6 +321,7 @@ LABEL { ADDR $9F51; NAME "playModeTable"; COMMENT "1p, 2p, coop, vs comp, with c
 LABEL { ADDR $9C0B; NAME "moveScreenUpOrDown"; };
 LABEL { ADDR $9C2A; NAME "@bothUpsNotPressed"; };
 LABEL { ADDR $9C35; NAME "@bothDownsNotPressed"; };
+LABEL { ADDR $9D3A; NAME "possibleComputerChoosingMove"; COMMENT "when first 3 bytes are replaced with rts nop nop, computer moves pieces to the left only"; };
 LABEL { ADDR $9E61; NAME "initializeTitleScreen"; };
 LABEL { ADDR $9EB0; NAME "setCNROMBank"; };
 LABEL { ADDR $9EBC; NAME "initializeGameSelectMenu"; };
@@ -333,6 +334,10 @@ LABEL { ADDR $A02C; NAME "@branchOnModeGameTypeMenu"; };
 LABEL { ADDR $A02F; NAME "@branchOnModeLevelMenu"; };
 LABEL { ADDR $A032; NAME "@branchOnModeHandicapMenu"; };
 LABEL { ADDR $A043; NAME "musicSelectTable"; };
+LABEL { ADDR $A0D9; NAME "computerMoveSelectTableOffsetBy18"; COMMENT "This overlaps with p2levelSelectArrowPpuAddrs
+; it appears that the offset is at least 18 when referenced
+; not 100% certain this table is related to computer moves"; };
+LABEL { ADDR $A0E3; NAME "computerMoveSelectTable"; };
 LABEL { ADDR $A19B; NAME "ppuPatchGameSelect"; };
 LABEL { ADDR $A1A9; NAME "ppuPatch1Player"; };
 LABEL { ADDR $A1B4; NAME "ppuPatch2Player"; };
@@ -751,9 +756,12 @@ RANGE { START $9F56; END $A042; TYPE CODE; };
 
 RANGE { START $A043; END $A047; TYPE BYTETABLE; };
 RANGE { START $A048; END $A0A4; TYPE CODE; };
-RANGE { START $A0A5; END $A0AA; TYPE BYTETABLE; };
-RANGE { START $A0AB; END $A0DC; TYPE WORDTABLE; NAME "ppuAddressTable1"; };
-RANGE { START $A0DD; END $A158; TYPE BYTETABLE; };
+RANGE { START $A0A5; END $A0AA; TYPE BYTETABLE; NAME "menuArrowTables"; COMMENT "$3E = right arrow.  $3F = left arrow"; };
+RANGE { START $A0AB; END $A0B4; TYPE WORDTABLE; NAME "gameSelectArrowPpuAddrs"; };
+RANGE { START $A0B5; END $A0C8; TYPE WORDTABLE; NAME "p1levelSelectArrowPpuAddrs"; };
+RANGE { START $A0C9; END $A0DC; TYPE WORDTABLE; NAME "p2levelSelectArrowPpuAddrs"; };
+RANGE { START $A0DD; END $A0E2; TYPE BYTETABLE; NAME "arrowPpuAddrOffsets"; COMMENT "used to select which of the above tables"; };
+RANGE { START $A0E3; END $A158; TYPE BYTETABLE; };
 RANGE { START $A159; END $A188; TYPE CODE; };
 RANGE { START $A189; END $A19A; TYPE AddrTable; };
 RANGE { START $A19B; END $A3C1; TYPE BYTETABLE; };
