@@ -11950,12 +11950,14 @@ LFE91:
         .byte   $00,$00,$00,$00,$00             ; FFF1 00 00 00 00 00           .....
 cnromBank2or3:
         .byte   $02,$03                         ; FFF6 02 03                    ..
-unknownData02:
-        .byte   $11,$A9                         ; FFF8 11 A9                    ..
 ; ----------------------------------------------------------------------------
+; need confirmation
+unusedResetVector:
+        .addr   reset                           ; FFF8 11 A9                    ..
 
 .segment        "VECTORS": absolute
 
+vectors:
         .addr   nmi                             ; FFFA AC A7                    ..
         .addr   reset                           ; FFFC 11 A9                    ..
         .addr   reset                           ; FFFE 11 A9                    ..
