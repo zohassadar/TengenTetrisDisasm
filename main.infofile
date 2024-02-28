@@ -311,6 +311,7 @@ LABEL { ADDR $99EE; NAME "genNextPseudoRandom5x"; };
 LABEL { ADDR $99F4; NAME "genNextPseudoRandom3x"; };
 LABEL { ADDR $99F7; NAME "genNextPseudoRandom2x"; };
 LABEL { ADDR $99FA; NAME "genNextPseudoRandom"; };
+LABEL { ADDR $9A0D; NAME "shuffleRngSeed5x"; };
 LABEL { ADDR $9B36; NAME "possibleFallTimerTable"; };
 LABEL { ADDR $99EB; SIZE $2; NAME "coopTetrominoX"; };
 LABEL { ADDR $9BFC; NAME "loadComputerInputOrMoveScreen"; };
@@ -554,8 +555,12 @@ LABEL { ADDR $AC93; NAME "relatedToGfxTable3_12"; };
 LABEL { ADDR $AC96; NAME "relatedToGfxTable3_13"; };
 LABEL { ADDR $AC99; NAME "relatedToGfxTable3_14"; };
 LABEL { ADDR $AC9C; NAME "relatedToGfxTable3_15"; };
-
-LABEL { ADDR $AD25; NAME "unknownAddressTable"; };
+LABEL { ADDR $ACF1; NAME "makeFireworksSparkle"; };
+LABEL { ADDR $ACF3; NAME "@chooseRandomPalette";};
+LABEL { ADDR $AD03; NAME "setFireworksTileFlag"; COMMENT "This section uses the tables below to set $04 in the attribute byte
+; $04 is an unused bit for the PPU
+; This determines whether or not a tile is set at AA51"; };
+LABEL { ADDR $AD25; NAME "fireworksSparkleTable"; };
 
 LABEL { ADDR $B369; NAME "drawCathedralSprites"; };
 LABEL { ADDR $B36B; NAME "cathedralCheckComplete"; };

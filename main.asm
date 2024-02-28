@@ -3946,7 +3946,7 @@ L9A06:
         rts                                     ; 9A0C 60                       `
 
 ; ----------------------------------------------------------------------------
-L9A0D:
+shuffleRngSeed5x:
         stx     generalCounter3b                ; 9A0D 86 3B                    .;
         ldx     #$34                            ; 9A0F A2 34                    .4
         jsr     genNextPseudoRandom5x           ; 9A11 20 EE 99                  ..
@@ -5849,7 +5849,7 @@ LA9FD:
         cmp     #$04                            ; AA0F C9 04                    ..
         bcs     LA9E2                           ; AA11 B0 CF                    ..
 LAA13:
-        jsr     L9A0D                           ; AA13 20 0D 9A                  ..
+        jsr     shuffleRngSeed5x                ; AA13 20 0D 9A                  ..
         and     #$3F                            ; AA16 29 3F                    )?
         adc     #$08                            ; AA18 69 08                    i.
         sta     player2FallTimer                ; AA1A 85 6B                    .k
@@ -5914,12 +5914,12 @@ LAA70:
         lda     #$00                            ; AA72 A9 00                    ..
         cpy     #$FA                            ; AA74 C0 FA                    ..
         beq     LAA89                           ; AA76 F0 11                    ..
-        jsr     L9A0D                           ; AA78 20 0D 9A                  ..
+        jsr     shuffleRngSeed5x                ; AA78 20 0D 9A                  ..
         and     #$03                            ; AA7B 29 03                    ).
         tay                                     ; AA7D A8                       .
         lda     topoutSoundsTable,y             ; AA7E B9 6C AA                 .l.
         jsr     setMusicOrSoundEffect           ; AA81 20 B1 CF                  ..
-        jsr     L9A0D                           ; AA84 20 0D 9A                  ..
+        jsr     shuffleRngSeed5x                ; AA84 20 0D 9A                  ..
         and     #$06                            ; AA87 29 06                    ).
 LAA89:
         tay                                     ; AA89 A8                       .
@@ -5957,7 +5957,7 @@ LAABD:
         pla                                     ; AAC7 68                       h
         dey                                     ; AAC8 88                       .
         bne     LAAA4                           ; AAC9 D0 D9                    ..
-        jsr     L9A0D                           ; AACB 20 0D 9A                  ..
+        jsr     shuffleRngSeed5x                ; AACB 20 0D 9A                  ..
         cmp     #$2C                            ; AACE C9 2C                    .,
         bcs     LAAD4                           ; AAD0 B0 02                    ..
         lda     #$2C                            ; AAD2 A9 2C                    .,
@@ -5991,7 +5991,7 @@ LAAFE:
         inx                                     ; AB04 E8                       .
         dey                                     ; AB05 88                       .
         bne     LAAE1                           ; AB06 D0 D9                    ..
-        jsr     L9A0D                           ; AB08 20 0D 9A                  ..
+        jsr     shuffleRngSeed5x                ; AB08 20 0D 9A                  ..
         and     #$03                            ; AB0B 29 03                    ).
         ora     #$24                            ; AB0D 09 24                    .$
         ldx     #$4C                            ; AB0F A2 4C                    .L
@@ -6253,24 +6253,24 @@ LACA0:
         asl     a                               ; ACA0 0A                       .
         tay                                     ; ACA1 A8                       .
         cpy     #$10                            ; ACA2 C0 10                    ..
-        beq     LACF1                           ; ACA4 F0 4B                    .K
+        beq     makeFireworksSparkle            ; ACA4 F0 4B                    .K
         cpy     #$22                            ; ACA6 C0 22                    ."
-        bcc     LAD03                           ; ACA8 90 59                    .Y
-        jsr     L9A0D                           ; ACAA 20 0D 9A                  ..
+        bcc     setFireworksTileFlag            ; ACA8 90 59                    .Y
+        jsr     shuffleRngSeed5x                ; ACAA 20 0D 9A                  ..
         and     #$03                            ; ACAD 29 03                    ).
         tax                                     ; ACAF AA                       .
         lda     topoutSoundsTable,x             ; ACB0 BD 6C AA                 .l.
         jsr     setMusicOrSoundEffect           ; ACB3 20 B1 CF                  ..
-        jsr     L9A0D                           ; ACB6 20 0D 9A                  ..
+        jsr     shuffleRngSeed5x                ; ACB6 20 0D 9A                  ..
         and     #$8F                            ; ACB9 29 8F                    ).
         bpl     LACBF                           ; ACBB 10 02                    ..
         ora     #$F0                            ; ACBD 09 F0                    ..
 LACBF:
         sta     generalCounter36                ; ACBF 85 36                    .6
-        jsr     L9A0D                           ; ACC1 20 0D 9A                  ..
+        jsr     shuffleRngSeed5x                ; ACC1 20 0D 9A                  ..
         and     #$07                            ; ACC4 29 07                    ).
         sta     generalCounter37                ; ACC6 85 37                    .7
-        jsr     L9A0D                           ; ACC8 20 0D 9A                  ..
+        jsr     shuffleRngSeed5x                ; ACC8 20 0D 9A                  ..
         and     #$03                            ; ACCB 29 03                    ).
         ora     #$24                            ; ACCD 09 24                    .$
         sta     generalCounter38                ; ACCF 85 38                    .8
@@ -6294,10 +6294,10 @@ LACD3:
         rts                                     ; ACF0 60                       `
 
 ; ----------------------------------------------------------------------------
-LACF1:
+makeFireworksSparkle:
         ldx     #$4C                            ; ACF1 A2 4C                    .L
-LACF3:
-        jsr     L9A0D                           ; ACF3 20 0D 9A                  ..
+@chooseRandomPalette:
+        jsr     shuffleRngSeed5x                ; ACF3 20 0D 9A                  ..
         and     #$03                            ; ACF6 29 03                    ).
         ora     #$24                            ; ACF8 09 24                    .$
         sta     oamStaging+2,x                  ; ACFA 9D 02 05                 ...
@@ -6305,11 +6305,14 @@ LACF3:
         inx                                     ; ACFE E8                       .
         inx                                     ; ACFF E8                       .
         inx                                     ; AD00 E8                       .
-        bne     LACF3                           ; AD01 D0 F0                    ..
-LAD03:
-        lda     unknownAddressTable-2,y                         ; AD03 B9 23 AD                 .#.
+        bne     @chooseRandomPalette            ; AD01 D0 F0                    ..
+; This section uses the tables below to set $04 in the attribute byte
+; $04 is an unused bit for the PPU
+; This determines whether or not a tile is set at AA51
+setFireworksTileFlag:
+        lda     fireworksSparkleTable-2,y                         ; AD03 B9 23 AD                 .#.
         sta     generalCounter36                ; AD06 85 36                    .6
-        lda     unknownAddressTable-1,y                         ; AD08 B9 24 AD                 .$.
+        lda     fireworksSparkleTable-1,y                         ; AD08 B9 24 AD                 .$.
         sta     generalCounter37                ; AD0B 85 37                    .7
         ldx     #$4C                            ; AD0D A2 4C                    .L
         ldy     #$00                            ; AD0F A0 00                    ..
@@ -6328,7 +6331,7 @@ LAD11:
         rts                                     ; AD24 60                       `
 
 ; ----------------------------------------------------------------------------
-unknownAddressTable:
+fireworksSparkleTable:
         .addr   LAD45                           ; AD25 45 AD                    E.
         .addr   LAD72                           ; AD27 72 AD                    r.
         .addr   LAD9F                           ; AD29 9F AD                    ..
@@ -6509,7 +6512,7 @@ LB043:
         inc     player1FallTimer                ; B060 E6 6A                    .j
         bcc     LB0CB                           ; B062 90 67                    .g
 LB064:
-        jsr     L9A0D                           ; B064 20 0D 9A                  ..
+        jsr     shuffleRngSeed5x                ; B064 20 0D 9A                  ..
         and     #$1E                            ; B067 29 1E                    ).
         tay                                     ; B069 A8                       .
         lda     (generalCounter38),y            ; B06A B1 38                    .8
