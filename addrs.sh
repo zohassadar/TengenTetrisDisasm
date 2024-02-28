@@ -172,13 +172,13 @@ apply_label B181 B0F1 B0F5
 )" main.asm
 
 # These remove labels that end up in the middle of instructions (label := * + 1, etc)
-sed -i /^L98A6/d main.asm
-sed -i s/L98A6/$(get_label 98A7)-1/ main.asm
-
-sed -i /^LAD23/d main.asm
-sed -i /^LAD24/d main.asm
-sed -i s/LAD23/$(get_label AD25)-2/ main.asm
-sed -i s/LAD24/$(get_label AD25)-1/ main.asm
+sed -i "
+/^L98A6/d
+s/L98A6/$(get_label 98A7)-1/
+/^LAD23/d
+/^LAD24/d
+s/LAD23/$(get_label AD25)-2/
+s/LAD24/$(get_label AD25)-1/" main.asm
 
 extract_nt () {
     grep -Pzo "(?sm)${1}:\\n\\K.*?(?=^\\S)" main.asm | grep -a byte > nametables/${1}.asm
