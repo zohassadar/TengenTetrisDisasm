@@ -5533,11 +5533,10 @@ renderJumpRoutine:
         pha                                     ; A813 48                       H
         lda     renderJumpTable,x               ; A814 BD 03 A9                 ...
         pha                                     ; A817 48                       H
-renderSlot0RoutineMinus1:
         rts                                     ; A818 60                       `
 
 ; ----------------------------------------------------------------------------
-LA819:
+renderSlot0Routine:
         ldx     ppuRenderSlot0Length            ; A819 A6 24                    .$
         bne     LA820                           ; A81B D0 03                    ..
         ldx     #$00                            ; A81D A2 00                    ..
@@ -5557,8 +5556,8 @@ LA82F:
         iny                                     ; A834 C8                       .
         dex                                     ; A835 CA                       .
         bne     LA82F                           ; A836 D0 F7                    ..
-renderSlot2RoutineMinus1:= * + 1
         stx     ppuRenderSlot0Length            ; A838 86 24                    .$
+renderSlot2Routine:
         ldx     ppuRenderSlot2Length            ; A83A A6 26                    .&
         bne     LA841                           ; A83C D0 03                    ..
         ldx     #$02                            ; A83E A2 02                    ..
@@ -5578,8 +5577,8 @@ LA850:
         iny                                     ; A855 C8                       .
         dex                                     ; A856 CA                       .
         bne     LA850                           ; A857 D0 F7                    ..
-renderSlot4RoutineMinus1:= * + 1
         stx     ppuRenderSlot2Length            ; A859 86 26                    .&
+renderSlot4Routine:
         ldx     ppuRenderSlot4Length            ; A85B A6 28                    .(
         bne     LA862                           ; A85D D0 03                    ..
         ldx     #$04                            ; A85F A2 04                    ..
@@ -5599,8 +5598,8 @@ LA871:
         iny                                     ; A876 C8                       .
         dex                                     ; A877 CA                       .
         bne     LA871                           ; A878 D0 F7                    ..
-renderSlot6RoutineMinus1:= * + 1
         stx     ppuRenderSlot4Length            ; A87A 86 28                    .(
+renderSlot6Routine:
         ldx     ppuRenderSlot6Length            ; A87C A6 2A                    .*
         bne     LA883                           ; A87E D0 03                    ..
         ldx     #$06                            ; A880 A2 06                    ..
@@ -5620,8 +5619,8 @@ LA892:
         iny                                     ; A897 C8                       .
         dex                                     ; A898 CA                       .
         bne     LA892                           ; A899 D0 F7                    ..
-renderSlot8RoutineMinus1:= * + 1
         stx     ppuRenderSlot6Length            ; A89B 86 2A                    .*
+renderSlot8Routine:
         ldx     ppuRenderSlot8Length            ; A89D A6 2C                    .,
         bne     LA8A4                           ; A89F D0 03                    ..
         ldx     #$08                            ; A8A1 A2 08                    ..
@@ -5641,8 +5640,8 @@ LA8B3:
         iny                                     ; A8B8 C8                       .
         dex                                     ; A8B9 CA                       .
         bne     LA8B3                           ; A8BA D0 F7                    ..
-renderSlotARoutineMinus1:= * + 1
         stx     ppuRenderSlot8Length            ; A8BC 86 2C                    .,
+renderSlotARoutine:
         ldx     ppuRenderSlotALength            ; A8BE A6 2E                    ..
         bne     LA8C5                           ; A8C0 D0 03                    ..
         ldx     #$0A                            ; A8C2 A2 0A                    ..
@@ -5662,8 +5661,8 @@ LA8D4:
         iny                                     ; A8D9 C8                       .
         dex                                     ; A8DA CA                       .
         bne     LA8D4                           ; A8DB D0 F7                    ..
-renderSlotCRoutineMinus1:= * + 1
         stx     ppuRenderSlotALength            ; A8DD 86 2E                    ..
+renderSlotCRoutine:
         ldx     ppuRenderSlotCLength            ; A8DF A6 30                    .0
         bne     LA8E6                           ; A8E1 D0 03                    ..
         ldx     #$0C                            ; A8E3 A2 0C                    ..
@@ -5684,17 +5683,17 @@ LA8F5:
         dex                                     ; A8FB CA                       .
         bne     LA8F5                           ; A8FC D0 F7                    ..
         stx     ppuRenderSlotCLength            ; A8FE 86 30                    .0
-        jmp     LA819                           ; A900 4C 19 A8                 L..
+        jmp     renderSlot0Routine              ; A900 4C 19 A8                 L..
 
 ; ----------------------------------------------------------------------------
 renderJumpTable:
-        .addr   renderSlot0RoutineMinus1        ; A903 18 A8                    ..
-        .addr   renderSlot2RoutineMinus1        ; A905 39 A8                    9.
-        .addr   renderSlot4RoutineMinus1        ; A907 5A A8                    Z.
-        .addr   renderSlot6RoutineMinus1        ; A909 7B A8                    {.
-        .addr   renderSlot8RoutineMinus1        ; A90B 9C A8                    ..
-        .addr   renderSlotARoutineMinus1        ; A90D BD A8                    ..
-        .addr   renderSlotCRoutineMinus1        ; A90F DE A8                    ..
+        .word   renderSlot0Routine-1            ; A903 18 A8                    ..
+        .word   renderSlot2Routine-1            ; A905 39 A8                    9.
+        .word   renderSlot4Routine-1            ; A907 5A A8                    Z.
+        .word   renderSlot6Routine-1            ; A909 7B A8                    {.
+        .word   renderSlot8Routine-1            ; A90B 9C A8                    ..
+        .word   renderSlotARoutine-1            ; A90D BD A8                    ..
+        .word   renderSlotCRoutine-1            ; A90F DE A8                    ..
 ; ----------------------------------------------------------------------------
 reset:
         sei                                     ; A911 78                       x
@@ -8438,27 +8437,26 @@ audioJump:
 
 ; ----------------------------------------------------------------------------
 audioJumpTable:
-        .addr   LD02D                           ; D010 2D D0                    -.
-        .addr   LD032                           ; D012 32 D0                    2.
-        .addr   LD033                           ; D014 33 D0                    3.
-        .addr   LD034                           ; D016 34 D0                    4.
-        .addr   LD03F                           ; D018 3F D0                    ?.
-        .addr   LD057                           ; D01A 57 D0                    W.
-        .addr   LD078                           ; D01C 78 D0                    x.
-        .addr   LD2C7                           ; D01E C7 D2                    ..
-        .addr   LD0E3                           ; D020 E3 D0                    ..
-        .addr   LD09C                           ; D022 9C D0                    ..
-        .addr   LD09C                           ; D024 9C D0                    ..
-        .addr   LD09C                           ; D026 9C D0                    ..
-        .addr   LD2C7                           ; D028 C7 D2                    ..
-        .addr   LD09C                           ; D02A 9C D0                    ..
-LD02D           := * + 1
-        .addr   LD2C7                           ; D02C C7 D2                    ..
+        .word   LD02E-1                         ; D010 2D D0                    -.
+        .word   LD033-1                         ; D012 32 D0                    2.
+        .word   LD034-1                         ; D014 33 D0                    3.
+        .word   LD035-1                         ; D016 34 D0                    4.
+        .word   LD040-1                         ; D018 3F D0                    ?.
+        .word   LD058-1                         ; D01A 57 D0                    W.
+        .word   LD079-1                         ; D01C 78 D0                    x.
+        .word   LD2C8-1                         ; D01E C7 D2                    ..
+        .word   LD0E4-1                         ; D020 E3 D0                    ..
+        .word   LD09D-1                         ; D022 9C D0                    ..
+        .word   LD09D-1                         ; D024 9C D0                    ..
+        .word   LD09D-1                         ; D026 9C D0                    ..
+        .word   LD2C8-1                         ; D028 C7 D2                    ..
+        .word   LD09D-1                         ; D02A 9C D0                    ..
+        .word   LD2C8-1                         ; D02C C7 D2                    ..
 ; ----------------------------------------------------------------------------
+LD02E:
         asl     a                               ; D02E 0A                       .
         asl     a                               ; D02F 0A                       .
         sta     $FA                             ; D030 85 FA                    ..
-LD032:
         rts                                     ; D032 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -8470,16 +8468,17 @@ LD034:
         rts                                     ; D034 60                       `
 
 ; ----------------------------------------------------------------------------
+LD035:
         asl     a                               ; D035 0A                       .
         tay                                     ; D036 A8                       .
         lda     LDED1,y                         ; D037 B9 D1 DE                 ...
         pha                                     ; D03A 48                       H
         lda     LDED0,y                         ; D03B B9 D0 DE                 ...
         pha                                     ; D03E 48                       H
-LD03F:
         rts                                     ; D03F 60                       `
 
 ; ----------------------------------------------------------------------------
+LD040:
         sta     $020B                           ; D040 8D 0B 02                 ...
         ldy     #$0A                            ; D043 A0 0A                    ..
 LD045:
@@ -8493,10 +8492,10 @@ LD045:
 LD054:
         dey                                     ; D054 88                       .
         bpl     LD045                           ; D055 10 EE                    ..
-LD057:
         rts                                     ; D057 60                       `
 
 ; ----------------------------------------------------------------------------
+LD058:
         tay                                     ; D058 A8                       .
         lda     LDE9C,y                         ; D059 B9 9C DE                 ...
         cmp     #$08                            ; D05C C9 08                    ..
@@ -8517,6 +8516,7 @@ LD078:
         rts                                     ; D078 60                       `
 
 ; ----------------------------------------------------------------------------
+LD079:
         sta     $020B                           ; D079 8D 0B 02                 ...
         lsr     a                               ; D07C 4A                       J
         lsr     a                               ; D07D 4A                       J
@@ -8541,6 +8541,7 @@ LD09C:
         rts                                     ; D09C 60                       `
 
 ; ----------------------------------------------------------------------------
+LD09D:
         tax                                     ; D09D AA                       .
         lda     LE02F,x                         ; D09E BD 2F E0                 ./.
         cmp     #$29                            ; D0A1 C9 29                    .)
@@ -8584,6 +8585,7 @@ LD0E3:
         rts                                     ; D0E3 60                       `
 
 ; ----------------------------------------------------------------------------
+LD0E4:
         sta     $020B                           ; D0E4 8D 0B 02                 ...
         tay                                     ; D0E7 A8                       .
         asl     a                               ; D0E8 0A                       .
@@ -8835,7 +8837,6 @@ LD293:
         beq     LD2C8                           ; D2BF F0 07                    ..
         lda     ($F1),y                         ; D2C1 B1 F1                    ..
         sta     $F0                             ; D2C3 85 F0                    ..
-LD2C7           := * + 2
         jmp     LD11D                           ; D2C5 4C 1D D1                 L..
 
 ; ----------------------------------------------------------------------------
@@ -9012,7 +9013,6 @@ LD3B2:
 
 ; ----------------------------------------------------------------------------
 LD3D0:
-LD3D2           := * + 2
         jmp     LD60F                           ; D3D0 4C 0F D6                 L..
 
 ; ----------------------------------------------------------------------------
@@ -9799,49 +9799,49 @@ LD931:
 
 ; ----------------------------------------------------------------------------
 LD93D:
-        .addr   LDA10                           ; D93D 10 DA                    ..
-        .addr   LDA07                           ; D93F 07 DA                    ..
-        .addr   LDA23                           ; D941 23 DA                    #.
-        .addr   LDA15                           ; D943 15 DA                    ..
-        .addr   LDA35                           ; D945 35 DA                    5.
-        .addr   LDA31                           ; D947 31 DA                    1.
-        .addr   LD9FC                           ; D949 FC D9                    ..
-        .addr   LD9F1                           ; D94B F1 D9                    ..
-        .addr   LD98E                           ; D94D 8E D9                    ..
-        .addr   LD9E8                           ; D94F E8 D9                    ..
-        .addr   LD3D2                           ; D951 D2 D3                    ..
-        .addr   LD3D2                           ; D953 D2 D3                    ..
-        .addr   LDA3A                           ; D955 3A DA                    :.
-        .addr   LDA3E                           ; D957 3E DA                    >.
-        .addr   LDA6C                           ; D959 6C DA                    l.
-        .addr   LDA97                           ; D95B 97 DA                    ..
-        .addr   LDAC9                           ; D95D C9 DA                    ..
-        .addr   LDAE0                           ; D95F E0 DA                    ..
-        .addr   LDAEC                           ; D961 EC DA                    ..
-        .addr   LDB12                           ; D963 12 DB                    ..
-        .addr   LDB31                           ; D965 31 DB                    1.
-        .addr   LD3D2                           ; D967 D2 D3                    ..
-        .addr   LD3D2                           ; D969 D2 D3                    ..
-        .addr   LD3D2                           ; D96B D2 D3                    ..
-        .addr   LD3D2                           ; D96D D2 D3                    ..
-        .addr   LDD0E                           ; D96F 0E DD                    ..
-        .addr   LD3D2                           ; D971 D2 D3                    ..
-        .addr   LD3D2                           ; D973 D2 D3                    ..
-        .addr   LD3D2                           ; D975 D2 D3                    ..
-        .addr   LD3D2                           ; D977 D2 D3                    ..
-        .addr   LD3D2                           ; D979 D2 D3                    ..
-        .addr   LD3D2                           ; D97B D2 D3                    ..
-        .addr   LD3D2                           ; D97D D2 D3                    ..
-        .addr   LD3D2                           ; D97F D2 D3                    ..
-        .addr   LD3D2                           ; D981 D2 D3                    ..
-        .addr   LD3D2                           ; D983 D2 D3                    ..
-        .addr   LD3D2                           ; D985 D2 D3                    ..
-        .addr   LD3D2                           ; D987 D2 D3                    ..
-        .addr   LD3D2                           ; D989 D2 D3                    ..
-        .addr   LD3D2                           ; D98B D2 D3                    ..
-LD98E           := * + 1
-        .addr   LD3D2                           ; D98D D2 D3                    ..
+        .word   LDA11-1                         ; D93D 10 DA                    ..
+        .word   LDA08-1                         ; D93F 07 DA                    ..
+        .word   LDA24-1                         ; D941 23 DA                    #.
+        .word   LDA16-1                         ; D943 15 DA                    ..
+        .word   LDA36-1                         ; D945 35 DA                    5.
+        .word   LDA32-1                         ; D947 31 DA                    1.
+        .word   LD9FD-1                         ; D949 FC D9                    ..
+        .word   LD9F2-1                         ; D94B F1 D9                    ..
+        .word   LD98F-1                         ; D94D 8E D9                    ..
+        .word   LD9E9-1                         ; D94F E8 D9                    ..
+        .word   LD3D3-1                         ; D951 D2 D3                    ..
+        .word   LD3D3-1                         ; D953 D2 D3                    ..
+        .word   LDA3B-1                         ; D955 3A DA                    :.
+        .word   LDA3F-1                         ; D957 3E DA                    >.
+        .word   LDA6D-1                         ; D959 6C DA                    l.
+        .word   LDA98-1                         ; D95B 97 DA                    ..
+        .word   LDACA-1                         ; D95D C9 DA                    ..
+        .word   LDAE1-1                         ; D95F E0 DA                    ..
+        .word   LDAED-1                         ; D961 EC DA                    ..
+        .word   LDB13-1                         ; D963 12 DB                    ..
+        .word   LDB32-1                         ; D965 31 DB                    1.
+        .word   LD3D3-1                         ; D967 D2 D3                    ..
+        .word   LD3D3-1                         ; D969 D2 D3                    ..
+        .word   LD3D3-1                         ; D96B D2 D3                    ..
+        .word   LD3D3-1                         ; D96D D2 D3                    ..
+        .word   LDD0F-1                         ; D96F 0E DD                    ..
+        .word   LD3D3-1                         ; D971 D2 D3                    ..
+        .word   LD3D3-1                         ; D973 D2 D3                    ..
+        .word   LD3D3-1                         ; D975 D2 D3                    ..
+        .word   LD3D3-1                         ; D977 D2 D3                    ..
+        .word   LD3D3-1                         ; D979 D2 D3                    ..
+        .word   LD3D3-1                         ; D97B D2 D3                    ..
+        .word   LD3D3-1                         ; D97D D2 D3                    ..
+        .word   LD3D3-1                         ; D97F D2 D3                    ..
+        .word   LD3D3-1                         ; D981 D2 D3                    ..
+        .word   LD3D3-1                         ; D983 D2 D3                    ..
+        .word   LD3D3-1                         ; D985 D2 D3                    ..
+        .word   LD3D3-1                         ; D987 D2 D3                    ..
+        .word   LD3D3-1                         ; D989 D2 D3                    ..
+        .word   LD3D3-1                         ; D98B D2 D3                    ..
+        .word   LD3D3-1                         ; D98D D2 D3                    ..
 ; ----------------------------------------------------------------------------
+LD98F:
         lda     #$00                            ; D98F A9 00                    ..
         sta     $025B,x                         ; D991 9D 5B 02                 .[.
         sta     $0266,x                         ; D994 9D 66 02                 .f.
@@ -9891,30 +9891,29 @@ LD9E1:
         dec     audioStagingAddrLo,x            ; D9E1 DE 19 02                 ...
         dec     audioStagingAddrLo,x            ; D9E4 DE 19 02                 ...
         clc                                     ; D9E7 18                       .
-LD9E8:
         rts                                     ; D9E8 60                       `
 
 ; ----------------------------------------------------------------------------
+LD9E9:
         sta     $0363,x                         ; D9E9 9D 63 03                 .c.
         lda     #$00                            ; D9EC A9 00                    ..
         sta     $0358,x                         ; D9EE 9D 58 03                 .X.
-LD9F1:
         rts                                     ; D9F1 60                       `
 
 ; ----------------------------------------------------------------------------
+LD9F2:
         sta     $02B3,x                         ; D9F2 9D B3 02                 ...
         jsr     LD90C                           ; D9F5 20 0C D9                  ..
         sta     $02BE,x                         ; D9F8 9D BE 02                 ...
         sec                                     ; D9FB 38                       8
-LD9FC:
         rts                                     ; D9FC 60                       `
 
 ; ----------------------------------------------------------------------------
+LD9FD:
         sta     $02F5,x                         ; D9FD 9D F5 02                 ...
         jsr     LD90C                           ; DA00 20 0C D9                  ..
         sta     $0300,x                         ; DA03 9D 00 03                 ...
         sec                                     ; DA06 38                       8
-LDA07:
         rts                                     ; DA07 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -9923,14 +9922,12 @@ LDA08:
         adc     $0342,x                         ; DA09 7D 42 03                 }B.
         sta     $0342,x                         ; DA0C 9D 42 03                 .B.
         sec                                     ; DA0F 38                       8
-LDA10:
         rts                                     ; DA10 60                       `
 
 ; ----------------------------------------------------------------------------
 LDA11:
         sta     $0342,x                         ; DA11 9D 42 03                 .B.
         sec                                     ; DA14 38                       8
-LDA15:
         rts                                     ; DA15 60                       `
 
 ; ----------------------------------------------------------------------------
@@ -9940,7 +9937,6 @@ LDA16:
         beq     LDA30                           ; DA1B F0 13                    ..
         clc                                     ; DA1D 18                       .
         adc     $029D,x                         ; DA1E 7D 9D 02                 }..
-LDA23           := * + 2
         jmp     LDA2B                           ; DA21 4C 2B DA                 L+.
 
 ; ----------------------------------------------------------------------------
@@ -9956,26 +9952,24 @@ LDA2B:
 ; ----------------------------------------------------------------------------
 LDA30:
         clc                                     ; DA30 18                       .
-LDA31:
         rts                                     ; DA31 60                       `
 
 ; ----------------------------------------------------------------------------
 LDA32:
         clc                                     ; DA32 18                       .
-LDA35           := * + 2
         adc     $034D,x                         ; DA33 7D 4D 03                 }M.
 LDA36:
         sta     $034D,x                         ; DA36 9D 4D 03                 .M.
         sec                                     ; DA39 38                       8
-LDA3A:
         rts                                     ; DA3A 60                       `
 
 ; ----------------------------------------------------------------------------
+LDA3B:
         sta     $0384,x                         ; DA3B 9D 84 03                 ...
-LDA3E:
         rts                                     ; DA3E 60                       `
 
 ; ----------------------------------------------------------------------------
+LDA3F:
         sta     $F8                             ; DA3F 85 F8                    ..
         jsr     LD90C                           ; DA41 20 0C D9                  ..
         sta     $F9                             ; DA44 85 F9                    ..
@@ -9998,10 +9992,10 @@ LDA3E:
         sta     audioStagingAddrHi,x            ; DA68 9D 24 02                 .$.
 LDA6B:
         sec                                     ; DA6B 38                       8
-LDA6C:
         rts                                     ; DA6C 60                       `
 
 ; ----------------------------------------------------------------------------
+LDA6D:
         pha                                     ; DA6D 48                       H
         jsr     LD2F4                           ; DA6E 20 F4 D2                  ..
         beq     LDA95                           ; DA71 F0 22                    ."
@@ -10028,10 +10022,10 @@ LDA6C:
 LDA95:
         pla                                     ; DA95 68                       h
         sec                                     ; DA96 38                       8
-LDA97:
         rts                                     ; DA97 60                       `
 
 ; ----------------------------------------------------------------------------
+LDA98:
         lda     $03B0,x                         ; DA98 BD B0 03                 ...
         beq     LDAB1                           ; DA9B F0 14                    ..
         jsr     LD306                           ; DA9D 20 06 D3                  ..
@@ -10062,10 +10056,10 @@ LDAB3:
         lda     ($FC),y                         ; DAC3 B1 FC                    ..
         sta     $03BB,x                         ; DAC5 9D BB 03                 ...
         sec                                     ; DAC8 38                       8
-LDAC9:
         rts                                     ; DAC9 60                       `
 
 ; ----------------------------------------------------------------------------
+LDACA:
         ldy     apuRegisterType                 ; DACA AC F3 03                 ...
         cpy     #$00                            ; DACD C0 00                    ..
         bne     LDADF                           ; DACF D0 0E                    ..
@@ -10077,20 +10071,20 @@ LDAC9:
         sta     $036E,x                         ; DADC 9D 6E 03                 .n.
 LDADF:
         sec                                     ; DADF 38                       8
-LDAE0:
         rts                                     ; DAE0 60                       `
 
 ; ----------------------------------------------------------------------------
+LDAE1:
         ldy     apuRegisterType                 ; DAE1 AC F3 03                 ...
         cpy     #$00                            ; DAE4 C0 00                    ..
         bne     LDAEB                           ; DAE6 D0 03                    ..
         sta     $0379,x                         ; DAE8 9D 79 03                 .y.
 LDAEB:
         sec                                     ; DAEB 38                       8
-LDAEC:
         rts                                     ; DAEC 60                       `
 
 ; ----------------------------------------------------------------------------
+LDAED:
         ldy     apuRegisterType                 ; DAED AC F3 03                 ...
         cpy     #$01                            ; DAF0 C0 01                    ..
         beq     LDB07                           ; DAF2 F0 13                    ..
@@ -10112,10 +10106,10 @@ LDB09:
         ora     #$30                            ; DB0C 09 30                    .0
         sta     $036E,x                         ; DB0E 9D 6E 03                 .n.
         sec                                     ; DB11 38                       8
-LDB12:
         rts                                     ; DB12 60                       `
 
 ; ----------------------------------------------------------------------------
+LDB13:
         ldy     apuRegisterType                 ; DB13 AC F3 03                 ...
         cpy     #$01                            ; DB16 C0 01                    ..
         beq     LDB26                           ; DB18 F0 0C                    ..
@@ -10134,10 +10128,10 @@ LDB28:
         ora     #$20                            ; DB2B 09 20                    . 
         sta     $036E,x                         ; DB2D 9D 6E 03                 .n.
         sec                                     ; DB30 38                       8
-LDB31:
         rts                                     ; DB31 60                       `
 
 ; ----------------------------------------------------------------------------
+LDB32:
         lda     $0292,x                         ; DB32 BD 92 02                 ...
         and     #$FE                            ; DB35 29 FE                    ).
         sta     $0292,x                         ; DB37 9D 92 02                 ...
@@ -10473,10 +10467,10 @@ LDCF7:
 LDD09:
         ldy     $F8                             ; DD09 A4 F8                    ..
         lda     $03D1,x                         ; DD0B BD D1 03                 ...
-LDD0E:
         rts                                     ; DD0E 60                       `
 
 ; ----------------------------------------------------------------------------
+LDD0F:
         sta     $F8                             ; DD0F 85 F8                    ..
         jsr     LD90C                           ; DD11 20 0C D9                  ..
         sta     audioStagingAddrHi,x            ; DD14 9D 24 02                 .$.

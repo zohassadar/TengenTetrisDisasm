@@ -418,13 +418,13 @@ LABEL { ADDR $A788; NAME "unknownData03"; SIZE $24; };
 LABEL { ADDR $A7AC; NAME "nmi"; };
 LABEL { ADDR $A7C0; NAME "@enableHorizontalPPURendering"; };
 LABEL { ADDR $A80E; NAME "renderJumpRoutine"; };
-LABEL { ADDR $A818; NAME "renderSlot0RoutineMinus1"; };
-LABEL { ADDR $A839; NAME "renderSlot2RoutineMinus1"; };
-LABEL { ADDR $A85A; NAME "renderSlot4RoutineMinus1"; };
-LABEL { ADDR $A87B; NAME "renderSlot6RoutineMinus1"; };
-LABEL { ADDR $A89C; NAME "renderSlot8RoutineMinus1"; };
-LABEL { ADDR $A8BD; NAME "renderSlotARoutineMinus1"; };
-LABEL { ADDR $A8DE; NAME "renderSlotCRoutineMinus1"; };
+LABEL { ADDR $A819; NAME "renderSlot0Routine"; };
+LABEL { ADDR $A83A; NAME "renderSlot2Routine"; };
+LABEL { ADDR $A85B; NAME "renderSlot4Routine"; };
+LABEL { ADDR $A87C; NAME "renderSlot6Routine"; };
+LABEL { ADDR $A89D; NAME "renderSlot8Routine"; };
+LABEL { ADDR $A8BE; NAME "renderSlotARoutine"; };
+LABEL { ADDR $A8DF; NAME "renderSlotCRoutine"; };
 LABEL { ADDR $A903; NAME "renderJumpTable"; };
 LABEL { ADDR $A911; NAME "reset"; };
 LABEL { ADDR $A91B; NAME "@vblankWait1"; };
@@ -782,7 +782,7 @@ RANGE { START $A6E6; END $A755; TYPE BYTETABLE; UNIT $4; COMMENT "palette tables
 RANGE { START $A756; END $A787; TYPE CODE; };
 RANGE { START $A788; END $A7AB; TYPE BYTETABLE; };
 RANGE { START $A7AC; END $A902; TYPE CODE; };
-RANGE { START $A903; END $A910; TYPE ADDRTABLE; };
+RANGE { START $A903; END $A910; TYPE RTSTABLE; };
 RANGE { START $A911; END $AA6B; TYPE CODE; };
 RANGE { START $AA6C; END $AA6F; TYPE BYTETABLE; };
 RANGE { START $AA70; END $AB1D; TYPE CODE; };
@@ -1056,9 +1056,9 @@ RANGE { START $B849; END $CF78; TYPE BYTETABLE; };
 
 RANGE { START $CF79; END $D00F; TYPE CODE; };
 
-RANGE { START $D010; END $D02D; TYPE ADDRTABLE; };
+RANGE { START $D010; END $D02D; TYPE RTSTABLE; };
 RANGE { START $D02E; END $D93C; TYPE CODE; };
-RANGE { START $D93D; END $D98E; TYPE ADDRTABLE; };
+RANGE { START $D93D; END $D98E; TYPE RTSTABLE; };
 RANGE { START $D98F; END $DD1D; TYPE CODE; };
 
 # possible music tracks
