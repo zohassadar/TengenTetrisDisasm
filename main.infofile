@@ -635,6 +635,8 @@ LABEL { ADDR $CFF7; NAME "audioJump"; COMMENT "uses RTS trick so all addresses a
 
 LABEL { ADDR $D00F; NAME "@ret"; };
 LABEL { ADDR $D010; NAME "audioJumpTable"; SIZE $18; };
+LABEL { ADDR $D306; NAME "iDontKnowWhatThisDoes"; COMMENT "Previously had the constants F7 & 03 replaced with a label to F703
+; however this seemed to have messed things up.  These appear to lead to an address in ram, not rom"; };
 LABEL { ADDR $D846; NAME "setApuRegisters"; };
 LABEL { ADDR $D85B; NAME "@checkIfTriangle"; };
 LABEL { ADDR $D862; NAME "@checkIfNoise"; };
@@ -691,7 +693,7 @@ LABEL { ADDR $F5CD; NAME "musicTrackKarinka2"; };
 LABEL { ADDR $F60A; NAME "musicTrackKarinka3"; };
 LABEL { ADDR $F67F; NAME "musicTrackKarinka4"; };
 LABEL { ADDR $F6D3; NAME "musicTrackTroika1"; };
-LABEL { ADDR $F703; NAME "unknownTableForAudio"; };
+# LABEL { ADDR $F703; NAME "unknownTableForAudio"; }; # this does not appear to be needed
 LABEL { ADDR $F78E; NAME "musicTrackTroika2"; };
 LABEL { ADDR $F7E9; NAME "musicTrackTroika3"; };
 LABEL { ADDR $F8D6; NAME "musicTrackTroika4"; };
