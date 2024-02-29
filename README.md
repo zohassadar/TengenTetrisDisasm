@@ -1,11 +1,9 @@
 # Tengen NES Tetris Disassembly
 
 Todo:
-* Find labels related to music and why it doesn't repeat when code is shifted
 * Testing framework
 * Identify and label unused code/data
 * Clean up labels
-* add logic to header.asm
 * replace known values with constants
 * add comments where necessary to explain game logic
 * break out nametables into text format
