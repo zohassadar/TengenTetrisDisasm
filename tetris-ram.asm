@@ -80,10 +80,16 @@ player1FallTimer:	.res 1	; $006A
 player2FallTimer:	.res 1	; $006B
 .res 10
 relatesToAddrTableAB25:	.res $2	; $0076
-.res 124
+.res 119
+audioSomethingEF:	.res 1	; $00EF
+audioSomethingF0:	.res 1	; $00F0
+audioPointerF1:	.res $2	; $00F1
+.res 1
 audioDataAddr:	.res $2	; $00F4
 apuRegister:	.res $2	; $00F6
-.res 7
+.res 4
+audioPointerFC:	.res $2	; $00FC
+.res 1
 audioFlags:	.res 1	; $00FF
 
 .bss
@@ -139,7 +145,8 @@ audioStagingSlot2:	.res 1	; $03EE
 soundChannelsEnabled:	.res 1	; $03EF
 .res 3
 apuRegisterType:	.res 1	; $03F3
-.res 36
+.res 3
+audioBuffer:	.res $21	; $03F7
 player1ScoreHundredThousands:	.res 1	; $0418
 player1ScoreTenThousands:	.res 1	; $0419
 player1ScoreThousands:	.res 1	; $041A

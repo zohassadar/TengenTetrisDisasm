@@ -83,8 +83,12 @@ player2TetrominoOrientation:= $0069
 player1FallTimer:= $006A
 player2FallTimer:= $006B
 relatesToAddrTableAB25:= $0076
+audioSomethingEF:= $00EF                        ; maybe tmp var
+audioSomethingF0:= $00F0                        ; maybe tmp var
+audioPointerF1  := $00F1
 audioDataAddr   := $00F4
 apuRegister     := $00F6
+audioPointerFC  := $00FC                        ; offset from 03F7 set with code at D306
 audioFlags      := $00FF                        ; 
 ; https://www.nesdev.org/wiki/APU
 ; AND'ed with $05, $01, $11, $21 and checks zero flag for audio registers starting at 
@@ -133,6 +137,9 @@ audioStagingSlot4:= $03ED                       ; SQ1_HI, SQ2_HI, TRI_HI or NOIS
 audioStagingSlot2:= $03EE                       ; SQ1_SWEEP, SQ2_SWEEP, unused or unused
 soundChannelsEnabled:= $03EF                    ; ---D NT21 Enable DMC (D), noise (N), triangle (T), and pulse channels (2/1)
 apuRegisterType := $03F3                        ; 0 pulse, 1 triangle, 2 noise
+audioBuffer     := $03F7                        ; 
+; code at D306 sets an offset from this address
+; have seen this go to at least $0403.  need to find how far it actually goes
 player1ScoreHundredThousands:= $0418
 player1ScoreTenThousands:= $0419
 player1ScoreThousands:= $041A
@@ -8632,14 +8639,14 @@ LD0E4:
 LD0F1:
         lda     LDFD4,x                         ; D0F1 BD D4 DF                 ...
 LD0F4:
-        sta     $EF                             ; D0F4 85 EF                    ..
+        sta     audioSomethingEF                ; D0F4 85 EF                    ..
         bcs     LD0FD                           ; D0F6 B0 05                    ..
         lda     LDED5,x                         ; D0F8 BD D5 DE                 ...
         bcc     LD100                           ; D0FB 90 03                    ..
 LD0FD:
         lda     LDFD5,x                         ; D0FD BD D5 DF                 ...
 LD100:
-        sta     $F0                             ; D100 85 F0                    ..
+        sta     audioSomethingF0                ; D100 85 F0                    ..
         lda     LDEFE,y                         ; D102 B9 FE DE                 ...
         bne     LD11D                           ; D105 D0 16                    ..
         lda     $020B                           ; D107 AD 0B 02                 ...
@@ -8668,21 +8675,21 @@ LD11F:
         ldy     #$00                            ; D12A A0 00                    ..
         lda     #<UnknownTable03                            ; D12C A9 13                    ..
         clc                                     ; D12E 18                       .
-        adc     $EF                             ; D12F 65 EF                    e.
-        sta     $F1                             ; D131 85 F1                    ..
+        adc     audioSomethingEF                ; D12F 65 EF                    e.
+        sta     audioPointerF1                  ; D131 85 F1                    ..
         lda     #>UnknownTable03                            ; D133 A9 DF                    ..
-        adc     $F0                             ; D135 65 F0                    e.
-        sta     $F2                             ; D137 85 F2                    ..
-        lda     ($F1),y                         ; D139 B1 F1                    ..
+        adc     audioSomethingF0                ; D135 65 F0                    e.
+        sta     audioPointerF1+1                ; D137 85 F2                    ..
+        lda     (audioPointerF1),y              ; D139 B1 F1                    ..
         sta     $020C                           ; D13B 8D 0C 02                 ...
         lda     #<UnknownTable02                            ; D13E A9 42                    .B
         clc                                     ; D140 18                       .
-        adc     $EF                             ; D141 65 EF                    e.
-        sta     $F1                             ; D143 85 F1                    ..
+        adc     audioSomethingEF                ; D141 65 EF                    e.
+        sta     audioPointerF1                  ; D143 85 F1                    ..
         lda     #>UnknownTable02                            ; D145 A9 DF                    ..
-        adc     $F0                             ; D147 65 F0                    e.
-        sta     $F2                             ; D149 85 F2                    ..
-        lda     ($F1),y                         ; D14B B1 F1                    ..
+        adc     audioSomethingF0                ; D147 65 F0                    e.
+        sta     audioPointerF1+1                ; D149 85 F2                    ..
+        lda     (audioPointerF1),y              ; D14B B1 F1                    ..
         clc                                     ; D14D 18                       .
         adc     #$0B                            ; D14E 69 0B                    i.
         tax                                     ; D150 AA                       .
@@ -8718,11 +8725,11 @@ LD183:
         lda     #<UnknownTable03                            ; D187 A9 13                    ..
         clc                                     ; D189 18                       .
         adc     audioDataAddr                   ; D18A 65 F4                    e.
-        sta     $F1                             ; D18C 85 F1                    ..
+        sta     audioPointerF1                  ; D18C 85 F1                    ..
         lda     #>UnknownTable03                            ; D18E A9 DF                    ..
         adc     audioDataAddr+1                 ; D190 65 F5                    e.
-        sta     $F2                             ; D192 85 F2                    ..
-        lda     ($F1),y                         ; D194 B1 F1                    ..
+        sta     audioPointerF1+1                ; D192 85 F2                    ..
+        lda     (audioPointerF1),y              ; D194 B1 F1                    ..
         bpl     LD19A                           ; D196 10 02                    ..
 LD198:
         sec                                     ; D198 38                       8
@@ -8775,44 +8782,44 @@ LD1A6:
         ldy     #$00                            ; D20F A0 00                    ..
         lda     #<UnknownTable03                            ; D211 A9 13                    ..
         clc                                     ; D213 18                       .
-        adc     $EF                             ; D214 65 EF                    e.
-        sta     $F1                             ; D216 85 F1                    ..
+        adc     audioSomethingEF                ; D214 65 EF                    e.
+        sta     audioPointerF1                  ; D216 85 F1                    ..
         lda     #>UnknownTable03                            ; D218 A9 DF                    ..
-        adc     $F0                             ; D21A 65 F0                    e.
-        sta     $F2                             ; D21C 85 F2                    ..
-        lda     ($F1),y                         ; D21E B1 F1                    ..
+        adc     audioSomethingF0                ; D21A 65 F0                    e.
+        sta     audioPointerF1+1                ; D21C 85 F2                    ..
+        lda     (audioPointerF1),y              ; D21E B1 F1                    ..
         asl     a                               ; D220 0A                       .
         sec                                     ; D221 38                       8
         rol     a                               ; D222 2A                       *
         sta     $0292,x                         ; D223 9D 92 02                 ...
         lda     #<UnknownTable02                            ; D226 A9 42                    .B
         clc                                     ; D228 18                       .
-        adc     $EF                             ; D229 65 EF                    e.
-        sta     $F1                             ; D22B 85 F1                    ..
+        adc     audioSomethingEF                ; D229 65 EF                    e.
+        sta     audioPointerF1                  ; D22B 85 F1                    ..
         lda     #>UnknownTable02                            ; D22D A9 DF                    ..
-        adc     $F0                             ; D22F 65 F0                    e.
-        sta     $F2                             ; D231 85 F2                    ..
-        lda     ($F1),y                         ; D233 B1 F1                    ..
+        adc     audioSomethingF0                ; D22F 65 F0                    e.
+        sta     audioPointerF1+1                ; D231 85 F2                    ..
+        lda     (audioPointerF1),y              ; D233 B1 F1                    ..
         clc                                     ; D235 18                       .
         adc     #$0B                            ; D236 69 0B                    i.
         sta     $020C                           ; D238 8D 0C 02                 ...
-        lda     $EF                             ; D23B A5 EF                    ..
+        lda     audioSomethingEF                ; D23B A5 EF                    ..
         asl     a                               ; D23D 0A                       .
-        sta     $F1                             ; D23E 85 F1                    ..
-        lda     $F0                             ; D240 A5 F0                    ..
+        sta     audioPointerF1                  ; D23E 85 F1                    ..
+        lda     audioSomethingF0                ; D240 A5 F0                    ..
         rol     a                               ; D242 2A                       *
-        sta     $F2                             ; D243 85 F2                    ..
+        sta     audioPointerF1+1                ; D243 85 F2                    ..
         lda     #<relatedToMusicTable01                            ; D245 A9 71                    .q
         clc                                     ; D247 18                       .
-        adc     $F1                             ; D248 65 F1                    e.
-        sta     $F1                             ; D24A 85 F1                    ..
+        adc     audioPointerF1                  ; D248 65 F1                    e.
+        sta     audioPointerF1                  ; D24A 85 F1                    ..
         lda     #>relatedToMusicTable01                            ; D24C A9 DF                    ..
-        adc     $F2                             ; D24E 65 F2                    e.
-        sta     $F2                             ; D250 85 F2                    ..
-        lda     ($F1),y                         ; D252 B1 F1                    ..
+        adc     audioPointerF1+1                ; D24E 65 F2                    e.
+        sta     audioPointerF1+1                ; D250 85 F2                    ..
+        lda     (audioPointerF1),y              ; D252 B1 F1                    ..
         sta     audioStagingAddrLo,x            ; D254 9D 19 02                 ...
         iny                                     ; D257 C8                       .
-        lda     ($F1),y                         ; D258 B1 F1                    ..
+        lda     (audioPointerF1),y              ; D258 B1 F1                    ..
         sta     audioStagingAddrHi,x            ; D25A 9D 24 02                 .$.
         ldy     $020C                           ; D25D AC 0C 02                 ...
         php                                     ; D260 08                       .
@@ -8853,26 +8860,26 @@ LD293:
         sta     $03DC,y                         ; D29B 99 DC 03                 ...
         plp                                     ; D29E 28                       (
         ldy     #$00                            ; D29F A0 00                    ..
-        lda     $EF                             ; D2A1 A5 EF                    ..
+        lda     audioSomethingEF                ; D2A1 A5 EF                    ..
         asl     a                               ; D2A3 0A                       .
-        sta     $F1                             ; D2A4 85 F1                    ..
-        lda     $F0                             ; D2A6 A5 F0                    ..
+        sta     audioPointerF1                  ; D2A4 85 F1                    ..
+        lda     audioSomethingF0                ; D2A6 A5 F0                    ..
         rol     a                               ; D2A8 2A                       *
-        sta     $F2                             ; D2A9 85 F2                    ..
+        sta     audioPointerF1+1                ; D2A9 85 F2                    ..
         lda     #<UnknownTable01                            ; D2AB A9 CF                    ..
         clc                                     ; D2AD 18                       .
-        adc     $F1                             ; D2AE 65 F1                    e.
-        sta     $F1                             ; D2B0 85 F1                    ..
+        adc     audioPointerF1                  ; D2AE 65 F1                    e.
+        sta     audioPointerF1                  ; D2B0 85 F1                    ..
         lda     #>UnknownTable01                            ; D2B2 A9 DF                    ..
-        adc     $F2                             ; D2B4 65 F2                    e.
-        sta     $F2                             ; D2B6 85 F2                    ..
-        lda     ($F1),y                         ; D2B8 B1 F1                    ..
-        sta     $EF                             ; D2BA 85 EF                    ..
+        adc     audioPointerF1+1                ; D2B4 65 F2                    e.
+        sta     audioPointerF1+1                ; D2B6 85 F2                    ..
+        lda     (audioPointerF1),y              ; D2B8 B1 F1                    ..
+        sta     audioSomethingEF                ; D2BA 85 EF                    ..
         iny                                     ; D2BC C8                       .
-        ora     ($F1),y                         ; D2BD 11 F1                    ..
+        ora     (audioPointerF1),y              ; D2BD 11 F1                    ..
         beq     LD2C8                           ; D2BF F0 07                    ..
-        lda     ($F1),y                         ; D2C1 B1 F1                    ..
-        sta     $F0                             ; D2C3 85 F0                    ..
+        lda     (audioPointerF1),y              ; D2C1 B1 F1                    ..
+        sta     audioSomethingF0                ; D2C3 85 F0                    ..
         jmp     LD11D                           ; D2C5 4C 1D D1                 L..
 
 ; ----------------------------------------------------------------------------
@@ -8883,37 +8890,37 @@ LD2C8:
 LD2C9:
         lda     #$01                            ; D2C9 A9 01                    ..
         sta     $FB                             ; D2CB 85 FB                    ..
-        jsr     iDontKnowWhatThisDoes           ; D2CD 20 06 D3                  ..
+        jsr     setOffsetFrom03F7               ; D2CD 20 06 D3                  ..
         lda     #$02                            ; D2D0 A9 02                    ..
 LD2D2:
-        sta     ($FC),y                         ; D2D2 91 FC                    ..
+        sta     (audioPointerFC),y              ; D2D2 91 FC                    ..
         tax                                     ; D2D4 AA                       .
         inx                                     ; D2D5 E8                       .
-        lda     $FC                             ; D2D6 A5 FC                    ..
+        lda     audioPointerFC                  ; D2D6 A5 FC                    ..
         clc                                     ; D2D8 18                       .
         adc     #$04                            ; D2D9 69 04                    i.
-        sta     $FC                             ; D2DB 85 FC                    ..
+        sta     audioPointerFC                  ; D2DB 85 FC                    ..
         bcc     LD2E1                           ; D2DD 90 02                    ..
-        inc     $FD                             ; D2DF E6 FD                    ..
+        inc     audioPointerFC+1                ; D2DF E6 FD                    ..
 LD2E1:
         txa                                     ; D2E1 8A                       .
         cmp     #$08                            ; D2E2 C9 08                    ..
         bcc     LD2D2                           ; D2E4 90 EC                    ..
-        dec     $FD                             ; D2E6 C6 FD                    ..
-        lda     $FC                             ; D2E8 A5 FC                    ..
+        dec     audioPointerFC+1                ; D2E6 C6 FD                    ..
+        lda     audioPointerFC                  ; D2E8 A5 FC                    ..
         sec                                     ; D2EA 38                       8
         sbc     #$04                            ; D2EB E9 04                    ..
-        sta     $FC                             ; D2ED 85 FC                    ..
+        sta     audioPointerFC                  ; D2ED 85 FC                    ..
         lda     #$00                            ; D2EF A9 00                    ..
-        sta     ($FC),y                         ; D2F1 91 FC                    ..
+        sta     (audioPointerFC),y              ; D2F1 91 FC                    ..
         rts                                     ; D2F3 60                       `
 
 ; ----------------------------------------------------------------------------
 LD2F4:
         lda     $FB                             ; D2F4 A5 FB                    ..
-        jsr     iDontKnowWhatThisDoes           ; D2F6 20 06 D3                  ..
+        jsr     setOffsetFrom03F7               ; D2F6 20 06 D3                  ..
         pha                                     ; D2F9 48                       H
-        lda     ($FC),y                         ; D2FA B1 FC                    ..
+        lda     (audioPointerFC),y              ; D2FA B1 FC                    ..
         beq     LD302                           ; D2FC F0 04                    ..
         sta     $FB                             ; D2FE 85 FB                    ..
         pla                                     ; D300 68                       h
@@ -8928,25 +8935,25 @@ LD302:
 ; ----------------------------------------------------------------------------
 ; Previously had the constants F7 & 03 replaced with a label to F703
 ; however this seemed to have messed things up.  These appear to lead to an address in ram, not rom
-iDontKnowWhatThisDoes:
+setOffsetFrom03F7:
         pha                                     ; D306 48                       H
         tay                                     ; D307 A8                       .
         dey                                     ; D308 88                       .
-        sty     $FC                             ; D309 84 FC                    ..
-        sty     $EF                             ; D30B 84 EF                    ..
+        sty     audioPointerFC                  ; D309 84 FC                    ..
+        sty     audioSomethingEF                ; D30B 84 EF                    ..
         ldy     #$00                            ; D30D A0 00                    ..
-        sty     $FD                             ; D30F 84 FD                    ..
-        asl     $FC                             ; D311 06 FC                    ..
-        rol     $FD                             ; D313 26 FD                    &.
-        asl     $FC                             ; D315 06 FC                    ..
-        rol     $FD                             ; D317 26 FD                    &.
+        sty     audioPointerFC+1                ; D30F 84 FD                    ..
+        asl     audioPointerFC                  ; D311 06 FC                    ..
+        rol     audioPointerFC+1                ; D313 26 FD                    &.
+        asl     audioPointerFC                  ; D315 06 FC                    ..
+        rol     audioPointerFC+1                ; D317 26 FD                    &.
         lda     #$F7                            ; D319 A9 F7                    ..
         clc                                     ; D31B 18                       .
-        adc     $FC                             ; D31C 65 FC                    e.
-        sta     $FC                             ; D31E 85 FC                    ..
+        adc     audioPointerFC                  ; D31C 65 FC                    e.
+        sta     audioPointerFC                  ; D31E 85 FC                    ..
         lda     #$03                            ; D320 A9 03                    ..
-        adc     $FD                             ; D322 65 FD                    e.
-        sta     $FD                             ; D324 85 FD                    ..
+        adc     audioPointerFC+1                ; D322 65 FD                    e.
+        sta     audioPointerFC+1                ; D324 85 FD                    ..
         pla                                     ; D326 68                       h
         rts                                     ; D327 60                       `
 
@@ -8957,12 +8964,12 @@ LD328:
 LD32A:
         lda     $03B0,x                         ; D32A BD B0 03                 ...
         beq     LD342                           ; D32D F0 13                    ..
-        jsr     iDontKnowWhatThisDoes           ; D32F 20 06 D3                  ..
+        jsr     setOffsetFrom03F7               ; D32F 20 06 D3                  ..
         pha                                     ; D332 48                       H
-        lda     ($FC),y                         ; D333 B1 FC                    ..
+        lda     (audioPointerFC),y              ; D333 B1 FC                    ..
         sta     $03B0,x                         ; D335 9D B0 03                 ...
         lda     $FB                             ; D338 A5 FB                    ..
-        sta     ($FC),y                         ; D33A 91 FC                    ..
+        sta     (audioPointerFC),y              ; D33A 91 FC                    ..
         pla                                     ; D33C 68                       h
         sta     $FB                             ; D33D 85 FB                    ..
         jmp     LD32A                           ; D33F 4C 2A D3                 L*.
@@ -8971,12 +8978,12 @@ LD32A:
 LD342:
         lda     $03A5,x                         ; D342 BD A5 03                 ...
         beq     LD35A                           ; D345 F0 13                    ..
-        jsr     iDontKnowWhatThisDoes           ; D347 20 06 D3                  ..
+        jsr     setOffsetFrom03F7               ; D347 20 06 D3                  ..
         pha                                     ; D34A 48                       H
-        lda     ($FC),y                         ; D34B B1 FC                    ..
+        lda     (audioPointerFC),y              ; D34B B1 FC                    ..
         sta     $03A5,x                         ; D34D 9D A5 03                 ...
         lda     $FB                             ; D350 A5 FB                    ..
-        sta     ($FC),y                         ; D352 91 FC                    ..
+        sta     (audioPointerFC),y              ; D352 91 FC                    ..
         pla                                     ; D354 68                       h
         sta     $FB                             ; D355 85 FB                    ..
         jmp     LD342                           ; D357 4C 42 D3                 LB.
@@ -9154,19 +9161,19 @@ LD486:
         lda     $03A5,x                         ; D486 BD A5 03                 ...
         beq     LD4AE                           ; D489 F0 23                    .#
         pha                                     ; D48B 48                       H
-        jsr     iDontKnowWhatThisDoes           ; D48C 20 06 D3                  ..
-        lda     ($FC),y                         ; D48F B1 FC                    ..
+        jsr     setOffsetFrom03F7               ; D48C 20 06 D3                  ..
+        lda     (audioPointerFC),y              ; D48F B1 FC                    ..
         sta     $03A5,x                         ; D491 9D A5 03                 ...
         lda     $FB                             ; D494 A5 FB                    ..
-        sta     ($FC),y                         ; D496 91 FC                    ..
+        sta     (audioPointerFC),y              ; D496 91 FC                    ..
         pla                                     ; D498 68                       h
         sta     $FB                             ; D499 85 FB                    ..
         iny                                     ; D49B C8                       .
-        lda     ($FC),y                         ; D49C B1 FC                    ..
+        lda     (audioPointerFC),y              ; D49C B1 FC                    ..
         sta     audioStagingAddrLo,x            ; D49E 9D 19 02                 ...
         sta     audioDataAddr                   ; D4A1 85 F4                    ..
         iny                                     ; D4A3 C8                       .
-        lda     ($FC),y                         ; D4A4 B1 FC                    ..
+        lda     (audioPointerFC),y              ; D4A4 B1 FC                    ..
         sta     audioStagingAddrHi,x            ; D4A6 9D 24 02                 .$.
         sta     audioDataAddr+1                 ; D4A9 85 F5                    ..
         jmp     LD3D3                           ; D4AB 4C D3 D3                 L..
@@ -9247,17 +9254,17 @@ LD528:
         lda     $0266,x                         ; D531 BD 66 02                 .f.
         sta     $027C,x                         ; D534 9D 7C 02                 .|.
         lda     #$00                            ; D537 A9 00                    ..
-        sta     $F0                             ; D539 85 F0                    ..
+        sta     audioSomethingF0                ; D539 85 F0                    ..
         lda     $0342,x                         ; D53B BD 42 03                 .B.
         asl     a                               ; D53E 0A                       .
-        rol     $F0                             ; D53F 26 F0                    &.
-        sta     $EF                             ; D541 85 EF                    ..
+        rol     audioSomethingF0                ; D53F 26 F0                    &.
+        sta     audioSomethingEF                ; D541 85 EF                    ..
         lda     $025B,x                         ; D543 BD 5B 02                 .[.
         sec                                     ; D546 38                       8
-        sbc     $EF                             ; D547 E5 EF                    ..
+        sbc     audioSomethingEF                ; D547 E5 EF                    ..
         sta     $0271,x                         ; D549 9D 71 02                 .q.
         lda     $027C,x                         ; D54C BD 7C 02                 .|.
-        sbc     $F0                             ; D54F E5 F0                    ..
+        sbc     audioSomethingF0                ; D54F E5 F0                    ..
         sta     $027C,x                         ; D551 9D 7C 02                 .|.
         lda     $F8                             ; D554 A5 F8                    ..
         and     #$30                            ; D556 29 30                    )0
@@ -10015,15 +10022,15 @@ LDA3F:
         beq     LDA6B                           ; DA49 F0 20                    . 
         pha                                     ; DA4B 48                       H
         lda     $03A5,x                         ; DA4C BD A5 03                 ...
-        sta     ($FC),y                         ; DA4F 91 FC                    ..
+        sta     (audioPointerFC),y              ; DA4F 91 FC                    ..
         pla                                     ; DA51 68                       h
         sta     $03A5,x                         ; DA52 9D A5 03                 ...
         iny                                     ; DA55 C8                       .
         lda     audioStagingAddrLo,x            ; DA56 BD 19 02                 ...
-        sta     ($FC),y                         ; DA59 91 FC                    ..
+        sta     (audioPointerFC),y              ; DA59 91 FC                    ..
         iny                                     ; DA5B C8                       .
         lda     audioStagingAddrHi,x            ; DA5C BD 24 02                 .$.
-        sta     ($FC),y                         ; DA5F 91 FC                    ..
+        sta     (audioPointerFC),y              ; DA5F 91 FC                    ..
         lda     $F8                             ; DA61 A5 F8                    ..
         sta     audioStagingAddrLo,x            ; DA63 9D 19 02                 ...
         lda     $F9                             ; DA66 A5 F9                    ..
@@ -10039,18 +10046,18 @@ LDA6D:
         beq     LDA95                           ; DA71 F0 22                    ."
         pha                                     ; DA73 48                       H
         lda     $03B0,x                         ; DA74 BD B0 03                 ...
-        sta     ($FC),y                         ; DA77 91 FC                    ..
+        sta     (audioPointerFC),y              ; DA77 91 FC                    ..
         pla                                     ; DA79 68                       h
         sta     $03B0,x                         ; DA7A 9D B0 03                 ...
         iny                                     ; DA7D C8                       .
         lda     audioStagingAddrLo,x            ; DA7E BD 19 02                 ...
-        sta     ($FC),y                         ; DA81 91 FC                    ..
+        sta     (audioPointerFC),y              ; DA81 91 FC                    ..
         iny                                     ; DA83 C8                       .
         lda     audioStagingAddrHi,x            ; DA84 BD 24 02                 .$.
-        sta     ($FC),y                         ; DA87 91 FC                    ..
+        sta     (audioPointerFC),y              ; DA87 91 FC                    ..
         iny                                     ; DA89 C8                       .
         lda     $03BB,x                         ; DA8A BD BB 03                 ...
-        sta     ($FC),y                         ; DA8D 91 FC                    ..
+        sta     (audioPointerFC),y              ; DA8D 91 FC                    ..
         pla                                     ; DA8F 68                       h
         sta     $03BB,x                         ; DA90 9D BB 03                 ...
         sec                                     ; DA93 38                       8
@@ -10066,14 +10073,14 @@ LDA95:
 LDA98:
         lda     $03B0,x                         ; DA98 BD B0 03                 ...
         beq     LDAB1                           ; DA9B F0 14                    ..
-        jsr     iDontKnowWhatThisDoes           ; DA9D 20 06 D3                  ..
+        jsr     setOffsetFrom03F7               ; DA9D 20 06 D3                  ..
         dec     $03BB,x                         ; DAA0 DE BB 03                 ...
         beq     LDAB3                           ; DAA3 F0 0E                    ..
         iny                                     ; DAA5 C8                       .
-        lda     ($FC),y                         ; DAA6 B1 FC                    ..
+        lda     (audioPointerFC),y              ; DAA6 B1 FC                    ..
         sta     audioStagingAddrLo,x            ; DAA8 9D 19 02                 ...
         iny                                     ; DAAB C8                       .
-        lda     ($FC),y                         ; DAAC B1 FC                    ..
+        lda     (audioPointerFC),y              ; DAAC B1 FC                    ..
         sta     audioStagingAddrHi,x            ; DAAE 9D 24 02                 .$.
 LDAB1:
         sec                                     ; DAB1 38                       8
@@ -10082,16 +10089,16 @@ LDAB1:
 ; ----------------------------------------------------------------------------
 LDAB3:
         pha                                     ; DAB3 48                       H
-        lda     ($FC),y                         ; DAB4 B1 FC                    ..
+        lda     (audioPointerFC),y              ; DAB4 B1 FC                    ..
         sta     $03B0,x                         ; DAB6 9D B0 03                 ...
         lda     $FB                             ; DAB9 A5 FB                    ..
-        sta     ($FC),y                         ; DABB 91 FC                    ..
+        sta     (audioPointerFC),y              ; DABB 91 FC                    ..
         pla                                     ; DABD 68                       h
         sta     $FB                             ; DABE 85 FB                    ..
         iny                                     ; DAC0 C8                       .
         iny                                     ; DAC1 C8                       .
         iny                                     ; DAC2 C8                       .
-        lda     ($FC),y                         ; DAC3 B1 FC                    ..
+        lda     (audioPointerFC),y              ; DAC3 B1 FC                    ..
         sta     $03BB,x                         ; DAC5 9D BB 03                 ...
         sec                                     ; DAC8 38                       8
         rts                                     ; DAC9 60                       `

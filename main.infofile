@@ -87,8 +87,12 @@ LABEL { ADDR $0069; NAME "player2TetrominoOrientation"; };
 LABEL { ADDR $006A; NAME "player1FallTimer"; };
 LABEL { ADDR $006B; NAME "player2FallTimer"; };
 LABEL { ADDR $0076; NAME "relatesToAddrTableAB25"; SIZE $2; };
+LABEL { ADDR $00EF; NAME "audioSomethingEF"; COMMENT "maybe tmp var"; };
+LABEL { ADDR $00F0; NAME "audioSomethingF0"; COMMENT "maybe tmp var"; };
+LABEL { ADDR $00F1; NAME "audioPointerF1"; SIZE $2; };
 LABEL { ADDR $00F4; NAME "audioDataAddr"; SIZE $2; };
 LABEL { ADDR $00F6; NAME "apuRegister"; SIZE $2; };
+LABEL { ADDR $00FC; NAME "audioPointerFC"; SIZE $2; COMMENT "offset from 03F7 set with code at D306"; };
 LABEL { ADDR $00FF; NAME "audioFlags"; COMMENT "
 ; https://www.nesdev.org/wiki/APU
 ; AND'ed with $05, $01, $11, $21 and checks zero flag for audio registers starting at 
@@ -139,7 +143,9 @@ LABEL { ADDR $03ED; NAME "audioStagingSlot4"; COMMENT "SQ1_HI, SQ2_HI, TRI_HI or
 LABEL { ADDR $03EE; NAME "audioStagingSlot2"; COMMENT "SQ1_SWEEP, SQ2_SWEEP, unused or unused"; };
 LABEL { ADDR $03EF; NAME "soundChannelsEnabled"; COMMENT "---D NT21 Enable DMC (D), noise (N), triangle (T), and pulse channels (2/1)"; };
 LABEL { ADDR $03F3; NAME "apuRegisterType"; COMMENT "0 pulse, 1 triangle, 2 noise"; };
-
+LABEL { ADDR $03F7; NAME "audioBuffer"; SIZE $21; COMMENT "
+; code at D306 sets an offset from this address
+; have seen this go to at least $0403.  need to find how far it actually goes"; };
 LABEL { ADDR $0418; NAME "player1ScoreHundredThousands"; };
 LABEL { ADDR $0419; NAME "player1ScoreTenThousands"; };
 LABEL { ADDR $041A; NAME "player1ScoreThousands"; };
@@ -635,7 +641,7 @@ LABEL { ADDR $CFF7; NAME "audioJump"; COMMENT "uses RTS trick so all addresses a
 
 LABEL { ADDR $D00F; NAME "@ret"; };
 LABEL { ADDR $D010; NAME "audioJumpTable"; SIZE $18; };
-LABEL { ADDR $D306; NAME "iDontKnowWhatThisDoes"; COMMENT "Previously had the constants F7 & 03 replaced with a label to F703
+LABEL { ADDR $D306; NAME "setOffsetFrom03F7"; COMMENT "Previously had the constants F7 & 03 replaced with a label to F703
 ; however this seemed to have messed things up.  These appear to lead to an address in ram, not rom"; };
 LABEL { ADDR $D846; NAME "setApuRegisters"; };
 LABEL { ADDR $D85B; NAME "@checkIfTriangle"; };
