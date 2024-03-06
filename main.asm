@@ -726,13 +726,11 @@ L836B:
         and     #$03                            ; 8378 29 03                    ).
         sta     player1TetrominoOrientation,x   ; 837A 95 68                    .h
         jsr     checkPositionAndClearFlagsOnCarrySet; 837C 20 50 86              P.
-        bcc     @restore                           ; 837F B0 0D                    ..
-        bcs     L838E
-        ; dec     player1TetrominoX,x             ; 8381 D6 62                    .b
+        bcs     L838E                           ; 837F B0 0D                    ..
+        dec     player1TetrominoX,x             ; 8381 D6 62                    .b
         jsr     checkPositionAndClearFlagsOnCarrySet; 8383 20 50 86              P.
         bcs     L838E                           ; 8386 B0 06                    ..
         inc     player1TetrominoX,x             ; 8388 F6 62                    .b
-@restore:
         lda     generalCounter3a                ; 838A A5 3A                    .:
         sta     player1TetrominoOrientation,x   ; 838C 95 68                    .h
 ; This has something to do with wallkicks
@@ -747,13 +745,11 @@ L838E:
         and     #$03                            ; 839B 29 03                    ).
         sta     player1TetrominoOrientation,x   ; 839D 95 68                    .h
         jsr     checkPositionAndClearFlagsOnCarrySet; 839F 20 50 86              P.
-        bcc     @restore                           ; 83A2 B0 0D                    ..
-        bcs     L83B1
-        ; dec     player1TetrominoX,x             ; 83A4 D6 62                    .b
+        bcs     L83B1                           ; 83A2 B0 0D                    ..
+        dec     player1TetrominoX,x             ; 83A4 D6 62                    .b
         jsr     checkPositionAndClearFlagsOnCarrySet; 83A6 20 50 86              P.
         bcs     L83B1                           ; 83A9 B0 06                    ..
         inc     player1TetrominoX,x             ; 83AB F6 62                    .b
-@restore:
         lda     generalCounter3a                ; 83AD A5 3A                    .:
         sta     player1TetrominoOrientation,x   ; 83AF 95 68                    .h
 L83B1:
