@@ -8,6 +8,6 @@
 
 .segment "CHR"
 .incbin "gfx/game_tileset.chr"
-.incbin "gfx/dancing_guy_tileset.chr"
+.incbin "gfx/dancers_tileset.chr"
 .incbin "gfx/title_tileset.chr"
 .incbin "gfx/various_tileset.chr"
