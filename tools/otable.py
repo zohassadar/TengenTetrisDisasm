@@ -6,6 +6,9 @@ import re
 # N is used to indicate the hidden/null piece
 pieces = list(reversed("NITOJLSZ"))
 
+# for later.  Represents 0x00 through 0x0E in game_tileset
+tiles = " ╒═╕╖║╜╩╠╦╣╔╝╚╗"
+
 orientationTable = """
 orientationTable:
         .byte   $00,$00,$00,$00,$00,$00,$00,$00 ; 86C3 00 00 00 00 00 00 00 00  ........
