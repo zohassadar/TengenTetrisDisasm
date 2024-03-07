@@ -135,7 +135,7 @@ Address >= $DF8F && Address <= $DF96
 
 ****
 
-Trying to figure out wall kicks.  This disables them on the right side of the playfield.   Leaving this here to come back to later.
+Trying to figure out wall kicks.  This disables them on the right side of the playfield*.   Leaving this here to come back to later.
 
 
 diff --git a/main.asm b/main.asm
@@ -178,3 +178,5 @@ index 815c91b..81115b1 100755
          sta     player1TetrominoOrientation,x   ; 83AF 95 68                    .h
  L83B1:
 
+*https://tetris.wiki/Tetris_(NES,_Tengen)
+"Because basic rotation can fail when a piece is against the right wall, but not when the same piece is against the left wall, this game will wallkick one square to the left if basic rotation fails."
