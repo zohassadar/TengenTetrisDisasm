@@ -1,17 +1,17 @@
 """
 visualize orientationTable
+
+todo:  use output to recreate orientationTable and orientationTiles
 """
 import re
 
-# N is used to indicate the hidden/null piece
-pieces = list(reversed("NITOJLSZ"))
+pieces = list(reversed("ITOJLSZ"))
 
-# for later.  Represents 0x00 through 0x0E in game_tileset
-tiles = " ╒═╕╖║╜╩╠╦╣╔╝╚╗"
+# tiles = " ╒═╕╖║╜╩╠╦╣╔╝╚╗" alternate
+tiles = " c═ↄn║u╩╠╦╣╔╝╚╗"  # maybe a set of chars exist with better endcaps?
 
+# null orientation skipped (8 bytes of 0)
 orientationTable = """
-orientationTable:
-        .byte   $00,$00,$00,$00,$00,$00,$00,$00 ; 86C3 00 00 00 00 00 00 00 00  ........
 orientationForI:
         .byte   $F0,$00,$44,$44,$F0,$00,$44,$44 ; 86CB F0 00 44 44 F0 00 44 44  ..DD..DD
 orientationForT:
@@ -31,14 +31,55 @@ orientationForZ:
         .byte   $C6,$00,$4C,$80,$C6,$00,$4C,$80 ; 86FB C6 00 4C 80 C6 00 4C 80  ..L...L.
 """
 
-numbers = [int(i, 16) for i in re.findall(r"\$(\w\w)", orientationTable)]
+
+orientationTiles = """
+tilesForI:
+        .byte   $01,$02,$02,$03,$04,$05,$05,$06 ; 8703 01 02 02 03 04 05 05 06  ........
+        .byte   $01,$02,$02,$03,$04,$05,$05,$06 ; 870B 01 02 02 03 04 05 05 06  ........
+tilesForT:
+        .byte   $01,$09,$03,$06,$04,$08,$03,$06 ; 8713 01 09 03 06 04 08 03 06  ........
+        .byte   $04,$01,$07,$03,$04,$01,$0A,$06 ; 871B 04 01 07 03 04 01 0A 06  ........
+tilesForO:
+        .byte   $0B,$0E,$0D,$0C,$0B,$0E,$0D,$0C ; 8723 0B 0E 0D 0C 0B 0E 0D 0C  ........
+        .byte   $0B,$0E,$0D,$0C,$0B,$0E,$0D,$0C ; 872B 0B 0E 0D 0C 0B 0E 0D 0C  ........
+tilesForJ:
+        .byte   $01,$02,$0E,$06,$0B,$03,$05,$06 ; 8733 01 02 0E 06 0B 03 05 06  ........
+        .byte   $04,$0D,$02,$03,$04,$05,$01,$0C ; 873B 04 0D 02 03 04 05 01 0C  ........
+tilesForL:
+        .byte   $0B,$02,$03,$06,$04,$05,$0D,$03 ; 8743 0B 02 03 06 04 05 0D 03  ........
+        .byte   $04,$01,$02,$0C,$01,$0E,$05,$06 ; 874B 04 01 02 0C 01 0E 05 06  ........
+tilesForS:
+        .byte   $0B,$03,$01,$0C,$04,$0D,$0E,$06 ; 8753 0B 03 01 0C 04 0D 0E 06  ........
+        .byte   $0B,$03,$01,$0C,$04,$0D,$0E,$06 ; 875B 0B 03 01 0C 04 0D 0E 06  ........
+tilesForZ:
+        .byte   $01,$0E,$0D,$03,$04,$0B,$0C,$06 ; 8763 01 0E 0D 03 04 0B 0C 06  ........
+        .byte   $01,$0E,$0D,$03,$04,$0B,$0C,$06 ; 876B 01 0E 0D 03 04 0B 0C 06  ........
+"""
 
 
-for i in range(0, 64, 2):
+def numbers_from_code(code):
+    return [int(i, 16) for i in re.findall(r"\$(\w\w)", code)]
+
+
+numbers = numbers_from_code(orientationTable)
+tile_indexes = numbers_from_code(orientationTiles)
+tile_indexes.reverse()
+
+
+def tile_replace(matchobj):
+    if matchobj.group() == "0":
+        return "."
+    return tiles[tile_indexes.pop()]
+
+
+for i in range(0, len(numbers), 2):
     if not i % 8:
         print(f"Piece: {pieces.pop()}")
-    print(f"{numbers[i+0] >> 4:04b}")
-    print(f"{numbers[i+0] & 15:04b}")
-    print(f"{numbers[i+1] >> 4:04b}")
-    print(f"{numbers[i+1] & 15:04b}")
-    print("")
+    bintext = (
+        f"{numbers[i+0] >> 4:04b}\n"
+        f"{numbers[i+0] & 15:04b}\n"
+        f"{numbers[i+1] >> 4:04b}\n"
+        f"{numbers[i+1] & 15:04b}\n"
+    )
+    converted = re.sub(r"[01]", tile_replace, bintext)
+    print(converted)
