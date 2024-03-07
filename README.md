@@ -37,6 +37,21 @@ md5sum: 1bcb1795a0feed766d6d0681196662fb
 
 `make compare`
 
+## Resources
+
+Prototype patches creates from roms found here:
+* https://hiddenpalace.org/Category:Tengen_Tetris_prototypes
+
+Other links:
+
+* https://tetris.wiki/Tetris_(NES,_Tengen)
+* https://harddrop.com/wiki/Tetris_(NES,_Tengen)
+* https://lostmediawiki.com/Tetris_(found_early_build_of_NES_game_by_Tengen;_1988)
+* https://tcrf.net/Tetris_(NES,_Tengen)
+* https://gamefaqs.gamespot.com/nes/587696-tetris-tengen/cheats
+* https://www.atarihq.com/tsr/special/el/el.html
+
+
 ## Thanks
 [threecreepio](https://github.com/threecreepio/da65ify) getting this started
 
