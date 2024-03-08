@@ -72,14 +72,19 @@ def tile_replace(matchobj):
     return tiles[tile_indexes.pop()]
 
 
-for i in range(0, len(numbers), 2):
-    if not i % 8:
-        print(f"Piece: {pieces.pop()}")
-    bintext = (
-        f"{numbers[i+0] >> 4:04b}\n"
-        f"{numbers[i+0] & 15:04b}\n"
-        f"{numbers[i+1] >> 4:04b}\n"
-        f"{numbers[i+1] & 15:04b}\n"
-    )
-    converted = re.sub(r"[01]", tile_replace, bintext)
-    print(converted)
+def main():
+    for i in range(0, len(numbers), 2):
+        if not i % 8:
+            print(f"# Piece: {pieces.pop()}")
+        bintext = (
+            f"{numbers[i+0] >> 4:04b}\n"
+            f"{numbers[i+0] & 15:04b}\n"
+            f"{numbers[i+1] >> 4:04b}\n"
+            f"{numbers[i+1] & 15:04b}\n"
+        )
+        converted = re.sub(r"[01]", tile_replace, bintext)
+        print(converted)
+
+
+if __name__ == "__main__":
+    main()
