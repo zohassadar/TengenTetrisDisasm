@@ -10216,36 +10216,36 @@ LDB44:
         tay                                     ; DB69 A8                       .
         lda     $03C6,x                         ; DB6A BD C6 03                 ...
         cpy     #$04                            ; DB6D C0 04                    ..
-        beq     @leftShift4x                    ; DB6F F0 1D                    ..
+        beq     @shiftRight4x                   ; DB6F F0 1D                    ..
         cpy     #$02                            ; DB71 C0 02                    ..
-        beq     @leftShift2x                    ; DB73 F0 1B                    ..
+        beq     @shiftRight2x                   ; DB73 F0 1B                    ..
         cpy     #$06                            ; DB75 C0 06                    ..
-        beq     @leftShift6x                    ; DB77 F0 13                    ..
+        beq     @shiftRight6x                   ; DB77 F0 13                    ..
         cpy     #$07                            ; DB79 C0 07                    ..
-        beq     @leftShift7x                    ; DB7B F0 0E                    ..
+        beq     @shiftRight7x                   ; DB7B F0 0E                    ..
         cpy     #$05                            ; DB7D C0 05                    ..
-        beq     @leftShift5x                    ; DB7F F0 0C                    ..
+        beq     @shiftRight5x                   ; DB7F F0 0C                    ..
         cpy     #$03                            ; DB81 C0 03                    ..
-        beq     @leftShift3x                    ; DB83 F0 0A                    ..
+        beq     @shiftRight3x                   ; DB83 F0 0A                    ..
         cpy     #$01                            ; DB85 C0 01                    ..
-        beq     @leftShift1x                    ; DB87 F0 08                    ..
+        beq     @shiftRight1x                   ; DB87 F0 08                    ..
         sec                                     ; DB89 38                       8
         rts                                     ; DB8A 60                       `
 
 ; ----------------------------------------------------------------------------
-@leftShift7x:
+@shiftRight7x:
         lsr     a                               ; DB8B 4A                       J
-@leftShift6x:
+@shiftRight6x:
         lsr     a                               ; DB8C 4A                       J
-@leftShift5x:
+@shiftRight5x:
         lsr     a                               ; DB8D 4A                       J
-@leftShift4x:
+@shiftRight4x:
         lsr     a                               ; DB8E 4A                       J
-@leftShift3x:
+@shiftRight3x:
         lsr     a                               ; DB8F 4A                       J
-@leftShift2x:
+@shiftRight2x:
         lsr     a                               ; DB90 4A                       J
-@leftShift1x:
+@shiftRight1x:
         lsr     a                               ; DB91 4A                       J
         jmp     LDB44                           ; DB92 4C 44 DB                 LD.
 

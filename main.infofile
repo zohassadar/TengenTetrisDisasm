@@ -653,13 +653,13 @@ LABEL { ADDR $D8A9; NAME "writeAudioSlot2"; COMMENT "SQ1_SWEEP, SQ2_SWEEP, unuse
 LABEL { ADDR $D8C4; NAME "writeAudioSlot3"; COMMENT "SQ1_LO, SQ2_LO, TRI_LO or NOISE_LO"; };
 LABEL { ADDR $D8D0; NAME "writeAudioSlot4"; COMMENT "SQ1_HI, SQ2_HI, TRI_HI or NOISE_HI"; };
 LABEL { ADDR $D8DC; NAME "@ret"; };
-LABEL { ADDR $DB8B; NAME "@leftShift7x"; };
-LABEL { ADDR $DB8C; NAME "@leftShift6x"; };
-LABEL { ADDR $DB8D; NAME "@leftShift5x"; };
-LABEL { ADDR $DB8E; NAME "@leftShift4x"; };
-LABEL { ADDR $DB8F; NAME "@leftShift3x"; };
-LABEL { ADDR $DB90; NAME "@leftShift2x"; };
-LABEL { ADDR $DB91; NAME "@leftShift1x"; };
+LABEL { ADDR $DB8B; NAME "@shiftRight7x"; };
+LABEL { ADDR $DB8C; NAME "@shiftRight6x"; };
+LABEL { ADDR $DB8D; NAME "@shiftRight5x"; };
+LABEL { ADDR $DB8E; NAME "@shiftRight4x"; };
+LABEL { ADDR $DB8F; NAME "@shiftRight3x"; };
+LABEL { ADDR $DB90; NAME "@shiftRight2x"; };
+LABEL { ADDR $DB91; NAME "@shiftRight1x"; };
 LABEL { ADDR $DD1E; NAME "apuRegistersLow"; };
 LABEL { ADDR $DD22; NAME "apuRegistersHigh"; };
 LABEL { ADDR $DD2A; NAME "soundChannelFlags"; COMMENT "see soundChannelFlags
