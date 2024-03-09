@@ -179,6 +179,18 @@ apply_label B181 B0AF B0B3
 apply_label B181 B0F1 B0F5
 add_constant 82CE GAMESTATE_DEMO
 add_constant 82D2 GAMESTATE_GAMEOVER
+add_constant B5D8 BUTTON_START
+add_constant 9291 BUTTON_SELECT
+add_constant 9FA4 BUTTON_SELECT+BUTTON_START
+add_constant 9FBC BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT
+add_constant 9FED BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT
+add_constant A011 BUTTON_START
+add_constant 8052 ~BUTTON_DOWN
+add_constant 923A BUTTON_LEFT
+add_constant 9240 BUTTON_RIGHT
+add_constant 9FF6 BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT
+add_constant 9280 BUTTON_A+BUTTON_B
+add_constant A04F BUTTON_UP
 )" main.asm
 
 # These remove labels that end up in the middle of instructions (label := * + 1, etc)

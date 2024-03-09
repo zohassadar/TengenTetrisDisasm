@@ -261,7 +261,7 @@ mainLoop:
 testIfComputerPlayingThenMove:
         lda     player1ControllerNew,x                         ; 8050 B5 46     .F
 @allButtonsExceptDown:
-        and     #$DF                                           ; 8052 29 DF     ).
+        and     #~BUTTON_DOWN                                  ; 8052 29 DF     ).
         cpx     #$00                                           ; 8054 E0 00     ..
         beq     @player1Active                                 ; 8056 F0 07     ..
         ldy     menuGameMode                                   ; 8058 AC F0 04  ...
@@ -2884,10 +2884,10 @@ L9234:
         lda     player1ControllerHeld,x                        ; 9234 B5 42     .B
         sta     generalCounter3a                               ; 9236 85 3A     .:
         lda     player1ControllerNew,x                         ; 9238 B5 46     .F
-        and     #$40                                           ; 923A 29 40     )@
+        and     #BUTTON_LEFT                                   ; 923A 29 40     )@
         bne     L9257                                          ; 923C D0 19     ..
         lda     player1ControllerNew,x                         ; 923E B5 46     .F
-        and     #$80                                           ; 9240 29 80     ).
+        and     #BUTTON_RIGHT                                  ; 9240 29 80     ).
         bne     L9274                                          ; 9242 D0 30     .0
         lda     generalCounter3a                               ; 9244 A5 3A     .:
         and     #$40                                           ; 9246 29 40     )@
@@ -2922,7 +2922,7 @@ L9279:
         sta     dasRightPlayer1,x                              ; 927B 9D AC 01  ...
 L927E:
         lda     player1ControllerNew,x                         ; 927E B5 46     .F
-        and     #$03                                           ; 9280 29 03     ).
+        and     #BUTTON_A+BUTTON_B                             ; 9280 29 03     ).
         beq     L928D                                          ; 9282 F0 09     ..
         lda     $74,x                                          ; 9284 B5 74     .t
         clc                                                    ; 9286 18        .
@@ -2932,7 +2932,7 @@ L927E:
 L928D:
         lda     player1ControllerNew                           ; 928D A5 46     .F
         ora     player2ControllerNew                           ; 928F 05 47     .G
-        and     #$04                                           ; 9291 29 04     ).
+        and     #BUTTON_SELECT                                 ; 9291 29 04     ).
         beq     L9299                                          ; 9293 F0 04     ..
         lda     #$01                                           ; 9295 A9 01     ..
         sta     $74,x                                          ; 9297 95 74     .t
@@ -4750,7 +4750,7 @@ L9F9A:
         bne     L9F8B                                          ; 9F9E D0 EB     ..
         lda     player1ControllerNew                           ; 9FA0 A5 46     .F
         ora     player2ControllerNew                           ; 9FA2 05 47     .G
-        and     #$0C                                           ; 9FA4 29 0C     ).
+        and     #BUTTON_SELECT+BUTTON_START                    ; 9FA4 29 0C     ).
         beq     L9F8B                                          ; 9FA6 F0 E3     ..
         jmp     initializeGameSelectMenu                       ; 9FA8 4C BC 9E  L..
 
@@ -4767,7 +4767,7 @@ L9FAB:
 L9FB8:
         lda     player1ControllerNew                           ; 9FB8 A5 46     .F
         ora     player2ControllerNew                           ; 9FBA 05 47     .G
-        and     #$34                                           ; 9FBC 29 34     )4
+        and     #BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT           ; 9FBC 29 34     )4
         beq     LA00D                                          ; 9FBE F0 4D     .M
         lda     #$FF                                           ; 9FC0 A9 FF     ..
         sta     player1FallTimer                               ; 9FC2 85 6A     .j
@@ -4794,12 +4794,12 @@ L9FE3:
         ldy     #$03                                           ; 9FE9 A0 03     ..
 L9FEB:
         lda     player1ControllerNew                           ; 9FEB A5 46     .F
-        and     #$34                                           ; 9FED 29 34     )4
+        and     #BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT           ; 9FED 29 34     )4
         beq     L9FF4                                          ; 9FEF F0 03     ..
         jsr     LA048                                          ; 9FF1 20 48 A0   H.
 L9FF4:
         lda     player2ControllerNew                           ; 9FF4 A5 47     .G
-        and     #$34                                           ; 9FF6 29 34     )4
+        and     #BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT           ; 9FF6 29 34     )4
         beq     LA004                                          ; 9FF8 F0 0A     ..
         ldx     menuGameMode                                   ; 9FFA AE F0 04  ...
         dex                                                    ; 9FFD CA        .
@@ -4815,7 +4815,7 @@ LA004:
 LA00D:
         lda     player1ControllerNew                           ; A00D A5 46     .F
         ora     player2ControllerNew                           ; A00F 05 47     .G
-        and     #$08                                           ; A011 29 08     ).
+        and     #BUTTON_START                                  ; A011 29 08     ).
         bne     LA016                                          ; A013 D0 01     ..
         rts                                                    ; A015 60        `
 
@@ -4861,7 +4861,7 @@ LA048:
         lda     #$00                                           ; A049 A9 00     ..
         jsr     LA06F                                          ; A04B 20 6F A0   o.
         pla                                                    ; A04E 68        h
-        and     #$10                                           ; A04F 29 10     ).
+        and     #BUTTON_UP                                     ; A04F 29 10     ).
         beq     LA055                                          ; A051 F0 02     ..
         lda     #$FE                                           ; A053 A9 FE     ..
 LA055:
@@ -7256,7 +7256,7 @@ pauseOrUnpause:
 @gameNotPaused:
         lda     player1ControllerNew                           ; B5D4 A5 46     .F
         ora     player2ControllerNew                           ; B5D6 05 47     .G
-        and     #$08                                           ; B5D8 29 08     ).
+        and     #BUTTON_START                                  ; B5D8 29 08     ).
         bne     @startPressedOnEitherController                ; B5DA D0 01     ..
 @ret:
         rts                                                    ; B5DC 60        `

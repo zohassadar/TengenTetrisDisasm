@@ -1,3 +1,5 @@
+.feature force_range
+
 .segment "HEADER"
 .include "constants.asm"
 .include "header.asm"
