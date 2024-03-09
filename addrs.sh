@@ -15,6 +15,7 @@ apply_high() {
     label=$3
     # echo high $3 ${1::-2} $2
     echo "/; $byte_addr/s/\$${label_addr::-2}/>$label/;"
+    echo "/; $byte_addr/s/\s\{$((${#label}-2))\};/;/;"
     }
 
 apply_low() {
@@ -23,6 +24,7 @@ apply_low() {
     label=$3
     # echo low $3 ${1:2} $2
     echo "/; $byte_addr/s/\$${label_addr:2}/<$label/;"
+    echo "/; $byte_addr/s/\s\{$((${#label}-2))\};/;/;"
     }
 
 apply_label() {
