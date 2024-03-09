@@ -54,7 +54,9 @@ player2ExpansionHeld:	.res 1	; $0045
 player1ControllerNew:	.res 1	; $0046
 player2ControllerNew:	.res 1	; $0047
 ppuStagingAddress:	.res $2	; $0048
-.res 8
+player1GameActive:	.res 1	; $004A
+player2GameActive:	.res 1	; $004B
+.res 6
 pieceStatistics:	.res 1	; $0052
 pieceStatsI:	.res 1	; $0053
 pieceStatsT:	.res 1	; $0054
@@ -109,8 +111,8 @@ dropRepeatP1:	.res 1	; $01B2
 dropRepeatP2:	.res 1	; $01B3
 dropRatePossibleP1:	.res 1	; $01B4
 dropRatePossibleP2:	.res 1	; $01B5
-codeInputPlayer1:	.res 1	; $01B6
-codeInputPlayer2:	.res 1	; $01B7
+codeInputYPlayer1:	.res 1	; $01B6
+codeInputYPlayer2:	.res 1	; $01B7
 longBarCodeUsedP1:	.res 1	; $01B8
 longBarCodeUsedP2:	.res 1	; $01B9
 undoCodeUsedP1:	.res 1	; $01BA

@@ -59,6 +59,8 @@ player2ExpansionHeld:= $0045                                   ; appears unused
 player1ControllerNew:= $0046
 player2ControllerNew:= $0047
 ppuStagingAddress:= $0048
+player1GameActive:= $004A                                      ; 1 when game active.  0 when game over
+player2GameActive:= $004B
 pieceStatistics := $0052
 pieceStatsI     := $0053
 pieceStatsT     := $0054
@@ -107,8 +109,8 @@ dropRepeatP1    := $01B2
 dropRepeatP2    := $01B3
 dropRatePossibleP1:= $01B4
 dropRatePossibleP2:= $01B5
-codeInputPlayer1:= $01B6
-codeInputPlayer2:= $01B7
+codeInputYPlayer1:= $01B6                                      ; stores offset from levelUpCode (B5A8) while code is input
+codeInputYPlayer2:= $01B7
 longBarCodeUsedP1:= $01B8
 longBarCodeUsedP2:= $01B9
 undoCodeUsedP1  := $01BA
@@ -260,7 +262,6 @@ mainLoop:
 ; menuGameMode is 3 (vs) or 4 (with) when computer is playing
 testIfComputerPlayingThenMove:
         lda     player1ControllerNew,x                         ; 8050 B5 46     .F
-@allButtonsExceptDown:
         and     #~BUTTON_DOWN                                  ; 8052 29 DF     ).
         cpx     #$00                                           ; 8054 E0 00     ..
         beq     @player1Active                                 ; 8056 F0 07     ..
@@ -642,7 +643,7 @@ activeGamePlay:
         ora     lineClearTimerP2                               ; 82E3 0D CF 01  ...
         bne     gameOverReturn                                 ; 82E6 D0 EE     ..
 L82E8:
-        lda     $4A,x                                          ; 82E8 B5 4A     .J
+        lda     player1GameActive,x                            ; 82E8 B5 4A     .J
         beq     handleGameOver                                 ; 82EA F0 07     ..
         lda     player1TetrominoCurrent,x                      ; 82EC B5 64     .d
         bne     L8320                                          ; 82EE D0 30     .0
@@ -772,16 +773,16 @@ L83B1:
         lda     #$00                                           ; 83D4 A9 00     ..
         bit     playMode                                       ; 83D6 24 2F     $/
         bpl     L83DE                                          ; 83D8 10 04     ..
-        sta     $4A                                            ; 83DA 85 4A     .J
-        sta     $4B                                            ; 83DC 85 4B     .K
+        sta     player1GameActive                              ; 83DA 85 4A     .J
+        sta     player2GameActive                              ; 83DC 85 4B     .K
 L83DE:
-        sta     $4A,x                                          ; 83DE 95 4A     .J
+        sta     player1GameActive,x                            ; 83DE 95 4A     .J
         lda     gameState                                      ; 83E0 A5 29     .)
         bne     L83E7                                          ; 83E2 D0 03     ..
         jsr     L81DD                                          ; 83E4 20 DD 81   ..
 L83E7:
-        lda     $4A                                            ; 83E7 A5 4A     .J
-        ora     $4B                                            ; 83E9 05 4B     .K
+        lda     player1GameActive                              ; 83E7 A5 4A     .J
+        ora     player2GameActive                              ; 83E9 05 4B     .K
         bne     L83F8                                          ; 83EB D0 0B     ..
         lda     #$F9                                           ; 83ED A9 F9     ..
         sta     gameState                                      ; 83EF 85 29     .)
@@ -2106,7 +2107,7 @@ showLevelBonus:
         inc     $79                                            ; 8CBD E6 79     .y
         inc     $79                                            ; 8CBF E6 79     .y
         ldx     #$01                                           ; 8CC1 A2 01     ..
-        lda     $4A,x                                          ; 8CC3 B5 4A     .J
+        lda     player1GameActive,x                            ; 8CC3 B5 4A     .J
         beq     L8CCB                                          ; 8CC5 F0 04     ..
         lda     player1TetrominoCurrent,x                      ; 8CC7 B5 64     .d
         beq     L8CCC                                          ; 8CC9 F0 01     ..
@@ -2166,7 +2167,7 @@ L8D19:
         ldy     playMode                                       ; 8D1B A4 2F     ./
         bmi     L8D3C                                          ; 8D1D 30 1D     0.
         beq     L8D3A                                          ; 8D1F F0 19     ..
-        ldy     $4B                                            ; 8D21 A4 4B     .K
+        ldy     player2GameActive                              ; 8D21 A4 4B     .K
         beq     L8D36                                          ; 8D23 F0 11     ..
         lda     #$0A                                           ; 8D25 A9 0A     ..
         jsr     updateGameBackground                           ; 8D27 20 03 B6   ..
@@ -2176,7 +2177,7 @@ L8D19:
         ldy     #$0B                                           ; 8D31 A0 0B     ..
         jsr     LA75E                                          ; 8D33 20 5E A7   ^.
 L8D36:
-        ldy     $4A                                            ; 8D36 A4 4A     .J
+        ldy     player1GameActive                              ; 8D36 A4 4A     .J
         beq     L8D50                                          ; 8D38 F0 16     ..
 L8D3A:
         lda     #$09                                           ; 8D3A A9 09     ..
@@ -2224,14 +2225,14 @@ L8D6B:
         lda     #$0C                                           ; 8D86 A9 0C     ..
         jsr     updateGameBackground                           ; 8D88 20 03 B6   ..
 L8D8B:
-        lda     $4A                                            ; 8D8B A5 4A     .J
+        lda     player1GameActive                              ; 8D8B A5 4A     .J
         beq     L8D94                                          ; 8D8D F0 05     ..
         lda     $72                                            ; 8D8F A5 72     .r
         asl     a                                              ; 8D91 0A        .
         adc     $70                                            ; 8D92 65 70     ep
 L8D94:
         sta     generalCounter36                               ; 8D94 85 36     .6
-        lda     $4B                                            ; 8D96 A5 4B     .K
+        lda     player2GameActive                              ; 8D96 A5 4B     .K
         beq     L8D9F                                          ; 8D98 F0 05     ..
         lda     $73                                            ; 8D9A A5 73     .s
         asl     a                                              ; 8D9C 0A        .
@@ -2369,7 +2370,7 @@ L8EA2:
 L8EA8:
         stx     generalCounter3b                               ; 8EA8 86 3B     .;
         sty     generalCounter3c                               ; 8EAA 84 3C     .<
-        lda     $4A,x                                          ; 8EAC B5 4A     .J
+        lda     player1GameActive,x                            ; 8EAC B5 4A     .J
         beq     L8EBD                                          ; 8EAE F0 0D     ..
 L8EB0:
         lda     $0180,x                                        ; 8EB0 BD 80 01  ...
@@ -2679,17 +2680,17 @@ L90DC:
 L90F4:
         ldx     #$03                                           ; 90F4 A2 03     ..
         jsr     LA763                                          ; 90F6 20 63 A7   c.
-        lda     $4B                                            ; 90F9 A5 4B     .K
+        lda     player2GameActive                              ; 90F9 A5 4B     .K
         beq     L9133                                          ; 90FB F0 36     .6
         ldx     playMode                                       ; 90FD A6 2F     ./
         dex                                                    ; 90FF CA        .
         bne     L9133                                          ; 9100 D0 31     .1
         lda     #$04                                           ; 9102 A9 04     ..
         sta     player2TetrominoY                              ; 9104 85 61     .a
-        lda     seven                                          ; 9106 AD ED 99  ...
+        lda     tetrominoXSpawnTable+2                         ; 9106 AD ED 99  ...
         bit     playMode                                       ; 9109 24 2F     $/
         bpl     L9110                                          ; 910B 10 03     ..
-        lda     coopTetrominoX+1                               ; 910D AD EC 99  ...
+        lda     tetrominoXSpawnTable+1                         ; 910D AD EC 99  ...
 L9110:
         sta     player2TetrominoX                              ; 9110 85 63     .c
         lda     #$07                                           ; 9112 A9 07     ..
@@ -2717,14 +2718,14 @@ L9133:
         ldx     #$02                                           ; 913A A2 02     ..
         ldy     player1TetrominoNext                           ; 913C A4 66     .f
         jsr     LA763                                          ; 913E 20 63 A7   c.
-        lda     $4A                                            ; 9141 A5 4A     .J
+        lda     player1GameActive                              ; 9141 A5 4A     .J
         beq     L9176                                          ; 9143 F0 31     .1
         lda     #$04                                           ; 9145 A9 04     ..
         sta     player1TetrominoY                              ; 9147 85 60     .`
-        lda     seven                                          ; 9149 AD ED 99  ...
+        lda     tetrominoXSpawnTable+2                         ; 9149 AD ED 99  ...
         bit     playMode                                       ; 914C 24 2F     $/
         bpl     L9153                                          ; 914E 10 03     ..
-        lda     coopTetrominoX                                 ; 9150 AD EB 99  ...
+        lda     tetrominoXSpawnTable                           ; 9150 AD EB 99  ...
 L9153:
         sta     player1TetrominoX                              ; 9153 85 62     .b
         lda     #$06                                           ; 9155 A9 06     ..
@@ -3440,13 +3441,13 @@ L960C:
         sta     lastCurrentBlockP1                             ; 961F 8D BC 01  ...
         sta     lastCurrentBlockP2                             ; 9622 8D BD 01  ...
         lda     #$01                                           ; 9625 A9 01     ..
-        sta     $4A                                            ; 9627 85 4A     .J
+        sta     player1GameActive                              ; 9627 85 4A     .J
         sta     $4C                                            ; 9629 85 4C     .L
         sta     $4E                                            ; 962B 85 4E     .N
         sta     $50                                            ; 962D 85 50     .P
         ldx     playMode                                       ; 962F A6 2F     ./
         beq     L963E                                          ; 9631 F0 0B     ..
-        sta     $4B                                            ; 9633 85 4B     .K
+        sta     player2GameActive                              ; 9633 85 4B     .K
         sta     $4D                                            ; 9635 85 4D     .M
         sta     $4F                                            ; 9637 85 4F     .O
         sta     $51                                            ; 9639 85 51     .Q
@@ -3841,10 +3842,10 @@ L9950:
         sta     player1TetrominoOrientation,x                  ; 9952 95 68     .h
         lda     #$04                                           ; 9954 A9 04     ..
         sta     player1TetrominoY,x                            ; 9956 95 60     .`
-        lda     seven                                          ; 9958 AD ED 99  ...
+        lda     tetrominoXSpawnTable+2                         ; 9958 AD ED 99  ...
         ldy     playMode                                       ; 995B A4 2F     ./
         bpl     L9962                                          ; 995D 10 03     ..
-        lda     coopTetrominoX,x                               ; 995F BD EB 99  ...
+        lda     tetrominoXSpawnTable,x                         ; 995F BD EB 99  ...
 L9962:
         sta     player1TetrominoX,x                            ; 9962 95 62     .b
         ldy     player1TetrominoCurrent,x                      ; 9964 B4 64     .d
@@ -3927,10 +3928,8 @@ L99EA:
         rts                                                    ; 99EA 60        `
 
 ; ----------------------------------------------------------------------------
-coopTetrominoX:
-        .byte   $03,$09                                        ; 99EB 03 09     ..
-seven:
-        .byte   $07                                            ; 99ED 07        .
+tetrominoXSpawnTable:
+        .byte   $03,$09,$07                                    ; 99EB 03 09 07  ...
 ; ----------------------------------------------------------------------------
 genNextPseudoRandom5x:
         jsr     genNextPseudoRandom                            ; 99EE 20 FA 99   ..
@@ -4286,7 +4285,7 @@ compInputForGameplay:
         cmp     #$03                                           ; 9C4F C9 03     ..
         bcc     L9C0A                                          ; 9C51 90 B7     ..
         inx                                                    ; 9C53 E8        .
-        lda     $4A,x                                          ; 9C54 B5 4A     .J
+        lda     player1GameActive,x                            ; 9C54 B5 4A     .J
         beq     L9C0A                                          ; 9C56 F0 B2     ..
 compInputForDemo:
         ldy     #$00                                           ; 9C58 A0 00     ..
@@ -7096,38 +7095,45 @@ ppuPatchTable1PPUAddr:
         .word   $2144                                          ; B4A4 44 21     D!
 ; ----------------------------------------------------------------------------
 ppuPatchTable1DataAddr:
-        .addr   dataBlockPastGameModeNameTable                 ; B4A6 A8 C7     ..
+        .addr   menuTetrisLogo                                 ; B4A6 A8 C7     ..
 ; ----------------------------------------------------------------------------
 ; 0 columns skips the routine. 5 bytes are taken from code anyway
 ppuPatchTableSkipPatch:
         .byte   $00                                            ; B4A8 00        .
 ; ----------------------------------------------------------------------------
+; x contains active player (0 or 1)
+; $14 describes second byte of undoCode
+; $0B describes second byte of getLongbarCode
 checkCodeInput:
-        lda     $4A,x                                          ; B4A9 B5 4A     .J
-        beq     LB52A                                          ; B4AB F0 7D     .}
+        lda     player1GameActive,x                            ; B4A9 B5 4A     .J
+        beq     @ret                                           ; B4AB F0 7D     .}
         lda     player1ControllerNew,x                         ; B4AD B5 46     .F
-        beq     LB52A                                          ; B4AF F0 79     .y
-        ldy     codeInputPlayer1,x                             ; B4B1 BC B6 01  ...
-        bne     LB4C8                                          ; B4B4 D0 12     ..
+        beq     @ret                                           ; B4AF F0 79     .y
+        ldy     codeInputYPlayer1,x                            ; B4B1 BC B6 01  ...
+        bne     @codeInputHasBegun                             ; B4B4 D0 12     ..
         cmp     undoCode,y                                     ; B4B6 D9 BB B5  ...
-        bne     LB4BF                                          ; B4B9 D0 04     ..
+        bne     @notUndoCode                                   ; B4B9 D0 04     ..
         ldy     #$14                                           ; B4BB A0 14     ..
-        bne     LB526                                          ; B4BD D0 67     .g
-LB4BF:
+        bne     @storeYOffset                                  ; B4BD D0 67     .g
+@notUndoCode:
         cmp     getLongbarCode,y                               ; B4BF D9 B2 B5  ...
-        bne     LB4C8                                          ; B4C2 D0 04     ..
+        bne     @codeInputHasBegun                             ; B4C2 D0 04     ..
         ldy     #$0B                                           ; B4C4 A0 0B     ..
-        bne     LB526                                          ; B4C6 D0 5E     .^
-LB4C8:
+        bne     @storeYOffset                                  ; B4C6 D0 5E     .^
+; $12 is the last byte of getLongbarCode from levelUpCode
+; $1C is the last byte of undoCode from levelUpCode 
+; B4CE checks for 0 at end of code indicating code is complete 
+; B4DB is where levelup code is applied 
+@codeInputHasBegun:
         cmp     levelUpCode,y                                  ; B4C8 D9 A8 B5  ...
-        bne     LB524                                          ; B4CB D0 57     .W
+        bne     @resetYOffset                                  ; B4CB D0 57     .W
         iny                                                    ; B4CD C8        .
         lda     levelUpCode,y                                  ; B4CE B9 A8 B5  ...
-        bne     LB526                                          ; B4D1 D0 53     .S
+        bne     @storeYOffset                                  ; B4D1 D0 53     .S
         cpy     #$12                                           ; B4D3 C0 12     ..
-        beq     applyLongbarCode                               ; B4D5 F0 54     .T
+        beq     @applyLongbarCode                              ; B4D5 F0 54     .T
         cpy     #$1C                                           ; B4D7 C0 1C     ..
-        beq     applyUndoCode                                  ; B4D9 F0 7E     .~
+        beq     @applyUndoCode                                 ; B4D9 F0 7E     .~
         stx     generalCounter37                               ; B4DB 86 37     .7
         txa                                                    ; B4DD 8A        .
         asl     a                                              ; B4DE 0A        .
@@ -7135,60 +7141,62 @@ LB4C8:
         lda     player1LevelOnes,x                             ; B4E0 BD 2D 04  .-.
         clc                                                    ; B4E3 18        .
         adc     #$01                                           ; B4E4 69 01     i.
-        cmp     #$3A                                           ; B4E6 C9 3A     .:
-        bcc     LB4F4                                          ; B4E8 90 0A     ..
+        cmp     #'9'+1                                         ; B4E6 C9 3A     .:
+        bcc     @noCarry                                       ; B4E8 90 0A     ..
         lda     player1LevelTens,x                             ; B4EA BD 2C 04  .,.
         adc     #$00                                           ; B4ED 69 00     i.
         sta     player1LevelTens,x                             ; B4EF 9D 2C 04  .,.
-        lda     #$30                                           ; B4F2 A9 30     .0
-LB4F4:
+        lda     #'0'                                           ; B4F2 A9 30     .0
+; levels capped at 17
+@noCarry:
         ldy     player1LevelTens,x                             ; B4F4 BC 2C 04  .,.
-        cmp     #$38                                           ; B4F7 C9 38     .8
-        bne     LB4FF                                          ; B4F9 D0 04     ..
-        cpy     #$31                                           ; B4FB C0 31     .1
-        beq     LB52A                                          ; B4FD F0 2B     .+
-LB4FF:
+        cmp     #'8'                                           ; B4F7 C9 38     .8
+        bne     @storeTens                                     ; B4F9 D0 04     ..
+        cpy     #'1'                                           ; B4FB C0 31     .1
+        beq     @ret                                           ; B4FD F0 2B     .+
+@storeTens:
         sta     player1LevelOnes,x                             ; B4FF 9D 2D 04  .-.
         bit     playMode                                       ; B502 24 2F     $/
-        bpl     LB514                                          ; B504 10 0E     ..
+        bpl     @notCoopForLevelup                             ; B504 10 0E     ..
         sty     player1LevelTens                               ; B506 8C 2C 04  .,.
         sta     player1LevelOnes                               ; B509 8D 2D 04  .-.
         sty     player2LevelTens                               ; B50C 8C 2E 04  ...
         sta     player2LevelOnes                               ; B50F 8D 2F 04  ./.
         ldx     #$00                                           ; B512 A2 00     ..
-LB514:
+@notCoopForLevelup:
         jsr     LA756                                          ; B514 20 56 A7   V.
         ldx     generalCounter37                               ; B517 A6 37     .7
         inc     $50,x                                          ; B519 F6 50     .P
         lda     #$3C                                           ; B51B A9 3C     .<
         sta     player1FallTimer,x                             ; B51D 95 6A     .j
-        lda     #$15                                           ; B51F A9 15     ..
+        lda     #SOUND_SCREEN_SWITCH                           ; B51F A9 15     ..
         jmp     setMusicOrSoundEffect                          ; B521 4C B1 CF  L..
 
 ; ----------------------------------------------------------------------------
-LB524:
+@resetYOffset:
         ldy     #$00                                           ; B524 A0 00     ..
-LB526:
+@storeYOffset:
         tya                                                    ; B526 98        .
-        sta     codeInputPlayer1,x                             ; B527 9D B6 01  ...
-LB52A:
+        sta     codeInputYPlayer1,x                            ; B527 9D B6 01  ...
+@ret:
         rts                                                    ; B52A 60        `
 
 ; ----------------------------------------------------------------------------
-applyLongbarCode:
+@applyLongbarCode:
         lda     longBarCodeUsedP1,x                            ; B52B BD B8 01  ...
-        bne     LB52A                                          ; B52E D0 FA     ..
+        bne     @ret                                           ; B52E D0 FA     ..
         lda     #$01                                           ; B530 A9 01     ..
         sta     longBarCodeUsedP1,x                            ; B532 9D B8 01  ...
         sta     player1TetrominoCurrent,x                      ; B535 95 64     .d
-spawnReplacementTetromino:
+; shared code for both applying longbar code & undo code
+@spawnReplacementTetromino:
         lda     #$04                                           ; B537 A9 04     ..
         sta     player1TetrominoY,x                            ; B539 95 60     .`
-        lda     seven                                          ; B53B AD ED 99  ...
+        lda     tetrominoXSpawnTable+2                         ; B53B AD ED 99  ...
         bit     playMode                                       ; B53E 24 2F     $/
-        bpl     @notCoop                                       ; B540 10 03     ..
-        lda     coopTetrominoX,x                               ; B542 BD EB 99  ...
-@notCoop:
+        bpl     @notCoopForPieceSpawn                          ; B540 10 03     ..
+        lda     tetrominoXSpawnTable,x                         ; B542 BD EB 99  ...
+@notCoopForPieceSpawn:
         sta     player1TetrominoX,x                            ; B545 95 62     .b
         lda     #$00                                           ; B547 A9 00     ..
         sta     player1TetrominoOrientation,x                  ; B549 95 68     .h
@@ -7196,18 +7204,18 @@ spawnReplacementTetromino:
         sta     player1FallTimer,x                             ; B54D 95 6A     .j
         ldy     player1TetrominoCurrent,x                      ; B54F B4 64     .d
         jsr     LA763                                          ; B551 20 63 A7   c.
-        lda     #$15                                           ; B554 A9 15     ..
+        lda     #SOUND_SCREEN_SWITCH                           ; B554 A9 15     ..
         jmp     setMusicOrSoundEffect                          ; B556 4C B1 CF  L..
 
 ; ----------------------------------------------------------------------------
-applyUndoCode:
+@applyUndoCode:
         lda     undoCodeUsedP1,x                               ; B559 BD BA 01  ...
-        bne     LB52A                                          ; B55C D0 CC     ..
+        bne     @ret                                           ; B55C D0 CC     ..
         lda     lastCurrentBlockP1,x                           ; B55E BD BC 01  ...
-        beq     LB52A                                          ; B561 F0 C7     ..
+        beq     @ret                                           ; B561 F0 C7     ..
         inc     undoCodeUsedP1,x                               ; B563 FE BA 01  ...
         lda     player1TetrominoCurrent,x                      ; B566 B5 64     .d
-        beq     LB576                                          ; B568 F0 0C     ..
+        beq     @LB576                                         ; B568 F0 0C     ..
         sta     player1TetrominoNext,x                         ; B56A 95 66     .f
         tay                                                    ; B56C A8        .
         stx     generalCounter3a                               ; B56D 86 3A     .:
@@ -7215,7 +7223,8 @@ applyUndoCode:
         inx                                                    ; B570 E8        .
         jsr     LA763                                          ; B571 20 63 A7   c.
         ldx     generalCounter3a                               ; B574 A6 3A     .:
-LB576:
+; todo: look into why current piece id might be 0
+@LB576:
         lda     lastOrientationP1,x                            ; B576 BD BE 01  ...
         sta     player1TetrominoOrientation,x                  ; B579 95 68     .h
         lda     lastTetrominoXP1,x                             ; B57B BD C2 01  ...
@@ -7235,7 +7244,7 @@ LB576:
         jsr     L8607                                          ; B59C 20 07 86   ..
         jsr     L8565                                          ; B59F 20 65 85   e.
         jsr     L8426                                          ; B5A2 20 26 84   &.
-        jmp     spawnReplacementTetromino                      ; B5A5 4C 37 B5  L7.
+        jmp     @spawnReplacementTetromino                     ; B5A5 4C 37 B5  L7.
 
 ; ----------------------------------------------------------------------------
 ; up, down, up, down, left, right, b, b, a
@@ -7255,9 +7264,9 @@ pauseOrUnpause:
         ldy     gameState                                      ; B5C5 A4 29     .)
         dey                                                    ; B5C7 88        .
         bne     @gameNotPaused                                 ; B5C8 D0 0A     ..
-        ldx     #$00                                           ; B5CA A2 00     ..
+        ldx     #PLAYER1                                       ; B5CA A2 00     ..
         jsr     checkCodeInput                                 ; B5CC 20 A9 B4   ..
-        ldx     #$01                                           ; B5CF A2 01     ..
+        ldx     #PLAYER2                                       ; B5CF A2 01     ..
         jsr     checkCodeInput                                 ; B5D1 20 A9 B4   ..
 @gameNotPaused:
         lda     player1ControllerNew                           ; B5D4 A5 46     .F
@@ -8118,7 +8127,7 @@ gameModeNametable1P:
 .include "nametables/gameModeNametable1P.asm"
 gameModeNametable2P:
 .include "nametables/gameModeNametable2P.asm"
-dataBlockPastGameModeNameTable:
+menuTetrisLogo:
         .byte   $16,$17,$18,$19,$1A,$1B,$1C,$19                ; C7A8 16 17 18 19 1A 1B 1C 19........
         .byte   $16,$17,$18,$19,$1A,$1F,$AE,$AF                ; C7B0 16 17 18 19 1A 1F AE AF........
         .byte   $1A,$B4,$B5,$AF,$1A,$B8,$B9,$BA                ; C7B8 1A B4 B5 AF 1A B8 B9 BA........

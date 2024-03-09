@@ -206,6 +206,14 @@ add_constant 9246 BUTTON_LEFT
 add_constant 9263 BUTTON_RIGHT
 add_constant 9C21 BUTTON_UP
 add_constant 9C2C BUTTON_DOWN
+add_constant B5CA PLAYER1
+add_constant B5CF PLAYER2
+add_constant B4E6 \'9\'+1
+add_constant B4F2 \'0\'
+add_constant B4F7 \'8\'
+add_constant B4FB \'1\'
+add_constant B51F SOUND_SCREEN_SWITCH
+add_constant B554 SOUND_SCREEN_SWITCH
 )" main.asm
 
 # These remove labels that end up in the middle of instructions (label := * + 1, etc)
