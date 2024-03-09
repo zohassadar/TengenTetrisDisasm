@@ -180,3 +180,9 @@ index 815c91b..81115b1 100755
 
 *https://tetris.wiki/Tetris_(NES,_Tengen)
 "Because basic rotation can fail when a piece is against the right wall, but not when the same piece is against the left wall, this game will wallkick one square to the left if basic rotation fails."
+
+
+****
+
+80C3  & 80D7
+replace 01 with 00 to disable auto rotate
