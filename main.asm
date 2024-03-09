@@ -625,9 +625,9 @@ branchOnActiveDemoOrGameOver:
         jsr     stageDropPointSprites           ; 82C7 20 9A 81                  ..
         ldy     gameState                       ; 82CA A4 29                    .)
         beq     activeGamePlay                  ; 82CC F0 09                    ..
-        cpy     #$FB                            ; 82CE C0 FB                    ..
+        cpy     #GAMESTATE_DEMO                 ; 82CE C0 FB                    ..
         beq     activeGamePlay                  ; 82D0 F0 05                    ..
-        cpy     #$F9                            ; 82D2 C0 F9                    ..
+        cpy     #GAMESTATE_GAMEOVER             ; 82D2 C0 F9                    ..
         beq     handleGameOver                  ; 82D4 F0 1D                    ..
 gameOverReturn:
         rts                                     ; 82D6 60                       `

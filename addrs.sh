@@ -34,6 +34,12 @@ apply_label() {
     apply_high $label_addr $high_byte_addr $label
     }
 
+add_constant() {
+    address=$1
+    constant=$2
+    echo "/; $address/s/\$..\s\{$((${#constant}-3))\}/$constant/;"
+    }
+
 
 # label, lowloc, highloc
 sed -i "$(
@@ -169,6 +175,8 @@ apply_label C8BC B079 B07D
 apply_label B14D B04A B050
 apply_label B181 B0AF B0B3
 apply_label B181 B0F1 B0F5
+add_constant 82CE GAMESTATE_DEMO
+add_constant 82D2 GAMESTATE_GAMEOVER
 )" main.asm
 
 # These remove labels that end up in the middle of instructions (label := * + 1, etc)
