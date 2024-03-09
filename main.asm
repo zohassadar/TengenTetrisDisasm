@@ -2218,7 +2218,7 @@ L8D6B:
         sta     ppuControl                                     ; 8D78 85 00     ..
         jsr     L972E                                          ; 8D7A 20 2E 97   ..
         lda     #$05                                           ; 8D7D A9 05     ..
-        jsr     LA6BE                                          ; 8D7F 20 BE A6   ..
+        jsr     updatePalette                                  ; 8D7F 20 BE A6   ..
         bit     playMode                                       ; 8D82 24 2F     $/
         bmi     L8D8B                                          ; 8D84 30 05     0.
         lda     #$0C                                           ; 8D86 A9 0C     ..
@@ -3233,9 +3233,9 @@ L9493:
         cpy     #$2D                                           ; 94A7 C0 2D     .-
         bcc     L943C                                          ; 94A9 90 91     ..
         lda     #$01                                           ; 94AB A9 01     ..
-        jsr     LA6BE                                          ; 94AD 20 BE A6   ..
+        jsr     updatePalette                                  ; 94AD 20 BE A6   ..
         lda     #$06                                           ; 94B0 A9 06     ..
-        jsr     LA6BE                                          ; 94B2 20 BE A6   ..
+        jsr     updatePalette                                  ; 94B2 20 BE A6   ..
         ldx     #$04                                           ; 94B5 A2 04     ..
         jsr     setCNROMBank                                   ; 94B7 20 B0 9E   ..
         lda     #$18                                           ; 94BA A9 18     ..
@@ -3482,9 +3482,9 @@ L9662:
 L967B:
         jsr     L9B62                                          ; 967B 20 62 9B   b.
         lda     #$02                                           ; 967E A9 02     ..
-        jsr     LA6BE                                          ; 9680 20 BE A6   ..
+        jsr     updatePalette                                  ; 9680 20 BE A6   ..
         lda     #$03                                           ; 9683 A9 03     ..
-        jsr     LA6BE                                          ; 9685 20 BE A6   ..
+        jsr     updatePalette                                  ; 9685 20 BE A6   ..
         ldx     #$00                                           ; 9688 A2 00     ..
         jsr     LA756                                          ; 968A 20 56 A7   V.
         ldy     playMode                                       ; 968D A4 2F     ./
@@ -4608,9 +4608,9 @@ initializeTitleScreen:
         lda     #$09                                           ; 9E97 A9 09     ..
         jsr     setMusicOrSoundEffect                          ; 9E99 20 B1 CF   ..
         lda     #$00                                           ; 9E9C A9 00     ..
-        jsr     LA6BE                                          ; 9E9E 20 BE A6   ..
+        jsr     updatePalette                                  ; 9E9E 20 BE A6   ..
         lda     #$04                                           ; 9EA1 A9 04     ..
-        jsr     LA6BE                                          ; 9EA3 20 BE A6   ..
+        jsr     updatePalette                                  ; 9EA3 20 BE A6   ..
         ldx     #$04                                           ; 9EA6 A2 04     ..
         jsr     setCNROMBank                                   ; 9EA8 20 B0 9E   ..
         lda     #$08                                           ; 9EAB A9 08     ..
@@ -4663,9 +4663,9 @@ L9EDE:
         lda     #$15                                           ; 9F02 A9 15     ..
         jsr     setMusicOrSoundEffect                          ; 9F04 20 B1 CF   ..
         lda     #$01                                           ; 9F07 A9 01     ..
-        jsr     LA6BE                                          ; 9F09 20 BE A6   ..
+        jsr     updatePalette                                  ; 9F09 20 BE A6   ..
         lda     #$03                                           ; 9F0C A9 03     ..
-        jsr     LA6BE                                          ; 9F0E 20 BE A6   ..
+        jsr     updatePalette                                  ; 9F0E 20 BE A6   ..
         ldx     #$00                                           ; 9F11 A2 00     ..
         jsr     setCNROMBank                                   ; 9F13 20 B0 9E   ..
         lda     #$00                                           ; 9F16 A9 00     ..
@@ -4768,51 +4768,52 @@ L9FB8:
         lda     player1ControllerNew                           ; 9FB8 A5 46     .F
         ora     player2ControllerNew                           ; 9FBA 05 47     .G
         and     #BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT           ; 9FBC 29 34     )4
-        beq     LA00D                                          ; 9FBE F0 4D     .M
+        beq     @checkStartPressed                             ; 9FBE F0 4D     .M
         lda     #$FF                                           ; 9FC0 A9 FF     ..
         sta     player1FallTimer                               ; 9FC2 85 6A     .j
         lda     #$14                                           ; 9FC4 A9 14     ..
         jsr     setMusicOrSoundEffect                          ; 9FC6 20 B1 CF   ..
         lda     gameState                                      ; 9FC9 A5 29     .)
         cmp     #$FF                                           ; 9FCB C9 FF     ..
-        beq     L9FDB                                          ; 9FCD F0 0C     ..
+        beq     @inMusicSelectMenu                             ; 9FCD F0 0C     ..
         cmp     #$FC                                           ; 9FCF C9 FC     ..
-        bne     L9FE3                                          ; 9FD1 D0 10     ..
+        bne     @notInHandicapMenu                             ; 9FD1 D0 10     ..
         lda     player1ControllerNew                           ; 9FD3 A5 46     .F
         ora     player2ControllerNew                           ; 9FD5 05 47     .G
         ldy     #$00                                           ; 9FD7 A0 00     ..
-        beq     LA001                                          ; 9FD9 F0 26     .&
-L9FDB:
+        beq     @LA001                                         ; 9FD9 F0 26     .&
+@inMusicSelectMenu:
         lda     player1ControllerNew                           ; 9FDB A5 46     .F
         ora     player2ControllerNew                           ; 9FDD 05 47     .G
         ldy     #$05                                           ; 9FDF A0 05     ..
-        bne     LA001                                          ; 9FE1 D0 1E     ..
-L9FE3:
+        bne     @LA001                                         ; 9FE1 D0 1E     ..
+@notInHandicapMenu:
         ldy     #$01                                           ; 9FE3 A0 01     ..
         cmp     #$FD                                           ; 9FE5 C9 FD     ..
-        beq     L9FEB                                          ; 9FE7 F0 02     ..
+        beq     @inLevelSelectMenu                             ; 9FE7 F0 02     ..
         ldy     #$03                                           ; 9FE9 A0 03     ..
-L9FEB:
+@inLevelSelectMenu:
         lda     player1ControllerNew                           ; 9FEB A5 46     .F
         and     #BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT           ; 9FED 29 34     )4
-        beq     L9FF4                                          ; 9FEF F0 03     ..
+        beq     @p1upDownOrSelectNotPressed                    ; 9FEF F0 03     ..
         jsr     LA048                                          ; 9FF1 20 48 A0   H.
-L9FF4:
+@p1upDownOrSelectNotPressed:
         lda     player2ControllerNew                           ; 9FF4 A5 47     .G
         and     #BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT           ; 9FF6 29 34     )4
-        beq     LA004                                          ; 9FF8 F0 0A     ..
+        beq     @p2upDownOrSelectNotPressed                    ; 9FF8 F0 0A     ..
         ldx     menuGameMode                                   ; 9FFA AE F0 04  ...
         dex                                                    ; 9FFD CA        .
-        bne     LA001                                          ; 9FFE D0 01     ..
+        bne     @LA001                                         ; 9FFE D0 01     ..
         iny                                                    ; A000 C8        .
-LA001:
+; don't know yet, changing to cheap local label
+@LA001:
         jsr     LA048                                          ; A001 20 48 A0   H.
-LA004:
+@p2upDownOrSelectNotPressed:
         lda     gameState                                      ; A004 A5 29     .)
         cmp     #$FF                                           ; A006 C9 FF     ..
-        bne     LA00D                                          ; A008 D0 03     ..
+        bne     @checkStartPressed                             ; A008 D0 03     ..
         jsr     LA035                                          ; A00A 20 35 A0   5.
-LA00D:
+@checkStartPressed:
         lda     player1ControllerNew                           ; A00D A5 46     .F
         ora     player2ControllerNew                           ; A00F 05 47     .G
         and     #BUTTON_START                                  ; A011 29 08     ).
@@ -4853,6 +4854,7 @@ LA035:
         jmp     setMusicOrSoundEffect                          ; A040 4C B1 CF  L..
 
 ; ----------------------------------------------------------------------------
+; silence, loginska, bradinsky, karinka, troika
 musicSelectTable:
         .byte   $08,$04,$05,$06,$07                            ; A043 08 04 05 06 07.....
 ; ----------------------------------------------------------------------------
@@ -5379,7 +5381,8 @@ attrDataLeaderboard:
         .byte   $06,$00,$01,$88,$01,$22,$06,$00                ; A6B1 06 00 01 88 01 22 06 00....."..
         .byte   $01,$88,$08,$AA,$00                            ; A6B9 01 88 08 AA 00.....
 ; ----------------------------------------------------------------------------
-LA6BE:
+; a contains palette index 0-6
+updatePalette:
         tay                                                    ; A6BE A8        .
         jsr     enableNMIAndWaitForRendering                   ; A6BF 20 DB A3   ..
         lda     #$3F                                           ; A6C2 A9 3F     .?

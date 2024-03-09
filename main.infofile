@@ -340,11 +340,18 @@ LABEL { ADDR $9F1B; NAME "initializeLevelSelectMenu"; };
 LABEL { ADDR $9F56; NAME "initializeHandicapMenu"; };
 LABEL { ADDR $9F74; NAME "initializeMusicSelectMenu"; };
 LABEL { ADDR $9F87; NAME "processMenuInput"; };
+LABEL { ADDR $9FDB; NAME "@inMusicSelectMenu"; };
+LABEL { ADDR $9FE3; NAME "@notInHandicapMenu"; };
+LABEL { ADDR $9FEB; NAME "@inLevelSelectMenu"; };
+LABEL { ADDR $9FF4; NAME "@p1upDownOrSelectNotPressed"; };
 
+LABEL { ADDR $A001; NAME "@LA001"; COMMENT "don't know yet, changing to cheap local label"; };
+LABEL { ADDR $A004; NAME "@p2upDownOrSelectNotPressed"; };
+LABEL { ADDR $A00D; NAME "@checkStartPressed"; };
 LABEL { ADDR $A02C; NAME "@branchOnModeGameTypeMenu"; };
 LABEL { ADDR $A02F; NAME "@branchOnModeLevelMenu"; };
 LABEL { ADDR $A032; NAME "@branchOnModeHandicapMenu"; };
-LABEL { ADDR $A043; NAME "musicSelectTable"; };
+LABEL { ADDR $A043; NAME "musicSelectTable"; COMMENT "silence, loginska, bradinsky, karinka, troika"; };
 LABEL { ADDR $A0D9; NAME "computerMoveSelectTableOffsetBy18"; COMMENT "This overlaps with p2levelSelectArrowPpuAddrs
 ; it appears that the offset is at least 18 when referenced
 ; not 100% certain this table is related to computer moves"; };
@@ -418,6 +425,7 @@ LABEL { ADDR $A44E; NAME "@waitForNMI"; };
 LABEL { ADDR $A458; NAME "@nmiDisabled"; };
 LABEL { ADDR $A465; NAME "enablePPURendering"; };
 LABEL { ADDR $A47B; NAME "sendAttrToPPU"; };
+LABEL { ADDR $A6BE; NAME "updatePalette"; COMMENT "a contains palette index 0-6"; };
 LABEL { ADDR $A6DF; NAME "paletteAddrOffsets"; };
 LABEL { ADDR $A6E6; NAME "bgPalette0"; };
 LABEL { ADDR $A6F6; NAME "bgPalette1"; };
