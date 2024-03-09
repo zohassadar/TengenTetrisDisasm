@@ -38,17 +38,6 @@ Floor is built with FF
 
 ****
 
-add longbar:
-down down left right left right b a
-
-level up:
-up down up down left right b b a
-
-remove block:
-left, down, right, up, left, down, right, b, a
-
-****
-
 L836B - @rightNotPressed
 doSomethingWithInputDuringGameplay - is maybe get filtered input?  it leaves buttons in A
 

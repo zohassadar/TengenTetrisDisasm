@@ -7235,12 +7235,15 @@ LB576:
         jmp     spawnReplacementTetromino                      ; B5A5 4C 37 B5  L7.
 
 ; ----------------------------------------------------------------------------
+; up, down, up, down, left, right, b, b, a
 levelUpCode:
         .byte   $10,$20,$10,$20,$40,$80,$02,$02                ; B5A8 10 20 10 20 40 80 02 02. . @...
         .byte   $01,$00                                        ; B5B0 01 00     ..
+; down, down, left, right, left, right, b, a
 getLongbarCode:
         .byte   $20,$20,$40,$80,$40,$80,$02,$01                ; B5B2 20 20 40 80 40 80 02 01  @.@...
         .byte   $00                                            ; B5BA 00        .
+; left, down, right, up, left, down, right, b, a
 undoCode:
         .byte   $40,$20,$80,$10,$40,$20,$80,$02                ; B5BB 40 20 80 10 40 20 80 02@ ..@ ..
         .byte   $01,$00                                        ; B5C3 01 00     ..
