@@ -191,6 +191,21 @@ add_constant 9240 BUTTON_RIGHT
 add_constant 9FF6 BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT
 add_constant 9280 BUTTON_A+BUTTON_B
 add_constant A04F BUTTON_UP
+add_constant 806B BUTTON_DOWN
+add_constant 8077 BUTTON_DOWN+BUTTON_LEFT
+add_constant 8079 BUTTON_LEFT
+add_constant 82F5 BUTTON_A+BUTTON_B
+add_constant 82F7 BUTTON_A+BUTTON_B
+add_constant 8099 BUTTON_RIGHT+BUTTON_DOWN
+add_constant 809B BUTTON_RIGHT
+add_constant 80BB BUTTON_B
+add_constant 80D7 BUTTON_A
+add_constant 80F3 BUTTON_DOWN+BUTTON_LEFT+BUTTON_RIGHT
+add_constant 80F5 BUTTON_DOWN
+add_constant 9246 BUTTON_LEFT
+add_constant 9263 BUTTON_RIGHT
+add_constant 9C21 BUTTON_UP
+add_constant 9C2C BUTTON_DOWN
 )" main.asm
 
 # These remove labels that end up in the middle of instructions (label := * + 1, etc)

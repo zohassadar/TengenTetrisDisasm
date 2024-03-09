@@ -281,7 +281,7 @@ doSomethingWithInputDuringGameplay:
         beq     L8073                                          ; 8067 F0 0A     ..
         lda     player1ControllerLastFrame,x                   ; 8069 B5 3E     .>
 @CheckForDown:
-        and     #$20                                           ; 806B 29 20     ) 
+        and     #BUTTON_DOWN                                   ; 806B 29 20     ) 
         beq     L8073                                          ; 806D F0 04     ..
         tya                                                    ; 806F 98        .
         and     #$3F                                           ; 8070 29 3F     )?
@@ -290,8 +290,8 @@ L8073:
         lda     player1ControllerHeld,x                        ; 8073 B5 42     .B
         sta     generalCounter36                               ; 8075 85 36     .6
 @LeftAndDown:
-        and     #$60                                           ; 8077 29 60     )`
-        cmp     #$40                                           ; 8079 C9 40     .@
+        and     #BUTTON_DOWN+BUTTON_LEFT                       ; 8077 29 60     )`
+        cmp     #BUTTON_LEFT                                   ; 8079 C9 40     .@
         bne     @LeftNotPressed                                ; 807B D0 15     ..
         lda     dasLeftPlayer1,x                               ; 807D BD AA 01  ...
         clc                                                    ; 8080 18        .
@@ -311,8 +311,8 @@ L8073:
 L8097:
         lda     generalCounter36                               ; 8097 A5 36     .6
 @RightAndDown:
-        and     #$A0                                           ; 8099 29 A0     ).
-        cmp     #$80                                           ; 809B C9 80     ..
+        and     #BUTTON_RIGHT+BUTTON_DOWN                      ; 8099 29 A0     ).
+        cmp     #BUTTON_RIGHT                                  ; 809B C9 80     ..
         bne     @RightNotPressed                               ; 809D D0 15     ..
         lda     dasRightPlayer1,x                              ; 809F BD AC 01  ...
         clc                                                    ; 80A2 18        .
@@ -331,7 +331,7 @@ L80B6:
         sta     dasRightPlayer1,x                              ; 80B6 9D AC 01  ...
 L80B9:
         lda     generalCounter36                               ; 80B9 A5 36     .6
-        and     #$02                                           ; 80BB 29 02     ).
+        and     #BUTTON_B                                      ; 80BB 29 02     ).
         beq     @BNotPressed                                   ; 80BD F0 11     ..
         lda     autoRotateCounterP1,x                          ; 80BF BD AE 01  ...
         clc                                                    ; 80C2 18        .
@@ -347,7 +347,7 @@ L80B9:
         sta     autoRotateCounterP1,x                          ; 80D2 9D AE 01  ...
 L80D5:
         lda     generalCounter36                               ; 80D5 A5 36     .6
-        and     #$01                                           ; 80D7 29 01     ).
+        and     #BUTTON_A                                      ; 80D7 29 01     ).
         beq     @ANotPressed                                   ; 80D9 F0 11     ..
         lda     autoRotateClockwiseP1,x                        ; 80DB BD B0 01  ...
         clc                                                    ; 80DE 18        .
@@ -364,8 +364,8 @@ L80D5:
 L80F1:
         lda     generalCounter36                               ; 80F1 A5 36     .6
 @DownLeftRight:
-        and     #$E0                                           ; 80F3 29 E0     ).
-        cmp     #$20                                           ; 80F5 C9 20     . 
+        and     #BUTTON_DOWN+BUTTON_LEFT+BUTTON_RIGHT          ; 80F3 29 E0     ).
+        cmp     #BUTTON_DOWN                                   ; 80F5 C9 20     . 
         bne     L8122                                          ; 80F7 D0 29     .)
         lda     dropRepeatP1,x                                 ; 80F9 BD B2 01  ...
         clc                                                    ; 80FC 18        .
@@ -652,8 +652,8 @@ L82E8:
 ; A+B held to restart game.  https://tcrf.net/Talk:Tetris_(NES,_Tengen)
 handleGameOver:
         lda     player1ControllerHeld,x                        ; 82F3 B5 42     .B
-        and     #$03                                           ; 82F5 29 03     ).
-        cmp     #$03                                           ; 82F7 C9 03     ..
+        and     #BUTTON_A+BUTTON_B                             ; 82F5 29 03     ).
+        cmp     #BUTTON_A+BUTTON_B                             ; 82F7 C9 03     ..
         bne     gameOverReturn                                 ; 82F9 D0 DB     ..
         cpy     #$FB                                           ; 82FB C0 FB     ..
         beq     gameOverReturn                                 ; 82FD F0 D7     ..
@@ -2890,7 +2890,7 @@ L9234:
         and     #BUTTON_RIGHT                                  ; 9240 29 80     ).
         bne     L9274                                          ; 9242 D0 30     .0
         lda     generalCounter3a                               ; 9244 A5 3A     .:
-        and     #$40                                           ; 9246 29 40     )@
+        and     #BUTTON_LEFT                                   ; 9246 29 40     )@
         beq     L925C                                          ; 9248 F0 12     ..
         lda     dasLeftPlayer1,x                               ; 924A BD AA 01  ...
         clc                                                    ; 924D 18        .
@@ -2906,7 +2906,7 @@ L925C:
         sta     dasLeftPlayer1,x                               ; 925E 9D AA 01  ...
 L9261:
         lda     generalCounter3a                               ; 9261 A5 3A     .:
-        and     #$80                                           ; 9263 29 80     ).
+        and     #BUTTON_RIGHT                                  ; 9263 29 80     ).
         beq     L9279                                          ; 9265 F0 12     ..
         lda     dasRightPlayer1,x                              ; 9267 BD AC 01  ...
         clc                                                    ; 926A 18        .
@@ -4255,14 +4255,14 @@ moveScreenUpOrDown:
         and     generalCounter36                               ; 9C1A 25 36     %6
         sta     generalCounter36                               ; 9C1C 85 36     .6
         ldy     ppuScrollYOffset                               ; 9C1E AC F6 04  ...
-        and     #$10                                           ; 9C21 29 10     ).
+        and     #BUTTON_UP                                     ; 9C21 29 10     ).
         beq     @bothUpsNotPressed                             ; 9C23 F0 05     ..
         iny                                                    ; 9C25 C8        .
         cpy     #$09                                           ; 9C26 C0 09     ..
         beq     @checkForDemoStart                             ; 9C28 F0 13     ..
 @bothUpsNotPressed:
         lda     generalCounter36                               ; 9C2A A5 36     .6
-        and     #$20                                           ; 9C2C 29 20     ) 
+        and     #BUTTON_DOWN                                   ; 9C2C 29 20     ) 
         beq     @bothDownsNotPressed                           ; 9C2E F0 05     ..
         dey                                                    ; 9C30 88        .
         cpy     #$F7                                           ; 9C31 C0 F7     ..
