@@ -50,12 +50,12 @@ generalCounter3c:= $003C
 generalCounter3d:= $003D
 player1ControllerLastFrame:= $003E
 player2ControllerLastFrame:= $003F
-player1ExpansionLastFrame:= $0040
-player2ExpansionLastFrame:= $0041
+player1ExpansionLastFrame:= $0040               ; appears unused
+player2ExpansionLastFrame:= $0041               ; appears unused
 player1ControllerHeld:= $0042
 player2ControllerHeld:= $0043
-player1ExpansionHeld:= $0044
-player2ExpansionHeld:= $0045
+player1ExpansionHeld:= $0044                    ; appears unused
+player2ExpansionHeld:= $0045                    ; appears unused
 player1ControllerNew:= $0046
 player2ControllerNew:= $0047
 ppuStagingAddress:= $0048
@@ -620,6 +620,7 @@ L82C6:
         rts                                     ; 82C6 60                       `
 
 ; ----------------------------------------------------------------------------
+; x contains current player (0 or 1)
 branchOnActiveDemoOrGameOver:
         jsr     stageDropPointSprites           ; 82C7 20 9A 81                  ..
         ldy     gameState                       ; 82CA A4 29                    .)
@@ -1450,6 +1451,7 @@ L8840:
 L8846:
         .byte   $40,$90                         ; 8846 40 90                    @.
 ; ----------------------------------------------------------------------------
+; x contains current player (0 or 1)
 stageLineClearAnimation:
         lda     lineClearTimerP1,x              ; 8848 BD CE 01                 ...
         beq     L88C7                           ; 884B F0 7A                    .z
@@ -5198,7 +5200,7 @@ pollController:
         lda     player2ExpansionHeld            ; A416 A5 45                    .E
         sta     player2ExpansionLastFrame       ; A418 85 41                    .A
         ldx     #$08                            ; A41A A2 08                    ..
-LA41C:
+@readNextButton:
         lda     JOY1                            ; A41C AD 16 40                 ..@
         lsr     a                               ; A41F 4A                       J
         ror     player1ControllerHeld           ; A420 66 42                    fB
@@ -5210,7 +5212,7 @@ LA41C:
         lsr     a                               ; A42B 4A                       J
         ror     player2ExpansionHeld            ; A42C 66 45                    fE
         dex                                     ; A42E CA                       .
-        bne     LA41C                           ; A42F D0 EB                    ..
+        bne     @readNextButton                 ; A42F D0 EB                    ..
         lda     player1ControllerLastFrame      ; A431 A5 3E                    .>
         eor     #$FF                            ; A433 49 FF                    I.
         sta     player1ControllerNew            ; A435 85 46                    .F

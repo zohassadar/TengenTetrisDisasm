@@ -13,7 +13,7 @@ BUTTON_DPAD := BUTTON_UP | BUTTON_DOWN | BUTTON_LEFT | BUTTON_RIGHT
 
 ; loaded into x several times throughout the code
 PLAYER1 := $00
-PLAYER2 := $00
+PLAYER2 := $01
 
 MENU_GAMEMODE_1P = $00
 MENU_GAMEMODE_2P = $01
