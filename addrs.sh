@@ -42,6 +42,12 @@ add_constant() {
     echo "/; $address/s/\$..\s\{$((${#constant}-3))\}/$constant/;"
     }
 
+add_constant2() {
+    constant=$1
+    addrs=${@:2}
+    search="${addrs// /\\\| ; }"
+    echo "/; $search/s/\$..\s\{$((${#constant}-3))\}/$constant/;"
+    }
 
 # label, lowloc, highloc
 sed -i "$(
@@ -181,7 +187,7 @@ apply_label B181 B0F1 B0F5
 add_constant GAMESTATE_DEMO 82CE
 add_constant GAMESTATE_GAMEOVER 82D2
 
-add_constant BUTTON_START 'B5D8\|; A011'
+add_constant2 BUTTON_START B5D8 A011
 add_constant BUTTON_SELECT 9291
 add_constant BUTTON_SELECT+BUTTON_START 9FA4
 add_constant BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT '9FBC\|; 9FED\|; 9FF6'
