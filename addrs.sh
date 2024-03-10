@@ -38,14 +38,8 @@ apply_label() {
 
 add_constant() {
     constant=$1
-    address=$2
-    echo "/; $address/s/\$..\s\{$((${#constant}-3))\}/$constant/;"
-    }
-
-add_constant2() {
-    constant=$1
     addrs=${@:2}
-    search="${addrs// /\\\| ; }"
+    search="${addrs// /\\\| ; }"  # join 2nd arg onward into "arg2\|; arg3\|; arg4"
     echo "/; $search/s/\$..\s\{$((${#constant}-3))\}/$constant/;"
     }
 
@@ -187,17 +181,17 @@ apply_label B181 B0F1 B0F5
 add_constant GAMESTATE_DEMO 82CE
 add_constant GAMESTATE_GAMEOVER 82D2
 
-add_constant2 BUTTON_START B5D8 A011
+add_constant BUTTON_START B5D8 A011
 add_constant BUTTON_SELECT 9291
 add_constant BUTTON_SELECT+BUTTON_START 9FA4
-add_constant BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT '9FBC\|; 9FED\|; 9FF6'
-add_constant BUTTON_LEFT '923A\|; 8079\|; 9246'
-add_constant BUTTON_RIGHT '809B\|; 9263\|; 9240'
-add_constant BUTTON_UP 'A04F\|; 9C21'
-add_constant BUTTON_DOWN '806B\|; 80F5\|; 9C2C'
+add_constant BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT 9FBC 9FED 9FF6
+add_constant BUTTON_LEFT 923A 8079 9246
+add_constant BUTTON_RIGHT 809B 9263 9240
+add_constant BUTTON_UP A04F 9C21
+add_constant BUTTON_DOWN 806B 80F5 9C2C
 add_constant ~BUTTON_DOWN 8052
 add_constant BUTTON_DOWN+BUTTON_LEFT 8077
-add_constant BUTTON_A+BUTTON_B '82F5\|; 82F7\|; 9280'
+add_constant BUTTON_A+BUTTON_B 82F5 82F7 9280
 add_constant BUTTON_RIGHT+BUTTON_DOWN 8099
 add_constant BUTTON_B 80BB
 add_constant BUTTON_A 80D7
@@ -206,14 +200,14 @@ add_constant BUTTON_DOWN+BUTTON_LEFT+BUTTON_RIGHT 80F3
 add_constant PLAYER1 B5CA
 add_constant PLAYER2 B5CF
 
-add_constant \'9\'+1 B4E6
 add_constant \'0\' B4F2
-add_constant \'8\' B4F7
 add_constant \'1\' B4FB
+add_constant \'8\' B4F7
+add_constant \'9\'+1 B4E6
 
-add_constant MUSIC_HALT 'B5E7\|; 95CE'
+add_constant MUSIC_HALT B5E7 95CE
 add_constant MUSIC_RESUME B5F2
-add_constant MUSIC_SILENCE '83F3\|; 8CE0\|; 9043\|; A035'
+add_constant MUSIC_SILENCE 83F3 8CE0 9043 A035
 add_constant MUSIC_LEVELUP 8D6F
 add_constant MUSIC_LEVELUP_INTRO 95BC
 add_constant MUSIC_TITLESCREEN 9E97
