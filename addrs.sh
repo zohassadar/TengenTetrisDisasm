@@ -37,8 +37,8 @@ apply_label() {
     }
 
 add_constant() {
-    address=$1
-    constant=$2
+    constant=$1
+    address=$2
     echo "/; $address/s/\$..\s\{$((${#constant}-3))\}/$constant/;"
     }
 
@@ -177,59 +177,49 @@ apply_label C8BC B079 B07D
 apply_label B14D B04A B050
 apply_label B181 B0AF B0B3
 apply_label B181 B0F1 B0F5
-add_constant 82CE GAMESTATE_DEMO
-add_constant 82D2 GAMESTATE_GAMEOVER
-add_constant B5D8 BUTTON_START
-add_constant 9291 BUTTON_SELECT
-add_constant 9FA4 BUTTON_SELECT+BUTTON_START
-add_constant 9FBC BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT
-add_constant 9FED BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT
-add_constant A011 BUTTON_START
-add_constant 8052 ~BUTTON_DOWN
-add_constant 923A BUTTON_LEFT
-add_constant 9240 BUTTON_RIGHT
-add_constant 9FF6 BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT
-add_constant 9280 BUTTON_A+BUTTON_B
-add_constant A04F BUTTON_UP
-add_constant 806B BUTTON_DOWN
-add_constant 8077 BUTTON_DOWN+BUTTON_LEFT
-add_constant 8079 BUTTON_LEFT
-add_constant 82F5 BUTTON_A+BUTTON_B
-add_constant 82F7 BUTTON_A+BUTTON_B
-add_constant 8099 BUTTON_RIGHT+BUTTON_DOWN
-add_constant 809B BUTTON_RIGHT
-add_constant 80BB BUTTON_B
-add_constant 80D7 BUTTON_A
-add_constant 80F3 BUTTON_DOWN+BUTTON_LEFT+BUTTON_RIGHT
-add_constant 80F5 BUTTON_DOWN
-add_constant 9246 BUTTON_LEFT
-add_constant 9263 BUTTON_RIGHT
-add_constant 9C21 BUTTON_UP
-add_constant 9C2C BUTTON_DOWN
-add_constant B5CA PLAYER1
-add_constant B5CF PLAYER2
-add_constant B4E6 \'9\'+1
-add_constant B4F2 \'0\'
-add_constant B4F7 \'8\'
-add_constant B4FB \'1\'
-add_constant B51F SOUND_SCREEN_SWITCH
-add_constant B554 SOUND_SCREEN_SWITCH
-add_constant 83F3 MUSIC_SILENCE
-add_constant 8CE0 MUSIC_SILENCE
-add_constant 9043 MUSIC_SILENCE
-add_constant A035 MUSIC_SILENCE
-add_constant 8406 MUSIC_GAMEOVER
-add_constant 841B SOUND_DROP
-add_constant 8D6F MUSIC_LEVELUP
-add_constant 95BC MUSIC_LEVELUP_INTRO
-add_constant 95C1 SOUND_LINECLEAR
-add_constant 9E97 MUSIC_TITLESCREEN
-add_constant 9F02 SOUND_SCREEN_SWITCH
-add_constant 9FC4 SOUND_MENU_SELECT
-add_constant A016 SOUND_SCREEN_SWITCH
-add_constant B5E7 MUSIC_HALT
-add_constant B5F2 MUSIC_RESUME
-add_constant 95CE MUSIC_HALT
+
+add_constant GAMESTATE_DEMO 82CE
+add_constant GAMESTATE_GAMEOVER 82D2
+
+add_constant BUTTON_START 'B5D8\|; A011'
+add_constant BUTTON_SELECT 9291
+add_constant BUTTON_SELECT+BUTTON_START 9FA4
+add_constant BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT '9FBC\|; 9FED\|; 9FF6'
+add_constant BUTTON_LEFT '923A\|; 8079\|; 9246'
+add_constant BUTTON_RIGHT '809B\|; 9263\|; 9240'
+add_constant BUTTON_UP 'A04F\|; 9C21'
+add_constant BUTTON_DOWN '806B\|; 80F5\|; 9C2C'
+add_constant ~BUTTON_DOWN 8052
+add_constant BUTTON_DOWN+BUTTON_LEFT 8077
+add_constant BUTTON_A+BUTTON_B '82F5\|; 82F7\|; 9280'
+add_constant BUTTON_RIGHT+BUTTON_DOWN 8099
+add_constant BUTTON_B 80BB
+add_constant BUTTON_A 80D7
+add_constant BUTTON_DOWN+BUTTON_LEFT+BUTTON_RIGHT 80F3
+
+add_constant PLAYER1 B5CA
+add_constant PLAYER2 B5CF
+
+add_constant \'9\'+1 B4E6
+add_constant \'0\' B4F2
+add_constant \'8\' B4F7
+add_constant \'1\' B4FB
+
+add_constant MUSIC_HALT 'B5E7\|; 95CE'
+add_constant MUSIC_RESUME B5F2
+add_constant MUSIC_SILENCE '83F3\|; 8CE0\|; 9043\|; A035'
+add_constant MUSIC_LEVELUP 8D6F
+add_constant MUSIC_LEVELUP_INTRO 95BC
+add_constant MUSIC_TITLESCREEN 9E97
+add_constant MUSIC_GAMEOVER 8406
+
+add_constant SOUND_SCREEN_SWITCH B51F
+add_constant SOUND_SCREEN_SWITCH B554
+add_constant SOUND_DROP 841B
+add_constant SOUND_LINECLEAR 95C1
+add_constant SOUND_SCREEN_SWITCH 9F02
+add_constant SOUND_MENU_SELECT 9FC4
+add_constant SOUND_SCREEN_SWITCH A016
 )" main.asm
 
 # These remove labels that end up in the middle of instructions (label := * + 1, etc)
