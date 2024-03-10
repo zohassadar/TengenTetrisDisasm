@@ -784,7 +784,7 @@ L83E7:
         lda     player1GameActive                              ; 83E7 A5 4A     .J
         ora     player2GameActive                              ; 83E9 05 4B     .K
         bne     L83F8                                          ; 83EB D0 0B     ..
-        lda     #$F9                                           ; 83ED A9 F9     ..
+        lda     #GAMESTATE_GAMEOVER                            ; 83ED A9 F9     ..
         sta     gameState                                      ; 83EF 85 29     .)
         sta     player1FallTimer                               ; 83F1 85 6A     .j
         lda     #MUSIC_SILENCE                                 ; 83F3 A9 08     ..
@@ -1868,11 +1868,11 @@ L8B0E:
 ; generalCounter3d contains offset into oamStaging
 stageCurrentAndNextSprites:
         lda     gameState                                      ; 8B37 A5 29     .)
-        cmp     #$F9                                           ; 8B39 C9 F9     ..
+        cmp     #GAMESTATE_GAMEOVER                            ; 8B39 C9 F9     ..
         beq     L8B45                                          ; 8B3B F0 08     ..
-        cmp     #$FB                                           ; 8B3D C9 FB     ..
+        cmp     #GAMESTATE_DEMO                                ; 8B3D C9 FB     ..
         beq     L8B45                                          ; 8B3F F0 04     ..
-        cmp     #$03                                           ; 8B41 C9 03     ..
+        cmp     #GAMESTATE_LEVELUP                             ; 8B41 C9 03     ..
         bcs     L8B83                                          ; 8B43 B0 3E     .>
 L8B45:
         ldx     #$00                                           ; 8B45 A2 00     ..
@@ -2100,7 +2100,7 @@ L8CAE:
         .byte   $88,$CC,$EE,$FF,$77,$33,$11                    ; 8CAE 88 CC EE FF 77 33 11....w3.
 ; ----------------------------------------------------------------------------
 showLevelBonus:
-        lda     #$03                                           ; 8CB5 A9 03     ..
+        lda     #GAMESTATE_LEVELUP                             ; 8CB5 A9 03     ..
         sta     gameState                                      ; 8CB7 85 29     .)
         inc     $78                                            ; 8CB9 E6 78     .x
         inc     $78                                            ; 8CBB E6 78     .x
@@ -2132,7 +2132,7 @@ L8CD7:
 ; ----------------------------------------------------------------------------
 checkLevelUp:
         lda     gameState                                      ; 8CE5 A5 29     .)
-        cmp     #$03                                           ; 8CE7 C9 03     ..
+        cmp     #GAMESTATE_LEVELUP                             ; 8CE7 C9 03     ..
         bne     @ret                                           ; 8CE9 D0 22     ."
         lda     player1FallTimer                               ; 8CEB A5 6A     .j
         cmp     #$04                                           ; 8CED C9 04     ..
@@ -2651,7 +2651,7 @@ finishLevelUpAnimation:
         cpx     #$C0                                           ; 90BB E0 C0     ..
         bne     @clearPortionOfSpriteTable                     ; 90BD D0 F5     ..
         ldx     #$07                                           ; 90BF A2 07     ..
-        lda     #$00                                           ; 90C1 A9 00     ..
+        lda     #GAMESTATE_PLAYING                             ; 90C1 A9 00     ..
         sta     gameState                                      ; 90C3 85 29     .)
 L90C5:
         sta     $6C,x                                          ; 90C5 95 6C     .l
@@ -2819,7 +2819,7 @@ possiblePPUAddrTable2:
 ; ----------------------------------------------------------------------------
 somethingWithLeaderboard:
         ldy     gameState                                      ; 91E3 A4 29     .)
-        cpy     #$F8                                           ; 91E5 C0 F8     ..
+        cpy     #GAMESTATE_LEADERBOARD                         ; 91E5 C0 F8     ..
         bne     L9205                                          ; 91E7 D0 1C     ..
         jsr     LA9CE                                          ; 91E9 20 CE A9   ..
         lda     $74                                            ; 91EC A5 74     .t
@@ -3391,7 +3391,7 @@ L95C1:
 
 ; ----------------------------------------------------------------------------
 demoStart:
-        lda     #$FB                                           ; 95C6 A9 FB     ..
+        lda     #GAMESTATE_DEMO                                ; 95C6 A9 FB     ..
         sta     gameState                                      ; 95C8 85 29     .)
         lda     #$00                                           ; 95CA A9 00     ..
         sta     playMode                                       ; 95CC 85 2F     ./
@@ -3408,7 +3408,7 @@ L95D7:
 
 ; ----------------------------------------------------------------------------
 initializeGameMode:
-        lda     #$00                                           ; 95E3 A9 00     ..
+        lda     #GAMESTATE_PLAYING                             ; 95E3 A9 00     ..
         sta     gameState                                      ; 95E5 85 29     .)
         ldx     #$05                                           ; 95E7 A2 05     ..
         lda     #$30                                           ; 95E9 A9 30     .0
@@ -3858,7 +3858,7 @@ L9962:
         lda     player1TetrominoCurrent,x                      ; 9974 B5 64     .d
         beq     L99EA                                          ; 9976 F0 72     .r
         lda     gameState                                      ; 9978 A5 29     .)
-        cmp     #$FB                                           ; 997A C9 FB     ..
+        cmp     #GAMESTATE_DEMO                                ; 997A C9 FB     ..
         bne     L9984                                          ; 997C D0 06     ..
         jsr     L9C8D                                          ; 997E 20 8D 9C   ..
         jmp     L9997                                          ; 9981 4C 97 99  L..
@@ -4234,9 +4234,9 @@ loadComputerInputOrMoveScreen:
         ldx     #$00                                           ; 9BFC A2 00     ..
         lda     gameState                                      ; 9BFE A5 29     .)
         beq     compInputForGameplay                           ; 9C00 F0 4A     .J
-        cmp     #$FB                                           ; 9C02 C9 FB     ..
+        cmp     #GAMESTATE_DEMO                                ; 9C02 C9 FB     ..
         beq     compInputForDemo                               ; 9C04 F0 52     .R
-        cmp     #$FA                                           ; 9C06 C9 FA     ..
+        cmp     #GAMESTATE_TITLE                               ; 9C06 C9 FA     ..
         beq     moveScreenUpOrDown                             ; 9C08 F0 01     ..
 L9C0A:
         rts                                                    ; 9C0A 60        `
@@ -4593,7 +4593,7 @@ initializeTitleScreen:
         sta     lineClearTimerP1                               ; 9E78 8D CE 01  ...
         sta     lineClearTimerP2                               ; 9E7B 8D CF 01  ...
         jsr     sendNametableToPPU                             ; 9E7E 20 E9 B3   ..
-        lda     #$FA                                           ; 9E81 A9 FA     ..
+        lda     #GAMESTATE_TITLE                               ; 9E81 A9 FA     ..
         sta     gameState                                      ; 9E83 85 29     .)
         lda     #$00                                           ; 9E85 A9 00     ..
         sta     frameCounterLow                                ; 9E87 85 32     .2
@@ -4648,7 +4648,7 @@ L9EDE:
         sta     player1LinesThousands,x                        ; 9EE7 9D 24 04  .$.
         dex                                                    ; 9EEA CA        .
         bpl     L9EDE                                          ; 9EEB 10 F1     ..
-        lda     #$FC                                           ; 9EED A9 FC     ..
+        lda     #GAMESTATE_GAME_TYPE                           ; 9EED A9 FC     ..
         sta     player1FallTimer                               ; 9EEF 85 6A     .j
         sta     gameState                                      ; 9EF1 85 29     .)
         sta     $4C                                            ; 9EF3 85 4C     .L
@@ -4685,7 +4685,7 @@ initializeLevelSelectMenu:
         ldy     #$02                                           ; 9F35 A0 02     ..
         jsr     LA06F                                          ; 9F37 20 6F A0   o.
 L9F3A:
-        lda     #$FD                                           ; 9F3A A9 FD     ..
+        lda     #GAMESTATE_LEVEL_SELECT                        ; 9F3A A9 FD     ..
 L9F3C:
         sta     gameState                                      ; 9F3C 85 29     .)
         sta     player1FallTimer                               ; 9F3E 85 6A     .j
@@ -4772,9 +4772,9 @@ L9FB8:
         lda     #SOUND_MENU_SELECT                             ; 9FC4 A9 14     ..
         jsr     setMusicOrSoundEffect                          ; 9FC6 20 B1 CF   ..
         lda     gameState                                      ; 9FC9 A5 29     .)
-        cmp     #$FF                                           ; 9FCB C9 FF     ..
+        cmp     #GAMESTATE_MUSIC_SELECT                        ; 9FCB C9 FF     ..
         beq     @inMusicSelectMenu                             ; 9FCD F0 0C     ..
-        cmp     #$FC                                           ; 9FCF C9 FC     ..
+        cmp     #GAMESTATE_GAME_TYPE                           ; 9FCF C9 FC     ..
         bne     @notInHandicapMenu                             ; 9FD1 D0 10     ..
         lda     player1ControllerNew                           ; 9FD3 A5 46     .F
         ora     player2ControllerNew                           ; 9FD5 05 47     .G
@@ -4787,7 +4787,7 @@ L9FB8:
         bne     @LA001                                         ; 9FE1 D0 1E     ..
 @notInHandicapMenu:
         ldy     #$01                                           ; 9FE3 A0 01     ..
-        cmp     #$FD                                           ; 9FE5 C9 FD     ..
+        cmp     #GAMESTATE_LEVEL_SELECT                        ; 9FE5 C9 FD     ..
         beq     @inLevelSelectMenu                             ; 9FE7 F0 02     ..
         ldy     #$03                                           ; 9FE9 A0 03     ..
 @inLevelSelectMenu:
@@ -4808,7 +4808,7 @@ L9FB8:
         jsr     LA048                                          ; A001 20 48 A0   H.
 @p2upDownOrSelectNotPressed:
         lda     gameState                                      ; A004 A5 29     .)
-        cmp     #$FF                                           ; A006 C9 FF     ..
+        cmp     #GAMESTATE_MUSIC_SELECT                        ; A006 C9 FF     ..
         bne     @checkStartPressed                             ; A008 D0 03     ..
         jsr     LA035                                          ; A00A 20 35 A0   5.
 @checkStartPressed:
@@ -4823,11 +4823,11 @@ LA016:
         lda     #SOUND_SCREEN_SWITCH                           ; A016 A9 15     ..
         jsr     setMusicOrSoundEffect                          ; A018 20 B1 CF   ..
         lda     gameState                                      ; A01B A5 29     .)
-        cmp     #$FC                                           ; A01D C9 FC     ..
+        cmp     #GAMESTATE_GAME_TYPE                           ; A01D C9 FC     ..
         beq     @branchOnModeGameTypeMenu                      ; A01F F0 0B     ..
-        cmp     #$FD                                           ; A021 C9 FD     ..
+        cmp     #GAMESTATE_LEVEL_SELECT                        ; A021 C9 FD     ..
         beq     @branchOnModeLevelMenu                         ; A023 F0 0A     ..
-        cmp     #$FE                                           ; A025 C9 FE     ..
+        cmp     #GAMESTATE_HANDICAP                            ; A025 C9 FE     ..
         beq     @branchOnModeHandicapMenu                      ; A027 F0 09     ..
         jmp     initializeGameMode                             ; A029 4C E3 95  L..
 
@@ -5815,7 +5815,7 @@ LA9CE:
         lda     player2FallTimer                               ; A9CE A5 6B     .k
         beq     LA9E9                                          ; A9D0 F0 17     ..
         lda     gameState                                      ; A9D2 A5 29     .)
-        cmp     #$FA                                           ; A9D4 C9 FA     ..
+        cmp     #GAMESTATE_TITLE                               ; A9D4 C9 FA     ..
         beq     LA9DE                                          ; A9D6 F0 06     ..
         lda     $74                                            ; A9D8 A5 74     .t
         ora     $75                                            ; A9DA 05 75     .u
@@ -5853,7 +5853,7 @@ LA9FD:
         dey                                                    ; AA04 88        .
         bne     LA9FD                                          ; AA05 D0 F6     ..
         lda     gameState                                      ; AA07 A5 29     .)
-        cmp     #$FA                                           ; AA09 C9 FA     ..
+        cmp     #GAMESTATE_TITLE                               ; AA09 C9 FA     ..
         bne     LAA13                                          ; AA0B D0 06     ..
         lda     frameCounterHigh                               ; AA0D A5 33     .3
         cmp     #$04                                           ; AA0F C9 04     ..
@@ -5922,7 +5922,7 @@ topoutSoundsTable:
 LAA70:
         ldy     gameState                                      ; AA70 A4 29     .)
         lda     #$00                                           ; AA72 A9 00     ..
-        cpy     #$FA                                           ; AA74 C0 FA     ..
+        cpy     #GAMESTATE_TITLE                               ; AA74 C0 FA     ..
         beq     LAA89                                          ; AA76 F0 11     ..
         jsr     shuffleRngSeed5x                               ; AA78 20 0D 9A   ..
         and     #$03                                           ; AA7B 29 03     ).
@@ -5940,7 +5940,7 @@ LAA89:
         sta     generalCounter37                               ; AA94 85 37     .7
         ldy     gameState                                      ; AA96 A4 29     .)
         lda     #$50                                           ; AA98 A9 50     .P
-        cpy     #$FA                                           ; AA9A C0 FA     ..
+        cpy     #GAMESTATE_TITLE                               ; AA9A C0 FA     ..
         beq     LAAA0                                          ; AA9C F0 02     ..
         lda     #$10                                           ; AA9E A9 10     ..
 LAAA0:
@@ -7278,7 +7278,7 @@ pauseOrUnpause:
 ; ----------------------------------------------------------------------------
 @startPressedOnEitherController:
         ldy     gameState                                      ; B5DD A4 29     .)
-        cpy     #$01                                           ; B5DF C0 01     ..
+        cpy     #GAMESTATE_PAUSED                              ; B5DF C0 01     ..
         beq     @unpause                                       ; B5E1 F0 0D     ..
         bcs     @ret                                           ; B5E3 B0 F7     ..
 @pause:
