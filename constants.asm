@@ -9,8 +9,6 @@ BUTTON_DOWN := $20
 BUTTON_LEFT := $40
 BUTTON_RIGHT := $80
 
-BUTTON_DPAD := BUTTON_UP | BUTTON_DOWN | BUTTON_LEFT | BUTTON_RIGHT
-
 ; loaded into x several times throughout the code
 PLAYER1 := $00
 PLAYER2 := $01

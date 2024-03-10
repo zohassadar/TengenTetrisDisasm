@@ -228,7 +228,7 @@ resetContinued:
         sta     ppuStagingAddress+1                            ; 8005 85 49     .I
         jsr     initializeTitleScreen                          ; 8007 20 61 9E   a.
 mainLoop:
-        ldx     #$34                                           ; 800A A2 34     .4
+        ldx     #rngSeed                                       ; 800A A2 34     .4
         jsr     genNextPseudoRandom                            ; 800C 20 FA 99   ..
         lda     frameCounterLow                                ; 800F A5 32     .2
         cmp     frameCounterLowLastFrame                       ; 8011 C5 2B     .+
@@ -246,13 +246,13 @@ mainLoop:
         jsr     checkLevelUp                                   ; 802A 20 E5 8C   ..
         jsr     somethingWithLeaderboard                       ; 802D 20 E3 91   ..
         jsr     loadComputerInputOrMoveScreen                  ; 8030 20 FC 9B   ..
-        ldx     #$00                                           ; 8033 A2 00     ..
+        ldx     #PLAYER1                                       ; 8033 A2 00     ..
         jsr     stageLineClearAnimation                        ; 8035 20 48 88   H.
-        ldx     #$01                                           ; 8038 A2 01     ..
+        ldx     #PLAYER2                                       ; 8038 A2 01     ..
         jsr     stageLineClearAnimation                        ; 803A 20 48 88   H.
-        ldx     #$00                                           ; 803D A2 00     ..
+        ldx     #PLAYER1                                       ; 803D A2 00     ..
         jsr     branchOnActiveDemoOrGameOver                   ; 803F 20 C7 82   ..
-        ldx     #$01                                           ; 8042 A2 01     ..
+        ldx     #PLAYER2                                       ; 8042 A2 01     ..
         jsr     branchOnActiveDemoOrGameOver                   ; 8044 20 C7 82   ..
         jsr     stageCurrentAndNextSprites                     ; 8047 20 37 8B   7.
         jsr     L9B62                                          ; 804A 20 62 9B   b.
@@ -263,10 +263,10 @@ mainLoop:
 testIfComputerPlayingThenMove:
         lda     player1ControllerNew,x                         ; 8050 B5 46     .F
         and     #~BUTTON_DOWN                                  ; 8052 29 DF     ).
-        cpx     #$00                                           ; 8054 E0 00     ..
+        cpx     #PLAYER1                                       ; 8054 E0 00     ..
         beq     @player1Active                                 ; 8056 F0 07     ..
         ldy     menuGameMode                                   ; 8058 AC F0 04  ...
-        cpy     #$03                                           ; 805B C0 03     ..
+        cpy     #MENU_GAMEMODE_VS                              ; 805B C0 03     ..
         bcs     @ret                                           ; 805D B0 04     ..
 @player1Active:
         ldy     gameState                                      ; 805F A4 29     .)
@@ -278,7 +278,7 @@ testIfComputerPlayingThenMove:
 doSomethingWithInputDuringGameplay:
         tay                                                    ; 8064 A8        .
 @LeftAndRight:
-        and     #$C0                                           ; 8065 29 C0     ).
+        and     #BUTTON_LEFT+BUTTON_RIGHT                      ; 8065 29 C0     ).
         beq     L8073                                          ; 8067 F0 0A     ..
         lda     player1ControllerLastFrame,x                   ; 8069 B5 3E     .>
 @CheckForDown:
@@ -301,7 +301,7 @@ L8073:
         cmp     #$0B                                           ; 8086 C9 0B     ..
         bcc     L8097                                          ; 8088 90 0D     ..
         tya                                                    ; 808A 98        .
-        ora     #$40                                           ; 808B 09 40     .@
+        ora     #BUTTON_LEFT                                   ; 808B 09 40     .@
         tay                                                    ; 808D A8        .
         lda     #$05                                           ; 808E A9 05     ..
         bne     @jumpOverLoad0                                 ; 8090 D0 02     ..
@@ -322,7 +322,7 @@ L8097:
         cmp     #$0B                                           ; 80A8 C9 0B     ..
         bcc     L80B9                                          ; 80AA 90 0D     ..
         tya                                                    ; 80AC 98        .
-        ora     #$80                                           ; 80AD 09 80     ..
+        ora     #BUTTON_RIGHT                                  ; 80AD 09 80     ..
         tay                                                    ; 80AF A8        .
         lda     #$05                                           ; 80B0 A9 05     ..
         bne     L80B6                                          ; 80B2 D0 02     ..
@@ -341,7 +341,7 @@ L80B9:
         cmp     #$0F                                           ; 80C8 C9 0F     ..
         bcc     L80D5                                          ; 80CA 90 09     ..
         tya                                                    ; 80CC 98        .
-        ora     #$02                                           ; 80CD 09 02     ..
+        ora     #BUTTON_B                                      ; 80CD 09 02     ..
         tay                                                    ; 80CF A8        .
 @BNotPressed:
         lda     #$00                                           ; 80D0 A9 00     ..
@@ -357,7 +357,7 @@ L80D5:
         cmp     #$0F                                           ; 80E4 C9 0F     ..
         bcc     L80F1                                          ; 80E6 90 09     ..
         tya                                                    ; 80E8 98        .
-        ora     #$01                                           ; 80E9 09 01     ..
+        ora     #BUTTON_A                                      ; 80E9 09 01     ..
         tay                                                    ; 80EB A8        .
 @ANotPressed:
         lda     #$00                                           ; 80EC A9 00     ..
@@ -375,7 +375,7 @@ L80F1:
         cmp     dropRatePossibleP1,x                           ; 8102 DD B4 01  ...
         bcc     L8120                                          ; 8105 90 19     ..
         tya                                                    ; 8107 98        .
-        ora     #$20                                           ; 8108 09 20     . 
+        ora     #BUTTON_DOWN                                   ; 8108 09 20     . 
         sta     generalCounter36                               ; 810A 85 36     .6
         lda     dropRatePossibleP1,x                           ; 810C BD B4 01  ...
         cmp     #$02                                           ; 810F C9 02     ..
@@ -3270,7 +3270,7 @@ L94E4:
         sta     lastCurrentBlockP1                             ; 94ED 8D BC 01  ...
         sta     lastCurrentBlockP2                             ; 94F0 8D BD 01  ...
 L94F3:
-        lda     #$30                                           ; 94F3 A9 30     .0
+        lda     #'0'                                           ; 94F3 A9 30     .0
         sta     generalCounter36                               ; 94F5 85 36     .6
         lda     #$01                                           ; 94F7 A9 01     ..
         sta     $4E,x                                          ; 94F9 95 4E     .N
@@ -3281,7 +3281,7 @@ L94F3:
         lda     player1LinesOnes,y                             ; 94FF B9 27 04  .'.
         clc                                                    ; 9502 18        .
         adc     #$01                                           ; 9503 69 01     i.
-        cmp     #$3A                                           ; 9505 C9 3A     .:
+        cmp     #'9'+1                                         ; 9505 C9 3A     .:
         bcc     L950C                                          ; 9507 90 03     ..
         sbc     #$0A                                           ; 9509 E9 0A     ..
         sec                                                    ; 950B 38        8
@@ -3289,7 +3289,7 @@ L950C:
         sta     player1LinesOnes,y                             ; 950C 99 27 04  .'.
         lda     player1LinesTens,y                             ; 950F B9 26 04  .&.
         adc     #$00                                           ; 9512 69 00     i.
-        cmp     #$3A                                           ; 9514 C9 3A     .:
+        cmp     #'9'+1                                         ; 9514 C9 3A     .:
         bcc     L951B                                          ; 9516 90 03     ..
         sbc     #$0A                                           ; 9518 E9 0A     ..
         sec                                                    ; 951A 38        8
@@ -3297,7 +3297,7 @@ L951B:
         sta     player1LinesTens,y                             ; 951B 99 26 04  .&.
         lda     player1LinesHundreds,y                         ; 951E B9 25 04  .%.
         adc     #$00                                           ; 9521 69 00     i.
-        cmp     #$3A                                           ; 9523 C9 3A     .:
+        cmp     #'9'+1                                         ; 9523 C9 3A     .:
         bcc     L952A                                          ; 9525 90 03     ..
         sbc     #$0A                                           ; 9527 E9 0A     ..
         sec                                                    ; 9529 38        8
@@ -3305,15 +3305,14 @@ L952A:
         sta     player1LinesHundreds,y                         ; 952A 99 25 04  .%.
         lda     player1LinesThousands,y                        ; 952D B9 24 04  .$.
         adc     #$00                                           ; 9530 69 00     i.
-        cmp     #$3A                                           ; 9532 C9 3A     .:
+        cmp     #'9'+1                                         ; 9532 C9 3A     .:
         bcc     L9538                                          ; 9534 90 02     ..
-        .byte   $A9,$31                                        ; 9536 A9 31     .1
-; ----------------------------------------------------------------------------
+        lda     #'1'                                           ; 9536 A9 31     .1
 L9538:
         sta     player1LinesThousands,y                        ; 9538 99 24 04  .$.
-        cmp     #$30                                           ; 953B C9 30     .0
+        cmp     #'0'                                           ; 953B C9 30     .0
         beq     L9543                                          ; 953D F0 04     ..
-        lda     #$37                                           ; 953F A9 37     .7
+        lda     #'7'                                           ; 953F A9 37     .7
         bne     L9578                                          ; 9541 D0 35     .5
 L9543:
         stx     generalCounter37                               ; 9543 86 37     .7
@@ -3339,13 +3338,13 @@ L955B:
 L9567:
         adc     menuPlayer1StartLevel,x                        ; 9567 7D F1 04  }..
 L956A:
-        adc     #$30                                           ; 956A 69 30     i0
-        cmp     #$3A                                           ; 956C C9 3A     .:
+        adc     #'0'                                           ; 956A 69 30     i0
+        cmp     #'9'+1                                         ; 956C C9 3A     .:
         bcc     L957A                                          ; 956E 90 0A     ..
         sbc     #$0A                                           ; 9570 E9 0A     ..
-        cmp     #$37                                           ; 9572 C9 37     .7
+        cmp     #'7'                                           ; 9572 C9 37     .7
         bcc     L9578                                          ; 9574 90 02     ..
-        lda     #$37                                           ; 9576 A9 37     .7
+        lda     #'7'                                           ; 9576 A9 37     .7
 L9578:
         inc     generalCounter36                               ; 9578 E6 36     .6
 L957A:
@@ -3458,12 +3457,12 @@ L963E:
 L9640:
         lda     menuPlayer1StartLevel                          ; 9640 AD F1 04  ...
         clc                                                    ; 9643 18        .
-        adc     #$30                                           ; 9644 69 30     i0
+        adc     #'0'                                           ; 9644 69 30     i0
         sta     player1LevelOnes                               ; 9646 8D 2D 04  .-.
         lda     menuPlayer2StartLevel                          ; 9649 AD F2 04  ...
-        adc     #$30                                           ; 964C 69 30     i0
+        adc     #'0'                                           ; 964C 69 30     i0
         sta     player2LevelOnes                               ; 964E 8D 2F 04  ./.
-        lda     #$30                                           ; 9651 A9 30     .0
+        lda     #'0'                                           ; 9651 A9 30     .0
         sta     player1LevelTens                               ; 9653 8D 2C 04  .,.
         sta     player2LevelTens                               ; 9656 8D 2E 04  ...
         bit     gameState                                      ; 9659 24 29     $)
@@ -3956,7 +3955,7 @@ L9A06:
 ; ----------------------------------------------------------------------------
 shuffleRngSeed5x:
         stx     generalCounter3b                               ; 9A0D 86 3B     .;
-        ldx     #$34                                           ; 9A0F A2 34     .4
+        ldx     #rngSeed                                       ; 9A0F A2 34     .4
         jsr     genNextPseudoRandom5x                          ; 9A11 20 EE 99   ..
         ldx     generalCounter3b                               ; 9A14 A6 3B     .;
         rts                                                    ; 9A16 60        `
