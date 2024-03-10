@@ -1,17 +1,15 @@
-; unused while doing the labeling, but here for reference
+BUTTON_A = $01
+BUTTON_B = $02
+BUTTON_SELECT = $04
+BUTTON_START = $08
+BUTTON_UP = $10
+BUTTON_DOWN = $20
+BUTTON_LEFT = $40
+BUTTON_RIGHT = $80
 
-BUTTON_A := $01
-BUTTON_B := $02
-BUTTON_SELECT := $04
-BUTTON_START := $08
-BUTTON_UP := $10
-BUTTON_DOWN := $20
-BUTTON_LEFT := $40
-BUTTON_RIGHT := $80
-
-; loaded into x several times throughout the code
-PLAYER1 := $00
-PLAYER2 := $01
+; loaded into x
+PLAYER1 = $00
+PLAYER2 = $01
 
 MENU_GAMEMODE_1P = $00
 MENU_GAMEMODE_2P = $01
@@ -19,47 +17,47 @@ MENU_GAMEMODE_COOP = $02
 MENU_GAMEMODE_VS = $03
 MENU_GAMEMODE_WITH = $04
 
+GAMESTATE_LEADERBOARD = $F8
+GAMESTATE_GAMEOVER = $F9
+GAMESTATE_TITLE = $FA
+GAMESTATE_DEMO = $FB
+GAMESTATE_GAME_TYPE = $FC
+GAMESTATE_LEVEL_SELECT = $FD
+GAMESTATE_HANDICAP = $FE
+GAMESTATE_MUSIC_SELECT = $FF
+GAMESTATE_PLAYING = $00
+GAMESTATE_PAUSED = $01
+GAMESTATE_LEVELUP = $03
 
-; gameState values
-GAMESTATE_LEADERBOARD := $F8
-GAMESTATE_GAMEOVER := $F9
-GAMESTATE_TITLE := $FA
-GAMESTATE_DEMO := $FB
-GAMESTATE_GAME_TYPE := $FC
-GAMESTATE_LEVEL_SELECT := $FD
-GAMESTATE_HANDICAP := $FE
-GAMESTATE_MUSIC_SELECT := $FF
-GAMESTATE_PLAYING := $00
-GAMESTATE_PAUSED := $01
-GAMESTATE_LEVELUP := $03
+; tested for negative or zero most of the time
+PLAYMODE_COOP = $FF
+PLAYMODE_1P = $00
+PLAYMODE_2P = $01
 
-PLAYMODE_COOP := $FF
-PLAYMODE_1P := $00
-PLAYMODE_2P := $01
+MUSIC_HALT = $01
+MUSIC_RESUME = $02
+MUSIC_LOGINSKA = $04
+MUSIC_BRADINSKY = $05
+MUSIC_KARINKA = $06
+MUSIC_TROIKA = $07
+MUSIC_SILENCE = $08
+MUSIC_TITLESCREEN = $09
+MUSIC_GAMEOVER = $0a
+MUSIC_LEVELUP_INTRO = $0b
+MUSIC_UNUSED_LEVELUP = $0c  ; unused, see https://tcrf.net/Tetris_(NES,_Tengen)
+MUSIC_LEVELUP = $0d
 
-MUSIC_HALT := $01
-MUSIC_RESUME := $02
-MUSIC_LOGINSKA := $04
-MUSIC_BRADINSKY := $05
-MUSIC_KARINKA := $06
-MUSIC_TROIKA := $07
-MUSIC_SILENCE := $08
-MUSIC_TITLESCREEN := $09
-MUSIC_GAMEOVER := $0a
-MUSIC_LEVELUP_INTRO := $0b
-MUSIC_UNUSED_LEVELUP := $0c  ; unused, see https://tcrf.net/Tetris_(NES,_Tengen)
-MUSIC_LEVELUP := $0d
-SOUND_DROP := $0e
-SOUND_SWIPE := $0f          ; maybe unused
-SOUND_CHIRP := $10          ; maybe unused
-SOUND_PING := $11           ; maybe unused
-SOUND_ALARM := $12          ; maybe unused.  Would sound like alarm if repeated
-SOUND_LINECLEAR := $13
-SOUND_MENU_SELECT := $14
-SOUND_SCREEN_SWITCH := $15  ; played during menu screen changes and when levelup/undo/longbar code is applied
-SOUND_TOPOUT := $16
-SOUND_TOPOUT2 := $17
-SOUND_TOPOUT3 := $18
-SOUND_TOPOUT4 := $19
+SOUND_DROP = $0e
+SOUND_SWIPE = $0f          ; maybe unused
+SOUND_CHIRP = $10          ; maybe unused
+SOUND_PING = $11           ; maybe unused
+SOUND_ALARM = $12          ; maybe unused.  Would sound like alarm if repeated
+SOUND_LINECLEAR = $13
+SOUND_MENU_SELECT = $14
+SOUND_SCREEN_SWITCH = $15  ; played during menu screen changes and when levelup/undo/longbar code is applied
+SOUND_TOPOUT = $16
+SOUND_TOPOUT2 = $17
+SOUND_TOPOUT3 = $18
+SOUND_TOPOUT4 = $19
 
-TETROMINO_Y_INIT := $04
+TETROMINO_Y_INIT = $04
