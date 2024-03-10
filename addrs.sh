@@ -214,6 +214,22 @@ add_constant B4F7 \'8\'
 add_constant B4FB \'1\'
 add_constant B51F SOUND_SCREEN_SWITCH
 add_constant B554 SOUND_SCREEN_SWITCH
+add_constant 83F3 MUSIC_SILENCE
+add_constant 8CE0 MUSIC_SILENCE
+add_constant 9043 MUSIC_SILENCE
+add_constant A035 MUSIC_SILENCE
+add_constant 8406 MUSIC_GAMEOVER
+add_constant 841B SOUND_DROP
+add_constant 8D6F MUSIC_LEVELUP
+add_constant 95BC MUSIC_LEVELUP_INTRO
+add_constant 95C1 SOUND_LINECLEAR
+add_constant 9E97 MUSIC_TITLESCREEN
+add_constant 9F02 SOUND_SCREEN_SWITCH
+add_constant 9FC4 SOUND_MENU_SELECT
+add_constant A016 SOUND_SCREEN_SWITCH
+add_constant B5E7 MUSIC_HALT
+add_constant B5F2 MUSIC_RESUME
+add_constant 95CE MUSIC_HALT
 )" main.asm
 
 # These remove labels that end up in the middle of instructions (label := * + 1, etc)

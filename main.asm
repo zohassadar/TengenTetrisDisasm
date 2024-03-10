@@ -787,7 +787,7 @@ L83E7:
         lda     #$F9                                           ; 83ED A9 F9     ..
         sta     gameState                                      ; 83EF 85 29     .)
         sta     player1FallTimer                               ; 83F1 85 6A     .j
-        lda     #$08                                           ; 83F3 A9 08     ..
+        lda     #MUSIC_SILENCE                                 ; 83F3 A9 08     ..
         jsr     setMusicOrSoundEffect                          ; 83F5 20 B1 CF   ..
 L83F8:
         txa                                                    ; 83F8 8A        .
@@ -799,7 +799,7 @@ L83F8:
         adc     #$03                                           ; 8401 69 03     i.
 L8403:
         jsr     updateGameBackground                           ; 8403 20 03 B6   ..
-        lda     #$0A                                           ; 8406 A9 0A     ..
+        lda     #MUSIC_GAMEOVER                                ; 8406 A9 0A     ..
         jmp     setMusicOrSoundEffect                          ; 8408 4C B1 CF  L..
 
 ; ----------------------------------------------------------------------------
@@ -816,7 +816,7 @@ L8416:
 L8417:
         lda     #$00                                           ; 8417 A9 00     ..
         sta     player1TetrominoCurrent,x                      ; 8419 95 64     .d
-        lda     #$0E                                           ; 841B A9 0E     ..
+        lda     #SOUND_DROP                                    ; 841B A9 0E     ..
         jsr     setMusicOrSoundEffect                          ; 841D 20 B1 CF   ..
         jsr     L8565                                          ; 8420 20 65 85   e.
         jsr     L8773                                          ; 8423 20 73 87   s.
@@ -2126,7 +2126,7 @@ L8CD7:
         dex                                                    ; 8CDC CA        .
         dex                                                    ; 8CDD CA        .
         bpl     L8CD7                                          ; 8CDE 10 F7     ..
-        lda     #$08                                           ; 8CE0 A9 08     ..
+        lda     #MUSIC_SILENCE                                 ; 8CE0 A9 08     ..
         jmp     setMusicOrSoundEffect                          ; 8CE2 4C B1 CF  L..
 
 ; ----------------------------------------------------------------------------
@@ -2212,7 +2212,7 @@ L8D54:
 L8D6B:
         lda     #$7C                                           ; 8D6B A9 7C     .|
         sta     player1FallTimer                               ; 8D6D 85 6A     .j
-        lda     #$0D                                           ; 8D6F A9 0D     ..
+        lda     #MUSIC_LEVELUP                                 ; 8D6F A9 0D     ..
         jsr     setMusicOrSoundEffect                          ; 8D71 20 B1 CF   ..
         lda     ppuControl                                     ; 8D74 A5 00     ..
         ora     #$08                                           ; 8D76 09 08     ..
@@ -2575,7 +2575,7 @@ L9035:
         lda     player1ControllerNew                           ; 903D A5 46     .F
         ora     player2ControllerNew                           ; 903F 05 47     .G
         beq     L9091                                          ; 9041 F0 4E     .N
-        lda     #$08                                           ; 9043 A9 08     ..
+        lda     #MUSIC_SILENCE                                 ; 9043 A9 08     ..
         jsr     setMusicOrSoundEffect                          ; 9045 20 B1 CF   ..
         lda     #$7C                                           ; 9048 A9 7C     .|
         sec                                                    ; 904A 38        8
@@ -3382,12 +3382,12 @@ L95B3:
         tax                                                    ; 95B6 AA        .
         jsr     LA756                                          ; 95B7 20 56 A7   V.
         ldx     generalCounter37                               ; 95BA A6 37     .7
-        lda     #$0B                                           ; 95BC A9 0B     ..
+        lda     #MUSIC_LEVELUP_INTRO                           ; 95BC A9 0B     ..
         jmp     setMusicOrSoundEffect                          ; 95BE 4C B1 CF  L..
 
 ; ----------------------------------------------------------------------------
 L95C1:
-        lda     #$13                                           ; 95C1 A9 13     ..
+        lda     #SOUND_LINECLEAR                               ; 95C1 A9 13     ..
         jmp     setMusicOrSoundEffect                          ; 95C3 4C B1 CF  L..
 
 ; ----------------------------------------------------------------------------
@@ -3396,7 +3396,7 @@ demoStart:
         sta     gameState                                      ; 95C8 85 29     .)
         lda     #$00                                           ; 95CA A9 00     ..
         sta     playMode                                       ; 95CC 85 2F     ./
-        lda     #$01                                           ; 95CE A9 01     ..
+        lda     #MUSIC_HALT                                    ; 95CE A9 01     ..
         jsr     setMusicOrSoundEffect                          ; 95D0 20 B1 CF   ..
         ldx     #$05                                           ; 95D3 A2 05     ..
         lda     #$30                                           ; 95D5 A9 30     .0
@@ -4604,7 +4604,7 @@ initializeTitleScreen:
         lda     ppuScrollYOffset                               ; 9E8F AD F6 04  ...
         sta     ppuScrollY                                     ; 9E92 85 03     ..
         jsr     LCF79                                          ; 9E94 20 79 CF   y.
-        lda     #$09                                           ; 9E97 A9 09     ..
+        lda     #MUSIC_TITLESCREEN                             ; 9E97 A9 09     ..
         jsr     setMusicOrSoundEffect                          ; 9E99 20 B1 CF   ..
         lda     #$00                                           ; 9E9C A9 00     ..
         jsr     updatePalette                                  ; 9E9E 20 BE A6   ..
@@ -4659,7 +4659,7 @@ L9EDE:
         sta     $50                                            ; 9EFB 85 50     .P
         sta     $51                                            ; 9EFD 85 51     .Q
         jsr     LCF79                                          ; 9EFF 20 79 CF   y.
-        lda     #$15                                           ; 9F02 A9 15     ..
+        lda     #SOUND_SCREEN_SWITCH                           ; 9F02 A9 15     ..
         jsr     setMusicOrSoundEffect                          ; 9F04 20 B1 CF   ..
         lda     #$01                                           ; 9F07 A9 01     ..
         jsr     updatePalette                                  ; 9F09 20 BE A6   ..
@@ -4770,7 +4770,7 @@ L9FB8:
         beq     @checkStartPressed                             ; 9FBE F0 4D     .M
         lda     #$FF                                           ; 9FC0 A9 FF     ..
         sta     player1FallTimer                               ; 9FC2 85 6A     .j
-        lda     #$14                                           ; 9FC4 A9 14     ..
+        lda     #SOUND_MENU_SELECT                             ; 9FC4 A9 14     ..
         jsr     setMusicOrSoundEffect                          ; 9FC6 20 B1 CF   ..
         lda     gameState                                      ; 9FC9 A5 29     .)
         cmp     #$FF                                           ; 9FCB C9 FF     ..
@@ -4821,7 +4821,7 @@ L9FB8:
 
 ; ----------------------------------------------------------------------------
 LA016:
-        lda     #$15                                           ; A016 A9 15     ..
+        lda     #SOUND_SCREEN_SWITCH                           ; A016 A9 15     ..
         jsr     setMusicOrSoundEffect                          ; A018 20 B1 CF   ..
         lda     gameState                                      ; A01B A5 29     .)
         cmp     #$FC                                           ; A01D C9 FC     ..
@@ -4846,7 +4846,7 @@ LA016:
 
 ; ----------------------------------------------------------------------------
 LA035:
-        lda     #$08                                           ; A035 A9 08     ..
+        lda     #MUSIC_SILENCE                                 ; A035 A9 08     ..
         jsr     setMusicOrSoundEffect                          ; A037 20 B1 CF   ..
         ldy     menuMusic                                      ; A03A AC F5 04  ...
         lda     musicSelectTable,y                             ; A03D B9 43 A0  .C.
@@ -7284,13 +7284,13 @@ pauseOrUnpause:
         bcs     @ret                                           ; B5E3 B0 F7     ..
 @pause:
         inc     gameState                                      ; B5E5 E6 29     .)
-        lda     #$01                                           ; B5E7 A9 01     ..
+        lda     #MUSIC_HALT                                    ; B5E7 A9 01     ..
         jsr     setMusicOrSoundEffect                          ; B5E9 20 B1 CF   ..
         lda     #$00                                           ; B5EC A9 00     ..
         beq     @jumpOverUnpause                               ; B5EE F0 0C     ..
 @unpause:
         dec     gameState                                      ; B5F0 C6 29     .)
-        lda     #$02                                           ; B5F2 A9 02     ..
+        lda     #MUSIC_RESUME                                  ; B5F2 A9 02     ..
         jsr     setMusicOrSoundEffect                          ; B5F4 20 B1 CF   ..
         jsr     L8967                                          ; B5F7 20 67 89   g.
         lda     #$01                                           ; B5FA A9 01     ..
