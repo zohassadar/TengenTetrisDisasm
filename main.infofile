@@ -256,7 +256,7 @@ LABEL { ADDR $82C7; NAME "branchOnActiveDemoOrGameOver"; COMMENT "x contains cur
 LABEL { ADDR $82D6; NAME "gameOverReturn"; };
 LABEL { ADDR $82D7; NAME "activeGamePlay"; };
 LABEL { ADDR $82F3; NAME "handleGameOver"; COMMENT "A+B held to restart game.  https://tcrf.net/Talk:Tetris_(NES,_Tengen)"; };
-LABEL { ADDR $830F; NAME "@notWithComputer"; };
+LABEL { ADDR $830F; NAME "@notVsComputer"; };
 LABEL { ADDR $8312; NAME "@playmodeIs0"; };
 LABEL { ADDR $8315; NAME "restoreOriginalRNGSeed"; };
 LABEL { ADDR $838E; NAME "L838E"; COMMENT "This has something to do with wallkicks"; };

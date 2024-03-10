@@ -514,7 +514,7 @@ L81EC:
         asl     a                                              ; 81F2 0A        .
         tay                                                    ; 81F3 A8        .
         lda     menuGameMode                                   ; 81F4 AD F0 04  ...
-        cmp     #$03                                           ; 81F7 C9 03     ..
+        cmp     #MENU_GAMEMODE_VS                              ; 81F7 C9 03     ..
         bcc     L81FF                                          ; 81F9 90 04     ..
         tya                                                    ; 81FB 98        .
         beq     L81FF                                          ; 81FC F0 01     ..
@@ -662,11 +662,11 @@ handleGameOver:
         beq     @playmodeIs0                                   ; 8301 F0 0F     ..
         bmi     restoreOriginalRNGSeed                         ; 8303 30 10     0.
         lda     menuGameMode                                   ; 8305 AD F0 04  ...
-        cmp     #$03                                           ; 8308 C9 03     ..
-        bne     @notWithComputer                               ; 830A D0 03     ..
+        cmp     #MENU_GAMEMODE_VS                              ; 8308 C9 03     ..
+        bne     @notVsComputer                                 ; 830A D0 03     ..
         txa                                                    ; 830C 8A        .
         bne     gameOverReturn                                 ; 830D D0 C7     ..
-@notWithComputer:
+@notVsComputer:
         jmp     L9744                                          ; 830F 4C 44 97  LD.
 
 ; ----------------------------------------------------------------------------
@@ -2684,7 +2684,7 @@ L90F4:
         ldx     playMode                                       ; 90FD A6 2F     ./
         dex                                                    ; 90FF CA        .
         bne     L9133                                          ; 9100 D0 31     .1
-        lda     #$04                                           ; 9102 A9 04     ..
+        lda     #TETROMINO_Y_INIT                              ; 9102 A9 04     ..
         sta     player2TetrominoY                              ; 9104 85 61     .a
         lda     tetrominoXSpawnTable+2                         ; 9106 AD ED 99  ...
         bit     playMode                                       ; 9109 24 2F     $/
@@ -2719,7 +2719,7 @@ L9133:
         jsr     LA763                                          ; 913E 20 63 A7   c.
         lda     player1GameActive                              ; 9141 A5 4A     .J
         beq     L9176                                          ; 9143 F0 31     .1
-        lda     #$04                                           ; 9145 A9 04     ..
+        lda     #TETROMINO_Y_INIT                              ; 9145 A9 04     ..
         sta     player1TetrominoY                              ; 9147 85 60     .`
         lda     tetrominoXSpawnTable+2                         ; 9149 AD ED 99  ...
         bit     playMode                                       ; 914C 24 2F     $/
@@ -3470,7 +3470,7 @@ L9640:
         sta     player1LevelOnes                               ; 965F 8D 2D 04  .-.
 L9662:
         lda     menuGameMode                                   ; 9662 AD F0 04  ...
-        cmp     #$02                                           ; 9665 C9 02     ..
+        cmp     #MENU_GAMEMODE_COOP                            ; 9665 C9 02     ..
         bcc     L967B                                          ; 9667 90 12     ..
         lda     player1LevelTens                               ; 9669 AD 2C 04  .,.
         sta     player2LevelTens                               ; 966C 8D 2E 04  ...
@@ -3660,7 +3660,7 @@ initPlayer2Playfield:
         ldx     #$01                                           ; 983A A2 01     ..
 endPlayfieldInit:
         lda     menuGameMode                                   ; 983C AD F0 04  ...
-        cmp     #$03                                           ; 983F C9 03     ..
+        cmp     #MENU_GAMEMODE_VS                              ; 983F C9 03     ..
         lda     menuPlayer1Handicap                            ; 9841 AD F3 04  ...
         bcs     @computerIsPlaying                             ; 9844 B0 03     ..
         lda     menuPlayer1Handicap,x                          ; 9846 BD F3 04  ...
@@ -3838,7 +3838,7 @@ L993B:
 L9950:
         lda     #$00                                           ; 9950 A9 00     ..
         sta     player1TetrominoOrientation,x                  ; 9952 95 68     .h
-        lda     #$04                                           ; 9954 A9 04     ..
+        lda     #TETROMINO_Y_INIT                              ; 9954 A9 04     ..
         sta     player1TetrominoY,x                            ; 9956 95 60     .`
         lda     tetrominoXSpawnTable+2                         ; 9958 AD ED 99  ...
         ldy     playMode                                       ; 995B A4 2F     ./
@@ -3866,7 +3866,7 @@ L9962:
 L9984:
         lda     menuGameMode                                   ; 9984 AD F0 04  ...
         beq     L9997                                          ; 9987 F0 0E     ..
-        cmp     #$03                                           ; 9989 C9 03     ..
+        cmp     #MENU_GAMEMODE_VS                              ; 9989 C9 03     ..
         bcc     L99EA                                          ; 998B 90 5D     .]
         bne     L9992                                          ; 998D D0 03     ..
         txa                                                    ; 998F 8A        .
@@ -4070,7 +4070,7 @@ L9AC9:
         lda     gameState                                      ; 9ACE A5 29     .)
         bne     L9AED                                          ; 9AD0 D0 1B     ..
         lda     menuGameMode                                   ; 9AD2 AD F0 04  ...
-        cmp     #$03                                           ; 9AD5 C9 03     ..
+        cmp     #MENU_GAMEMODE_VS                              ; 9AD5 C9 03     ..
         bcc     L9ADC                                          ; 9AD7 90 03     ..
         tya                                                    ; 9AD9 98        .
         bne     L9AED                                          ; 9ADA D0 11     ..
@@ -4280,7 +4280,7 @@ moveScreenUpOrDown:
 ; ----------------------------------------------------------------------------
 compInputForGameplay:
         lda     menuGameMode                                   ; 9C4C AD F0 04  ...
-        cmp     #$03                                           ; 9C4F C9 03     ..
+        cmp     #MENU_GAMEMODE_VS                              ; 9C4F C9 03     ..
         bcc     L9C0A                                          ; 9C51 90 B7     ..
         inx                                                    ; 9C53 E8        .
         lda     player1GameActive,x                            ; 9C54 B5 4A     .J
@@ -4874,7 +4874,7 @@ LA055:
 LA063:
         cmp     computerMoveSelectTable,y                      ; A063 D9 E3 A0  ...
         bcc     LA06A                                          ; A066 90 02     ..
-        lda     #$00                                           ; A068 A9 00     ..
+        lda     #MENU_GAMEMODE_1P                              ; A068 A9 00     ..
 LA06A:
         sta     menuGameMode,y                                 ; A06A 99 F0 04  ...
         lda     #$3E                                           ; A06D A9 3E     .>
@@ -7188,7 +7188,7 @@ checkCodeInput:
         sta     player1TetrominoCurrent,x                      ; B535 95 64     .d
 ; shared code for both applying longbar code & undo code
 @spawnReplacementTetromino:
-        lda     #$04                                           ; B537 A9 04     ..
+        lda     #TETROMINO_Y_INIT                              ; B537 A9 04     ..
         sta     player1TetrominoY,x                            ; B539 95 60     .`
         lda     tetrominoXSpawnTable+2                         ; B53B AD ED 99  ...
         bit     playMode                                       ; B53E 24 2F     $/
