@@ -222,7 +222,7 @@ add_constant \'7\' 953F 9572 9576
 add_constant \'8\' B4F7
 add_constant \'9\'+1 B4E6 9505 9514 9523 9532 956C
 
-add_constant MUSIC_HALT B5E7 95CE
+add_constant MUSIC_SUSPEND B5E7 95CE
 add_constant MUSIC_RESUME B5F2
 add_constant MUSIC_SILENCE 83F3 8CE0 9043 A035
 add_constant MUSIC_LEVELUP 8D6F

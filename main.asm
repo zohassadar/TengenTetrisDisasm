@@ -3394,7 +3394,7 @@ demoStart:
         sta     gameState                                      ; 95C8 85 29     .)
         lda     #$00                                           ; 95CA A9 00     ..
         sta     playMode                                       ; 95CC 85 2F     ./
-        lda     #MUSIC_HALT                                    ; 95CE A9 01     ..
+        lda     #MUSIC_SUSPEND                                 ; 95CE A9 01     ..
         jsr     setMusicOrSoundEffect                          ; 95D0 20 B1 CF   ..
         ldx     #$05                                           ; 95D3 A2 05     ..
         lda     #$30                                           ; 95D5 A9 30     .0
@@ -7282,7 +7282,7 @@ pauseOrUnpause:
         bcs     @ret                                           ; B5E3 B0 F7     ..
 @pause:
         inc     gameState                                      ; B5E5 E6 29     .)
-        lda     #MUSIC_HALT                                    ; B5E7 A9 01     ..
+        lda     #MUSIC_SUSPEND                                 ; B5E7 A9 01     ..
         jsr     setMusicOrSoundEffect                          ; B5E9 20 B1 CF   ..
         lda     #$00                                           ; B5EC A9 00     ..
         beq     @jumpOverUnpause                               ; B5EE F0 0C     ..
