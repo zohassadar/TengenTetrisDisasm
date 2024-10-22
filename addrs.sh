@@ -252,6 +252,10 @@ s/L98A6/$(get_label 98A7)-1/
 s/LAD23/$(get_label AD25)-2/
 s/LAD24/$(get_label AD25)-1/" main.asm
 
+
+# Remove trailing whitespace
+sed -i 's/[ \t]*$//' main.asm
+
 extract_nt () {
     grep -Pzo "(?sm)${1}:\\n\\K.*?(?=^\\S)" main.asm | grep -a byte > nametables/${1}.asm
     perl -i -p0e "s/^${1}:\\n\\K.*?(?=^\\S)/.include \"nametables\/${1}.asm\"\n/ms" main.asm
