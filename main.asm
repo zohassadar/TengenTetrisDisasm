@@ -1403,7 +1403,7 @@ L87ED:
         inc     player1FallTimer,x                             ; 87F1 F6 6A     .j
         ldx     generalCounter36                               ; 87F3 A6 36     .6
         ldy     #$0A                                           ; 87F5 A0 0A     ..
-        jsr     LA763                                          ; 87F7 20 63 A7   c.
+        jsr     setPiecePalette                                ; 87F7 20 63 A7   c.
 L87FA:
         rts                                                    ; 87FA 60        `
 
@@ -1634,31 +1634,30 @@ L897C:
         ldy     $78,x                                          ; 897C B4 78     .x
         cpy     #$2A                                           ; 897E C0 2A     .*
         bne     L8986                                          ; 8980 D0 04     ..
-        .byte   $A0,$00,$94,$78                                ; 8982 A0 00 94 78...x
-; ----------------------------------------------------------------------------
+        ldy     #$00                                           ; 8982 A0 00     ..
+        sty     $78,x                                          ; 8984 94 78     .x
 L8986:
         txa                                                    ; 8986 8A        .
         asl     a                                              ; 8987 0A        .
         asl     a                                              ; 8988 0A        .
         tax                                                    ; 8989 AA        .
         lda     player1LinesHundreds,x                         ; 898A BD 25 04  .%.
-        cmp     L8999,y                                        ; 898D D9 99 89  ...
+        cmp     linesForAnimation,y                            ; 898D D9 99 89  ...
         bne     L8998                                          ; 8990 D0 06     ..
         lda     player1LinesTens,x                             ; 8992 BD 26 04  .&.
-        cmp     L899A,y                                        ; 8995 D9 9A 89  ...
+        cmp     linesForAnimation+1,y                          ; 8995 D9 9A 89  ...
 L8998:
         rts                                                    ; 8998 60        `
 
 ; ----------------------------------------------------------------------------
-L8999:
-        .byte   $30                                            ; 8999 30        0
-L899A:
-        .byte   $33,$30,$36,$30,$39,$31,$32,$31                ; 899A 33 30 36 30 39 31 32 3130609121
-        .byte   $35,$32,$30,$32,$35,$33,$30,$33                ; 89A2 35 32 30 32 35 33 30 3352025303
-        .byte   $35,$34,$30,$34,$35,$35,$30,$35                ; 89AA 35 34 30 34 35 35 30 3554045505
-        .byte   $35,$36,$30,$36,$35,$37,$30,$37                ; 89B2 35 36 30 36 35 37 30 3756065707
-        .byte   $35,$38,$30,$38,$35,$39,$30,$39                ; 89BA 35 38 30 38 35 39 30 3958085909
-        .byte   $35                                            ; 89C2 35        5
+; For the animation that interrupts the game
+linesForAnimation:
+        .byte   $30,$33,$30,$36,$30,$39,$31,$32                ; 8999 30 33 30 36 30 39 31 3203060912
+        .byte   $31,$35,$32,$30,$32,$35,$33,$30                ; 89A1 31 35 32 30 32 35 33 3015202530
+        .byte   $33,$35,$34,$30,$34,$35,$35,$30                ; 89A9 33 35 34 30 34 35 35 3035404550
+        .byte   $35,$35,$36,$30,$36,$35,$37,$30                ; 89B1 35 35 36 30 36 35 37 3055606570
+        .byte   $37,$35,$38,$30,$38,$35,$39,$30                ; 89B9 37 35 38 30 38 35 39 3075808590
+        .byte   $39,$35                                        ; 89C1 39 35     95
 ; ----------------------------------------------------------------------------
 L89C3:
         ldy     #$01                                           ; 89C3 A0 01     ..
@@ -2175,7 +2174,7 @@ L8D19:
         jsr     L9177                                          ; 8D2C 20 77 91   w.
         lda     #$04                                           ; 8D2F A9 04     ..
         ldy     #$0B                                           ; 8D31 A0 0B     ..
-        jsr     LA75E                                          ; 8D33 20 5E A7   ^.
+        jsr     setPlayfieldPalette                            ; 8D33 20 5E A7   ^.
 L8D36:
         ldy     player1GameActive                              ; 8D36 A4 4A     .J
         beq     L8D50                                          ; 8D38 F0 16     ..
@@ -2191,7 +2190,7 @@ L8D46:
         jsr     L9177                                          ; 8D46 20 77 91   w.
         lda     #$00                                           ; 8D49 A9 00     ..
         ldy     #$0B                                           ; 8D4B A0 0B     ..
-        jsr     LA75E                                          ; 8D4D 20 5E A7   ^.
+        jsr     setPlayfieldPalette                            ; 8D4D 20 5E A7   ^.
 L8D50:
         lda     #$00                                           ; 8D50 A9 00     ..
         ldx     #$17                                           ; 8D52 A2 17     ..
@@ -2674,11 +2673,11 @@ L90DC:
         beq     L90F4                                          ; 90E9 F0 09     ..
         ldx     #$01                                           ; 90EB A2 01     ..
         ldy     player2TetrominoCurrent                        ; 90ED A4 65     .e
-        jsr     LA763                                          ; 90EF 20 63 A7   c.
+        jsr     setPiecePalette                                ; 90EF 20 63 A7   c.
         ldy     player2TetrominoNext                           ; 90F2 A4 67     .g
 L90F4:
         ldx     #$03                                           ; 90F4 A2 03     ..
-        jsr     LA763                                          ; 90F6 20 63 A7   c.
+        jsr     setPiecePalette                                ; 90F6 20 63 A7   c.
         lda     player2GameActive                              ; 90F9 A5 4B     .K
         beq     L9133                                          ; 90FB F0 36     .6
         ldx     playMode                                       ; 90FD A6 2F     ./
@@ -2707,16 +2706,16 @@ L911C:
         cpy     #$D0                                           ; 9125 C0 D0     ..
         bcc     L911C                                          ; 9127 90 F3     ..
         ldx     #$02                                           ; 9129 A2 02     ..
-        jsr     LA756                                          ; 912B 20 56 A7   V.
+        jsr     setPlayfieldPaletteFromLevel                   ; 912B 20 56 A7   V.
         ldx     #$01                                           ; 912E A2 01     ..
         jsr     L8ADB                                          ; 9130 20 DB 8A   ..
 L9133:
         ldx     #$00                                           ; 9133 A2 00     ..
         ldy     player1TetrominoCurrent                        ; 9135 A4 64     .d
-        jsr     LA763                                          ; 9137 20 63 A7   c.
+        jsr     setPiecePalette                                ; 9137 20 63 A7   c.
         ldx     #$02                                           ; 913A A2 02     ..
         ldy     player1TetrominoNext                           ; 913C A4 66     .f
-        jsr     LA763                                          ; 913E 20 63 A7   c.
+        jsr     setPiecePalette                                ; 913E 20 63 A7   c.
         lda     player1GameActive                              ; 9141 A5 4A     .J
         beq     L9176                                          ; 9143 F0 31     .1
         lda     #TETROMINO_Y_INIT                              ; 9145 A9 04     ..
@@ -2742,7 +2741,7 @@ L915F:
         cpy     #$D0                                           ; 9168 C0 D0     ..
         bcc     L915F                                          ; 916A 90 F3     ..
         ldx     #$00                                           ; 916C A2 00     ..
-        jsr     LA756                                          ; 916E 20 56 A7   V.
+        jsr     setPlayfieldPaletteFromLevel                   ; 916E 20 56 A7   V.
         ldx     #$00                                           ; 9171 A2 00     ..
         jsr     L8ADB                                          ; 9173 20 DB 8A   ..
 L9176:
@@ -3318,9 +3317,9 @@ L9543:
         ldx     #$00                                           ; 9545 A2 00     ..
 L9547:
         lda     player1LinesTens,y                             ; 9547 B9 26 04  .&.
-        cmp     L899A,x                                        ; 954A DD 9A 89  ...
+        cmp     linesForAnimation+1,x                          ; 954A DD 9A 89  ...
         lda     player1LinesHundreds,y                         ; 954D B9 25 04  .%.
-        sbc     L8999,x                                        ; 9550 FD 99 89  ...
+        sbc     linesForAnimation,x                            ; 9550 FD 99 89  ...
         bcc     L955B                                          ; 9553 90 06     ..
         inx                                                    ; 9555 E8        .
         inx                                                    ; 9556 E8        .
@@ -3378,7 +3377,7 @@ L95B3:
         stx     generalCounter37                               ; 95B3 86 37     .7
         tya                                                    ; 95B5 98        .
         tax                                                    ; 95B6 AA        .
-        jsr     LA756                                          ; 95B7 20 56 A7   V.
+        jsr     setPlayfieldPaletteFromLevel                   ; 95B7 20 56 A7   V.
         ldx     generalCounter37                               ; 95BA A6 37     .7
         lda     #MUSIC_LEVELUP_INTRO                           ; 95BC A9 0B     ..
         jmp     setMusicOrSoundEffect                          ; 95BE 4C B1 CF  L..
@@ -3485,12 +3484,12 @@ L967B:
         lda     #$03                                           ; 9683 A9 03     ..
         jsr     updatePalette                                  ; 9685 20 BE A6   ..
         ldx     #$00                                           ; 9688 A2 00     ..
-        jsr     LA756                                          ; 968A 20 56 A7   V.
+        jsr     setPlayfieldPaletteFromLevel                   ; 968A 20 56 A7   V.
         ldy     playMode                                       ; 968D A4 2F     ./
         dey                                                    ; 968F 88        .
         bne     L9697                                          ; 9690 D0 05     ..
         ldx     #$02                                           ; 9692 A2 02     ..
-        jsr     LA756                                          ; 9694 20 56 A7   V.
+        jsr     setPlayfieldPaletteFromLevel                   ; 9694 20 56 A7   V.
 L9697:
         lda     rngSeed                                        ; 9697 A5 34     .4
         sta     player1RNGSeed                                 ; 9699 85 5C     .\
@@ -3847,12 +3846,12 @@ L9950:
 L9962:
         sta     player1TetrominoX,x                            ; 9962 95 62     .b
         ldy     player1TetrominoCurrent,x                      ; 9964 B4 64     .d
-        jsr     LA763                                          ; 9966 20 63 A7   c.
+        jsr     setPiecePalette                                ; 9966 20 63 A7   c.
         ldx     generalCounter3b                               ; 9969 A6 3B     .;
         inx                                                    ; 996B E8        .
         inx                                                    ; 996C E8        .
         ldy     player1TetrominoCurrent,x                      ; 996D B4 64     .d
-        jsr     LA763                                          ; 996F 20 63 A7   c.
+        jsr     setPiecePalette                                ; 996F 20 63 A7   c.
         ldx     generalCounter3b                               ; 9972 A6 3B     .;
         lda     player1TetrominoCurrent,x                      ; 9974 B5 64     .d
         beq     L99EA                                          ; 9976 F0 72     .r
@@ -5439,22 +5438,22 @@ spritePalette3:
         .byte   $0F,$26,$21,$37                                ; A74E 0F 26 21 37.&!7
         .byte   $0F,$35,$24,$13                                ; A752 0F 35 24 13.5$.
 ; ----------------------------------------------------------------------------
-LA756:
+setPlayfieldPaletteFromLevel:
         lda     player1LevelOnes,x                             ; A756 BD 2D 04  .-.
         and     #$0F                                           ; A759 29 0F     ).
         tay                                                    ; A75B A8        .
         txa                                                    ; A75C 8A        .
         asl     a                                              ; A75D 0A        .
-LA75E:
+setPlayfieldPalette:
         clc                                                    ; A75E 18        .
         adc     #$01                                           ; A75F 69 01     i.
-        bne     LA768                                          ; A761 D0 05     ..
-LA763:
+        bne     skipOverPiecePalette                           ; A761 D0 05     ..
+setPiecePalette:
         txa                                                    ; A763 8A        .
         asl     a                                              ; A764 0A        .
         asl     a                                              ; A765 0A        .
         adc     #$11                                           ; A766 69 11     i.
-LA768:
+skipOverPiecePalette:
         pha                                                    ; A768 48        H
         jsr     enableNMIAndWaitForRendering                   ; A769 20 DB A3   ..
         pla                                                    ; A76C 68        h
@@ -5465,9 +5464,9 @@ LA768:
         tya                                                    ; A775 98        .
         asl     a                                              ; A776 0A        .
         adc     generalCounter36                               ; A777 65 36     e6
-        adc     #<unknownData03                                ; A779 69 88     i.
+        adc     #<piecePaletteIndex0                           ; A779 69 88     i.
         sta     renderSlot0Data,x                              ; A77B 95 08     ..
-        lda     #>unknownData03                                ; A77D A9 A7     ..
+        lda     #>piecePaletteIndex0                           ; A77D A9 A7     ..
         adc     #$00                                           ; A77F 69 00     i.
         sta     renderSlot0Data+1,x                            ; A781 95 09     ..
         lda     #$03                                           ; A783 A9 03     ..
@@ -5475,12 +5474,42 @@ LA768:
         rts                                                    ; A787 60        `
 
 ; ----------------------------------------------------------------------------
-unknownData03:
-        .byte   $20,$10,$00,$26,$16,$06,$27,$18                ; A788 20 10 00 26 16 06 27 18 ..&..'.
-        .byte   $08,$21,$12,$01,$37,$27,$17,$34                ; A790 08 21 12 01 37 27 17 34.!..7'.4
-        .byte   $24,$14,$2A,$1A,$0A,$2C,$1C,$0C                ; A798 24 14 2A 1A 0A 2C 1C 0C$.*..,..
-        .byte   $23,$13,$03,$2B,$1B,$0B,$0F,$0F                ; A7A0 23 13 03 2B 1B 0B 0F 0F#..+....
-        .byte   $0F,$30,$16,$0F                                ; A7A8 0F 30 16 0F.0..
+; Level 0
+piecePaletteIndex0:
+        .byte   $20,$10,$00                                    ; A788 20 10 00   ..
+; Level 1 & I
+piecePaletteIndex1:
+        .byte   $26,$16,$06                                    ; A78B 26 16 06  &..
+; Level 2 & T
+piecePaletteIndex2:
+        .byte   $27,$18,$08                                    ; A78E 27 18 08  '..
+; Level 3 & 0
+piecePaletteIndex3:
+        .byte   $21,$12,$01                                    ; A791 21 12 01  !..
+; Level 4 & J
+piecePaletteIndex4:
+        .byte   $37,$27,$17                                    ; A794 37 27 17  7'.
+; Level 5 & L
+piecePaletteIndex5:
+        .byte   $34,$24,$14                                    ; A797 34 24 14  4$.
+; Level 6 & S
+piecePaletteIndex6:
+        .byte   $2A,$1A,$0A                                    ; A79A 2A 1A 0A  *..
+; Level 7 & Z
+piecePaletteIndex7:
+        .byte   $2C,$1C,$0C                                    ; A79D 2C 1C 0C  ,..
+; Level 8
+piecePaletteIndex8:
+        .byte   $23,$13,$03                                    ; A7A0 23 13 03  #..
+; Level 9
+piecePaletteIndex9:
+        .byte   $2B,$1B,$0B                                    ; A7A3 2B 1B 0B  +..
+; Line clears
+piecePaletteIndexA:
+        .byte   $0F,$0F,$0F                                    ; A7A6 0F 0F 0F  ...
+; bonus animation
+piecePaletteIndexB:
+        .byte   $30,$16,$0F                                    ; A7A9 30 16 0F  0..
 ; ----------------------------------------------------------------------------
 nmi:
         pha                                                    ; A7AC 48        H
@@ -7162,7 +7191,7 @@ checkCodeInput:
         sta     player2LevelOnes                               ; B50F 8D 2F 04  ./.
         ldx     #$00                                           ; B512 A2 00     ..
 @notCoopForLevelup:
-        jsr     LA756                                          ; B514 20 56 A7   V.
+        jsr     setPlayfieldPaletteFromLevel                   ; B514 20 56 A7   V.
         ldx     generalCounter37                               ; B517 A6 37     .7
         inc     $50,x                                          ; B519 F6 50     .P
         lda     #$3C                                           ; B51B A9 3C     .<
@@ -7201,7 +7230,7 @@ checkCodeInput:
         lda     #$3C                                           ; B54B A9 3C     .<
         sta     player1FallTimer,x                             ; B54D 95 6A     .j
         ldy     player1TetrominoCurrent,x                      ; B54F B4 64     .d
-        jsr     LA763                                          ; B551 20 63 A7   c.
+        jsr     setPiecePalette                                ; B551 20 63 A7   c.
         lda     #SOUND_SCREEN_SWITCH                           ; B554 A9 15     ..
         jmp     setMusicOrSoundEffect                          ; B556 4C B1 CF  L..
 
@@ -7219,7 +7248,7 @@ checkCodeInput:
         stx     generalCounter3a                               ; B56D 86 3A     .:
         inx                                                    ; B56F E8        .
         inx                                                    ; B570 E8        .
-        jsr     LA763                                          ; B571 20 63 A7   c.
+        jsr     setPiecePalette                                ; B571 20 63 A7   c.
         ldx     generalCounter3a                               ; B574 A6 3A     .:
 ; todo: look into why current piece id might be 0
 @LB576:

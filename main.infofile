@@ -100,7 +100,7 @@ LABEL { ADDR $00F6; NAME "apuRegister"; SIZE $2; };
 LABEL { ADDR $00FC; NAME "audioPointerFC"; SIZE $2; COMMENT "offset from 03F7 set with code at D306"; };
 LABEL { ADDR $00FF; NAME "audioFlags"; COMMENT "
 ; https://www.nesdev.org/wiki/APU
-; AND'ed with $05, $01, $11, $21 and checks zero flag for audio registers starting at 
+; AND'ed with $05, $01, $11, $21 and checks zero flag for audio registers starting at
 ; $4000, $4004, $4008 and $400C respectively"; };
 LABEL { ADDR $0100; NAME "ppuStaging"; SIZE $46; };
 LABEL { ADDR $0190; NAME "lineClearStatsPPUStaging"; SIZE $4; };
@@ -281,6 +281,7 @@ LABEL { ADDR $8743; SIZE $10; NAME "tilesForL"; };
 LABEL { ADDR $8753; SIZE $10; NAME "tilesForS"; };
 LABEL { ADDR $8763; SIZE $10; NAME "tilesForZ"; };
 LABEL { ADDR $8848; NAME "stageLineClearAnimation"; COMMENT "x contains current player (0 or 1)"; };
+LABEL { ADDR $8999; SIZE $2A; NAME "linesForAnimation"; COMMENT "For the animation that interrupts the game"; };
 LABEL { ADDR $8A1F; NAME "lineClearTable"; };
 LABEL { ADDR $8A2B; NAME "lineClearSingle"; SIZE $C; };
 LABEL { ADDR $8A37; NAME "lineClearDouble"; SIZE $C; };
@@ -435,7 +436,25 @@ LABEL { ADDR $A716; NAME "spritePalette0"; };
 LABEL { ADDR $A726; NAME "spritePalette1"; };
 LABEL { ADDR $A736; NAME "spritePalette2"; };
 LABEL { ADDR $A746; NAME "spritePalette3"; };
-LABEL { ADDR $A788; NAME "unknownData03"; SIZE $24; };
+
+LABEL { ADDR $A756; NAME "setPlayfieldPaletteFromLevel"; };
+LABEL { ADDR $A75E; NAME "setPlayfieldPalette"; };
+LABEL { ADDR $A763; NAME "setPiecePalette"; };
+LABEL { ADDR $A768; NAME "skipOverPiecePalette"; };
+
+LABEL { ADDR $A788; SIZE $3; NAME "piecePaletteIndex0"; COMMENT "Level 0"; };
+LABEL { ADDR $A78B; SIZE $3; NAME "piecePaletteIndex1"; COMMENT "Level 1 & I"; };
+LABEL { ADDR $A78E; SIZE $3; NAME "piecePaletteIndex2"; COMMENT "Level 2 & T"; };
+LABEL { ADDR $A791; SIZE $3; NAME "piecePaletteIndex3"; COMMENT "Level 3 & 0"; };
+LABEL { ADDR $A794; SIZE $3; NAME "piecePaletteIndex4"; COMMENT "Level 4 & J"; };
+LABEL { ADDR $A797; SIZE $3; NAME "piecePaletteIndex5"; COMMENT "Level 5 & L"; };
+LABEL { ADDR $A79A; SIZE $3; NAME "piecePaletteIndex6"; COMMENT "Level 6 & S"; };
+LABEL { ADDR $A79D; SIZE $3; NAME "piecePaletteIndex7"; COMMENT "Level 7 & Z"; };
+LABEL { ADDR $A7A0; SIZE $3; NAME "piecePaletteIndex8"; COMMENT "Level 8"; };
+LABEL { ADDR $A7A3; SIZE $3; NAME "piecePaletteIndex9"; COMMENT "Level 9"; };
+LABEL { ADDR $A7A6; SIZE $3; NAME "piecePaletteIndexA"; COMMENT "Line clears"; };
+LABEL { ADDR $A7A9; SIZE $3; NAME "piecePaletteIndexB"; COMMENT "bonus animation"; };
+
 LABEL { ADDR $A7AC; NAME "nmi"; };
 LABEL { ADDR $A7C0; NAME "@enableHorizontalPPURendering"; };
 LABEL { ADDR $A80E; NAME "renderJumpRoutine"; };
@@ -598,8 +617,8 @@ LABEL { ADDR $B4A9; NAME "checkCodeInput"; COMMENT "x contains active player (0 
 ; $0B describes second byte of getLongbarCode"; };
 LABEL { ADDR $B4BF; NAME "@notUndoCode"; };
 LABEL { ADDR $B4C8; NAME "@codeInputHasBegun"; COMMENT "$12 is the last byte of getLongbarCode from levelUpCode
-; $1C is the last byte of undoCode from levelUpCode 
-; B4CE checks for 0 at end of code indicating code is complete 
+; $1C is the last byte of undoCode from levelUpCode
+; B4CE checks for 0 at end of code indicating code is complete
 ; B4DB is where levelup code is applied "; };
 LABEL { ADDR $B4F4; NAME "@noCarry"; COMMENT "levels capped at 17"; };
 LABEL { ADDR $B4FF; NAME "@storeTens"; };
@@ -748,9 +767,7 @@ RANGE { START $8565; END $86C2; TYPE CODE; };
 RANGE { START $86C3; END $8772; TYPE BYTETABLE; };
 RANGE { START $8773; END $8839; TYPE CODE; };
 RANGE { START $883A; END $8847; TYPE BYTETABLE; };
-RANGE { START $8848; END $8981; TYPE CODE; };
-RANGE { START $8982; END $8985; TYPE BYTETABLE; };
-RANGE { START $8986; END $8998; TYPE CODE; };
+RANGE { START $8848; END $8998; TYPE CODE; };
 RANGE { START $8999; END $89C2; TYPE BYTETABLE; };
 RANGE { START $89C3; END $8A2A; TYPE CODE; };
 RANGE { START $8A2B; END $8A5A; TYPE BYTETABLE; };
@@ -1223,4 +1240,3 @@ RANGE { START $FE7C; END $FE7D; TYPE ADDRTABLE; };
 RANGE { START $FE7E; END $FFF7; TYPE BYTETABLE; };
 RANGE { START $FFF8; END $FFF9; TYPE ADDRTABLE; };
 RANGE { START $FFFA; END $FFFF; TYPE ADDRTABLE; };
-
