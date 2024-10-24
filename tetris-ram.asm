@@ -134,7 +134,9 @@ lastRNGSeedP1:	.res $2	; $01C4
 lastRNGSeedP2:	.res $2	; $01C6
 pointsDisplayTimerP1:	.res 1	; $01C8
 pointsDisplayTimerP2:	.res 1	; $01C9
-.res 4
+compTargetX:	.res 1	; $01CA
+compTargetOrientation:	.res 1	; $01CB
+.res 2
 lineClearTimerP1:	.res 1	; $01CE
 lineClearTimerP2:	.res 1	; $01CF
 .res 2
@@ -199,6 +201,9 @@ ppuScrollYOffset:	.res 1	; $04F6
 initMagic:	.res $4	; $04F7
 .res 5
 oamStaging:	.res $100	; $0500
-player1Playfield:	.res $DF	; $0600
-.res 33
-player2Playfield:	.res $DF	; $0700
+player1Playfield:	.res $E0	; $0600
+.res 32
+player2Playfield:	.res $E0	; $0700
+computerScratchA:	.res $13	; $07E0 Explore this.  Used only in computer move selection
+.res 5
+computerScratchB:	.res $6	; $07F8

@@ -3688,35 +3688,35 @@ getNextTetromino:
         lda     #$14                                           ; 9929 A9 14     ..
         sta     player1FallTimer,x                             ; 992B 95 6A     .j
         sta     dropRatePossibleP1,x                           ; 992D 9D B4 01  ...
-L9930:
+@populateCurrent:
         lda     player1TetrominoNext,x                         ; 9930 B5 66     .f
         sta     player1TetrominoCurrent,x                      ; 9932 95 64     .d
         stx     generalCounter3b                               ; 9934 86 3B     .;
         txa                                                    ; 9936 8A        .
         asl     a                                              ; 9937 0A        .
-        adc     #$5C                                           ; 9938 69 5C     i\
+        adc     #player1RNGSeed                                ; 9938 69 5C     i\
         tax                                                    ; 993A AA        .
-L993B:
+@loopUntilNotZero:
         jsr     genNextPseudoRandom5x                          ; 993B 20 EE 99   ..
         and     #$07                                           ; 993E 29 07     ).
-        beq     L993B                                          ; 9940 F0 F9     ..
+        beq     @loopUntilNotZero                              ; 9940 F0 F9     ..
         ldx     generalCounter3b                               ; 9942 A6 3B     .;
         sta     player1TetrominoNext,x                         ; 9944 95 66     .f
         lda     player1TetrominoCurrent,x                      ; 9946 B5 64     .d
-        bne     L9950                                          ; 9948 D0 06     ..
+        bne     @currentPopulated                              ; 9948 D0 06     ..
         lda     #$30                                           ; 994A A9 30     .0
         sta     player1FallTimer,x                             ; 994C 95 6A     .j
-        bne     L9930                                          ; 994E D0 E0     ..
-L9950:
+        bne     @populateCurrent                               ; 994E D0 E0     ..
+@currentPopulated:
         lda     #$00                                           ; 9950 A9 00     ..
         sta     player1TetrominoOrientation,x                  ; 9952 95 68     .h
         lda     #TETROMINO_Y_INIT                              ; 9954 A9 04     ..
         sta     player1TetrominoY,x                            ; 9956 95 60     .`
         lda     tetrominoXSpawnTable+2                         ; 9958 AD ED 99  ...
         ldy     playMode                                       ; 995B A4 2F     ./
-        bpl     L9962                                          ; 995D 10 03     ..
+        bpl     @notCoop                                       ; 995D 10 03     ..
         lda     tetrominoXSpawnTable,x                         ; 995F BD EB 99  ...
-L9962:
+@notCoop:
         sta     player1TetrominoX,x                            ; 9962 95 62     .b
         ldy     player1TetrominoCurrent,x                      ; 9964 B4 64     .d
         jsr     setPiecePalette                                ; 9966 20 63 A7   c.
@@ -3731,7 +3731,7 @@ L9962:
         lda     gameState                                      ; 9978 A5 29     .)
         cmp     #GAMESTATE_DEMO                                ; 997A C9 FB     ..
         bne     L9984                                          ; 997C D0 06     ..
-        jsr     L9C8D                                          ; 997E 20 8D 9C   ..
+        jsr     computerMove                                   ; 997E 20 8D 9C   ..
         jmp     L9997                                          ; 9981 4C 97 99  L..
 
 ; ----------------------------------------------------------------------------
@@ -3745,7 +3745,7 @@ L9984:
         beq     L99EA                                          ; 9990 F0 58     .X
 L9992:
         ldx     #$01                                           ; 9992 A2 01     ..
-        jmp     L9C8D                                          ; 9994 4C 8D 9C  L..
+        jmp     computerMove                                   ; 9994 4C 8D 9C  L..
 
 ; ----------------------------------------------------------------------------
 L9997:
@@ -4106,16 +4106,16 @@ statsPPUAddresses:
 loadComputerInputOrMoveScreen:
         ldx     #$00                                           ; 9BFC A2 00     ..
         lda     gameState                                      ; 9BFE A5 29     .)
-        beq     compInputForGameplay                           ; 9C00 F0 4A     .J
+        beq     @compInputForGameplay                          ; 9C00 F0 4A     .J
         cmp     #GAMESTATE_DEMO                                ; 9C02 C9 FB     ..
-        beq     compInputForDemo                               ; 9C04 F0 52     .R
+        beq     @compInputForDemo                              ; 9C04 F0 52     .R
         cmp     #GAMESTATE_TITLE                               ; 9C06 C9 FA     ..
-        beq     moveScreenUpOrDown                             ; 9C08 F0 01     ..
-L9C0A:
+        beq     @moveScreenUpOrDown                            ; 9C08 F0 01     ..
+@ret:
         rts                                                    ; 9C0A 60        `
 
 ; ----------------------------------------------------------------------------
-moveScreenUpOrDown:
+@moveScreenUpOrDown:
         jsr     LA9CE                                          ; 9C0B 20 CE A9   ..
         lda     frameCounterLow                                ; 9C0E A5 32     .2
         and     #$0F                                           ; 9C10 29 0F     ).
@@ -4145,56 +4145,58 @@ moveScreenUpOrDown:
 @checkForDemoStart:
         lda     frameCounterHigh                               ; 9C3D A5 33     .3
         cmp     #$05                                           ; 9C3F C9 05     ..
-        bne     L9C0A                                          ; 9C41 D0 C7     ..
+        bne     @ret                                           ; 9C41 D0 C7     ..
         lda     frameCounterLow                                ; 9C43 A5 32     .2
         cmp     #$20                                           ; 9C45 C9 20     .
-        bne     L9C0A                                          ; 9C47 D0 C1     ..
+        bne     @ret                                           ; 9C47 D0 C1     ..
         jmp     demoStart                                      ; 9C49 4C C6 95  L..
 
 ; ----------------------------------------------------------------------------
-compInputForGameplay:
+@compInputForGameplay:
         lda     menuGameMode                                   ; 9C4C AD F0 04  ...
         cmp     #MENU_GAMEMODE_VS                              ; 9C4F C9 03     ..
-        bcc     L9C0A                                          ; 9C51 90 B7     ..
+        bcc     @ret                                           ; 9C51 90 B7     ..
         inx                                                    ; 9C53 E8        .
         lda     player1GameActive,x                            ; 9C54 B5 4A     .J
-        beq     L9C0A                                          ; 9C56 F0 B2     ..
-compInputForDemo:
+        beq     @ret                                           ; 9C56 F0 B2     ..
+; shifting occurs every 8 frames; rotation every 16
+@compInputForDemo:
         ldy     #$00                                           ; 9C58 A0 00     ..
         lda     frameCounterLow                                ; 9C5A A5 32     .2
         and     #$07                                           ; 9C5C 29 07     ).
-        bne     L9C6E                                          ; 9C5E D0 0E     ..
-        lda     $01CA                                          ; 9C60 AD CA 01  ...
+        bne     @checkComputerRotate                           ; 9C5E D0 0E     ..
+        lda     compTargetX                                    ; 9C60 AD CA 01  ...
         sec                                                    ; 9C63 38        8
         sbc     player1TetrominoX,x                            ; 9C64 F5 62     .b
-        beq     L9C6E                                          ; 9C66 F0 06     ..
-        ldy     #$80                                           ; 9C68 A0 80     ..
-        bcs     L9C6E                                          ; 9C6A B0 02     ..
-        ldy     #$40                                           ; 9C6C A0 40     .@
-L9C6E:
+        beq     @checkComputerRotate                           ; 9C66 F0 06     ..
+        ldy     #BUTTON_RIGHT                                  ; 9C68 A0 80     ..
+        bcs     @checkComputerRotate                           ; 9C6A B0 02     ..
+        ldy     #BUTTON_LEFT                                   ; 9C6C A0 40     .@
+@checkComputerRotate:
         lda     frameCounterLow                                ; 9C6E A5 32     .2
         and     #$0F                                           ; 9C70 29 0F     ).
-        bne     L9C8A                                          ; 9C72 D0 16     ..
-        lda     $01CB                                          ; 9C74 AD CB 01  ...
+        bne     @saveComputerInput                             ; 9C72 D0 16     ..
+        lda     compTargetOrientation                          ; 9C74 AD CB 01  ...
         sec                                                    ; 9C77 38        8
         sbc     player1TetrominoOrientation,x                  ; 9C78 F5 68     .h
-        beq     L9C8A                                          ; 9C7A F0 0E     ..
+        beq     @saveComputerInput                             ; 9C7A F0 0E     ..
         and     #$03                                           ; 9C7C 29 03     ).
         cmp     #$03                                           ; 9C7E C9 03     ..
         tya                                                    ; 9C80 98        .
-        bcc     L9C87                                          ; 9C81 90 04     ..
-        ora     #$01                                           ; 9C83 09 01     ..
-        bne     L9C89                                          ; 9C85 D0 02     ..
-L9C87:
-        ora     #$02                                           ; 9C87 09 02     ..
-L9C89:
+        bcc     @autoPressB                                    ; 9C81 90 04     ..
+        ora     #BUTTON_A                                      ; 9C83 09 01     ..
+        bne     @skipOverB                                     ; 9C85 D0 02     ..
+@autoPressB:
+        ora     #BUTTON_B                                      ; 9C87 09 02     ..
+@skipOverB:
         tay                                                    ; 9C89 A8        .
-L9C8A:
+@saveComputerInput:
         sty     player1ControllerNew,x                         ; 9C8A 94 46     .F
         rts                                                    ; 9C8C 60        `
 
 ; ----------------------------------------------------------------------------
-L9C8D:
+; computer pieces go to the left without rotating when this is disabled
+computerMove:
         lda     player1TetrominoCurrent,x                      ; 9C8D B5 64     .d
         asl     a                                              ; 9C8F 0A        .
         asl     a                                              ; 9C90 0A        .
@@ -4221,7 +4223,7 @@ L9CA8:
         beq     L9CA8                                          ; 9CB1 F0 F5     ..
         tya                                                    ; 9CB3 98        .
         and     #$F8                                           ; 9CB4 29 F8     ).
-        sta     $07E0,x                                        ; 9CB6 9D E0 07  ...
+        sta     computerScratchA,x                             ; 9CB6 9D E0 07  ...
         tya                                                    ; 9CB9 98        .
         and     #$07                                           ; 9CBA 29 07     ).
         clc                                                    ; 9CBC 18        .
@@ -4238,7 +4240,7 @@ L9CC1:
         beq     L9CC1                                          ; 9CCA F0 F5     ..
         tya                                                    ; 9CCC 98        .
         and     #$F8                                           ; 9CCD 29 F8     ).
-        sta     $07E0,x                                        ; 9CCF 9D E0 07  ...
+        sta     computerScratchA,x                             ; 9CCF 9D E0 07  ...
         tya                                                    ; 9CD2 98        .
         and     #$07                                           ; 9CD3 29 07     ).
         sec                                                    ; 9CD5 38        8
@@ -4248,8 +4250,8 @@ L9CC1:
         cpx     #$10                                           ; 9CDA E0 10     ..
         bcc     L9CA8                                          ; 9CDC 90 CA     ..
         lda     #$00                                           ; 9CDE A9 00     ..
-        sta     $07FC                                          ; 9CE0 8D FC 07  ...
-        sta     $07FD                                          ; 9CE3 8D FD 07  ...
+        sta     computerScratchB+4                             ; 9CE0 8D FC 07  ...
+        sta     computerScratchB+5                             ; 9CE3 8D FD 07  ...
         ldx     #$02                                           ; 9CE6 A2 02     ..
 L9CE8:
         ldy     generalCounter36                               ; 9CE8 A4 36     .6
@@ -4272,17 +4274,17 @@ L9CE8:
         inx                                                    ; 9D08 E8        .
         cpx     #$0E                                           ; 9D09 E0 0E     ..
         bcc     L9CE8                                          ; 9D0B 90 DB     ..
-        ldx     $07FA                                          ; 9D0D AE FA 07  ...
-        ldy     $07F8                                          ; 9D10 AC F8 07  ...
-        lda     $07FC                                          ; 9D13 AD FC 07  ...
+        ldx     computerScratchB+2                             ; 9D0D AE FA 07  ...
+        ldy     computerScratchB                               ; 9D10 AC F8 07  ...
+        lda     computerScratchB+4                             ; 9D13 AD FC 07  ...
         clc                                                    ; 9D16 18        .
         adc     #$0B                                           ; 9D17 69 0B     i.
-        cmp     $07FD                                          ; 9D19 CD FD 07  ...
+        cmp     computerScratchB+5                             ; 9D19 CD FD 07  ...
         bcs     L9D24                                          ; 9D1C B0 06     ..
-        ldx     $07FB                                          ; 9D1E AE FB 07  ...
-        ldy     $07F9                                          ; 9D21 AC F9 07  ...
+        ldx     computerScratchB+3                             ; 9D1E AE FB 07  ...
+        ldy     computerScratchB+1                             ; 9D21 AC F9 07  ...
 L9D24:
-        stx     $01CB                                          ; 9D24 8E CB 01  ...
+        stx     compTargetOrientation                          ; 9D24 8E CB 01  ...
         lda     generalCounter36                               ; 9D27 A5 36     .6
         cmp     #$10                                           ; 9D29 C9 10     ..
         bne     L9D36                                          ; 9D2B D0 09     ..
@@ -4293,74 +4295,74 @@ L9D24:
 L9D35:
         dey                                                    ; 9D35 88        .
 L9D36:
-        sty     $01CA                                          ; 9D36 8C CA 01  ...
+        sty     compTargetX                                    ; 9D36 8C CA 01  ...
         rts                                                    ; 9D39 60        `
 
 ; ----------------------------------------------------------------------------
 ; when first 3 bytes are replaced with rts nop nop, computer moves pieces to the left only
 possibleComputerChoosingMove:
-        stx     $07F0                                          ; 9D3A 8E F0 07  ...
+        stx     computerScratchA+16                            ; 9D3A 8E F0 07  ...
         lda     computerMoveSelectTableOffsetBy18+1,y          ; 9D3D B9 DA A0  ...
         cmp     #$80                                           ; 9D40 C9 80     ..
         beq     L9D76                                          ; 9D42 F0 32     .2
-        inc     $07F0                                          ; 9D44 EE F0 07  ...
+        inc     computerScratchA+16                            ; 9D44 EE F0 07  ...
         clc                                                    ; 9D47 18        .
-        adc     $07E0,x                                        ; 9D48 7D E0 07  }..
-        cmp     $07E1,x                                        ; 9D4B DD E1 07  ...
+        adc     computerScratchA,x                             ; 9D48 7D E0 07  }..
+        cmp     computerScratchA+1,x                           ; 9D4B DD E1 07  ...
         bne     L9DA3                                          ; 9D4E D0 53     .S
         lda     computerMoveSelectTableOffsetBy18+1+1,y        ; 9D50 B9 DB A0  ...
         cmp     #$80                                           ; 9D53 C9 80     ..
         beq     L9D76                                          ; 9D55 F0 1F     ..
-        inc     $07F0                                          ; 9D57 EE F0 07  ...
+        inc     computerScratchA+16                            ; 9D57 EE F0 07  ...
         clc                                                    ; 9D5A 18        .
-        adc     $07E0,x                                        ; 9D5B 7D E0 07  }..
-        cmp     $07E2,x                                        ; 9D5E DD E2 07  ...
+        adc     computerScratchA,x                             ; 9D5B 7D E0 07  }..
+        cmp     computerScratchA+2,x                           ; 9D5E DD E2 07  ...
         bne     L9DA3                                          ; 9D61 D0 40     .@
         lda     computerMoveSelectTableOffsetBy18+1+1+1,y      ; 9D63 B9 DC A0  ...
         cmp     #$80                                           ; 9D66 C9 80     ..
         beq     L9D76                                          ; 9D68 F0 0C     ..
-        inc     $07F0                                          ; 9D6A EE F0 07  ...
+        inc     computerScratchA+16                            ; 9D6A EE F0 07  ...
         clc                                                    ; 9D6D 18        .
-        adc     $07E0,x                                        ; 9D6E 7D E0 07  }..
-        cmp     $07E3,x                                        ; 9D71 DD E3 07  ...
+        adc     computerScratchA,x                             ; 9D6E 7D E0 07  }..
+        cmp     computerScratchA+3,x                           ; 9D71 DD E3 07  ...
         bne     L9DA3                                          ; 9D74 D0 2D     .-
 L9D76:
-        sty     $07F1                                          ; 9D76 8C F1 07  ...
-        ldy     $07F0                                          ; 9D79 AC F0 07  ...
+        sty     computerScratchA+17                            ; 9D76 8C F1 07  ...
+        ldy     computerScratchA+16                            ; 9D79 AC F0 07  ...
         lda     #$0C                                           ; 9D7C A9 0C     ..
         jsr     L9E31                                          ; 9D7E 20 31 9E   1.
-        ldy     $07F1                                          ; 9D81 AC F1 07  ...
-        lda     $07E0,x                                        ; 9D84 BD E0 07  ...
+        ldy     computerScratchA+17                            ; 9D81 AC F1 07  ...
+        lda     computerScratchA,x                             ; 9D84 BD E0 07  ...
         sec                                                    ; 9D87 38        8
-        sbc     $07F0                                          ; 9D88 ED F0 07  ...
+        sbc     computerScratchA+16                            ; 9D88 ED F0 07  ...
         clc                                                    ; 9D8B 18        .
         adc     computerMoveSelectTableOffsetBy18,y            ; 9D8C 79 D9 A0  y..
-        cmp     $07FC                                          ; 9D8F CD FC 07  ...
+        cmp     computerScratchB+4                             ; 9D8F CD FC 07  ...
         bcc     L9DA2                                          ; 9D92 90 0E     ..
-        sta     $07FC                                          ; 9D94 8D FC 07  ...
-        stx     $07F8                                          ; 9D97 8E F8 07  ...
+        sta     computerScratchB+4                             ; 9D94 8D FC 07  ...
+        stx     computerScratchB                               ; 9D97 8E F8 07  ...
         tya                                                    ; 9D9A 98        .
         lsr     a                                              ; 9D9B 4A        J
         lsr     a                                              ; 9D9C 4A        J
         and     #$03                                           ; 9D9D 29 03     ).
-        sta     $07FA                                          ; 9D9F 8D FA 07  ...
+        sta     computerScratchB+2                             ; 9D9F 8D FA 07  ...
 L9DA2:
         rts                                                    ; 9DA2 60        `
 
 ; ----------------------------------------------------------------------------
 L9DA3:
-        stx     $07F0                                          ; 9DA3 8E F0 07  ...
-        lda     $07E0,x                                        ; 9DA6 BD E0 07  ...
+        stx     computerScratchA+16                            ; 9DA3 8E F0 07  ...
+        lda     computerScratchA,x                             ; 9DA6 BD E0 07  ...
         sta     generalCounter37                               ; 9DA9 85 37     .7
         lda     computerMoveSelectTableOffsetBy18+1,y          ; 9DAB B9 DA A0  ...
         cmp     #$80                                           ; 9DAE C9 80     ..
         beq     L9DFF                                          ; 9DB0 F0 4D     .M
         cpx     #$0C                                           ; 9DB2 E0 0C     ..
         bcs     L9E30                                          ; 9DB4 B0 7A     .z
-        inc     $07F0                                          ; 9DB6 EE F0 07  ...
+        inc     computerScratchA+16                            ; 9DB6 EE F0 07  ...
         adc     generalCounter37                               ; 9DB9 65 37     e7
         sec                                                    ; 9DBB 38        8
-        sbc     $07E1,x                                        ; 9DBC FD E1 07  ...
+        sbc     computerScratchA+1,x                           ; 9DBC FD E1 07  ...
         bcc     L9DC7                                          ; 9DBF 90 06     ..
         eor     #$FF                                           ; 9DC1 49 FF     I.
         adc     generalCounter37                               ; 9DC3 65 37     e7
@@ -4371,10 +4373,10 @@ L9DC7:
         beq     L9DFF                                          ; 9DCC F0 31     .1
         cpx     #$0C                                           ; 9DCE E0 0C     ..
         bcs     L9E30                                          ; 9DD0 B0 5E     .^
-        inc     $07F0                                          ; 9DD2 EE F0 07  ...
+        inc     computerScratchA+16                            ; 9DD2 EE F0 07  ...
         adc     generalCounter37                               ; 9DD5 65 37     e7
         sec                                                    ; 9DD7 38        8
-        sbc     $07E2,x                                        ; 9DD8 FD E2 07  ...
+        sbc     computerScratchA+2,x                           ; 9DD8 FD E2 07  ...
         bcc     L9DE3                                          ; 9DDB 90 06     ..
         eor     #$FF                                           ; 9DDD 49 FF     I.
         adc     generalCounter37                               ; 9DDF 65 37     e7
@@ -4385,70 +4387,70 @@ L9DE3:
         beq     L9DFF                                          ; 9DE8 F0 15     ..
         cpx     #$0C                                           ; 9DEA E0 0C     ..
         bcs     L9E30                                          ; 9DEC B0 42     .B
-        inc     $07F0                                          ; 9DEE EE F0 07  ...
+        inc     computerScratchA+16                            ; 9DEE EE F0 07  ...
         adc     generalCounter37                               ; 9DF1 65 37     e7
         sec                                                    ; 9DF3 38        8
-        sbc     $07E3,x                                        ; 9DF4 FD E3 07  ...
+        sbc     computerScratchA+3,x                           ; 9DF4 FD E3 07  ...
         bcc     L9DFF                                          ; 9DF7 90 06     ..
         eor     #$FF                                           ; 9DF9 49 FF     I.
         adc     generalCounter37                               ; 9DFB 65 37     e7
         sta     generalCounter37                               ; 9DFD 85 37     .7
 L9DFF:
-        sty     $07F1                                          ; 9DFF 8C F1 07  ...
-        ldy     $07F0                                          ; 9E02 AC F0 07  ...
+        sty     computerScratchA+17                            ; 9DFF 8C F1 07  ...
+        ldy     computerScratchA+16                            ; 9E02 AC F0 07  ...
         lda     #$00                                           ; 9E05 A9 00     ..
         jsr     L9E31                                          ; 9E07 20 31 9E   1.
-        ldy     $07F1                                          ; 9E0A AC F1 07  ...
+        ldy     computerScratchA+17                            ; 9E0A AC F1 07  ...
         lda     generalCounter37                               ; 9E0D A5 37     .7
         sec                                                    ; 9E0F 38        8
-        sbc     $07F0                                          ; 9E10 ED F0 07  ...
+        sbc     computerScratchA+16                            ; 9E10 ED F0 07  ...
         bcc     L9E30                                          ; 9E13 90 1B     ..
         cmp     #$20                                           ; 9E15 C9 20     .
         bcc     L9E30                                          ; 9E17 90 17     ..
         clc                                                    ; 9E19 18        .
         adc     computerMoveSelectTableOffsetBy18,y            ; 9E1A 79 D9 A0  y..
-        cmp     $07FD                                          ; 9E1D CD FD 07  ...
+        cmp     computerScratchB+5                             ; 9E1D CD FD 07  ...
         bcc     L9E30                                          ; 9E20 90 0E     ..
-        sta     $07FD                                          ; 9E22 8D FD 07  ...
-        stx     $07F9                                          ; 9E25 8E F9 07  ...
+        sta     computerScratchB+5                             ; 9E22 8D FD 07  ...
+        stx     computerScratchB+1                             ; 9E25 8E F9 07  ...
         tya                                                    ; 9E28 98        .
         lsr     a                                              ; 9E29 4A        J
         lsr     a                                              ; 9E2A 4A        J
         and     #$03                                           ; 9E2B 29 03     ).
-        sta     $07FB                                          ; 9E2D 8D FB 07  ...
+        sta     computerScratchB+3                             ; 9E2D 8D FB 07  ...
 L9E30:
         rts                                                    ; 9E30 60        `
 
 ; ----------------------------------------------------------------------------
 L9E31:
-        sta     $07F2                                          ; 9E31 8D F2 07  ...
-        lda     $07E1,y                                        ; 9E34 B9 E1 07  ...
+        sta     computerScratchA+18                            ; 9E31 8D F2 07  ...
+        lda     computerScratchA+1,y                           ; 9E34 B9 E1 07  ...
         cmp     #$30                                           ; 9E37 C9 30     .0
         bne     L9E40                                          ; 9E39 D0 05     ..
-        lda     $07DF,x                                        ; 9E3B BD DF 07  ...
+        lda     player2Playfield+223,x                         ; 9E3B BD DF 07  ...
         bne     L9E4A                                          ; 9E3E D0 0A     ..
 L9E40:
-        lda     $07DF,x                                        ; 9E40 BD DF 07  ...
+        lda     player2Playfield+223,x                         ; 9E40 BD DF 07  ...
         cmp     #$30                                           ; 9E43 C9 30     .0
         bne     L9E56                                          ; 9E45 D0 0F     ..
-        lda     $07E1,y                                        ; 9E47 B9 E1 07  ...
+        lda     computerScratchA+1,y                           ; 9E47 B9 E1 07  ...
 L9E4A:
         clc                                                    ; 9E4A 18        .
-        adc     $07E0,x                                        ; 9E4B 7D E0 07  }..
+        adc     computerScratchA,x                             ; 9E4B 7D E0 07  }..
         ror     a                                              ; 9E4E 6A        j
         sec                                                    ; 9E4F 38        8
-        sbc     $07F2                                          ; 9E50 ED F2 07  ...
+        sbc     computerScratchA+18                            ; 9E50 ED F2 07  ...
         jmp     L9E5B                                          ; 9E53 4C 5B 9E  L[.
 
 ; ----------------------------------------------------------------------------
 L9E56:
         clc                                                    ; 9E56 18        .
-        adc     $07E1,y                                        ; 9E57 79 E1 07  y..
+        adc     computerScratchA+1,y                           ; 9E57 79 E1 07  y..
         ror     a                                              ; 9E5A 6A        j
 L9E5B:
         lsr     a                                              ; 9E5B 4A        J
         lsr     a                                              ; 9E5C 4A        J
-        sta     $07F0                                          ; 9E5D 8D F0 07  ...
+        sta     computerScratchA+16                            ; 9E5D 8D F0 07  ...
         rts                                                    ; 9E60 60        `
 
 ; ----------------------------------------------------------------------------

@@ -200,8 +200,8 @@ add_constant BUTTON_START B5D8 A011
 add_constant BUTTON_SELECT 9291
 add_constant BUTTON_SELECT+BUTTON_START 9FA4
 add_constant BUTTON_UP+BUTTON_DOWN+BUTTON_SELECT 9FBC 9FED 9FF6
-add_constant BUTTON_LEFT 923A 8079 9246 808B
-add_constant BUTTON_RIGHT 809B 9263 9240 80AD
+add_constant BUTTON_LEFT 923A 8079 9246 808B 9C6C
+add_constant BUTTON_RIGHT 809B 9263 9240 80AD 9C68
 add_constant BUTTON_LEFT+BUTTON_RIGHT 8065
 add_constant BUTTON_UP A04F 9C21
 add_constant BUTTON_DOWN 806B 80F5 9C2C 8108
@@ -209,8 +209,8 @@ add_constant ~BUTTON_DOWN 8052
 add_constant BUTTON_DOWN+BUTTON_LEFT 8077
 add_constant BUTTON_A+BUTTON_B 82F5 82F7 9280
 add_constant BUTTON_RIGHT+BUTTON_DOWN 8099
-add_constant BUTTON_B 80BB 80CD
-add_constant BUTTON_A 80D7 80E9
+add_constant BUTTON_B 80BB 80CD 9C87
+add_constant BUTTON_A 80D7 80E9 9C83
 add_constant BUTTON_DOWN+BUTTON_LEFT+BUTTON_RIGHT 80F3
 
 add_constant PLAYER1 B5CA 8033 803D 8054
@@ -241,6 +241,7 @@ add_constant SOUND_SCREEN_SWITCH A016
 add_constant TETROMINO_Y_INIT B537 9954 9145 9102
 
 add_constant rngSeed 800A 9A0F
+add_constant player1RNGSeed 9938
 )" main.asm
 
 # These remove labels that end up in the middle of instructions (label := * + 1, etc)
