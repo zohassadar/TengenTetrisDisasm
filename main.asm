@@ -61,7 +61,13 @@ player2ControllerNew:= $0047
 ppuStagingAddress:= $0048
 player1GameActive:= $004A                                      ; 1 when game active.  0 when game over
 player2GameActive:= $004B
-pieceStatistics := $0052
+renderFlagP1Score:= $004C
+renderFlagP2Score:= $004D
+renderFlagP1Lines:= $004E
+renderFlagP2Lines:= $004F
+renderFlagP1Level:= $0050
+renderFlagP2Level:= $0051
+pieceStatistics := $0052                                       ; used as offset for piece stats and directly as high score render flag
 pieceStatsI     := $0053
 pieceStatsT     := $0054
 pieceStatsO     := $0055
@@ -255,7 +261,7 @@ mainLoop:
         ldx     #PLAYER2                                       ; 8042 A2 01     ..
         jsr     branchOnActiveDemoOrGameOver                   ; 8044 20 C7 82   ..
         jsr     stageCurrentAndNextSprites                     ; 8047 20 37 8B   7.
-        jsr     L9B62                                          ; 804A 20 62 9B   b.
+        jsr     renderStatistics                               ; 804A 20 62 9B   b.
         jmp     mainLoop                                       ; 804D 4C 0A 80  L..
 
 ; ----------------------------------------------------------------------------
@@ -3150,12 +3156,12 @@ L9404:
         bpl     L9404                                          ; 9411 10 F1     ..
         lda     #$F8                                           ; 9413 A9 F8     ..
         sta     gameState                                      ; 9415 85 29     .)
-        sta     $4C                                            ; 9417 85 4C     .L
-        sta     $4D                                            ; 9419 85 4D     .M
-        sta     $4E                                            ; 941B 85 4E     .N
-        sta     $4F                                            ; 941D 85 4F     .O
-        sta     $50                                            ; 941F 85 50     .P
-        sta     $51                                            ; 9421 85 51     .Q
+        sta     renderFlagP1Score                              ; 9417 85 4C     .L
+        sta     renderFlagP2Score                              ; 9419 85 4D     .M
+        sta     renderFlagP1Lines                              ; 941B 85 4E     .N
+        sta     renderFlagP2Lines                              ; 941D 85 4F     .O
+        sta     renderFlagP1Level                              ; 941F 85 50     .P
+        sta     renderFlagP2Level                              ; 9421 85 51     .Q
         jsr     L9216                                          ; 9423 20 16 92   ..
         lda     #$0A                                           ; 9426 A9 0A     ..
         sta     player2FallTimer                               ; 9428 85 6B     .k
@@ -3271,7 +3277,7 @@ L94F3:
         lda     #'0'                                           ; 94F3 A9 30     .0
         sta     generalCounter36                               ; 94F5 85 36     .6
         lda     #$01                                           ; 94F7 A9 01     ..
-        sta     $4E,x                                          ; 94F9 95 4E     .N
+        sta     renderFlagP1Lines,x                            ; 94F9 95 4E     .N
         txa                                                    ; 94FB 8A        .
         asl     a                                              ; 94FC 0A        .
         asl     a                                              ; 94FD 0A        .
@@ -3359,7 +3365,7 @@ L957A:
         sta     player1LevelTens,y                             ; 958D 99 2C 04  .,.
         lda     generalCounter37                               ; 9590 A5 37     .7
         sta     player1LevelOnes,y                             ; 9592 99 2D 04  .-.
-        inc     $50,x                                          ; 9595 F6 50     .P
+        inc     renderFlagP1Level,x                            ; 9595 F6 50     .P
         inc     relatedToLevelUpAnimations                     ; 9597 EE D2 01  ...
         lda     #$00                                           ; 959A A9 00     ..
         sta     longBarCodeUsedP1,x                            ; 959C 9D B8 01  ...
@@ -3439,15 +3445,15 @@ L960C:
         sta     lastCurrentBlockP2                             ; 9622 8D BD 01  ...
         lda     #$01                                           ; 9625 A9 01     ..
         sta     player1GameActive                              ; 9627 85 4A     .J
-        sta     $4C                                            ; 9629 85 4C     .L
-        sta     $4E                                            ; 962B 85 4E     .N
-        sta     $50                                            ; 962D 85 50     .P
+        sta     renderFlagP1Score                              ; 9629 85 4C     .L
+        sta     renderFlagP1Lines                              ; 962B 85 4E     .N
+        sta     renderFlagP1Level                              ; 962D 85 50     .P
         ldx     playMode                                       ; 962F A6 2F     ./
         beq     L963E                                          ; 9631 F0 0B     ..
         sta     player2GameActive                              ; 9633 85 4B     .K
-        sta     $4D                                            ; 9635 85 4D     .M
-        sta     $4F                                            ; 9637 85 4F     .O
-        sta     $51                                            ; 9639 85 51     .Q
+        sta     renderFlagP2Score                              ; 9635 85 4D     .M
+        sta     renderFlagP2Lines                              ; 9637 85 4F     .O
+        sta     renderFlagP2Level                              ; 9639 85 51     .Q
         inx                                                    ; 963B E8        .
         bne     L9640                                          ; 963C D0 02     ..
 L963E:
@@ -3478,7 +3484,7 @@ L9662:
         lda     menuPlayer1StartLevel                          ; 9675 AD F1 04  ...
         sta     menuPlayer2StartLevel                          ; 9678 8D F2 04  ...
 L967B:
-        jsr     L9B62                                          ; 967B 20 62 9B   b.
+        jsr     renderStatistics                               ; 967B 20 62 9B   b.
         lda     #$02                                           ; 967E A9 02     ..
         jsr     updatePalette                                  ; 9680 20 BE A6   ..
         lda     #$03                                           ; 9683 A9 03     ..
@@ -4065,7 +4071,7 @@ L9ABB:
         lda     #$31                                           ; 9AC7 A9 31     .1
 L9AC9:
         sta     player1ScoreHundredThousands,y                 ; 9AC9 99 18 04  ...
-        inc     $4C,x                                          ; 9ACC F6 4C     .L
+        inc     renderFlagP1Score,x                            ; 9ACC F6 4C     .L
         lda     gameState                                      ; 9ACE A5 29     .)
         bne     L9AED                                          ; 9AD0 D0 1B     ..
         lda     menuGameMode                                   ; 9AD2 AD F0 04  ...
@@ -4143,13 +4149,14 @@ L9B50:
         .byte   $06,$05,$01,$00,$01,$00,$03,$01                ; 9B58 06 05 01 00 01 00 03 01........
         .byte   $03,$00                                        ; 9B60 03 00     ..
 ; ----------------------------------------------------------------------------
-L9B62:
+; renders lines, level, score & high score.  Need to further explore this.  @ labels added so they stand out as contained to this routine
+renderStatistics:
         ldx     #$06                                           ; 9B62 A2 06     ..
-L9B64:
-        lda     $4C,x                                          ; 9B64 B5 4C     .L
-        beq     L9BD1                                          ; 9B66 F0 69     .i
+@loop:
+        lda     renderFlagP1Score,x                            ; 9B64 B5 4C     .L
+        beq     @loopOrExit                                    ; 9B66 F0 69     .i
         lda     #$00                                           ; 9B68 A9 00     ..
-        sta     $4C,x                                          ; 9B6A 95 4C     .L
+        sta     renderFlagP1Score,x                            ; 9B6A 95 4C     .L
         stx     generalCounter38                               ; 9B6C 86 38     .8
         txa                                                    ; 9B6E 8A        .
         asl     a                                              ; 9B6F 0A        .
@@ -4162,56 +4169,57 @@ L9B64:
         sta     renderSlot0Data+1,x                            ; 9B7E 95 09     ..
         sta     generalCounter37                               ; 9B80 85 37     .7
         bit     playMode                                       ; 9B82 24 2F     $/
-        bpl     L9B96                                          ; 9B84 10 10     ..
+        bpl     @yIsSet                                        ; 9B84 10 10     ..
         lda     gameState                                      ; 9B86 A5 29     .)
-        bmi     L9B96                                          ; 9B88 30 0C     0.
+        bmi     @yIsSet                                        ; 9B88 30 0C     0.
         cpy     #$08                                           ; 9B8A C0 08     ..
-        bcc     L9B96                                          ; 9B8C 90 08     ..
+        bcc     @yIsSet                                        ; 9B8C 90 08     ..
         cpy     #$0C                                           ; 9B8E C0 0C     ..
         ldy     #$10                                           ; 9B90 A0 10     ..
-        bcs     L9B96                                          ; 9B92 B0 02     ..
+        bcs     @yIsSet                                        ; 9B92 B0 02     ..
         ldy     #$0E                                           ; 9B94 A0 0E     ..
-L9B96:
+; this could use a better name
+@yIsSet:
         lda     statsPPUAddresses,y                            ; 9B96 B9 EA 9B  ...
         sta     renderSlot0Addr,x                              ; 9B99 95 16     ..
         lda     statsPPUAddresses+1,y                          ; 9B9B B9 EB 9B  ...
         sta     renderSlot0Addr+1,x                            ; 9B9E 95 17     ..
         sty     generalCounter3a                               ; 9BA0 84 3A     .:
         ldy     generalCounter38                               ; 9BA2 A4 38     .8
-        lda     L9BD5,y                                        ; 9BA4 B9 D5 9B  ...
+        lda     statsLengthTable,y                             ; 9BA4 B9 D5 9B  ...
         sta     generalCounter39                               ; 9BA7 85 39     .9
         ldy     #$00                                           ; 9BA9 A0 00     ..
-L9BAB:
+@innerLoop:
         lda     (generalCounter36),y                           ; 9BAB B1 36     .6
         cmp     #$30                                           ; 9BAD C9 30     .0
-        bne     L9BCB                                          ; 9BAF D0 1A     ..
+        bne     @noLeadingZero                                 ; 9BAF D0 1A     ..
         inc     renderSlot0Data,x                              ; 9BB1 F6 08     ..
         lda     generalCounter3a                               ; 9BB3 A5 3A     .:
         cmp     #$0E                                           ; 9BB5 C9 0E     ..
-        beq     L9BC2                                          ; 9BB7 F0 09     ..
-        bcs     L9BC0                                          ; 9BB9 B0 05     ..
+        beq     @noIncrement                                   ; 9BB7 F0 09     ..
+        bcs     @dontKnowYet                                   ; 9BB9 B0 05     ..
         lda     generalCounter38                               ; 9BBB A5 38     .8
         lsr     a                                              ; 9BBD 4A        J
-        bcs     L9BC2                                          ; 9BBE B0 02     ..
-L9BC0:
+        bcs     @noIncrement                                   ; 9BBE B0 02     ..
+@dontKnowYet:
         inc     renderSlot0Addr,x                              ; 9BC0 F6 16     ..
-L9BC2:
+@noIncrement:
         dec     generalCounter39                               ; 9BC2 C6 39     .9
         iny                                                    ; 9BC4 C8        .
         lda     generalCounter39                               ; 9BC5 A5 39     .9
         cmp     #$02                                           ; 9BC7 C9 02     ..
-        bcs     L9BAB                                          ; 9BC9 B0 E0     ..
-L9BCB:
+        bcs     @innerLoop                                     ; 9BC9 B0 E0     ..
+@noLeadingZero:
         lda     generalCounter39                               ; 9BCB A5 39     .9
         sta     ppuRenderSlot0Length,x                         ; 9BCD 95 24     .$
         ldx     generalCounter38                               ; 9BCF A6 38     .8
-L9BD1:
+@loopOrExit:
         dex                                                    ; 9BD1 CA        .
-        bpl     L9B64                                          ; 9BD2 10 90     ..
+        bpl     @loop                                          ; 9BD2 10 90     ..
         rts                                                    ; 9BD4 60        `
 
 ; ----------------------------------------------------------------------------
-L9BD5:
+statsLengthTable:
         .byte   $06,$06,$04,$04,$02,$02,$06                    ; 9BD5 06 06 04 04 02 02 06.......
 ; ----------------------------------------------------------------------------
 statsDataAddresses:
@@ -4649,12 +4657,12 @@ L9EDE:
         lda     #GAMESTATE_GAME_TYPE                           ; 9EED A9 FC     ..
         sta     player1FallTimer                               ; 9EEF 85 6A     .j
         sta     gameState                                      ; 9EF1 85 29     .)
-        sta     $4C                                            ; 9EF3 85 4C     .L
-        sta     $4D                                            ; 9EF5 85 4D     .M
-        sta     $4E                                            ; 9EF7 85 4E     .N
-        sta     $4F                                            ; 9EF9 85 4F     .O
-        sta     $50                                            ; 9EFB 85 50     .P
-        sta     $51                                            ; 9EFD 85 51     .Q
+        sta     renderFlagP1Score                              ; 9EF3 85 4C     .L
+        sta     renderFlagP2Score                              ; 9EF5 85 4D     .M
+        sta     renderFlagP1Lines                              ; 9EF7 85 4E     .N
+        sta     renderFlagP2Lines                              ; 9EF9 85 4F     .O
+        sta     renderFlagP1Level                              ; 9EFB 85 50     .P
+        sta     renderFlagP2Level                              ; 9EFD 85 51     .Q
         jsr     LCF79                                          ; 9EFF 20 79 CF   y.
         lda     #SOUND_SCREEN_SWITCH                           ; 9F02 A9 15     ..
         jsr     setMusicOrSoundEffect                          ; 9F04 20 B1 CF   ..
@@ -4687,12 +4695,12 @@ L9F3A:
 L9F3C:
         sta     gameState                                      ; 9F3C 85 29     .)
         sta     player1FallTimer                               ; 9F3E 85 6A     .j
-        sta     $4C                                            ; 9F40 85 4C     .L
-        sta     $4D                                            ; 9F42 85 4D     .M
-        sta     $4E                                            ; 9F44 85 4E     .N
-        sta     $4F                                            ; 9F46 85 4F     .O
-        sta     $50                                            ; 9F48 85 50     .P
-        sta     $51                                            ; 9F4A 85 51     .Q
+        sta     renderFlagP1Score                              ; 9F40 85 4C     .L
+        sta     renderFlagP2Score                              ; 9F42 85 4D     .M
+        sta     renderFlagP1Lines                              ; 9F44 85 4E     .N
+        sta     renderFlagP2Lines                              ; 9F46 85 4F     .O
+        sta     renderFlagP1Level                              ; 9F48 85 50     .P
+        sta     renderFlagP2Level                              ; 9F4A 85 51     .Q
         lda     #$00                                           ; 9F4C A9 00     ..
         jmp     enablePPURendering                             ; 9F4E 4C 65 A4  Le.
 
@@ -7193,7 +7201,7 @@ checkCodeInput:
 @notCoopForLevelup:
         jsr     setPlayfieldPaletteFromLevel                   ; B514 20 56 A7   V.
         ldx     generalCounter37                               ; B517 A6 37     .7
-        inc     $50,x                                          ; B519 F6 50     .P
+        inc     renderFlagP1Level,x                            ; B519 F6 50     .P
         lda     #$3C                                           ; B51B A9 3C     .<
         sta     player1FallTimer,x                             ; B51D 95 6A     .j
         lda     #SOUND_SCREEN_SWITCH                           ; B51F A9 15     ..

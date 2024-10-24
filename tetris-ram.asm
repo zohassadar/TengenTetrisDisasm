@@ -56,7 +56,12 @@ player2ControllerNew:	.res 1	; $0047
 ppuStagingAddress:	.res $2	; $0048
 player1GameActive:	.res 1	; $004A
 player2GameActive:	.res 1	; $004B
-.res 6
+renderFlagP1Score:	.res 1	; $004C
+renderFlagP2Score:	.res 1	; $004D
+renderFlagP1Lines:	.res 1	; $004E
+renderFlagP2Lines:	.res 1	; $004F
+renderFlagP1Level:	.res 1	; $0050
+renderFlagP2Level:	.res 1	; $0051
 pieceStatistics:	.res 1	; $0052
 pieceStatsI:	.res 1	; $0053
 pieceStatsT:	.res 1	; $0054
