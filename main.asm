@@ -577,7 +577,7 @@ L83B1:
         and     #$20                                           ; 83B3 29 20     )
         beq     L8416                                          ; 83B5 F0 5F     ._
         inc     player1TetrominoY,x                            ; 83B7 F6 60     .`
-        jsr     checkPosition                                  ; 83B9 20 15 8C   ..
+        jsr     checkCoopCollision                             ; 83B9 20 15 8C   ..
         bcs     L840B                                          ; 83BC B0 4D     .M
         jsr     L8658                                          ; 83BE 20 58 86   X.
         bcs     L8416                                          ; 83C1 B0 53     .S
@@ -992,7 +992,7 @@ L862B:
 ; ----------------------------------------------------------------------------
 L862E:
         inc     player1TetrominoY,x                            ; 862E F6 60     .`
-        jsr     checkPosition                                  ; 8630 20 15 8C   ..
+        jsr     checkCoopCollision                             ; 8630 20 15 8C   ..
         dec     player1TetrominoY,x                            ; 8633 D6 60     .`
         bcc     L863C                                          ; 8635 90 05     ..
 L8637:
@@ -1015,7 +1015,7 @@ L863C:
 
 ; ----------------------------------------------------------------------------
 checkPositionAndClearFlagsOnCarrySet:
-        jsr     checkPosition                                  ; 8650 20 15 8C   ..
+        jsr     checkCoopCollision                             ; 8650 20 15 8C   ..
         bcc     L8658                                          ; 8653 90 03     ..
         clv                                                    ; 8655 B8        .
         clc                                                    ; 8656 18        .
@@ -1822,7 +1822,8 @@ currentPieceXOffsets:
 nextPieceXOffsets:
         .byte   $F7,$09,$03,$09                                ; 8C11 F7 09 03 09....
 ; ----------------------------------------------------------------------------
-checkPosition:
+; Exits non-coop mode at 8C2E.  needs exploring
+checkCoopCollision:
         stx     generalCounter3c                               ; 8C15 86 3C     .<
         txa                                                    ; 8C17 8A        .
         eor     #$01                                           ; 8C18 49 01     I.
@@ -1832,20 +1833,20 @@ checkPosition:
         sbc     player1TetrominoY,y                            ; 8C1E F9 60 00  .`.
         clc                                                    ; 8C21 18        .
         adc     #$03                                           ; 8C22 69 03     i.
-        bmi     L8C9F                                          ; 8C24 30 79     0y
+        bmi     @noCollision                                   ; 8C24 30 79     0y
         cmp     #$07                                           ; 8C26 C9 07     ..
-        bcs     L8C9F                                          ; 8C28 B0 75     .u
+        bcs     @noCollision                                   ; 8C28 B0 75     .u
         sta     generalCounter36                               ; 8C2A 85 36     .6
         bit     playMode                                       ; 8C2C 24 2F     $/
-        bpl     L8C9F                                          ; 8C2E 10 6F     .o
+        bpl     @noCollision                                   ; 8C2E 10 6F     .o
         lda     player1TetrominoX,x                            ; 8C30 B5 62     .b
         sec                                                    ; 8C32 38        8
         sbc     player1TetrominoX,y                            ; 8C33 F9 62 00  .b.
         clc                                                    ; 8C36 18        .
         adc     #$03                                           ; 8C37 69 03     i.
-        bmi     L8C9F                                          ; 8C39 30 64     0d
+        bmi     @noCollision                                   ; 8C39 30 64     0d
         cmp     #$07                                           ; 8C3B C9 07     ..
-        bcs     L8C9F                                          ; 8C3D B0 60     .`
+        bcs     @noCollision                                   ; 8C3D B0 60     .`
         sta     generalCounter37                               ; 8C3F 85 37     .7
         lda     player1TetrominoCurrent,x                      ; 8C41 B5 64     .d
         asl     a                                              ; 8C43 0A        .
@@ -1854,7 +1855,7 @@ checkPosition:
         asl     a                                              ; 8C47 0A        .
         tax                                                    ; 8C48 AA        .
         lda     player1TetrominoCurrent,y                      ; 8C49 B9 64 00  .d.
-        beq     L8C9F                                          ; 8C4C F0 51     .Q
+        beq     @noCollision                                   ; 8C4C F0 51     .Q
         asl     a                                              ; 8C4E 0A        .
         asl     a                                              ; 8C4F 0A        .
         ora     player1TetrominoOrientation,y                  ; 8C50 19 68 00  .h.
@@ -1865,55 +1866,60 @@ checkPosition:
         lda     orientationTable+1,x                           ; 8C5A BD C4 86  ...
         sta     generalCounter39                               ; 8C5D 85 39     .9
         ldx     generalCounter36                               ; 8C5F A6 36     .6
-        lda     L8CA7,x                                        ; 8C61 BD A7 8C  ...
+        lda     @coopCollisionTable1,x                         ; 8C61 BD A7 8C  ...
         asl     a                                              ; 8C64 0A        .
         asl     a                                              ; 8C65 0A        .
         ldx     generalCounter37                               ; 8C66 A6 37     .7
         clc                                                    ; 8C68 18        .
-        adc     L8CA7,x                                        ; 8C69 7D A7 8C  }..
+        adc     @coopCollisionTable1,x                         ; 8C69 7D A7 8C  }..
         tax                                                    ; 8C6C AA        .
-        beq     L8C81                                          ; 8C6D F0 12     ..
-        bmi     L8C7A                                          ; 8C6F 30 09     0.
-L8C71:
+        beq     @xIsZero                                       ; 8C6D F0 12     ..
+        bmi     @aslLoop                                       ; 8C6F 30 09     0.
+; better name needed
+@lsrLoop:
         lsr     generalCounter38                               ; 8C71 46 38     F8
         ror     generalCounter39                               ; 8C73 66 39     f9
         dex                                                    ; 8C75 CA        .
-        bne     L8C71                                          ; 8C76 D0 F9     ..
-        beq     L8C81                                          ; 8C78 F0 07     ..
-L8C7A:
+        bne     @lsrLoop                                       ; 8C76 D0 F9     ..
+        beq     @xIsZero                                       ; 8C78 F0 07     ..
+; better name needed
+@aslLoop:
         asl     generalCounter39                               ; 8C7A 06 39     .9
         rol     generalCounter38                               ; 8C7C 26 38     &8
         inx                                                    ; 8C7E E8        .
-        bne     L8C7A                                          ; 8C7F D0 F9     ..
-L8C81:
+        bne     @aslLoop                                       ; 8C7F D0 F9     ..
+; better name needed
+@xIsZero:
         ldx     generalCounter37                               ; 8C81 A6 37     .7
         lda     generalCounter38                               ; 8C83 A5 38     .8
-        and     L8CAE,x                                        ; 8C85 3D AE 8C  =..
+        and     @coopCollisionTable2,x                         ; 8C85 3D AE 8C  =..
         sta     generalCounter38                               ; 8C88 85 38     .8
         lda     generalCounter39                               ; 8C8A A5 39     .9
-        and     L8CAE,x                                        ; 8C8C 3D AE 8C  =..
+        and     @coopCollisionTable2,x                         ; 8C8C 3D AE 8C  =..
         sta     generalCounter39                               ; 8C8F 85 39     .9
         lda     orientationTable,y                             ; 8C91 B9 C3 86  ...
         and     generalCounter38                               ; 8C94 25 38     %8
-        bne     L8CA3                                          ; 8C96 D0 0B     ..
+        bne     @collision                                     ; 8C96 D0 0B     ..
         lda     orientationTable+1,y                           ; 8C98 B9 C4 86  ...
         and     generalCounter39                               ; 8C9B 25 39     %9
-        bne     L8CA3                                          ; 8C9D D0 04     ..
-L8C9F:
+        bne     @collision                                     ; 8C9D D0 04     ..
+@noCollision:
         ldx     generalCounter3c                               ; 8C9F A6 3C     .<
         clc                                                    ; 8CA1 18        .
         rts                                                    ; 8CA2 60        `
 
 ; ----------------------------------------------------------------------------
-L8CA3:
+@collision:
         ldx     generalCounter3c                               ; 8CA3 A6 3C     .<
         sec                                                    ; 8CA5 38        8
         rts                                                    ; 8CA6 60        `
 
 ; ----------------------------------------------------------------------------
-L8CA7:
+; -3 to 3
+@coopCollisionTable1:
         .byte   $FD,$FE,$FF,$00,$01,$02,$03                    ; 8CA7 FD FE FF 00 01 02 03.......
-L8CAE:
+; 1000, 1100, 1110, 1111, 0111, 0011, 0001
+@coopCollisionTable2:
         .byte   $88,$CC,$EE,$FF,$77,$33,$11                    ; 8CAE 88 CC EE FF 77 33 11....w3.
 ; ----------------------------------------------------------------------------
 showLevelBonus:
