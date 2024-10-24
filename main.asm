@@ -485,7 +485,7 @@ handleGameOver:
         txa                                                    ; 830C 8A        .
         bne     gameOverReturn                                 ; 830D D0 C7     ..
 @notVsComputer:
-        jmp     L9744                                          ; 830F 4C 44 97  LD.
+        jmp     restartVsMode                                  ; 830F 4C 44 97  LD.
 
 ; ----------------------------------------------------------------------------
 @playmodeIs0:
@@ -3397,24 +3397,73 @@ L972E:
         rts                                                    ; 9743 60        `
 
 ; ----------------------------------------------------------------------------
-L9744:
-        .byte   $86,$37,$8A,$0A,$85,$36,$0A,$85                ; 9744 86 37 8A 0A 85 36 0A 85.7...6..
-        .byte   $38,$65,$36,$AA,$A9,$30,$A0,$05                ; 974C 38 65 36 AA A9 30 A0 058e6..0..
-        .byte   $9D,$18,$04,$E8,$88,$10,$F9,$A6                ; 9754 9D 18 04 E8 88 10 F9 A6........
-        .byte   $38,$A0,$03,$9D,$24,$04,$E8,$88                ; 975C 38 A0 03 9D 24 04 E8 888...$...
-        .byte   $10,$F9,$A5,$4A,$05,$4B,$D0,$03                ; 9764 10 F9 A5 4A 05 4B D0 03...J.K..
-        .byte   $20,$35,$A0,$A6,$37,$A4,$36,$A5                ; 976C 20 35 A0 A6 37 A4 36 A5 5..7.6.
-        .byte   $5A,$99,$5C,$00,$A5,$5B,$99,$5D                ; 9774 5A 99 5C 00 A5 5B 99 5DZ.\..[.]
-        .byte   $00,$BD,$F1,$04,$18,$69,$30,$99                ; 977C 00 BD F1 04 18 69 30 99.....i0.
-        .byte   $2D,$04,$A9,$30,$99,$2C,$04,$95                ; 9784 2D 04 A9 30 99 2C 04 95-..0.,..
-        .byte   $4A,$95,$4C,$95,$4E,$95,$50,$A9                ; 978C 4A 95 4C 95 4E 95 50 A9J.L.N.P.
-        .byte   $00,$85,$29,$95,$66,$95,$64,$95                ; 9794 00 85 29 95 66 95 64 95..).f.d.
-        .byte   $46,$95,$78,$9D,$B8,$01,$9D,$BA                ; 979C 46 95 78 9D B8 01 9D BAF.x.....
-        .byte   $01,$9D,$BC,$01,$95,$6C,$95,$6E                ; 97A4 01 9D BC 01 95 6C 95 6E.....l.n
-        .byte   $95,$70,$95,$72,$A6,$36,$20,$56                ; 97AC 95 70 95 72 A6 36 20 56.p.r.6 V
-        .byte   $A7,$A5,$37,$48,$18,$69,$05,$20                ; 97B4 A7 A5 37 48 18 69 05 20..7H.i.
-        .byte   $03,$B6,$68,$D0,$43                            ; 97BC 03 B6 68 D0 43..h.C
-; ----------------------------------------------------------------------------
+; result of holding A+B in vs mode after game over
+restartVsMode:
+        stx     generalCounter37                               ; 9744 86 37     .7
+        txa                                                    ; 9746 8A        .
+        asl     a                                              ; 9747 0A        .
+        sta     generalCounter36                               ; 9748 85 36     .6
+        asl     a                                              ; 974A 0A        .
+        sta     generalCounter38                               ; 974B 85 38     .8
+        adc     generalCounter36                               ; 974D 65 36     e6
+        tax                                                    ; 974F AA        .
+        lda     #$30                                           ; 9750 A9 30     .0
+        ldy     #$05                                           ; 9752 A0 05     ..
+L9754:
+        sta     player1ScoreHundredThousands,x                 ; 9754 9D 18 04  ...
+        inx                                                    ; 9757 E8        .
+        dey                                                    ; 9758 88        .
+        bpl     L9754                                          ; 9759 10 F9     ..
+        ldx     generalCounter38                               ; 975B A6 38     .8
+        ldy     #$03                                           ; 975D A0 03     ..
+L975F:
+        sta     player1LinesThousands,x                        ; 975F 9D 24 04  .$.
+        inx                                                    ; 9762 E8        .
+        dey                                                    ; 9763 88        .
+        bpl     L975F                                          ; 9764 10 F9     ..
+        lda     player1GameActive                              ; 9766 A5 4A     .J
+        ora     player2GameActive                              ; 9768 05 4B     .K
+        bne     L976F                                          ; 976A D0 03     ..
+        jsr     LA035                                          ; 976C 20 35 A0   5.
+L976F:
+        ldx     generalCounter37                               ; 976F A6 37     .7
+        ldy     generalCounter36                               ; 9771 A4 36     .6
+        lda     savedRNGSeed                                   ; 9773 A5 5A     .Z
+        sta     player1RNGSeed,y                               ; 9775 99 5C 00  .\.
+        lda     savedRNGSeed+1                                 ; 9778 A5 5B     .[
+        sta     player1RNGSeed+1,y                             ; 977A 99 5D 00  .].
+        lda     menuPlayer1StartLevel,x                        ; 977D BD F1 04  ...
+        clc                                                    ; 9780 18        .
+        adc     #$30                                           ; 9781 69 30     i0
+        sta     player1LevelOnes,y                             ; 9783 99 2D 04  .-.
+        lda     #$30                                           ; 9786 A9 30     .0
+        sta     player1LevelTens,y                             ; 9788 99 2C 04  .,.
+        sta     player1GameActive,x                            ; 978B 95 4A     .J
+        sta     renderFlagP1Score,x                            ; 978D 95 4C     .L
+        sta     renderFlagP1Lines,x                            ; 978F 95 4E     .N
+        sta     renderFlagP1Level,x                            ; 9791 95 50     .P
+        lda     #$00                                           ; 9793 A9 00     ..
+        sta     gameState                                      ; 9795 85 29     .)
+        sta     player1TetrominoNext,x                         ; 9797 95 66     .f
+        sta     player1TetrominoCurrent,x                      ; 9799 95 64     .d
+        sta     player1ControllerNew,x                         ; 979B 95 46     .F
+        sta     $78,x                                          ; 979D 95 78     .x
+        sta     longBarCodeUsedP1,x                            ; 979F 9D B8 01  ...
+        sta     undoCodeUsedP1,x                               ; 97A2 9D BA 01  ...
+        sta     lastCurrentBlockP1,x                           ; 97A5 9D BC 01  ...
+        sta     $6C,x                                          ; 97A8 95 6C     .l
+        sta     $6E,x                                          ; 97AA 95 6E     .n
+        sta     $70,x                                          ; 97AC 95 70     .p
+        sta     $72,x                                          ; 97AE 95 72     .r
+        ldx     generalCounter36                               ; 97B0 A6 36     .6
+        jsr     setPlayfieldPaletteFromLevel                   ; 97B2 20 56 A7   V.
+        lda     generalCounter37                               ; 97B5 A5 37     .7
+        pha                                                    ; 97B7 48        H
+        clc                                                    ; 97B8 18        .
+        adc     #$05                                           ; 97B9 69 05     i.
+        jsr     updateGameBackground                           ; 97BB 20 03 B6   ..
+        pla                                                    ; 97BE 68        h
+        bne     initPlayer2Playfield                           ; 97BF D0 43     .C
 initPlayer1orCoopPlayfield:
         ldx     #$00                                           ; 97C1 A2 00     ..
 @drawRow:
