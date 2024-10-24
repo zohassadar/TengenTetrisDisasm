@@ -23,10 +23,10 @@
 # Modified 2024/10/24 to include comments by zohassadar
 
 BEGIN {
-	FS=" *([;{}]+|#.*)+ *"
-	OFS="\t"
-	NEXT=0
-	print ".zeropage"
+    FS=" *([;{}]+|#.*)+ *"
+    OFS="\t"
+    NEXT=0
+    print ".zeropage"
 }
 
 ! (/^LABEL/ && $2 ~ /^ADDR / && $3 ~ /^NAME /) { next }
@@ -34,40 +34,40 @@ BEGIN {
 NF > 5 { NF=5 }
 
 {
-	SIZE=1
-	sizenum=SIZE
+    SIZE=1
+    sizenum=SIZE
     COMMENT=""
 }
 
 $4 ~ /^SIZE / {
-	split($4, a, " ");
-	SIZE=a[2]
-	sizenum=SIZE
-	sub(/\$/, "0x", sizenum)
-	sizenum=strtonum(sizenum)
+    split($4, a, " ");
+    SIZE=a[2]
+    sizenum=SIZE
+    sub(/\$/, "0x", sizenum)
+    sizenum=strtonum(sizenum)
 }
 
 $0 ~ /COMMENT / {
     split($0, c, "COMMENT ")
     COMMENT=" "c[2]
-	gsub(/"/, "", COMMENT)
+    gsub(/"/, "", COMMENT)
     sub(/[ \t]*$/, "", COMMENT)
     }
 
 {
-	split($2, a, " ")
-	addrnum=a[2]
-	sub(/\$/, "0x", addrnum)
-	addrnum=strtonum(addrnum)
+    split($2, a, " ")
+    addrnum=a[2]
+    sub(/\$/, "0x", addrnum)
+    addrnum=strtonum(addrnum)
 
-	if (addrnum >= 0x800) exit
-	if (addrnum > NEXT) print ".res " (addrnum-NEXT)
-	if (addrnum < NEXT) {
-		print $3 " out of order" > "/dev/stderr"
-		next
-	}
-	NEXT=addrnum+sizenum
-	split($3, b, "[ \"]+")
-	print b[2] ":", ".res " SIZE, "; " a[2] COMMENT
-	if (addrnum < 0x100 && NEXT >= 0x100) print "\n.bss";
+    if (addrnum >= 0x800) exit
+    if (addrnum > NEXT) print ".res " (addrnum-NEXT)
+    if (addrnum < NEXT) {
+        print $3 " out of order" > "/dev/stderr"
+        next
+    }
+    NEXT=addrnum+sizenum
+    split($3, b, "[ \"]+")
+    print b[2] ":", ".res " SIZE, "; " a[2] COMMENT
+    if (addrnum < 0x100 && NEXT >= 0x100) print "\n.bss";
 }
