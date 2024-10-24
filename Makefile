@@ -1,4 +1,4 @@
-tetris_obj := main.o header.o constants.o tetris-ram.o entry.o
+tetris_obj := main.o header.o constants.o entry.o
 nesChrEncode := python3 tools/nes-util/nes_chr_encode.py
 
 .SUFFIXES:
@@ -30,7 +30,7 @@ endif
 $(tetris_obj): %.o: %.asm $$(dep)
 	ca65 -g --debug-info $*.asm -o $@
 
-tetris.nes: tetris.nes.cfg entry.o tetris-ram.o
+tetris.nes: tetris.nes.cfg entry.o
 	ld65  -Ln $(basename $@).lbl --dbgfile $(basename $@).dbg -C $^ -o $@
 
 clean:

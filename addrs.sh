@@ -253,6 +253,9 @@ s/LAD23/$(get_label AD25)-2/
 s/LAD24/$(get_label AD25)-1/" main.asm
 
 
+# remove ram definitions (included in entry.asm)
+perl -i -p0e "s/^ppuControl.*?(?=^PPUCTRL)//ms" main.asm
+
 # Remove trailing whitespace
 sed -i 's/[ \t]*$//' main.asm
 

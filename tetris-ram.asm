@@ -3,7 +3,7 @@ ppuControl:	.res 1	; $0000
 ppuMask:	.res 1	; $0001
 ppuScrollX:	.res 1	; $0002
 ppuScrollY:	.res 1	; $0003
-currentCHRBank:	.res $4	; $0004
+currentCHRBank:	.res $4	; $0004 Only $04 relevant.  will be 0 or 4
 renderSlot0Data:	.res $2	; $0008
 renderSlot2Data:	.res $2	; $000A
 renderSlot4Data:	.res $2	; $000C
@@ -29,7 +29,7 @@ frameCounterLowLastFrame:	.res 1	; $002B
 ppuRenderSlot8Length:	.res 1	; $002C
 .res 1
 ppuRenderSlotALength:	.res 1	; $002E
-playMode:	.res 1	; $002F
+playMode:	.res 1	; $002F FF: Coop, 00: 1p, 01: 2p
 ppuRenderSlotCLength:	.res 1	; $0030
 .res 1
 frameCounterLow:	.res 1	; $0032
@@ -45,16 +45,16 @@ generalCounter3c:	.res 1	; $003C
 generalCounter3d:	.res 1	; $003D
 player1ControllerLastFrame:	.res 1	; $003E
 player2ControllerLastFrame:	.res 1	; $003F
-player1ExpansionLastFrame:	.res 1	; $0040
-player2ExpansionLastFrame:	.res 1	; $0041
+player1ExpansionLastFrame:	.res 1	; $0040 appears unused
+player2ExpansionLastFrame:	.res 1	; $0041 appears unused
 player1ControllerHeld:	.res 1	; $0042
 player2ControllerHeld:	.res 1	; $0043
-player1ExpansionHeld:	.res 1	; $0044
-player2ExpansionHeld:	.res 1	; $0045
+player1ExpansionHeld:	.res 1	; $0044 appears unused
+player2ExpansionHeld:	.res 1	; $0045 appears unused
 player1ControllerNew:	.res 1	; $0046
 player2ControllerNew:	.res 1	; $0047
 ppuStagingAddress:	.res $2	; $0048
-player1GameActive:	.res 1	; $004A
+player1GameActive:	.res 1	; $004A 1 when game active.  0 when game over
 player2GameActive:	.res 1	; $004B
 renderFlagP1Score:	.res 1	; $004C
 renderFlagP2Score:	.res 1	; $004D
@@ -62,7 +62,7 @@ renderFlagP1Lines:	.res 1	; $004E
 renderFlagP2Lines:	.res 1	; $004F
 renderFlagP1Level:	.res 1	; $0050
 renderFlagP2Level:	.res 1	; $0051
-pieceStatistics:	.res 1	; $0052
+pieceStatistics:	.res 1	; $0052 used as offset for piece stats and directly as high score render flag
 pieceStatsI:	.res 1	; $0053
 pieceStatsT:	.res 1	; $0054
 pieceStatsO:	.res 1	; $0055
@@ -88,14 +88,14 @@ player2FallTimer:	.res 1	; $006B
 .res 10
 relatesToAddrTableAB25:	.res $2	; $0076
 .res 119
-audioSomethingEF:	.res 1	; $00EF
-audioSomethingF0:	.res 1	; $00F0
+audioSomethingEF:	.res 1	; $00EF maybe tmp var
+audioSomethingF0:	.res 1	; $00F0 maybe tmp var
 audioPointerF1:	.res $2	; $00F1
 .res 1
 audioDataAddr:	.res $2	; $00F4
 apuRegister:	.res $2	; $00F6
 .res 4
-audioPointerFC:	.res $2	; $00FC
+audioPointerFC:	.res $2	; $00FC offset from 03F7 set with code at D306
 .res 1
 audioFlags:	.res 1	; $00FF
 
@@ -116,7 +116,7 @@ dropRepeatP1:	.res 1	; $01B2
 dropRepeatP2:	.res 1	; $01B3
 dropRatePossibleP1:	.res 1	; $01B4
 dropRatePossibleP2:	.res 1	; $01B5
-codeInputYPlayer1:	.res 1	; $01B6
+codeInputYPlayer1:	.res 1	; $01B6 stores offset from levelUpCode (B5A8) while code is input
 codeInputYPlayer2:	.res 1	; $01B7
 longBarCodeUsedP1:	.res 1	; $01B8
 longBarCodeUsedP2:	.res 1	; $01B9
@@ -138,20 +138,20 @@ pointsDisplayTimerP2:	.res 1	; $01C9
 lineClearTimerP1:	.res 1	; $01CE
 lineClearTimerP2:	.res 1	; $01CF
 .res 2
-relatedToLevelUpAnimations:	.res 1	; $01D2
+relatedToLevelUpAnimations:	.res 1	; $01D2 see notes
 stack:	.res $1D	; $01D3
 .res 41
-audioStagingAddrLo:	.res $0A	; $0219
+audioStagingAddrLo:	.res $0A	; $0219 not 100% this is length 10
 .res 1
-audioStagingAddrHi:	.res $0A	; $0224
+audioStagingAddrHi:	.res $0A	; $0224 not 100% this is length 10
 .res 445
-audioStagingSlot1:	.res 1	; $03EB
-audioStagingSlot3:	.res 1	; $03EC
-audioStagingSlot4:	.res 1	; $03ED
-audioStagingSlot2:	.res 1	; $03EE
-soundChannelsEnabled:	.res 1	; $03EF
+audioStagingSlot1:	.res 1	; $03EB SQ1_VOL, SQ2_VOL, TRI_LINEAR or NOISE_VOL
+audioStagingSlot3:	.res 1	; $03EC SQ1_LO, SQ2_LO, TRI_LO or NOISE_LO
+audioStagingSlot4:	.res 1	; $03ED SQ1_HI, SQ2_HI, TRI_HI or NOISE_HI
+audioStagingSlot2:	.res 1	; $03EE SQ1_SWEEP, SQ2_SWEEP, unused or unused
+soundChannelsEnabled:	.res 1	; $03EF ---D NT21 Enable DMC (D), noise (N), triangle (T), and pulse channels (2/1)
 .res 3
-apuRegisterType:	.res 1	; $03F3
+apuRegisterType:	.res 1	; $03F3 0 pulse, 1 triangle, 2 noise
 .res 3
 audioBuffer:	.res $21	; $03F7
 player1ScoreHundredThousands:	.res 1	; $0418
@@ -189,7 +189,7 @@ highScoreOnes:	.res 1	; $0441
 leaderboardScores:	.res $54	; $0442
 leaderboardLines:	.res $2D	; $0496
 leaderboardInitials:	.res $2D	; $04C3
-menuGameMode:	.res 1	; $04F0
+menuGameMode:	.res 1	; $04F0 1p, 2p, Coop, Vs, With
 menuPlayer1StartLevel:	.res 1	; $04F1
 menuPlayer2StartLevel:	.res 1	; $04F2
 menuPlayer1Handicap:	.res 1	; $04F3

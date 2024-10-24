@@ -1,5 +1,8 @@
 .feature force_range
 
+.segment "RAM"
+.include "tetris-ram.asm"
+
 .segment "HEADER"
 .include "constants.asm"
 .include "header.asm"

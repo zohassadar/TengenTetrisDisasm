@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+# Modified 2024/10/24 to include comments by zohassadar
 
 BEGIN {
 	FS=" *([;{}]+|#.*)+ *"
@@ -31,11 +31,12 @@ BEGIN {
 
 ! (/^LABEL/ && $2 ~ /^ADDR / && $3 ~ /^NAME /) { next }
 
-NF > 4 { NF=4 }
+NF > 5 { NF=5 }
 
 {
 	SIZE=1
 	sizenum=SIZE
+    COMMENT=""
 }
 
 $4 ~ /^SIZE / {
@@ -45,6 +46,13 @@ $4 ~ /^SIZE / {
 	sub(/\$/, "0x", sizenum)
 	sizenum=strtonum(sizenum)
 }
+
+$0 ~ /COMMENT / {
+    split($0, c, "COMMENT ")
+    COMMENT=" "c[2]
+	gsub(/"/, "", COMMENT)
+    sub(/[ \t]*$/, "", COMMENT)
+    }
 
 {
 	split($2, a, " ")
@@ -60,6 +68,6 @@ $4 ~ /^SIZE / {
 	}
 	NEXT=addrnum+sizenum
 	split($3, b, "[ \"]+")
-	print b[2] ":", ".res " SIZE, "; " a[2]
+	print b[2] ":", ".res " SIZE, "; " a[2] COMMENT
 	if (addrnum < 0x100 && NEXT >= 0x100) print "\n.bss";
 }
