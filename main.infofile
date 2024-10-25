@@ -351,6 +351,8 @@ LABEL { ADDR $99FA; NAME "genNextPseudoRandom"; COMMENT "eor = byte1 ^ byte2
 ;     newbit = 1
 ; new_byte1 = ((byte1 << 1) & 0xFE) | newbit
 ; new_byte2 = ((byte2 << 1) & 0xFF) | (byte1 >> 7)"; };
+LABEL { ADDR $9A04; NAME "@setCarry"; };
+LABEL { ADDR $9A06; NAME "@shift"; };
 LABEL { ADDR $9A0D; NAME "shuffleRngSeed5x"; };
 LABEL { ADDR $9B36; NAME "possibleFallTimerTable"; };
 LABEL { ADDR $9B62; NAME "renderStatistics"; COMMENT "renders lines, level, score & high score.  Need to further explore this.  @ labels added so they stand out as contained to this routine"; };

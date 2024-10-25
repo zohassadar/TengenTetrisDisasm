@@ -3818,13 +3818,13 @@ genNextPseudoRandom2x:
 genNextPseudoRandom:
         lda     ppuControl,x                                   ; 99FA B5 00     ..
         eor     ppuMask,x                                      ; 99FC 55 01     U.
-        bne     L9A04                                          ; 99FE D0 04     ..
+        bne     @setCarry                                      ; 99FE D0 04     ..
         cmp     ppuMask,x                                      ; 9A00 D5 01     ..
-        beq     L9A06                                          ; 9A02 F0 02     ..
-L9A04:
+        beq     @shift                                         ; 9A02 F0 02     ..
+@setCarry:
         asl     a                                              ; 9A04 0A        .
         asl     a                                              ; 9A05 0A        .
-L9A06:
+@shift:
         rol     ppuControl,x                                   ; 9A06 36 00     6.
         rol     ppuMask,x                                      ; 9A08 36 01     6.
         lda     ppuControl,x                                   ; 9A0A B5 00     ..
