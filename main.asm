@@ -3808,6 +3808,13 @@ genNextPseudoRandom3x:
         jsr     genNextPseudoRandom                            ; 99F4 20 FA 99   ..
 genNextPseudoRandom2x:
         jsr     genNextPseudoRandom                            ; 99F7 20 FA 99   ..
+; eor = byte1 ^ byte2
+; diff = eor - byte2
+; newbit = (eor >> 6) & 1
+; if not eor and not diff:
+;     newbit = 1
+; new_byte1 = ((byte1 << 1) & 0xFE) | newbit
+; new_byte2 = ((byte2 << 1) & 0xFF) | (byte1 >> 7)
 genNextPseudoRandom:
         lda     ppuControl,x                                   ; 99FA B5 00     ..
         eor     ppuMask,x                                      ; 99FC 55 01     U.
