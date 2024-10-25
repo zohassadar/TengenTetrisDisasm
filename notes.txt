@@ -75,17 +75,6 @@ tilesForT:
 
 LB65D - game background modification address table
 
-******
-
-drawCathedralSprites has a table of sprite information, but is obfuscated.
-possibly result of porting from arcade version?
-
-; in:  $02,$03,$CF,$01
-; out: $6F,$02,$03,$78 (y,t,a,x)
-
-; 0xCF << 3 & 0xFF = 0x78
-; ((( 0x01 << 8  | 0xCF ) >> 2 ) & 0xF8) - 1 = 0x6F
-
 ****
 
 01D2 (relatedToLevelUpAnimations)

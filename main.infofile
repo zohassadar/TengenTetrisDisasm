@@ -639,9 +639,13 @@ LABEL { ADDR $AD03; NAME "setFireworksTileFlag"; COMMENT "This section uses the 
 LABEL { ADDR $AD25; NAME "fireworksSparkleTable"; };
 
 LABEL { ADDR $B369; NAME "drawCathedralSprites"; };
-LABEL { ADDR $B36B; NAME "cathedralCheckComplete"; };
-LABEL { ADDR $B371; NAME "drawCathedralSpriteTile"; };
-LABEL { ADDR $B3A0; NAME "cathedralSpriteTabel"; SIZE $48; };
+LABEL { ADDR $B36B; NAME "@drawOrRet"; };
+LABEL { ADDR $B371; NAME "@draw"; };
+LABEL { ADDR $B3A0; NAME "@cathedralSpriteTable"; SIZE $48; COMMENT "this table is obfuscated.  possibly result of porting from arcade version?
+; in:  $02,$03,$CF,$01
+; out: $6F,$02,$03,$78 (y,t,a,x)
+; (0xCF << 3) % 0x100 = 0x78
+; ((( 0x100 | 0xCF ) >> 2 ) & 0xF8) - 1 = 0x6F";};
 LABEL { ADDR $B3E9; NAME "sendNametableToPPU"; COMMENT "Nametable index in accumulator.  References nametableAddressTable"; };
 LABEL { ADDR $B404; NAME "@zeroOutNTLoop"; COMMENT "May be unused.  If entered this will zero out entire nametable"; };
 LABEL { ADDR $B410; NAME "@notZeroedOut"; };
