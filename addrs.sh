@@ -242,6 +242,11 @@ add_constant TETROMINO_Y_INIT B537 9954 9145 9102
 
 add_constant rngSeed 800A 9A0F
 add_constant player1RNGSeed 9938
+
+add_constant '>player1Playfield' 9155
+add_constant '<player1Playfield' 9159
+add_constant '>player2Playfield' 9112
+add_constant '<player2Playfield' 9116
 )" main.asm
 
 # These remove labels that end up in the middle of instructions (label := * + 1, etc)

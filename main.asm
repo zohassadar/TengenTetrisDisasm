@@ -2515,9 +2515,9 @@ L90F4:
         lda     tetrominoXSpawnTable+1                         ; 910D AD EC 99  ...
 L9110:
         sta     player2TetrominoX                              ; 9110 85 63     .c
-        lda     #$07                                           ; 9112 A9 07     ..
+        lda     #>player2Playfield                             ; 9112 A9 07     ..
         sta     generalCounter3b                               ; 9114 85 3B     .;
-        lda     #$00                                           ; 9116 A9 00     ..
+        lda     #<player2Playfield                             ; 9116 A9 00     ..
         sta     generalCounter3a                               ; 9118 85 3A     .:
         ldy     #$30                                           ; 911A A0 30     .0
 L911C:
@@ -2550,9 +2550,9 @@ L9133:
         lda     tetrominoXSpawnTable                           ; 9150 AD EB 99  ...
 L9153:
         sta     player1TetrominoX                              ; 9153 85 62     .b
-        lda     #$06                                           ; 9155 A9 06     ..
+        lda     #>player1Playfield                             ; 9155 A9 06     ..
         sta     generalCounter3b                               ; 9157 85 3B     .;
-        lda     #$00                                           ; 9159 A9 00     ..
+        lda     #<player1Playfield                             ; 9159 A9 00     ..
         sta     generalCounter3a                               ; 915B 85 3A     .:
         ldy     #$30                                           ; 915D A0 30     .0
 L915F:
