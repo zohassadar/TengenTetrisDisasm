@@ -87,7 +87,9 @@ player1FallTimer:	.res 1	; $006A
 player2FallTimer:	.res 1	; $006B
 .res 10
 relatesToAddrTableAB25:	.res $2	; $0076
-.res 119
+player1BonusCounter:	.res 1	; $0078 points to a table with the line counter checkpoints
+player2BonusCounter:	.res 1	; $0079 incremented by 2 every time its matched.  reset at 42
+.res 117
 audioSomethingEF:	.res 1	; $00EF maybe tmp var
 audioSomethingF0:	.res 1	; $00F0 maybe tmp var
 audioPointerF1:	.res $2	; $00F1

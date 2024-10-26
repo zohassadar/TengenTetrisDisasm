@@ -1359,7 +1359,7 @@ L88E3:
         cmp     #$30                                           ; 88E8 C9 30     .0
         bcs     L88F2                                          ; 88EA B0 06     ..
         jsr     L8ADB                                          ; 88EC 20 DB 8A   ..
-        jmp     L8967                                          ; 88EF 4C 67 89  Lg.
+        jmp     checkLevelBonus                                ; 88EF 4C 67 89  Lg.
 
 ; ----------------------------------------------------------------------------
 L88F2:
@@ -1435,41 +1435,42 @@ L8935:
         jmp     L88E3                                          ; 8964 4C E3 88  L..
 
 ; ----------------------------------------------------------------------------
-L8967:
+checkLevelBonus:
         lda     gameState                                      ; 8967 A5 29     .)
-        bne     L8998                                          ; 8969 D0 2D     .-
+        bne     @ret                                           ; 8969 D0 2D     .-
         ldx     #$00                                           ; 896B A2 00     ..
-        jsr     L897C                                          ; 896D 20 7C 89   |.
-        beq     L8979                                          ; 8970 F0 07     ..
+        jsr     @performCheck                                  ; 896D 20 7C 89   |.
+        beq     @showBonus                                     ; 8970 F0 07     ..
         ldx     #$01                                           ; 8972 A2 01     ..
-        jsr     L897C                                          ; 8974 20 7C 89   |.
-        bne     L8998                                          ; 8977 D0 1F     ..
-L8979:
+        jsr     @performCheck                                  ; 8974 20 7C 89   |.
+        bne     @ret                                           ; 8977 D0 1F     ..
+@showBonus:
         jmp     showLevelBonus                                 ; 8979 4C B5 8C  L..
 
 ; ----------------------------------------------------------------------------
-L897C:
-        ldy     $78,x                                          ; 897C B4 78     .x
+@performCheck:
+        ldy     player1BonusCounter,x                          ; 897C B4 78     .x
         cpy     #$2A                                           ; 897E C0 2A     .*
-        bne     L8986                                          ; 8980 D0 04     ..
+        bne     @noReset                                       ; 8980 D0 04     ..
         ldy     #$00                                           ; 8982 A0 00     ..
-        sty     $78,x                                          ; 8984 94 78     .x
-L8986:
+        sty     player1BonusCounter,x                          ; 8984 94 78     .x
+@noReset:
         txa                                                    ; 8986 8A        .
         asl     a                                              ; 8987 0A        .
         asl     a                                              ; 8988 0A        .
         tax                                                    ; 8989 AA        .
         lda     player1LinesHundreds,x                         ; 898A BD 25 04  .%.
-        cmp     linesForAnimation,y                            ; 898D D9 99 89  ...
-        bne     L8998                                          ; 8990 D0 06     ..
+        cmp     bonusLinesTable,y                              ; 898D D9 99 89  ...
+        bne     @ret                                           ; 8990 D0 06     ..
         lda     player1LinesTens,x                             ; 8992 BD 26 04  .&.
-        cmp     linesForAnimation+1,y                          ; 8995 D9 9A 89  ...
-L8998:
+        cmp     bonusLinesTable+1,y                            ; 8995 D9 9A 89  ...
+@ret:
         rts                                                    ; 8998 60        `
 
 ; ----------------------------------------------------------------------------
-; For the animation that interrupts the game
-linesForAnimation:
+; Lines required to trigger bonus animation
+; first check at X03X, then every 30 lines until X150 at which point it's every 50 lines until X95X before resetting
+bonusLinesTable:
         .byte   $30,$33,$30,$36,$30,$39,$31,$32                ; 8999 30 33 30 36 30 39 31 3203060912
         .byte   $31,$35,$32,$30,$32,$35,$33,$30                ; 89A1 31 35 32 30 32 35 33 3015202530
         .byte   $33,$35,$34,$30,$34,$35,$35,$30                ; 89A9 33 35 34 30 34 35 35 3035404550
@@ -1925,10 +1926,10 @@ checkCoopCollision:
 showLevelBonus:
         lda     #GAMESTATE_LEVELUP                             ; 8CB5 A9 03     ..
         sta     gameState                                      ; 8CB7 85 29     .)
-        inc     $78                                            ; 8CB9 E6 78     .x
-        inc     $78                                            ; 8CBB E6 78     .x
-        inc     $79                                            ; 8CBD E6 79     .y
-        inc     $79                                            ; 8CBF E6 79     .y
+        inc     player1BonusCounter                            ; 8CB9 E6 78     .x
+        inc     player1BonusCounter                            ; 8CBB E6 78     .x
+        inc     player2BonusCounter                            ; 8CBD E6 79     .y
+        inc     player2BonusCounter                            ; 8CBF E6 79     .y
         ldx     #$01                                           ; 8CC1 A2 01     ..
         lda     player1GameActive,x                            ; 8CC3 B5 4A     .J
         beq     L8CCB                                          ; 8CC5 F0 04     ..
@@ -3141,9 +3142,9 @@ L9543:
         ldx     #$00                                           ; 9545 A2 00     ..
 L9547:
         lda     player1LinesTens,y                             ; 9547 B9 26 04  .&.
-        cmp     linesForAnimation+1,x                          ; 954A DD 9A 89  ...
+        cmp     bonusLinesTable+1,x                            ; 954A DD 9A 89  ...
         lda     player1LinesHundreds,y                         ; 954D B9 25 04  .%.
-        sbc     linesForAnimation,x                            ; 9550 FD 99 89  ...
+        sbc     bonusLinesTable,x                              ; 9550 FD 99 89  ...
         bcc     L955B                                          ; 9553 90 06     ..
         inx                                                    ; 9555 E8        .
         inx                                                    ; 9556 E8        .
@@ -3447,7 +3448,7 @@ L976F:
         sta     player1TetrominoNext,x                         ; 9797 95 66     .f
         sta     player1TetrominoCurrent,x                      ; 9799 95 64     .d
         sta     player1ControllerNew,x                         ; 979B 95 46     .F
-        sta     $78,x                                          ; 979D 95 78     .x
+        sta     player1BonusCounter,x                          ; 979D 95 78     .x
         sta     longBarCodeUsedP1,x                            ; 979F 9D B8 01  ...
         sta     undoCodeUsedP1,x                               ; 97A2 9D BA 01  ...
         sta     lastCurrentBlockP1,x                           ; 97A5 9D BC 01  ...
@@ -7208,7 +7209,7 @@ pauseOrUnpause:
         dec     gameState                                      ; B5F0 C6 29     .)
         lda     #MUSIC_RESUME                                  ; B5F2 A9 02     ..
         jsr     setMusicOrSoundEffect                          ; B5F4 20 B1 CF   ..
-        jsr     L8967                                          ; B5F7 20 67 89   g.
+        jsr     checkLevelBonus                                ; B5F7 20 67 89   g.
         lda     #$01                                           ; B5FA A9 01     ..
 @jumpOverUnpause:
         bit     playMode                                       ; B5FC 24 2F     $/
