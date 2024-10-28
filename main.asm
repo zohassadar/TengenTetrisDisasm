@@ -5132,18 +5132,20 @@ waitForNMIAndDisablePPURendering:
 enablePPURendering:
         ldy     #$1A                                           ; A465 A0 1A     ..
         sty     ppuMask                                        ; A467 84 01     ..
-LA469:
+@waitForClear:
         bit     PPUSTATUS                                      ; A469 2C 02 20  ,.
-        bmi     LA469                                          ; A46C 30 FB     0.
-LA46E:
+        bmi     @waitForClear                                  ; A46C 30 FB     0.
+@vblankWait:
         bit     PPUSTATUS                                      ; A46E 2C 02 20  ,.
-        bpl     LA46E                                          ; A471 10 FB     ..
+        bpl     @vblankWait                                    ; A471 10 FB     ..
         ora     #$80                                           ; A473 09 80     ..
         sta     ppuControl                                     ; A475 85 00     ..
         sta     PPUCTRL                                        ; A477 8D 00 20  ..
         rts                                                    ; A47A 60        `
 
 ; ----------------------------------------------------------------------------
+; tables contain pairs of length, value
+; length of zero terminates
 sendAttrToPPU:
         asl     a                                              ; A47B 0A        .
         tax                                                    ; A47C AA        .
@@ -5157,19 +5159,19 @@ sendAttrToPPU:
         lda     attributeAddressTable+1,x                      ; A48F BD A9 A4  ...
         sta     generalCounter3d                               ; A492 85 3D     .=
         ldy     #$00                                           ; A494 A0 00     ..
-LA496:
+@nextLength:
         lda     (generalCounter3c),y                           ; A496 B1 3C     .<
-        beq     LA4A7                                          ; A498 F0 0D     ..
+        beq     @ret                                           ; A498 F0 0D     ..
         tax                                                    ; A49A AA        .
         iny                                                    ; A49B C8        .
         lda     (generalCounter3c),y                           ; A49C B1 3C     .<
-LA49E:
+@nextByte:
         sta     PPUDATA                                        ; A49E 8D 07 20  ..
         dex                                                    ; A4A1 CA        .
-        bne     LA49E                                          ; A4A2 D0 FA     ..
+        bne     @nextByte                                      ; A4A2 D0 FA     ..
         iny                                                    ; A4A4 C8        .
-        bne     LA496                                          ; A4A5 D0 EF     ..
-LA4A7:
+        bne     @nextLength                                    ; A4A5 D0 EF     ..
+@ret:
         rts                                                    ; A4A7 60        `
 
 ; ----------------------------------------------------------------------------
@@ -5414,9 +5416,9 @@ nmi:
         jsr     renderJumpRoutine                              ; A7C5 20 0E A8   ..
         stx     nextPPUSlot                                    ; A7C8 86 27     .'
         inc     frameCounterLow                                ; A7CA E6 32     .2
-        bne     LA7D0                                          ; A7CC D0 02     ..
+        bne     @noIncrement                                   ; A7CC D0 02     ..
         inc     frameCounterHigh                               ; A7CE E6 33     .3
-LA7D0:
+@noIncrement:
         ldx     currentCHRBank                                 ; A7D0 A6 04     ..
         sta     $6000,x                                        ; A7D2 9D 00 60  ..`
         ldx     currentCHRBank+1                               ; A7D5 A6 05     ..
@@ -5460,150 +5462,150 @@ renderJumpRoutine:
 ; ----------------------------------------------------------------------------
 renderSlot0Routine:
         ldx     ppuRenderSlot0Length                           ; A819 A6 24     .$
-        bne     LA820                                          ; A81B D0 03     ..
+        bne     @slot0NotEmpty                                 ; A81B D0 03     ..
         ldx     #$00                                           ; A81D A2 00     ..
         rts                                                    ; A81F 60        `
 
 ; ----------------------------------------------------------------------------
-LA820:
+@slot0NotEmpty:
         ldy     #$00                                           ; A820 A0 00     ..
         bit     PPUSTATUS                                      ; A822 2C 02 20  ,.
         lda     renderSlot0Addr+1                              ; A825 A5 17     ..
         sta     PPUADDR                                        ; A827 8D 06 20  ..
         lda     renderSlot0Addr                                ; A82A A5 16     ..
         sta     PPUADDR                                        ; A82C 8D 06 20  ..
-LA82F:
+@slot0Loop:
         lda     (renderSlot0Data),y                            ; A82F B1 08     ..
         sta     PPUDATA                                        ; A831 8D 07 20  ..
         iny                                                    ; A834 C8        .
         dex                                                    ; A835 CA        .
-        bne     LA82F                                          ; A836 D0 F7     ..
+        bne     @slot0Loop                                     ; A836 D0 F7     ..
         stx     ppuRenderSlot0Length                           ; A838 86 24     .$
 renderSlot2Routine:
         ldx     ppuRenderSlot2Length                           ; A83A A6 26     .&
-        bne     LA841                                          ; A83C D0 03     ..
+        bne     @slot2NotEmpty                                 ; A83C D0 03     ..
         ldx     #$02                                           ; A83E A2 02     ..
         rts                                                    ; A840 60        `
 
 ; ----------------------------------------------------------------------------
-LA841:
+@slot2NotEmpty:
         ldy     #$00                                           ; A841 A0 00     ..
         bit     PPUSTATUS                                      ; A843 2C 02 20  ,.
         lda     renderSlot2Addr+1                              ; A846 A5 19     ..
         sta     PPUADDR                                        ; A848 8D 06 20  ..
         lda     renderSlot2Addr                                ; A84B A5 18     ..
         sta     PPUADDR                                        ; A84D 8D 06 20  ..
-LA850:
+@slot2Loop:
         lda     (renderSlot2Data),y                            ; A850 B1 0A     ..
         sta     PPUDATA                                        ; A852 8D 07 20  ..
         iny                                                    ; A855 C8        .
         dex                                                    ; A856 CA        .
-        bne     LA850                                          ; A857 D0 F7     ..
+        bne     @slot2Loop                                     ; A857 D0 F7     ..
         stx     ppuRenderSlot2Length                           ; A859 86 26     .&
 renderSlot4Routine:
         ldx     ppuRenderSlot4Length                           ; A85B A6 28     .(
-        bne     LA862                                          ; A85D D0 03     ..
+        bne     @slot4NotEmpty                                 ; A85D D0 03     ..
         ldx     #$04                                           ; A85F A2 04     ..
         rts                                                    ; A861 60        `
 
 ; ----------------------------------------------------------------------------
-LA862:
+@slot4NotEmpty:
         ldy     #$00                                           ; A862 A0 00     ..
         bit     PPUSTATUS                                      ; A864 2C 02 20  ,.
         lda     renderSlot4Addr+1                              ; A867 A5 1B     ..
         sta     PPUADDR                                        ; A869 8D 06 20  ..
         lda     renderSlot4Addr                                ; A86C A5 1A     ..
         sta     PPUADDR                                        ; A86E 8D 06 20  ..
-LA871:
+@slot4Loop:
         lda     (renderSlot4Data),y                            ; A871 B1 0C     ..
         sta     PPUDATA                                        ; A873 8D 07 20  ..
         iny                                                    ; A876 C8        .
         dex                                                    ; A877 CA        .
-        bne     LA871                                          ; A878 D0 F7     ..
+        bne     @slot4Loop                                     ; A878 D0 F7     ..
         stx     ppuRenderSlot4Length                           ; A87A 86 28     .(
 renderSlot6Routine:
         ldx     ppuRenderSlot6Length                           ; A87C A6 2A     .*
-        bne     LA883                                          ; A87E D0 03     ..
+        bne     @slot6NotEmpty                                 ; A87E D0 03     ..
         ldx     #$06                                           ; A880 A2 06     ..
         rts                                                    ; A882 60        `
 
 ; ----------------------------------------------------------------------------
-LA883:
+@slot6NotEmpty:
         ldy     #$00                                           ; A883 A0 00     ..
         bit     PPUSTATUS                                      ; A885 2C 02 20  ,.
         lda     renderSlot6Addr+1                              ; A888 A5 1D     ..
         sta     PPUADDR                                        ; A88A 8D 06 20  ..
         lda     renderSlot6Addr                                ; A88D A5 1C     ..
         sta     PPUADDR                                        ; A88F 8D 06 20  ..
-LA892:
+@slot6Loop:
         lda     (renderSlot6Data),y                            ; A892 B1 0E     ..
         sta     PPUDATA                                        ; A894 8D 07 20  ..
         iny                                                    ; A897 C8        .
         dex                                                    ; A898 CA        .
-        bne     LA892                                          ; A899 D0 F7     ..
+        bne     @slot6Loop                                     ; A899 D0 F7     ..
         stx     ppuRenderSlot6Length                           ; A89B 86 2A     .*
 renderSlot8Routine:
         ldx     ppuRenderSlot8Length                           ; A89D A6 2C     .,
-        bne     LA8A4                                          ; A89F D0 03     ..
+        bne     @slot8NotEmpty                                 ; A89F D0 03     ..
         ldx     #$08                                           ; A8A1 A2 08     ..
         rts                                                    ; A8A3 60        `
 
 ; ----------------------------------------------------------------------------
-LA8A4:
+@slot8NotEmpty:
         ldy     #$00                                           ; A8A4 A0 00     ..
         bit     PPUSTATUS                                      ; A8A6 2C 02 20  ,.
         lda     renderSlot8Addr+1                              ; A8A9 A5 1F     ..
         sta     PPUADDR                                        ; A8AB 8D 06 20  ..
         lda     renderSlot8Addr                                ; A8AE A5 1E     ..
         sta     PPUADDR                                        ; A8B0 8D 06 20  ..
-LA8B3:
+@slot8Loop:
         lda     (renderSlot8Data),y                            ; A8B3 B1 10     ..
         sta     PPUDATA                                        ; A8B5 8D 07 20  ..
         iny                                                    ; A8B8 C8        .
         dex                                                    ; A8B9 CA        .
-        bne     LA8B3                                          ; A8BA D0 F7     ..
+        bne     @slot8Loop                                     ; A8BA D0 F7     ..
         stx     ppuRenderSlot8Length                           ; A8BC 86 2C     .,
 renderSlotARoutine:
         ldx     ppuRenderSlotALength                           ; A8BE A6 2E     ..
-        bne     LA8C5                                          ; A8C0 D0 03     ..
+        bne     @slotANotEmpty                                 ; A8C0 D0 03     ..
         ldx     #$0A                                           ; A8C2 A2 0A     ..
         rts                                                    ; A8C4 60        `
 
 ; ----------------------------------------------------------------------------
-LA8C5:
+@slotANotEmpty:
         ldy     #$00                                           ; A8C5 A0 00     ..
         bit     PPUSTATUS                                      ; A8C7 2C 02 20  ,.
         lda     renderSlotAAddr+1                              ; A8CA A5 21     .!
         sta     PPUADDR                                        ; A8CC 8D 06 20  ..
         lda     renderSlotAAddr                                ; A8CF A5 20     .
         sta     PPUADDR                                        ; A8D1 8D 06 20  ..
-LA8D4:
+@slotALoop:
         lda     (renderSlotAData),y                            ; A8D4 B1 12     ..
         sta     PPUDATA                                        ; A8D6 8D 07 20  ..
         iny                                                    ; A8D9 C8        .
         dex                                                    ; A8DA CA        .
-        bne     LA8D4                                          ; A8DB D0 F7     ..
+        bne     @slotALoop                                     ; A8DB D0 F7     ..
         stx     ppuRenderSlotALength                           ; A8DD 86 2E     ..
 renderSlotCRoutine:
         ldx     ppuRenderSlotCLength                           ; A8DF A6 30     .0
-        bne     LA8E6                                          ; A8E1 D0 03     ..
+        bne     @slotCNotEmpty                                 ; A8E1 D0 03     ..
         ldx     #$0C                                           ; A8E3 A2 0C     ..
         rts                                                    ; A8E5 60        `
 
 ; ----------------------------------------------------------------------------
-LA8E6:
+@slotCNotEmpty:
         ldy     #$00                                           ; A8E6 A0 00     ..
         bit     PPUSTATUS                                      ; A8E8 2C 02 20  ,.
         lda     renderSlotCAddr+1                              ; A8EB A5 23     .#
         sta     PPUADDR                                        ; A8ED 8D 06 20  ..
         lda     renderSlotCAddr                                ; A8F0 A5 22     ."
         sta     PPUADDR                                        ; A8F2 8D 06 20  ..
-LA8F5:
+@slotCLoop:
         lda     (renderSlotCData),y                            ; A8F5 B1 14     ..
         sta     PPUDATA                                        ; A8F7 8D 07 20  ..
         iny                                                    ; A8FA C8        .
         dex                                                    ; A8FB CA        .
-        bne     LA8F5                                          ; A8FC D0 F7     ..
+        bne     @slotCLoop                                     ; A8FC D0 F7     ..
         stx     ppuRenderSlotCLength                           ; A8FE 86 30     .0
         jmp     renderSlot0Routine                             ; A900 4C 19 A8  L..
 
@@ -5634,43 +5636,45 @@ reset:
         inx                                                    ; A927 E8        .
         lda     initMagic                                      ; A928 AD F7 04  ...
         cmp     #$4C                                           ; A92B C9 4C     .L
-        bne     resetHighScores                                ; A92D D0 37     .7
+        bne     @resetHighScores                               ; A92D D0 37     .7
         lda     initMagic+1                                    ; A92F AD F8 04  ...
         cmp     #$4F                                           ; A932 C9 4F     .O
-        bne     resetHighScores                                ; A934 D0 30     .0
+        bne     @resetHighScores                               ; A934 D0 30     .0
         lda     initMagic+2                                    ; A936 AD F9 04  ...
         cmp     #$47                                           ; A939 C9 47     .G
-        bne     resetHighScores                                ; A93B D0 29     .)
+        bne     @resetHighScores                               ; A93B D0 29     .)
         lda     initMagic+3                                    ; A93D AD FA 04  ...
         cmp     #$47                                           ; A940 C9 47     .G
-        bne     resetHighScores                                ; A942 D0 22     ."
+        bne     @resetHighScores                               ; A942 D0 22     ."
         ldy     #$00                                           ; A944 A0 00     ..
+; checks $418 thru $4C2 for a value of $30 to $39
 @validateHighScoreLoop:
         lda     player1ScoreHundredThousands,y                 ; A946 B9 18 04  ...
-        cmp     #$30                                           ; A949 C9 30     .0
-        bcc     resetHighScores                                ; A94B 90 19     ..
-        cmp     #$3A                                           ; A94D C9 3A     .:
-        bcs     resetHighScores                                ; A94F B0 15     ..
+        cmp     #'0'                                           ; A949 C9 30     .0
+        bcc     @resetHighScores                               ; A94B 90 19     ..
+        cmp     #'9'+1                                         ; A94D C9 3A     .:
+        bcs     @resetHighScores                               ; A94F B0 15     ..
         iny                                                    ; A951 C8        .
         cpy     #$AB                                           ; A952 C0 AB     ..
         bcc     @validateHighScoreLoop                         ; A954 90 F0     ..
+; checks $4C3 through $4EF for a value (& 0x3f) of $40 to $5A (space, A to Z)
 @validateNamesLoop:
         lda     player1ScoreHundredThousands,y                 ; A956 B9 18 04  ...
         and     #$3F                                           ; A959 29 3F     )?
         cmp     #$1B                                           ; A95B C9 1B     ..
-        bcs     resetHighScores                                ; A95D B0 07     ..
+        bcs     @resetHighScores                               ; A95D B0 07     ..
         iny                                                    ; A95F C8        .
         cpy     #$D8                                           ; A960 C0 D8     ..
         bcc     @validateNamesLoop                             ; A962 90 F2     ..
         bcs     zeroOutPages                                   ; A964 B0 3B     .;
-resetHighScores:
+@resetHighScores:
         txa                                                    ; A966 8A        .
 @resetHighScoreLoop:
         sta     player1ScoreHundredThousands,x                 ; A967 9D 18 04  ...
         inx                                                    ; A96A E8        .
         bne     @resetHighScoreLoop                            ; A96B D0 FA     ..
         ldy     #$00                                           ; A96D A0 00     ..
-        lda     #$30                                           ; A96F A9 30     .0
+        lda     #'0'                                           ; A96F A9 30     .0
 LA971:
         sta     player1ScoreHundredThousands,y                 ; A971 99 18 04  ...
         iny                                                    ; A974 C8        .

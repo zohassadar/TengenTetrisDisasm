@@ -216,11 +216,12 @@ add_constant BUTTON_DOWN+BUTTON_LEFT+BUTTON_RIGHT 80F3
 add_constant PLAYER1 B5CA 8033 803D 8054
 add_constant PLAYER2 B5CF 8038 8042
 
-add_constant \'0\' B4F2 953B 94F3 956A 9644 964C 9651
+add_constant \'0\' B4F2 953B 94F3 956A 9644 964C 9651 A949 A96F
 add_constant \'1\' B4FB 9536
 add_constant \'7\' 953F 9572 9576
 add_constant \'8\' B4F7
-add_constant \'9\'+1 B4E6 9505 9514 9523 9532 956C
+add_constant \'9\'+1 B4E6 9505 9514 9523 9532 956C A94D
+
 
 add_constant MUSIC_SUSPEND B5E7 95CE
 add_constant MUSIC_RESUME B5F2
